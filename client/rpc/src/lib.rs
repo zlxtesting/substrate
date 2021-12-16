@@ -24,9 +24,11 @@
 
 use futures::{
 	task::{FutureObj, Spawn, SpawnError},
-	FutureExt,
+	FutureExt, Stream, StreamExt,
 };
+use jsonrpsee::SubscriptionSink;
 use sp_core::{testing::TaskExecutor, traits::SpawnNamed};
+use sp_runtime::Serialize;
 use std::sync::Arc;
 
 pub use sc_rpc_api::DenyUnsafe;
@@ -63,5 +65,31 @@ impl Default for SubscriptionTaskExecutor {
 	fn default() -> Self {
 		let spawn = TaskExecutor::default();
 		Self::new(spawn)
+	}
+}
+
+/// Helper for polling a subscription and sending out responses.
+pub async fn handle_subscription_stream<S, T>(
+	mut stream: S,
+	mut sink: SubscriptionSink,
+	method: &str,
+) where
+	S: Stream<Item = T> + Unpin,
+	T: Serialize,
+{
+	loop {
+		let timeout = tokio::time::sleep(std::time::Duration::from_secs(60));
+		tokio::pin!(timeout);
+
+		tokio::select! {
+			Some(item) = stream.next() => {
+				if let Err(e) = sink.send(&item) {
+					log::debug!("Could not send data to '{}' subscriber: {:?}", method, e);
+					break;
+				}
+			},
+			_ = &mut timeout, if !sink.is_closed() => {}
+			else => break,
+		};
 	}
 }

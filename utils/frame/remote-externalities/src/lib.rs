@@ -436,51 +436,73 @@ impl<B: BlockT + DeserializeOwned> Builder<B> {
 	}
 
 	pub(crate) async fn pre_build(mut self) -> Result<Vec<KeyPair>, &'static str> {
-		let mut base_kv = match self.mode.clone() {
-			Mode::Offline(config) => self.load_state_snapshot(&config.state_snapshot.path)?,
-			Mode::Online(config) => {
-				self.init_remote_client().await?;
-				let kp = self.load_remote().await?;
-				if let Some(c) = config.state_snapshot {
-					self.save_state_snapshot(&kp, &c.path)?;
-				}
-				kp
-			},
-			Mode::OfflineOrElseOnline(offline_config, online_config) => {
-				if let Ok(kv) = self.load_state_snapshot(&offline_config.state_snapshot.path) {
-					kv
-				} else {
-					self.init_remote_client().await?;
-					let kp = self.load_remote().await?;
-					if let Some(c) = online_config.state_snapshot {
-						self.save_state_snapshot(&kp, &c.path)?;
-					}
-					kp
-				}
-			},
-		};
-
-		// inject manual key values.
-		if !self.hashed_key_values.is_empty() {
-			log::debug!(
-				target: LOG_TARGET,
-				"extending externalities with {} manually injected key-values",
-				self.hashed_key_values.len()
-			);
-			base_kv.extend(self.hashed_key_values.clone());
-		}
-
-		// exclude manual key values.
-		if !self.hashed_blacklist.is_empty() {
-			log::debug!(
-				target: LOG_TARGET,
-				"excluding externalities from {} keys",
-				self.hashed_blacklist.len()
-			);
-			base_kv.retain(|(k, _)| !self.hashed_blacklist.contains(&k.0))
-		}
-
-		Ok(base_kv)
+		todo!();
+		// let mut base_kv = match self.mode.clone() {
+		//     Mode::Offline(config) => self.load_state_snapshot(&config.state_snapshot.path)?,
+		//     Mode::Online(config) => {
+		//         self.init_remote_client().await?;
+		//         let kp = self.load_remote().await?;
+		//         if let Some(c) = config.state_snapshot {
+		//             self.save_state_snapshot(&kp, &c.path)?;
+		//         }
+		//         kp
+		//     },
+		//     Mode::OfflineOrElseOnline(offline_config, online_config) => {
+		//         if let Ok(kv) = self.load_state_snapshot(&offline_config.state_snapshot.path) {
+		//             kv
+		//         } else {
+		//             self.init_remote_client().await?;
+		//             let kp = self.load_remote().await?;
+		//             if let Some(c) = online_config.state_snapshot {
+		//                 self.save_state_snapshot(&kp, &c.path)?;
+		//             }
+		//             kp
+		//         }
+		//     },
+		// };
+        //
+		// // inject manual key values.
+		// if !self.hashed_key_values.is_empty() {
+		//     log::debug!(
+		//         target: LOG_TARGET,
+		//         "extending externalities with {} manually injected key-values",
+		//         self.hashed_key_values.len()
+		//     );
+		//     base_kv.extend(self.hashed_key_values.clone());
+		// }
+        //
+		// // exclude manual key values.
+		// if !self.hashed_blacklist.is_empty() {
+		//     log::debug!(
+		//         target: LOG_TARGET,
+		//         "excluding externalities from {} keys",
+		//         self.hashed_blacklist.len()
+		//     );
+		//     base_kv.retain(|(k, _)| !self.hashed_blacklist.contains(&k.0))
+		// }
+        //
+		// let child_kv = match self.mode.clone() {
+		//     Mode::Online(_) => self.load_child_remote_and_maybe_save(&top_kv).await?,
+		//     Mode::OfflineOrElseOnline(offline_config, _) => {
+		//         if let Ok(kv) = self.load_child_snapshot(&offline_config.state_snapshot.path) {
+		//             kv
+		//         } else {
+		//             self.load_child_remote_and_maybe_save(&top_kv).await?
+		//         }
+		//     },
+		//     Mode::Offline(ref config) => self
+		//         .load_child_snapshot(&config.state_snapshot.path)
+		//         .map_err(|why| {
+		//             log::warn!(
+		//                 target: LOG_TARGET,
+		//                 "failed to load child-key file due to {:?}.",
+		//                 why
+		//             )
+		//         })
+		//         .unwrap_or_default(),
+		// };
+        //
+		// Ok((top_kv, child_kv))
 	}
 }
 

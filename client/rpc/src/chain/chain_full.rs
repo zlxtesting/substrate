@@ -19,7 +19,7 @@
 //! Blockchain API backend for full nodes.
 
 use super::{client_err, ChainBackend, Error};
-use crate::SubscriptionTaskExecutor;
+use crate::{handle_subscription_stream, SubscriptionTaskExecutor};
 use std::{marker::PhantomData, sync::Arc};
 
 use futures::{
@@ -123,7 +123,7 @@ fn subscribe_headers<Block, Client, F, G, S>(
 	client: &Arc<Client>,
 	executor: &SubscriptionTaskExecutor,
 	method: &'static str,
-	mut sink: SubscriptionSink,
+	sink: SubscriptionSink,
 	best_block_hash: G,
 	stream: F,
 ) -> Result<(), Error>
@@ -133,7 +133,7 @@ where
 	Client: HeaderBackend<Block> + 'static,
 	F: FnOnce() -> S,
 	G: FnOnce() -> Block::Hash,
-	S: Stream<Item = Block::Header> + Send + 'static,
+	S: Stream<Item = Block::Header> + Send + 'static + Unpin,
 {
 	// send current head right at the start.
 	let maybe_header = client
@@ -153,25 +153,8 @@ where
 	// that the stream has a hole in it. The alternative would be to look up the best block *after*
 	// we set up the stream and chain it to the stream. Consuming code would need to handle
 	// duplicates at the beginning of the stream though.
-	let fut = async move {
-		stream::iter(maybe_header)
-			.chain(stream)
-			.take_while(|storage| {
-				future::ready(sink.send(&storage).map_or_else(
-					|e| {
-						log::debug!(
-							"Could not send data to subscription: {} error: {:?}",
-							method,
-							e
-						);
-						false
-					},
-					|_| true,
-				))
-			})
-			.for_each(|_| future::ready(()))
-			.await;
-	};
+	let stream = stream::iter(maybe_header).chain(stream);
+	let fut = handle_subscription_stream(stream, sink, method);
 
 	executor.spawn_obj(Box::pin(fut).into()).map_err(|e| Error::Client(Box::new(e)))
 }

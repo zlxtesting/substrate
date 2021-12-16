@@ -187,7 +187,7 @@ where
 
 		let pool = self.pool.clone();
 		let fut = async move {
-			let stream = match pool
+			let mut stream = match pool
 				.submit_and_watch(&generic::BlockId::hash(best_block_hash), TX_SOURCE, dxt)
 				.await
 			{
@@ -198,21 +198,21 @@ where
 				},
 			};
 
-			stream
-				.take_while(|item| {
-					futures::future::ready(sink.send(&item).map_or_else(
-						|e| {
-							log::debug!(
-								"subscription author_watchExtrinsic failed: {:?}; closing",
-								e
-							);
-							false
-						},
-						|_| true,
-					))
-				})
-				.for_each(|_| futures::future::ready(()))
-				.await;
+			loop {
+				let timeout = tokio::time::sleep(std::time::Duration::from_secs(60));
+				tokio::pin!(timeout);
+
+				tokio::select! {
+					Some(item) = stream.next() => {
+						if let Err(e) = sink.send(&item) {
+							log::debug!("Could not send data to 'author_submitAndWatchExtrinsic' subscriber: {:?}", e);
+							break;
+						}
+					},
+					_ = &mut timeout, if !sink.is_closed() => {}
+					else => break,
+				};
+			}
 		};
 
 		self.executor

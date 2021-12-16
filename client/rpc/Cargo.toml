@@ -38,7 +38,7 @@ parking_lot = "0.11.1"
 lazy_static = { version = "1.4.0", optional = true }
 jsonrpsee = { version = "0.6.0", features = ["server"] }
 sc-transaction-pool-api = { version = "4.0.0-dev", path = "../transaction-pool/api" }
-tokio = { version = "1.14", optional = true }
+tokio = { version = "1.14", features = ["time"] }
 
 [dev-dependencies]
 env_logger = "0.9"
@@ -53,4 +53,4 @@ sp-consensus = { version = "0.10.0-dev", path = "../../primitives/consensus/comm
 tokio = "1.14"
 
 [features]
-test-helpers = ["lazy_static", "tokio"]
+test-helpers = ["lazy_static"]

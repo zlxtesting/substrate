@@ -80,12 +80,12 @@ where
 
 	loop {
 		let header = match subscription.next().await {
-			Ok(Some(header)) => header,
-			Ok(None) => {
+			Some(Ok(header)) => header,
+			None => {
 				log::warn!("subscription returned `None`. Probably decoding has failed.");
 				break
 			},
-			Err(why) => {
+			Some(Err(why)) => {
 				log::warn!("subscription returned error: {:?}.", why);
 				continue
 			},

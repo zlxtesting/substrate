@@ -21,14 +21,14 @@
 #![warn(missing_docs)]
 
 use beefy_gadget::notification::BeefySignedCommitmentStream;
-use futures::{future, task::Spawn, FutureExt, StreamExt};
+use futures::{task::Spawn, FutureExt, StreamExt};
 use jsonrpsee::{
 	proc_macros::rpc,
 	types::{Error as JsonRpseeError, RpcResult},
 	SubscriptionSink,
 };
 use log::warn;
-use sc_rpc::SubscriptionTaskExecutor;
+use sc_rpc::{handle_subscription_stream, SubscriptionTaskExecutor};
 use sp_runtime::traits::Block as BlockT;
 
 mod notification;
@@ -67,27 +67,13 @@ impl<Block> BeefyApiServer<notification::SignedCommitment, Block> for BeefyRpcHa
 where
 	Block: BlockT,
 {
-	fn subscribe_justifications(&self, mut sink: SubscriptionSink) -> RpcResult<()> {
-		fn log_err(err: JsonRpseeError) -> bool {
-			log::debug!(
-				"Could not send data to beefy_justifications subscription. Error: {:?}",
-				err
-			);
-			false
-		}
-
+	fn subscribe_justifications(&self, sink: SubscriptionSink) -> RpcResult<()> {
 		let stream = self
 			.signed_commitment_stream
 			.subscribe()
 			.map(|sc| notification::SignedCommitment::new::<Block>(sc));
 
-		let fut = async move {
-			stream
-				.take_while(|sc| future::ready(sink.send(sc).map_or_else(log_err, |_| true)))
-				.for_each(|_| future::ready(()))
-				.await
-		}
-		.boxed();
+		let fut = handle_subscription_stream(stream, sink, "beefy_subscribeJustifications").boxed();
 
 		self.executor
 			.spawn_obj(fut.into())
