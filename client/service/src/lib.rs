@@ -98,7 +98,8 @@ impl RpcHandlers {
 		method: &str,
 		params: Vec<T>,
 	) -> Option<(String, mpsc::UnboundedReceiver<String>)> {
-		self.0.call_and_subscribe(method, params).await
+		// self.0.raw_json(method, params).await
+		todo!();
 	}
 
 	/// Provides access to the underlying `RpcModule`

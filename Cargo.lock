@@ -2878,8 +2878,7 @@ dependencies = [
 [[package]]
 name = "jsonrpsee"
 version = "0.6.1"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "ceafa2f3d8cb796bf63364691fb875b079814064306cfd4cb067f95f800a673f"
+source = "git+https://github.com/paritytech/jsonrpsee?branch=na-mem-leak-tester#ff58fe65314b0a22b0f21afd514403c66e1f8077"
 dependencies = [
  "jsonrpsee-http-server",
  "jsonrpsee-proc-macros",
@@ -2892,8 +2891,7 @@ dependencies = [
 [[package]]
 name = "jsonrpsee-http-server"
 version = "0.6.1"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "d15bad1f650df478b44455823582bde7e0f63e8f9ebb93f2de4f1b5f35361bc2"
+source = "git+https://github.com/paritytech/jsonrpsee?branch=na-mem-leak-tester#ff58fe65314b0a22b0f21afd514403c66e1f8077"
 dependencies = [
  "futures-channel",
  "futures-util",
@@ -2912,8 +2910,7 @@ dependencies = [
 [[package]]
 name = "jsonrpsee-proc-macros"
 version = "0.6.1"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "ce36eeb733770e9a0ef186f3847d9a48b6eaeff4dd7eb6b945e145e489dd44e7"
+source = "git+https://github.com/paritytech/jsonrpsee?branch=na-mem-leak-tester#ff58fe65314b0a22b0f21afd514403c66e1f8077"
 dependencies = [
  "proc-macro-crate",
  "proc-macro2",
@@ -2943,8 +2940,7 @@ dependencies = [
 [[package]]
 name = "jsonrpsee-types"
 version = "0.6.1"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "b7589284e20eb3f40544c672370512e239d9704d6bfa2d3e7a7a7cd505a56e69"
+source = "git+https://github.com/paritytech/jsonrpsee?branch=na-mem-leak-tester#ff58fe65314b0a22b0f21afd514403c66e1f8077"
 dependencies = [
  "anyhow",
  "async-trait",
@@ -2962,8 +2958,7 @@ dependencies = [
 [[package]]
 name = "jsonrpsee-utils"
 version = "0.6.1"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "bbc508d9e6169a81d2913035e8c97f2c49f699134cd3d93efa13c4457aa76252"
+source = "git+https://github.com/paritytech/jsonrpsee?branch=na-mem-leak-tester#ff58fe65314b0a22b0f21afd514403c66e1f8077"
 dependencies = [
  "arrayvec 0.7.1",
  "beef",
@@ -3008,15 +3003,15 @@ dependencies = [
 [[package]]
 name = "jsonrpsee-ws-client"
 version = "0.6.1"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "e9267225fdfda02df5c5a9793c90cfe9f2ae5f91d42d4da78bd64f0116a28e9a"
+source = "git+https://github.com/paritytech/jsonrpsee?branch=na-mem-leak-tester#ff58fe65314b0a22b0f21afd514403c66e1f8077"
 dependencies = [
  "async-trait",
- "fnv",
+ "beef",
  "futures",
  "http",
  "jsonrpsee-types 0.6.1",
  "pin-project 1.0.8",
+ "rustc-hash",
  "rustls-native-certs 0.6.1",
  "serde",
  "serde_json",
@@ -3032,8 +3027,7 @@ dependencies = [
 [[package]]
 name = "jsonrpsee-ws-server"
 version = "0.6.1"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "1ecd70df0c6c90eec7b17c8858023e92126dccbf7c3c8027d75de24cff24974a"
+source = "git+https://github.com/paritytech/jsonrpsee?branch=na-mem-leak-tester#ff58fe65314b0a22b0f21afd514403c66e1f8077"
 dependencies = [
  "futures-channel",
  "futures-util",
@@ -10364,8 +10358,8 @@ version = "1.6.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "1f559b464de2e2bdabcac6a210d12e9b5a5973c251e102c44c585c71d51bd78e"
 dependencies = [
- "cfg-if 1.0.0",
- "rand 0.8.4",
+ "cfg-if 0.1.10",
+ "rand 0.7.3",
  "static_assertions",
 ]
 

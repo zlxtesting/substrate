@@ -28,6 +28,7 @@ use super::{
 use crate::SubscriptionTaskExecutor;
 
 use futures::{future, stream, task::Spawn, FutureExt, StreamExt};
+use futures::future::Either;
 use jsonrpsee::SubscriptionSink;
 use sc_client_api::{
 	Backend, BlockBackend, BlockchainEvents, CallExecutor, ExecutorProvider, ProofProvider,
@@ -48,6 +49,9 @@ use sp_core::{
 use sp_runtime::{generic::BlockId, traits::Block as BlockT};
 use sp_version::RuntimeVersion;
 
+use std::sync::*;
+use std::sync::atomic::*;
+
 /// Ranges to query in state_queryStorage.
 struct QueryStorageRange<Block: BlockT> {
 	/// Hashes of all the blocks in the range.
@@ -60,6 +64,7 @@ pub struct FullState<BE, Block: BlockT, Client> {
 	executor: SubscriptionTaskExecutor,
 	_phantom: PhantomData<(BE, Block)>,
 	rpc_max_payload: Option<usize>,
+	concurrent_subs: Arc<AtomicUsize>,
 }
 
 impl<BE, Block: BlockT, Client> FullState<BE, Block, Client>
@@ -77,7 +82,9 @@ where
 		executor: SubscriptionTaskExecutor,
 		rpc_max_payload: Option<usize>,
 	) -> Self {
-		Self { client, executor, _phantom: PhantomData, rpc_max_payload }
+		Self { client, executor, _phantom: PhantomData, rpc_max_payload, concurrent_subs:
+			Arc::new(AtomicUsize::new(0))
+		}
 	}
 
 	/// Returns given block hash or best block hash if None is passed.
@@ -421,6 +428,10 @@ where
 			.storage_changes_notification_stream(keys.as_ref().map(|keys| &**keys), None)
 			.map_err(|blockchain_err| Error::Client(Box::new(blockchain_err)))?;
 
+		let concurrent_subs = self.concurrent_subs.clone();
+		concurrent_subs.fetch_add(1, Ordering::SeqCst);
+		// log::info!("subscribeStorage opened; concurrent_subs: {:?}", concurrent_subs.load(Ordering::SeqCst));
+
 		// initial values
 		let initial = stream::iter(keys.map(|keys| {
 			let block = self.client.info().best_hash;
@@ -443,20 +454,30 @@ where
 					.collect(),
 			});
 
-			initial
+			let mut stream = initial
 				.chain(stream)
-				.filter(|storage| future::ready(!storage.changes.is_empty()))
-				.take_while(|storage| {
-					future::ready(sink.send(&storage).map_or_else(
-						|e| {
+				.filter(|storage| future::ready(!storage.changes.is_empty()));
+
+			loop {
+				let chain_event = stream.next();
+				let timeout = tokio::time::sleep(std::time::Duration::from_secs(60));
+
+				futures::pin_mut!(chain_event);
+				futures::pin_mut!(timeout);
+
+				match future::select(chain_event, timeout).await {
+					Either::Left((storage, _)) => {
+						if let Err(e) = sink.send(&storage) {
 							log::debug!("Could not send data to the state_subscribeStorage subscriber: {:?}", e);
-							false
-						},
-						|_| true,
-					))
-				})
-				.for_each(|_| future::ready(()))
-				.await;
+							break;
+						}
+					}
+					Either::Right((_, _)) if sink.is_closed() => break,
+					Either::Right((_, _)) => (),
+				};
+			}
+			concurrent_subs.fetch_sub(1, Ordering::SeqCst);
+			// log::info!("subscribeStorage closed; concurrent_subs: {:?}", concurrent_subs.load(Ordering::SeqCst));
 		}
 		.boxed();
 
