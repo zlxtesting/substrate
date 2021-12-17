@@ -30,6 +30,7 @@ use jsonrpsee::SubscriptionSink;
 use sp_core::{testing::TaskExecutor, traits::SpawnNamed};
 use sp_runtime::Serialize;
 use std::sync::Arc;
+use std::sync::atomic::*;
 
 pub use sc_rpc_api::DenyUnsafe;
 
@@ -77,6 +78,7 @@ pub async fn handle_subscription_stream<S, T>(
 	S: Stream<Item = T> + Unpin,
 	T: Serialize,
 {
+	log::debug!("starting subscription `{}´", method);
 	loop {
 		let timeout = tokio::time::sleep(std::time::Duration::from_secs(60));
 		tokio::pin!(timeout);
@@ -88,8 +90,14 @@ pub async fn handle_subscription_stream<S, T>(
 					break;
 				}
 			},
-			_ = &mut timeout, if !sink.is_closed() => {}
+			_ = &mut timeout => {
+				if sink.is_closed() {
+					log::debug!("subscription `{}' timeout", method);
+					break;
+				}
+			}
 			else => break,
 		};
 	}
+	log::debug!("closing subscription `{}´", method);
 }

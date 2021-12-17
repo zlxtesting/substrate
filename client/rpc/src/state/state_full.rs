@@ -48,6 +48,8 @@ use sp_core::{
 use sp_runtime::{generic::BlockId, traits::Block as BlockT};
 use sp_version::RuntimeVersion;
 
+use std::sync::atomic::*;
+
 /// Ranges to query in state_queryStorage.
 struct QueryStorageRange<Block: BlockT> {
 	/// Hashes of all the blocks in the range.
@@ -60,6 +62,7 @@ pub struct FullState<BE, Block: BlockT, Client> {
 	executor: SubscriptionTaskExecutor,
 	_phantom: PhantomData<(BE, Block)>,
 	rpc_max_payload: Option<usize>,
+	concurrent_storage_subs: Arc<AtomicUsize>,
 }
 
 impl<BE, Block: BlockT, Client> FullState<BE, Block, Client>
@@ -77,7 +80,13 @@ where
 		executor: SubscriptionTaskExecutor,
 		rpc_max_payload: Option<usize>,
 	) -> Self {
-		Self { client, executor, _phantom: PhantomData, rpc_max_payload }
+		Self {
+			client,
+			executor,
+			_phantom: PhantomData,
+			rpc_max_payload,
+			concurrent_storage_subs: Arc::new(AtomicUsize::new(0))
+		}
 	}
 
 	/// Returns given block hash or best block hash if None is passed.
@@ -400,34 +409,40 @@ where
 		sink: SubscriptionSink,
 		keys: Option<Vec<StorageKey>>,
 	) -> std::result::Result<(), Error> {
+		let keys = Into::<Option<Vec<_>>>::into(keys);
 		let stream = self
 			.client
-			.storage_changes_notification_stream(keys.as_ref().map(|keys| &**keys), None)
+			.storage_changes_notification_stream(keys.as_ref().map(|x| &**x), None)
 			.map_err(|blockchain_err| Error::Client(Box::new(blockchain_err)))?;
 
 		// initial values
-		let initial = stream::iter(keys.map(|keys| {
-			let block = self.client.info().best_hash;
-			let changes = keys
-				.into_iter()
-				.map(|key| {
-					let v = self.client.storage(&BlockId::Hash(block), &key).ok().flatten();
-					(key, v)
-				})
-				.collect();
-			StorageChangeSet { block, changes }
-		}));
+		let initial = stream::iter(
+			keys.map(|keys| {
+				let block = self.client.info().best_hash;
+				let changes = keys
+					.into_iter()
+					.map(|key| {
+						let v = self.client.storage(&BlockId::Hash(block), &key).ok().flatten();
+						(key, v)
+					})
+					.collect();
+				vec![StorageChangeSet { block, changes }]
+			})
+			.unwrap_or_default(),
+		);
 
-		let chain_stream = stream.map(|(block, changes)| StorageChangeSet {
-			block,
-			changes: changes
-				.iter()
-				.filter_map(|(o_sk, k, v)| o_sk.is_none().then(|| (k.clone(), v.cloned())))
-				.collect(),
+		let stream = stream.map(|(block, changes)| {
+			StorageChangeSet {
+				block,
+				changes: changes
+					.iter()
+					.filter_map(|(o_sk, k, v)| o_sk.is_none().then(|| (k.clone(), v.cloned())))
+					.collect(),
+			}
 		});
 
 		let stream = initial
-			.chain(chain_stream)
+			.chain(stream)
 			.filter(|storage| future::ready(!storage.changes.is_empty()));
 
 		let fut = handle_subscription_stream(stream, sink, "state_subscribeStorage").boxed();
