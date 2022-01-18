@@ -275,3 +275,7 @@ zeroize = { opt-level = 3 }
 [profile.release]
 # Substrate runtime requires unwinding.
 panic = "unwind"
+
+[patch.crates-io]
+# jsonrpsee = { path = "../jsonrpsee/jsonrpsee" }
+jsonrpsee = { git = "https://github.com/paritytech/jsonrpsee", branch = "na-hacky-sink-add-stream" }

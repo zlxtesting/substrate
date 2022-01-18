@@ -2943,15 +2943,14 @@ dependencies = [
 [[package]]
 name = "jsonrpsee"
 version = "0.7.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "726b6cb76e568aefc4cc127fdb39cb9d92c176f4df0385eaf8053f770351719c"
+source = "git+https://github.com/paritytech/jsonrpsee?branch=na-hacky-sink-add-stream#b9598ca684f3d4fd4148e440351e108cd9cd0407"
 dependencies = [
- "jsonrpsee-core",
+ "jsonrpsee-core 0.7.0 (git+https://github.com/paritytech/jsonrpsee?branch=na-hacky-sink-add-stream)",
  "jsonrpsee-http-client",
  "jsonrpsee-http-server",
  "jsonrpsee-proc-macros",
- "jsonrpsee-types",
- "jsonrpsee-ws-client",
+ "jsonrpsee-types 0.7.0 (git+https://github.com/paritytech/jsonrpsee?branch=na-hacky-sink-add-stream)",
+ "jsonrpsee-ws-client 0.7.0 (git+https://github.com/paritytech/jsonrpsee?branch=na-hacky-sink-add-stream)",
  "jsonrpsee-ws-server",
 ]
 
@@ -2963,8 +2962,25 @@ checksum = "6bc39096d2bd470ecbd5ed96c8464e2b2c2ef7ec6f8cb9611604255608624773"
 dependencies = [
  "futures",
  "http",
- "jsonrpsee-core",
- "jsonrpsee-types",
+ "jsonrpsee-core 0.7.0 (registry+https://github.com/rust-lang/crates.io-index)",
+ "jsonrpsee-types 0.7.0 (registry+https://github.com/rust-lang/crates.io-index)",
+ "pin-project 1.0.10",
+ "soketto 0.7.1",
+ "thiserror",
+ "tokio",
+ "tokio-util",
+ "tracing",
+]
+
+[[package]]
+name = "jsonrpsee-client-transport"
+version = "0.7.0"
+source = "git+https://github.com/paritytech/jsonrpsee?branch=na-hacky-sink-add-stream#b9598ca684f3d4fd4148e440351e108cd9cd0407"
+dependencies = [
+ "futures",
+ "http",
+ "jsonrpsee-core 0.7.0 (git+https://github.com/paritytech/jsonrpsee?branch=na-hacky-sink-add-stream)",
+ "jsonrpsee-types 0.7.0 (git+https://github.com/paritytech/jsonrpsee?branch=na-hacky-sink-add-stream)",
  "pin-project 1.0.10",
  "soketto 0.7.1",
  "thiserror",
@@ -2986,7 +3002,30 @@ dependencies = [
  "futures-channel",
  "futures-util",
  "hyper",
- "jsonrpsee-types",
+ "jsonrpsee-types 0.7.0 (registry+https://github.com/rust-lang/crates.io-index)",
+ "rustc-hash",
+ "serde",
+ "serde_json",
+ "soketto 0.7.1",
+ "thiserror",
+ "tokio",
+ "tracing",
+]
+
+[[package]]
+name = "jsonrpsee-core"
+version = "0.7.0"
+source = "git+https://github.com/paritytech/jsonrpsee?branch=na-hacky-sink-add-stream#b9598ca684f3d4fd4148e440351e108cd9cd0407"
+dependencies = [
+ "anyhow",
+ "arrayvec 0.7.1",
+ "async-channel",
+ "async-trait",
+ "beef",
+ "futures-channel",
+ "futures-util",
+ "hyper",
+ "jsonrpsee-types 0.7.0 (git+https://github.com/paritytech/jsonrpsee?branch=na-hacky-sink-add-stream)",
  "parking_lot",
  "rand 0.8.4",
  "rustc-hash",
@@ -3001,14 +3040,13 @@ dependencies = [
 [[package]]
 name = "jsonrpsee-http-client"
 version = "0.7.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "b7ca9f9028b3a9cd3c7c5b876f037def9368c6ba6498fd2d3162bdbece1d0ef9"
+source = "git+https://github.com/paritytech/jsonrpsee?branch=na-hacky-sink-add-stream#b9598ca684f3d4fd4148e440351e108cd9cd0407"
 dependencies = [
  "async-trait",
  "hyper",
  "hyper-rustls 0.23.0",
- "jsonrpsee-core",
- "jsonrpsee-types",
+ "jsonrpsee-core 0.7.0 (git+https://github.com/paritytech/jsonrpsee?branch=na-hacky-sink-add-stream)",
+ "jsonrpsee-types 0.7.0 (git+https://github.com/paritytech/jsonrpsee?branch=na-hacky-sink-add-stream)",
  "rustc-hash",
  "serde",
  "serde_json",
@@ -3020,15 +3058,14 @@ dependencies = [
 [[package]]
 name = "jsonrpsee-http-server"
 version = "0.7.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "863149a572832adab323901870d98acbb3d82f163c929963537464336d4275ae"
+source = "git+https://github.com/paritytech/jsonrpsee?branch=na-hacky-sink-add-stream#b9598ca684f3d4fd4148e440351e108cd9cd0407"
 dependencies = [
  "futures-channel",
  "futures-util",
  "globset",
  "hyper",
- "jsonrpsee-core",
- "jsonrpsee-types",
+ "jsonrpsee-core 0.7.0 (git+https://github.com/paritytech/jsonrpsee?branch=na-hacky-sink-add-stream)",
+ "jsonrpsee-types 0.7.0 (git+https://github.com/paritytech/jsonrpsee?branch=na-hacky-sink-add-stream)",
  "lazy_static",
  "serde_json",
  "socket2 0.4.0",
@@ -3040,8 +3077,7 @@ dependencies = [
 [[package]]
 name = "jsonrpsee-proc-macros"
 version = "0.7.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "1a74ecebba6051b2f745bdc286d3b5ae7c5ff4a71828f7285662acc79cdc113c"
+source = "git+https://github.com/paritytech/jsonrpsee?branch=na-hacky-sink-add-stream#b9598ca684f3d4fd4148e440351e108cd9cd0407"
 dependencies = [
  "proc-macro-crate",
  "proc-macro2",
@@ -3064,26 +3100,49 @@ dependencies = [
 ]
 
 [[package]]
+name = "jsonrpsee-types"
+version = "0.7.0"
+source = "git+https://github.com/paritytech/jsonrpsee?branch=na-hacky-sink-add-stream#b9598ca684f3d4fd4148e440351e108cd9cd0407"
+dependencies = [
+ "anyhow",
+ "beef",
+ "serde",
+ "serde_json",
+ "thiserror",
+ "tracing",
+]
+
+[[package]]
 name = "jsonrpsee-ws-client"
 version = "0.7.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "c97f67449d58b8d90ad57986d12dacab8fd594759ff64eb5e6b6e84e470db977"
 dependencies = [
- "jsonrpsee-client-transport",
- "jsonrpsee-core",
- "jsonrpsee-types",
+ "jsonrpsee-client-transport 0.7.0 (registry+https://github.com/rust-lang/crates.io-index)",
+ "jsonrpsee-core 0.7.0 (registry+https://github.com/rust-lang/crates.io-index)",
+ "jsonrpsee-types 0.7.0 (registry+https://github.com/rust-lang/crates.io-index)",
+]
+
+[[package]]
+name = "jsonrpsee-ws-client"
+version = "0.7.0"
+source = "git+https://github.com/paritytech/jsonrpsee?branch=na-hacky-sink-add-stream#b9598ca684f3d4fd4148e440351e108cd9cd0407"
+dependencies = [
+ "jsonrpsee-client-transport 0.7.0 (git+https://github.com/paritytech/jsonrpsee?branch=na-hacky-sink-add-stream)",
+ "jsonrpsee-core 0.7.0 (git+https://github.com/paritytech/jsonrpsee?branch=na-hacky-sink-add-stream)",
+ "jsonrpsee-types 0.7.0 (git+https://github.com/paritytech/jsonrpsee?branch=na-hacky-sink-add-stream)",
 ]
 
 [[package]]
 name = "jsonrpsee-ws-server"
 version = "0.7.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "1f943bce11b9cfed10790ce253e7ef74fb7475d32258f5155bbce8f7c4e55e22"
+source = "git+https://github.com/paritytech/jsonrpsee?branch=na-hacky-sink-add-stream#b9598ca684f3d4fd4148e440351e108cd9cd0407"
 dependencies = [
+ "async-channel",
  "futures-channel",
  "futures-util",
- "jsonrpsee-core",
- "jsonrpsee-types",
+ "jsonrpsee-core 0.7.0 (git+https://github.com/paritytech/jsonrpsee?branch=na-hacky-sink-add-stream)",
+ "jsonrpsee-types 0.7.0 (git+https://github.com/paritytech/jsonrpsee?branch=na-hacky-sink-add-stream)",
  "serde_json",
  "soketto 0.7.1",
  "tokio",
@@ -4258,7 +4317,7 @@ dependencies = [
  "futures",
  "hex-literal",
  "jsonrpsee",
- "jsonrpsee-ws-client",
+ "jsonrpsee-ws-client 0.7.0 (registry+https://github.com/rust-lang/crates.io-index)",
  "log",
  "nix",
  "node-executor",
