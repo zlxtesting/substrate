@@ -60,7 +60,6 @@ pub struct FullState<BE, Block: BlockT, Client> {
 	executor: SubscriptionTaskExecutor,
 	_phantom: PhantomData<(BE, Block)>,
 	rpc_max_payload: Option<usize>,
-	count: Arc<()>,
 }
 
 impl<BE, Block: BlockT, Client> FullState<BE, Block, Client>
@@ -78,7 +77,7 @@ where
 		executor: SubscriptionTaskExecutor,
 		rpc_max_payload: Option<usize>,
 	) -> Self {
-		Self { client, executor, _phantom: PhantomData, rpc_max_payload, count: Arc::new(()) }
+		Self { client, executor, _phantom: PhantomData, rpc_max_payload }
 	}
 
 	/// Returns given block hash or best block hash if None is passed.
@@ -363,22 +362,22 @@ where
 
 	fn subscribe_runtime_version(
 		&self,
-		mut sink: SubscriptionSink,
+		sink: SubscriptionSink,
 	) -> std::result::Result<(), Error> {
 		let client = self.client.clone();
 
-		let version = self
+		let initial = self
 			.block_or_best(None)
 			.and_then(|block| {
 				self.client.runtime_version_at(&BlockId::Hash(block)).map_err(Into::into)
 			})
 			.map_err(|e| Error::Client(Box::new(e)))?;
-		let mut previous_version = version.clone();
+		let mut previous_version = initial.clone();
 
-		// A stream of all best blocks.
-		let stream = client.import_notification_stream().filter(|n| future::ready(n.is_new_best));
-		let fut = async move {
-			let stream = stream.filter_map(move |n| {
+		// A stream of new versions
+		let version_stream = client.import_notification_stream()
+			.filter(|n| future::ready(n.is_new_best))
+			.filter_map(move |n| {
 				let version = client
 					.runtime_version_at(&BlockId::hash(n.hash))
 					.map_err(|e| Error::Client(Box::new(e)));
@@ -392,22 +391,8 @@ where
 				}
 			});
 
-			futures::stream::once(future::ready(version))
-				.chain(stream)
-				.take_while(|version| {
-					future::ready(sink.send(&version).map_or_else(
-						|e| {
-							log::debug!("Could not send data to the state_subscribeRuntimeVersion subscriber: {:?}", e);
-							false
-						},
-						|_| true,
-					))
-				})
-				.for_each(|_| future::ready(()))
-				.await;
-			()
-		}
-		.boxed();
+		let stream = futures::stream::once(future::ready(initial)).chain(version_stream);
+		let fut = sink.pipe_from_stream(stream).map(|_| ()).boxed();
 
 		self.executor.spawn_obj(fut.into()).map_err(|e| Error::Client(Box::new(e)))
 	}
@@ -421,9 +406,6 @@ where
 			.client
 			.storage_changes_notification_stream(keys.as_deref(), None)
 			.map_err(|blockchain_err| Error::Client(Box::new(blockchain_err)))?;
-
-		let arc = self.count.clone();
-		log::info!("add `subscribe_storage` {}", Arc::strong_count(&arc));
 
 		// initial values
 		let initial = stream::iter(keys.map(|keys| {
@@ -452,11 +434,7 @@ where
 			.chain(storage_stream)
 			.filter(|storage| future::ready(!storage.changes.is_empty()));
 
-		let fut = async {
-			sink.add_stream(stream).await;
-			log::info!("rm `subscribe_storage` {}", Arc::strong_count(&arc) - 1);
-			drop(arc)
-		}.boxed();
+		let fut = sink.pipe_from_stream(stream).map(|_| ()).boxed();
 		self.executor.spawn_obj(fut.into()).map_err(|e| Error::Client(Box::new(e)))
 	}
 

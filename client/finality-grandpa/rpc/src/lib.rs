@@ -109,23 +109,7 @@ where
 			},
 		);
 
-		fn log_err(err: JsonRpseeError) -> bool {
-			log::error!(
-				"Could not send data to grandpa_justifications subscription. Error: {:?}",
-				err
-			);
-			false
-		}
-
-		let fut = async move {
-			stream
-				.take_while(|justification| {
-					future::ready(sink.send(justification).map_or_else(log_err, |_| true))
-				})
-				.for_each(|_| future::ready(()))
-				.await;
-		}
-		.boxed();
+		let fut = sink.pipe_from_stream(stream).map(|_| ()).boxed();
 		self.executor
 			.spawn_obj(fut.into())
 			.map_err(|e| JsonRpseeError::to_call_error(e))

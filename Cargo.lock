@@ -2943,7 +2943,7 @@ dependencies = [
 [[package]]
 name = "jsonrpsee"
 version = "0.7.0"
-source = "git+https://github.com/paritytech/jsonrpsee?branch=na-hacky-sink-add-stream#b9598ca684f3d4fd4148e440351e108cd9cd0407"
+source = "git+https://github.com/paritytech/jsonrpsee?branch=na-hacky-sink-add-stream#de4ac6a1db7e3fb9320691b0b1e4934bdcaba770"
 dependencies = [
  "jsonrpsee-core 0.7.0 (git+https://github.com/paritytech/jsonrpsee?branch=na-hacky-sink-add-stream)",
  "jsonrpsee-http-client",
@@ -2975,7 +2975,7 @@ dependencies = [
 [[package]]
 name = "jsonrpsee-client-transport"
 version = "0.7.0"
-source = "git+https://github.com/paritytech/jsonrpsee?branch=na-hacky-sink-add-stream#b9598ca684f3d4fd4148e440351e108cd9cd0407"
+source = "git+https://github.com/paritytech/jsonrpsee?branch=na-hacky-sink-add-stream#de4ac6a1db7e3fb9320691b0b1e4934bdcaba770"
 dependencies = [
  "futures",
  "http",
@@ -3015,7 +3015,7 @@ dependencies = [
 [[package]]
 name = "jsonrpsee-core"
 version = "0.7.0"
-source = "git+https://github.com/paritytech/jsonrpsee?branch=na-hacky-sink-add-stream#b9598ca684f3d4fd4148e440351e108cd9cd0407"
+source = "git+https://github.com/paritytech/jsonrpsee?branch=na-hacky-sink-add-stream#de4ac6a1db7e3fb9320691b0b1e4934bdcaba770"
 dependencies = [
  "anyhow",
  "arrayvec 0.7.1",
@@ -3040,7 +3040,7 @@ dependencies = [
 [[package]]
 name = "jsonrpsee-http-client"
 version = "0.7.0"
-source = "git+https://github.com/paritytech/jsonrpsee?branch=na-hacky-sink-add-stream#b9598ca684f3d4fd4148e440351e108cd9cd0407"
+source = "git+https://github.com/paritytech/jsonrpsee?branch=na-hacky-sink-add-stream#de4ac6a1db7e3fb9320691b0b1e4934bdcaba770"
 dependencies = [
  "async-trait",
  "hyper",
@@ -3058,7 +3058,7 @@ dependencies = [
 [[package]]
 name = "jsonrpsee-http-server"
 version = "0.7.0"
-source = "git+https://github.com/paritytech/jsonrpsee?branch=na-hacky-sink-add-stream#b9598ca684f3d4fd4148e440351e108cd9cd0407"
+source = "git+https://github.com/paritytech/jsonrpsee?branch=na-hacky-sink-add-stream#de4ac6a1db7e3fb9320691b0b1e4934bdcaba770"
 dependencies = [
  "futures-channel",
  "futures-util",
@@ -3077,7 +3077,7 @@ dependencies = [
 [[package]]
 name = "jsonrpsee-proc-macros"
 version = "0.7.0"
-source = "git+https://github.com/paritytech/jsonrpsee?branch=na-hacky-sink-add-stream#b9598ca684f3d4fd4148e440351e108cd9cd0407"
+source = "git+https://github.com/paritytech/jsonrpsee?branch=na-hacky-sink-add-stream#de4ac6a1db7e3fb9320691b0b1e4934bdcaba770"
 dependencies = [
  "proc-macro-crate",
  "proc-macro2",
@@ -3102,7 +3102,7 @@ dependencies = [
 [[package]]
 name = "jsonrpsee-types"
 version = "0.7.0"
-source = "git+https://github.com/paritytech/jsonrpsee?branch=na-hacky-sink-add-stream#b9598ca684f3d4fd4148e440351e108cd9cd0407"
+source = "git+https://github.com/paritytech/jsonrpsee?branch=na-hacky-sink-add-stream#de4ac6a1db7e3fb9320691b0b1e4934bdcaba770"
 dependencies = [
  "anyhow",
  "beef",
@@ -3126,7 +3126,7 @@ dependencies = [
 [[package]]
 name = "jsonrpsee-ws-client"
 version = "0.7.0"
-source = "git+https://github.com/paritytech/jsonrpsee?branch=na-hacky-sink-add-stream#b9598ca684f3d4fd4148e440351e108cd9cd0407"
+source = "git+https://github.com/paritytech/jsonrpsee?branch=na-hacky-sink-add-stream#de4ac6a1db7e3fb9320691b0b1e4934bdcaba770"
 dependencies = [
  "jsonrpsee-client-transport 0.7.0 (git+https://github.com/paritytech/jsonrpsee?branch=na-hacky-sink-add-stream)",
  "jsonrpsee-core 0.7.0 (git+https://github.com/paritytech/jsonrpsee?branch=na-hacky-sink-add-stream)",
@@ -3136,7 +3136,7 @@ dependencies = [
 [[package]]
 name = "jsonrpsee-ws-server"
 version = "0.7.0"
-source = "git+https://github.com/paritytech/jsonrpsee?branch=na-hacky-sink-add-stream#b9598ca684f3d4fd4148e440351e108cd9cd0407"
+source = "git+https://github.com/paritytech/jsonrpsee?branch=na-hacky-sink-add-stream#de4ac6a1db7e3fb9320691b0b1e4934bdcaba770"
 dependencies = [
  "async-channel",
  "futures-channel",
@@ -10450,8 +10450,8 @@ version = "1.6.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "4ee73e6e4924fe940354b8d4d98cad5231175d615cd855b758adc658c0aac6a0"
 dependencies = [
- "cfg-if 1.0.0",
- "rand 0.8.4",
+ "cfg-if 0.1.10",
+ "rand 0.7.3",
  "static_assertions",
 ]
 
