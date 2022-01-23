@@ -751,9 +751,9 @@ macro_rules! assert_noop {
 		$x:expr,
 		$y:expr $(,)?
 	) => {
-		let h = $crate::storage_root($crate::StateVersion::V1);
+		let h = $crate::storage_root();
 		$crate::assert_err!($x, $y);
-		assert_eq!(h, $crate::storage_root($crate::StateVersion::V1));
+		assert_eq!(h, $crate::storage_root());
 	};
 }
 
@@ -766,9 +766,9 @@ macro_rules! assert_storage_noop {
 	(
 		$x:expr
 	) => {
-		let h = $crate::storage_root($crate::StateVersion::V1);
+		let h = $crate::storage_root();
 		$x;
-		assert_eq!(h, $crate::storage_root($crate::StateVersion::V1));
+		assert_eq!(h, $crate::storage_root());
 	};
 }
 
@@ -1967,7 +1967,7 @@ pub mod pallet_prelude {
 /// 	pub trait Config: frame_system::Config {
 /// 		#[pallet::constant] // put the constant in metadata
 /// 		type MyGetParam: Get<u32>;
-/// 		type Balance: Parameter + From<u8>;
+/// 		type Balance: Parameter + MaxEncodedLen + From<u8>;
 /// 		type Event: From<Event<Self>> + IsType<<Self as frame_system::Config>::Event>;
 /// 	}
 ///
@@ -2156,7 +2156,7 @@ pub mod pallet_prelude {
 /// 	pub trait Config<I: 'static = ()>: frame_system::Config {
 /// 		#[pallet::constant]
 /// 		type MyGetParam: Get<u32>;
-/// 		type Balance: Parameter + From<u8>;
+/// 		type Balance: Parameter + MaxEncodedLen + From<u8>;
 /// 		type Event: From<Event<Self, I>> + IsType<<Self as frame_system::Config>::Event>;
 /// 	}
 ///
