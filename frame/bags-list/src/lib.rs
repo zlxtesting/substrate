@@ -272,10 +272,13 @@ impl<T: Config> SortedListProvider<T::AccountId> for Pallet<T> {
 		List::<T>::insert(id, weight)
 	}
 
-	fn on_update(id: &T::AccountId, new_weight: VoteWeight) {
-		Pallet::<T>::do_rebag(id, new_weight);
+	fn on_update(id: &T::AccountId, new_weight: VoteWeight) -> Option<bool> {
+		let updated_node = Pallet::<T>::do_rebag(id, new_weight);
+		match updated_node {
+			Some((from, to)) => Some(from != to),
+			None => None,
+		}
 	}
-
 	fn on_remove(id: &T::AccountId) {
 		List::<T>::remove(id)
 	}

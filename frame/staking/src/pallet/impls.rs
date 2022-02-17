@@ -1294,8 +1294,9 @@ impl<T: Config> SortedListProvider<T::AccountId> for UseNominatorsMap<T> {
 		// nothing to do on insert.
 		Ok(())
 	}
-	fn on_update(_: &T::AccountId, _weight: VoteWeight) {
+	fn on_update(_: &T::AccountId, _weight: VoteWeight) -> Option<bool> {
 		// nothing to do on update.
+		None
 	}
 	fn on_remove(_: &T::AccountId) {
 		// nothing to do on remove.
