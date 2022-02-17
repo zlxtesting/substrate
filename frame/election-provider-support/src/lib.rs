@@ -378,7 +378,8 @@ pub trait SortedListProvider<AccountId> {
 	/// Hook for inserting a new id.
 	fn on_insert(id: AccountId, weight: VoteWeight) -> Result<(), Self::Error>;
 
-	/// Hook for updating a single id.
+	/// Hook for updating a single id that returns whether a change was made,
+	/// or None if there is nothing to do on update.
 	fn on_update(id: &AccountId, weight: VoteWeight) -> Option<bool>;
 
 	/// Hook for removing am id from the list.
