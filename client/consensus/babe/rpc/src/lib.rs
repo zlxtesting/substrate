@@ -90,22 +90,24 @@ where
 {
 	async fn epoch_authorship(&self) -> RpcResult<HashMap<AuthorityId, EpochAuthorship>> {
 		self.deny_unsafe.check_if_safe()?;
-		let header = self.select_chain.best_chain().map_err(Error::Consensus).await?;
-		let epoch_start = self
-			.client
+
+		let (babe_config, keystore, shared_epoch, client, select_chain) = (
+			self.babe_config.clone(),
+			self.keystore.clone(),
+			self.shared_epoch_changes.clone(),
+			self.client.clone(),
+			self.select_chain.clone(),
+		);
+
+		let header = select_chain.best_chain().map_err(Error::Consensus).await?;
+		let epoch_start = client
 			.runtime_api()
 			.current_epoch_start(&BlockId::Hash(header.hash()))
-			.map_err(|err| Error::StringError(format!("{:?}", err)))?;
-
-		let epoch = epoch_data(
-			&self.shared_epoch_changes,
-			&self.client,
-			&self.babe_config,
-			*epoch_start,
-			&self.select_chain,
-		)
-		.await?;
+			.map_err(|err| Error::StringError(err.to_string()))?;
+		let epoch =
+			epoch_data(&shared_epoch, &client, &babe_config, *epoch_start, &select_chain).await?;
 		let (epoch_start, epoch_end) = (epoch.start_slot(), epoch.end_slot());
+
 		let mut claims: HashMap<AuthorityId, EpochAuthorship> = HashMap::new();
 
 		let keys = {
@@ -114,10 +116,8 @@ where
 				.iter()
 				.enumerate()
 				.filter_map(|(i, a)| {
-					if SyncCryptoStore::has_keys(
-						&*self.keystore,
-						&[(a.0.to_raw_vec(), AuthorityId::ID)],
-					) {
+					if SyncCryptoStore::has_keys(&*keystore, &[(a.0.to_raw_vec(), AuthorityId::ID)])
+					{
 						Some((a.0.clone(), i))
 					} else {
 						None
@@ -128,7 +128,7 @@ where
 
 		for slot in *epoch_start..*epoch_end {
 			if let Some((claim, key)) =
-				authorship::claim_slot_using_keys(slot.into(), &epoch, &self.keystore, &keys)
+				authorship::claim_slot_using_keys(slot.into(), &epoch, &keystore, &keys)
 			{
 				match claim {
 					PreDigest::Primary { .. } => {
@@ -199,7 +199,7 @@ where
 			slot.into(),
 			|slot| Epoch::genesis(&babe_config, slot),
 		)
-		.map_err(|e| Error::Consensus(ConsensusError::ChainLookup(format!("{:?}", e))))?
+		.map_err(|e| Error::Consensus(ConsensusError::ChainLookup(e.to_string())))?
 		.ok_or(Error::Consensus(ConsensusError::InvalidAuthoritiesSet))
 }
 
