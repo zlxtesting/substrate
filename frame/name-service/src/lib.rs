@@ -71,11 +71,11 @@ pub mod pallet {
 		/// The account where registration fees are paid to.
 		type RegistrationFeeHandler: OnUnbalanced<NegativeImbalanceOf<Self>>;
 
-		/// End block for pre-registration period where only controller accounts can commit names.
+		/// Controllers only mode.
 		#[pallet::constant]
 		type ControllersOnly: Get<bool>;
 
-		/// Controller accounts that can commit and force_register before bootstrap period ends.
+		/// Controller accounts that can commit and force_register when `ControllersOnly` set to true.
 		#[pallet::constant]
 		type ControllerAccounts: Get<Vec<Self::AccountId>>;
 
@@ -440,7 +440,7 @@ pub mod pallet {
 				Error::<T>::RegistrationExpired
 			);
 
-			Self::do_deregister_sub_name_address(name_hash, label_hash, address);
+			Self::do_set_sub_name_address(name_hash, label_hash, address);
 
 			Ok(())
 		}
@@ -600,7 +600,7 @@ pub mod pallet {
 			Ok(())
 		}
 
-		fn do_deregister_sub_name_address(
+		fn do_set_sub_name_address(
 			name_hash: NameHash,
 			label_hash: LabelHash,
 			address: T::AccountId,
