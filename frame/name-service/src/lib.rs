@@ -31,7 +31,7 @@ pub use pallet::*;
 pub mod pallet {
 	use frame_support::pallet_prelude::*;
 	use frame_system::pallet_prelude::*;
-	use sp_runtime::traits::{Convert, Hash, Saturating, Zero};
+	use sp_runtime::traits::{Bounded, Convert, Hash, Saturating, Zero};
 	use sp_std::convert::TryInto;
 
 	use frame_support::traits::{
@@ -75,7 +75,8 @@ pub mod pallet {
 		#[pallet::constant]
 		type ControllersOnly: Get<bool>;
 
-		/// Controller accounts that can commit and force_register when `ControllersOnly` set to true.
+		/// Controller accounts that can commit and force_register when `ControllersOnly` set to
+		/// true.
 		#[pallet::constant]
 		type ControllerAccounts: Get<Vec<Self::AccountId>>;
 
@@ -477,35 +478,42 @@ pub mod pallet {
 
 	// Pallet internal functions
 	impl<T: Config> Pallet<T> {
-		fn registration_fee(name: Vec<u8>, periods: u32) -> BalanceOf<T> {
-			let fee_reg: BalanceOf<T> = match name.len() {
-				3 => T::TierThreeLetters::get(),
-				4 => T::TierFourLetters::get(),
-				_ => T::TierDefault::get(),
+		pub fn registration_fee(name: Vec<u8>, periods: u32) -> BalanceOf<T> {
+			let name_length = name.len();
+			let fee_reg = if name_length < 3 {
+				// names with under 3 characters should not be registered, so we
+				// put an exorbitant fee.
+				BalanceOf::<T>::max_value()
+			} else if name_length == 3 {
+				T::TierThreeLetters::get()
+			} else if name_length == 4 {
+				T::TierFourLetters::get()
+			} else {
+				T::TierDefault::get()
 			};
 
 			let fee_length = Self::length_fee(periods);
 			fee_reg.saturating_add(fee_length)
 		}
 
-		fn length_fee(periods: u32) -> BalanceOf<T> {
+		pub fn length_fee(periods: u32) -> BalanceOf<T> {
 			let periods_as_balance: BalanceOf<T> = periods.try_into().ok().unwrap();
 			T::FeePerRegistrationPeriod::get().saturating_mul(periods_as_balance)
 		}
 
-		fn length(periods: u32) -> T::BlockNumber {
+		pub fn length(periods: u32) -> T::BlockNumber {
 			let periods_as_block_number: T::BlockNumber = periods.try_into().ok().unwrap();
 			periods_as_block_number.saturating_mul(T::BlocksPerRegistrationPeriod::get())
 		}
 
-		fn is_available(name_hash: NameHash, block_number: T::BlockNumber) -> bool {
+		pub fn is_available(name_hash: NameHash, block_number: T::BlockNumber) -> bool {
 			match Registrations::<T>::get(name_hash) {
 				Some(r) => r.expiry <= block_number,
 				None => true,
 			}
 		}
 
-		fn do_register(
+		pub fn do_register(
 			name_hash: NameHash,
 			who: T::AccountId,
 			deposit: BalanceOf<T>,
@@ -530,14 +538,14 @@ pub mod pallet {
 			Ok(())
 		}
 
-		fn do_set_address(name_hash: NameHash, address: T::AccountId) -> DispatchResult {
+		pub fn do_set_address(name_hash: NameHash, address: T::AccountId) -> DispatchResult {
 			Resolvers::<T>::insert(name_hash, Resolver::Default(address.clone()));
 			Self::deposit_event(Event::<T>::AddressSet { name_hash, address });
 
 			Ok(())
 		}
 
-		fn do_deregister(name_hash: NameHash) -> DispatchResult {
+		pub fn do_deregister(name_hash: NameHash) -> DispatchResult {
 			let registration =
 				Registrations::<T>::get(name_hash).ok_or(Error::<T>::RegistrationNotFound)?;
 			ensure!(
@@ -557,7 +565,7 @@ pub mod pallet {
 			Ok(())
 		}
 
-		fn do_register_sub_name(
+		pub fn do_register_sub_name(
 			name_hash: NameHash,
 			label: Vec<u8>,
 			registration: Registration<T::AccountId, BalanceOf<T>, T::BlockNumber>,
@@ -586,7 +594,10 @@ pub mod pallet {
 			Ok(())
 		}
 
-		fn do_deregister_sub_name(name_hash: NameHash, label_hash: LabelHash) -> DispatchResult {
+		pub fn do_deregister_sub_name(
+			name_hash: NameHash,
+			label_hash: LabelHash,
+		) -> DispatchResult {
 			let _ = SubNameRegistrations::<T>::get(name_hash, label_hash)
 				.ok_or(Error::<T>::RegistrationNotFound)?;
 
@@ -600,7 +611,7 @@ pub mod pallet {
 			Ok(())
 		}
 
-		fn do_set_sub_name_address(
+		pub fn do_set_sub_name_address(
 			name_hash: NameHash,
 			label_hash: LabelHash,
 			address: T::AccountId,
