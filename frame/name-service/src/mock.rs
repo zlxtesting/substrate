@@ -58,6 +58,8 @@ type Balance = u64;
 parameter_types! {
 	pub BlockWeights: frame_system::limits::BlockWeights =
 		frame_system::limits::BlockWeights::simple_max(1024);
+	pub ControllerAccounts: Vec<u64> = vec![1, 2];
+	pub ControllersOnly: bool = false;
 }
 impl frame_system::Config for Test {
 	type BaseCallFilter = frame_support::traits::Everything;
@@ -102,6 +104,8 @@ impl Config for Test {
 	type Event = Event;
 	type Currency = Balances;
 	type BlockNumberToBalance = Identity;
+	type ControllersOnly = ControllersOnly;
+	type ControllerAccounts = ControllerAccounts;
 	// TODO: make a custom handler and test behavior
 	type RegistrationFeeHandler = ();
 	type CommitmentDeposit = ConstU64<10>;
@@ -109,6 +113,7 @@ impl Config for Test {
 	type TierThreeLetters = ConstU64<7>;
 	type TierFourLetters = ConstU64<3>;
 	type BlocksPerRegistrationPeriod = ConstU64<5256000>;
+	type MinimumRegistrationPeriods = ConstU32<1>;
 	type NotificationPeriod = ConstU64<432000>;
 	type FeePerRegistrationPeriod = ConstU64<1>;
 	type TierDefault = ConstU64<1>;

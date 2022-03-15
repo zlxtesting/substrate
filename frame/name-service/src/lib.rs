@@ -38,11 +38,14 @@ pub mod pallet {
 		Currency, ExistenceRequirement, OnUnbalanced, ReservableCurrency, WithdrawReasons,
 	};
 
-	// The struct on which we build all of our Pallet logic.
 	#[pallet::pallet]
 	pub struct Pallet<T>(_);
 
+	/// A hashed domain name.
 	type NameHash = [u8; 32];
+
+	/// Alias of `NameHash` for subdomain labels.
+	type LabelHash = NameHash;
 
 	type CommitmentHash = [u8; 32];
 
@@ -68,6 +71,14 @@ pub mod pallet {
 		/// The account where registration fees are paid to.
 		type RegistrationFeeHandler: OnUnbalanced<NegativeImbalanceOf<Self>>;
 
+		/// End block for pre-registration period where only controller accounts can commit names.
+		#[pallet::constant]
+		type ControllersOnly: Get<bool>;
+
+		/// Controller accounts that can commit and force_register before bootstrap period ends.
+		#[pallet::constant]
+		type ControllerAccounts: Get<Vec<Self::AccountId>>;
+
 		/// The deposit a user needs to make in order to commit to a name registration.
 		#[pallet::constant]
 		type CommitmentDeposit: Get<BalanceOf<Self>>;
@@ -91,6 +102,9 @@ pub mod pallet {
 		/// How long a registration period is in blocks.
 		#[pallet::constant]
 		type BlocksPerRegistrationPeriod: Get<Self::BlockNumber>;
+
+		/// Minimum registration periods allowed.
+		type MinimumRegistrationPeriods: Get<u32>;
 
 		/// Notification duration before expiry, in blocks.
 		#[pallet::constant]
@@ -119,9 +133,17 @@ pub mod pallet {
 		pub deposit: Balance,
 	}
 
+	#[derive(Encode, Decode, Default, MaxEncodedLen, TypeInfo)]
+	pub struct SubNameRegistration<AccountId> {
+		pub hash: NameHash,
+		pub owner: AccountId,
+		pub registrant: AccountId,
+	}
+
 	#[derive(Encode, Decode, MaxEncodedLen, TypeInfo)]
 	pub enum Resolver<AccountId> {
 		Default(AccountId),
+		SubName(AccountId),
 	}
 
 	/* Placeholder for defining custom storage items. */
@@ -146,13 +168,24 @@ pub mod pallet {
 		Registration<T::AccountId, BalanceOf<T>, T::BlockNumber>,
 	>;
 
+	/// Sub Name Registrations
+	#[pallet::storage]
+	#[pallet::getter(fn sub_registration)]
+	pub(super) type SubNameRegistrations<T: Config> = StorageDoubleMap<
+		_,
+		Blake2_128Concat,
+		NameHash,
+		Blake2_128Concat,
+		LabelHash,
+		SubNameRegistration<T::AccountId>,
+	>;
+
 	/// This resolver maps name hashes to an account
 	#[pallet::storage]
 	#[pallet::getter(fn resolve)]
 	pub(super) type Resolvers<T: Config> =
 		StorageMap<_, Blake2_128Concat, NameHash, Resolver<T::AccountId>>;
 
-	// Your Pallet's events.
 	#[pallet::event]
 	#[pallet::generate_deposit(pub(super) fn deposit_event)]
 	pub enum Event<T: Config> {
@@ -174,15 +207,22 @@ pub mod pallet {
 		AddressSet { name_hash: NameHash, address: T::AccountId },
 		/// An address was deregistered.
 		AddressDeregistered { name_hash: NameHash },
+		/// A new `SubNameRegistration` has taken place.
+		SubNameRegistered { hash: NameHash, owner: T::AccountId },
+		/// An address has been set for a sub name hash to resolve to
+		SubNameAddressSet { hash: NameHash, address: T::AccountId },
+		/// A sub name address was deregistered.
+		SubNameAddressDeregistered { sub_name_hash: NameHash },
 	}
 
-	// Your Pallet's error messages.
 	#[pallet::error]
 	pub enum Error<T> {
 		/// This commitment hash already exists in storage.
 		AlreadyCommitted,
 		/// This commitment does not exist.
 		CommitmentNotFound,
+		/// Registration period is not long enough
+		RegistrationPeriodTooShort,
 		/// This name is already registered.
 		AlreadyRegistered,
 		/// This registration does not exist.
@@ -195,6 +235,10 @@ pub mod pallet {
 		RegistrationExpired,
 		/// This registration has not yet expired.
 		RegistrationNotExpired,
+		/// Sub name already registered
+		SubNameAlreadyRegistered,
+		/// Account is not within `ControllerAccounts`.
+		NotControllerAccount,
 		/// Conversion error
 		ConversionError,
 	}
@@ -210,6 +254,12 @@ pub mod pallet {
 			commitment_hash: CommitmentHash,
 		) -> DispatchResult {
 			let sender = ensure_signed(origin)?;
+			let block_number = frame_system::Pallet::<T>::block_number();
+
+			ensure!(
+				!(T::ControllersOnly::get() && !T::ControllerAccounts::get().contains(&sender)),
+				Error::<T>::NotControllerAccount
+			);
 
 			ensure!(!Commitments::<T>::contains_key(commitment_hash), Error::<T>::AlreadyCommitted);
 
@@ -236,9 +286,16 @@ pub mod pallet {
 			let sender = ensure_signed(origin)?;
 			let commitment_hash = sp_io::hashing::blake2_256(&(name.clone(), secret).encode());
 
-			let commitment =
-				Commitments::<T>::get(commitment_hash.clone()).ok_or(Error::<T>::CommitmentNotFound)?;
+			let commitment = Commitments::<T>::get(commitment_hash.clone())
+				.ok_or(Error::<T>::CommitmentNotFound)?;
 			let name_hash = sp_io::hashing::blake2_256(&name);
+
+			Commitments::<T>::remove(commitment_hash);
+
+			ensure!(
+				periods > T::MinimumRegistrationPeriods::get(),
+				Error::<T>::RegistrationPeriodTooShort
+			);
 
 			if Self::is_available(name_hash, frame_system::Pallet::<T>::block_number()) {
 				let fee = Self::registration_fee(name.clone(), periods);
@@ -256,15 +313,22 @@ pub mod pallet {
 				let deposit: BalanceOf<T> = Default::default();
 
 				Self::do_register(name_hash, commitment.who, deposit, periods);
+			} else {
+				ensure!(
+					!Registrations::<T>::contains_key(name_hash),
+					Error::<T>::AlreadyRegistered
+				);
 			}
-
-			Commitments::<T>::remove(commitment_hash);
 
 			Ok(())
 		}
 
 		#[pallet::weight(0)]
-		pub fn transfer(origin: OriginFor<T>, to: T::AccountId, name_hash: NameHash) -> DispatchResult {
+		pub fn transfer(
+			origin: OriginFor<T>,
+			to: T::AccountId,
+			name_hash: NameHash,
+		) -> DispatchResult {
 			let sender = ensure_signed(origin)?;
 			let block_number = frame_system::Pallet::<T>::block_number();
 
@@ -289,7 +353,6 @@ pub mod pallet {
 
 				let fee = Self::length_fee(periods);
 
-				// withdraw fees from account
 				let imbalance = T::Currency::withdraw(
 					&sender,
 					fee,
@@ -304,7 +367,7 @@ pub mod pallet {
 					false => block_number.saturating_add(Self::length(periods)),
 				};
 
-				r.expiry = expiry_new.clone();
+				r.expiry = expiry_new;
 
 				T::RegistrationFeeHandler::on_unbalanced(imbalance);
 
@@ -325,18 +388,12 @@ pub mod pallet {
 				Registrations::<T>::get(name_hash).ok_or(Error::<T>::RegistrationNotFound)?;
 			ensure!(registration.owner == sender, Error::<T>::NotRegistrationOwner);
 
-			if (registration.expiry <= frame_system::Pallet::<T>::block_number()) {
-				Self::do_deregister(name_hash)?;
-			}
-
 			ensure!(
 				registration.expiry > frame_system::Pallet::<T>::block_number(),
 				Error::<T>::RegistrationExpired
 			);
 
-			Resolvers::<T>::insert(name_hash, Resolver::Default(address.clone()));
-
-			Self::deposit_event(Event::<T>::AddressSet { name_hash, address });
+			Self::do_set_address(name_hash, address);
 
 			Ok(())
 		}
@@ -345,6 +402,62 @@ pub mod pallet {
 		pub fn deregister(origin: OriginFor<T>, name_hash: NameHash) -> DispatchResult {
 			let sender = ensure_signed(origin)?;
 			Self::do_deregister(name_hash)?;
+			Ok(())
+		}
+
+		#[pallet::weight(0)]
+		pub fn register_sub_name(
+			origin: OriginFor<T>,
+			name_hash: NameHash,
+			label: Vec<u8>,
+		) -> DispatchResult {
+			let sender = ensure_signed(origin)?;
+
+			let registration =
+				Registrations::<T>::get(name_hash).ok_or(Error::<T>::RegistrationNotFound)?;
+			ensure!(registration.owner == sender, Error::<T>::NotRegistrationOwner);
+
+			Self::do_register_sub_name(name_hash, label, registration)?;
+
+			Ok(())
+		}
+
+		#[pallet::weight(0)]
+		pub fn set_sub_name_address(
+			origin: OriginFor<T>,
+			name_hash: NameHash,
+			label_hash: LabelHash,
+			address: T::AccountId,
+		) -> DispatchResult {
+			let sender = ensure_signed(origin)?;
+
+			let registration =
+				Registrations::<T>::get(name_hash).ok_or(Error::<T>::RegistrationNotFound)?;
+			ensure!(registration.owner == sender, Error::<T>::NotRegistrationOwner);
+
+			ensure!(
+				registration.expiry > frame_system::Pallet::<T>::block_number(),
+				Error::<T>::RegistrationExpired
+			);
+
+			Self::do_deregister_sub_name_address(name_hash, label_hash, address);
+
+			Ok(())
+		}
+
+		#[pallet::weight(0)]
+		pub fn deregister_sub_name(
+			origin: OriginFor<T>,
+			name_hash: NameHash,
+			label_hash: LabelHash,
+		) -> DispatchResult {
+			let sender = ensure_signed(origin)?;
+
+			let registration =
+				Registrations::<T>::get(name_hash).ok_or(Error::<T>::RegistrationNotFound)?;
+			ensure!(registration.owner == sender, Error::<T>::NotRegistrationOwner);
+
+			Self::do_deregister_sub_name(name_hash, label_hash)?;
 			Ok(())
 		}
 
@@ -417,6 +530,13 @@ pub mod pallet {
 			Ok(())
 		}
 
+		fn do_set_address(name_hash: NameHash, address: T::AccountId) -> DispatchResult {
+			Resolvers::<T>::insert(name_hash, Resolver::Default(address.clone()));
+			Self::deposit_event(Event::<T>::AddressSet { name_hash, address });
+
+			Ok(())
+		}
+
 		fn do_deregister(name_hash: NameHash) -> DispatchResult {
 			let registration =
 				Registrations::<T>::get(name_hash).ok_or(Error::<T>::RegistrationNotFound)?;
@@ -426,10 +546,77 @@ pub mod pallet {
 			);
 
 			Registrations::<T>::remove(name_hash);
+			Resolvers::<T>::remove(name_hash);
+			SubNameRegistrations::<T>::iter_prefix_values(name_hash).for_each(|s_r| {
+				Resolvers::<T>::remove(s_r.hash);
+			});
 
+			SubNameRegistrations::<T>::remove_prefix(name_hash, None);
 			Self::deposit_event(Event::<T>::AddressDeregistered { name_hash });
 
 			Ok(())
+		}
+
+		fn do_register_sub_name(
+			name_hash: NameHash,
+			label: Vec<u8>,
+			registration: Registration<T::AccountId, BalanceOf<T>, T::BlockNumber>,
+		) -> DispatchResult {
+			let label_hash = sp_io::hashing::blake2_256(&label);
+			let sub_name_hash = Self::generate_sub_name_hash(name_hash, label_hash);
+
+			ensure!(
+				!SubNameRegistrations::<T>::contains_key(name_hash, label_hash),
+				Error::<T>::SubNameAlreadyRegistered
+			);
+
+			let sub_registration = SubNameRegistration {
+				hash: sub_name_hash,
+				owner: registration.owner.clone(),
+				registrant: registration.owner.clone(),
+			};
+
+			SubNameRegistrations::<T>::insert(name_hash, label_hash, sub_registration);
+
+			Self::deposit_event(Event::<T>::SubNameRegistered {
+				hash: sub_name_hash,
+				owner: registration.owner,
+			});
+
+			Ok(())
+		}
+
+		fn do_deregister_sub_name(name_hash: NameHash, label_hash: LabelHash) -> DispatchResult {
+			let _ = SubNameRegistrations::<T>::get(name_hash, label_hash)
+				.ok_or(Error::<T>::RegistrationNotFound)?;
+
+			let sub_name_hash = Self::generate_sub_name_hash(name_hash, label_hash);
+
+			SubNameRegistrations::<T>::remove(name_hash, label_hash);
+			Resolvers::<T>::remove(sub_name_hash);
+
+			Self::deposit_event(Event::<T>::SubNameAddressDeregistered { sub_name_hash });
+
+			Ok(())
+		}
+
+		fn do_deregister_sub_name_address(
+			name_hash: NameHash,
+			label_hash: LabelHash,
+			address: T::AccountId,
+		) -> DispatchResult {
+			let sub_name_hash = Self::generate_sub_name_hash(name_hash, label_hash);
+
+			Resolvers::<T>::insert(sub_name_hash, Resolver::SubName(address.clone()));
+
+			Self::deposit_event(Event::<T>::SubNameAddressSet { hash: sub_name_hash, address });
+
+			Ok(())
+		}
+
+		fn generate_sub_name_hash(name_hash: NameHash, label_hash: LabelHash) -> NameHash {
+			let hash_concat = [name_hash, label_hash].concat();
+			return sp_io::hashing::blake2_256(&hash_concat)
 		}
 	}
 }
