@@ -187,12 +187,7 @@ pub mod pallet {
 		/// A new `Commitment` has taken place.
 		Committed { sender: T::AccountId, who: T::AccountId, hash: CommitmentHash },
 		/// A new `Registration` has taken added.
-		Registered {
-			owner: T::AccountId,
-			registrant: T::AccountId,
-			expiry: T::BlockNumber,
-			deposit: BalanceOf<T>,
-		},
+		Registered { owner: T::AccountId, expiry: T::BlockNumber, deposit: BalanceOf<T> },
 		/// A `Registration` has been transferred to a new owner.
 		Transfer { from: T::AccountId, to: T::AccountId },
 		/// A `Registration` has been extended.
@@ -521,12 +516,7 @@ pub mod pallet {
 			Registrations::<T>::insert(name_hash, registration);
 			// TODO: add reverse registration when in place also
 
-			Self::deposit_event(Event::<T>::Registered {
-				owner: who.clone(),
-				registrant: who,
-				expiry,
-				deposit,
-			});
+			Self::deposit_event(Event::<T>::Registered { owner: who.clone(), expiry, deposit });
 
 			Ok(())
 		}
