@@ -141,12 +141,6 @@ pub mod pallet {
 		pub registrant: AccountId,
 	}
 
-	#[derive(Encode, Decode, MaxEncodedLen, TypeInfo)]
-	pub enum Resolver<AccountId> {
-		Default(AccountId),
-		SubName(AccountId),
-	}
-
 	/* Placeholder for defining custom storage items. */
 
 	/// Name Commitments
@@ -184,8 +178,7 @@ pub mod pallet {
 	/// This resolver maps name hashes to an account
 	#[pallet::storage]
 	#[pallet::getter(fn resolve)]
-	pub(super) type Resolvers<T: Config> =
-		StorageMap<_, Blake2_128Concat, NameHash, Resolver<T::AccountId>>;
+	pub(super) type Resolvers<T: Config> = StorageMap<_, Blake2_128Concat, NameHash, T::AccountId>;
 
 	#[pallet::event]
 	#[pallet::generate_deposit(pub(super) fn deposit_event)]
@@ -539,7 +532,7 @@ pub mod pallet {
 		}
 
 		pub fn do_set_address(name_hash: NameHash, address: T::AccountId) -> DispatchResult {
-			Resolvers::<T>::insert(name_hash, Resolver::Default(address.clone()));
+			Resolvers::<T>::insert(name_hash, address.clone());
 			Self::deposit_event(Event::<T>::AddressSet { name_hash, address });
 
 			Ok(())
@@ -618,7 +611,7 @@ pub mod pallet {
 		) -> DispatchResult {
 			let sub_name_hash = Self::generate_sub_name_hash(name_hash, label_hash);
 
-			Resolvers::<T>::insert(sub_name_hash, Resolver::SubName(address.clone()));
+			Resolvers::<T>::insert(sub_name_hash, address.clone());
 
 			Self::deposit_event(Event::<T>::SubNameAddressSet { hash: sub_name_hash, address });
 
