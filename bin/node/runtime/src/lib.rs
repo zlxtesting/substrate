@@ -1703,6 +1703,15 @@ impl_runtime_apis! {
 		}
 	}
 
+	impl pallet_election_provider_multi_phase_rpc_runtime_api::EpmRuntimeApi<Block, AccountId, Address, Call, SignedExtra, NposSolution16, Signature> for Runtime {
+		fn submit(
+			origin: AccountId,
+			raw_solution: sp_std::boxed::Box<pallet_election_provider_multi_phase_rpc_runtime_api::RawSolution<NposSolution16>>
+		) -> UncheckedExtrinsic {
+			ElectionProviderMultiPhase::submit(origin, raw_solution).expect("todo error handling")
+		}
+	}
+
 	impl pallet_contracts_rpc_runtime_api::ContractsApi<
 		Block, AccountId, Balance, BlockNumber, Hash,
 	>

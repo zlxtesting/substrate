@@ -5025,6 +5025,7 @@ dependencies = [
  "pallet-conviction-voting",
  "pallet-democracy",
  "pallet-election-provider-multi-phase",
+ "pallet-election-provider-multi-phase-rpc-runtime-api",
  "pallet-elections-phragmen",
  "pallet-gilt",
  "pallet-grandpa",
@@ -5877,6 +5878,7 @@ dependencies = [
  "parking_lot 0.12.0",
  "rand 0.7.3",
  "scale-info",
+ "serde",
  "sp-arithmetic",
  "sp-core",
  "sp-io",
@@ -5889,14 +5891,33 @@ dependencies = [
 ]
 
 [[package]]
-name = "pallet-election-provider-multi-phase-runtime-api"
+name = "pallet-election-provider-multi-phase-rpc"
 version = "4.0.0-dev"
 dependencies = [
- "frame-system",
+ "jsonrpc-core",
+ "jsonrpc-core-client",
+ "jsonrpc-derive",
+ "pallet-election-provider-multi-phase-rpc-runtime-api",
+ "parity-scale-codec",
+ "serde",
+ "serde_json",
+ "sp-api",
+ "sp-blockchain",
+ "sp-core",
+ "sp-rpc",
+ "sp-runtime",
+]
+
+[[package]]
+name = "pallet-election-provider-multi-phase-rpc-runtime-api"
+version = "4.0.0-dev"
+dependencies = [
  "pallet-election-provider-multi-phase",
  "parity-scale-codec",
+ "scale-info",
  "sp-api",
  "sp-runtime",
+ "sp-std",
 ]
 
 [[package]]

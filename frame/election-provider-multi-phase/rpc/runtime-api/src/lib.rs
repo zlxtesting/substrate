@@ -15,23 +15,30 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-//! Runtime API definition for election provider multi phase.
+//! Runtime API definition for EPM RPC extensions.
 
 #![cfg_attr(not(feature = "std"), no_std)]
 
 use codec::Codec;
-use pallet_election_provider_multi_phase::RawSolution;
+use sp_runtime::{generic::UncheckedExtrinsic, traits::SignedExtension};
+
+pub use pallet_election_provider_multi_phase::RawSolution;
 
 sp_api::decl_runtime_apis! {
-	pub trait Api<AccountId, Solution>
+	pub trait EpmRuntimeApi<AccountId, Address, Call, Extra, Solution, Signature>
 	where
 		AccountId: Codec,
+		Address: Codec,
+		Call: Codec,
+		Extra: SignedExtension + Codec,
 		Solution: Codec,
+		Signature: Codec,
+
 	{
 
 		/// Submit a solution to the election
 		///
 		/// See [`pallet_election_provider_multi_phase::Pallet::submit`].
-		fn submit(origin: AccountId, raw_solution: Box<RawSolution<Solution>>) -> Block::Extrinsic;
+		fn submit(origin: AccountId, raw_solution: sp_std::boxed::Box<RawSolution<Solution>>) -> UncheckedExtrinsic<Address, Call, Signature, Extra>;
 	}
 }
