@@ -5889,6 +5889,17 @@ dependencies = [
 ]
 
 [[package]]
+name = "pallet-election-provider-multi-phase-runtime-api"
+version = "4.0.0-dev"
+dependencies = [
+ "frame-system",
+ "pallet-election-provider-multi-phase",
+ "parity-scale-codec",
+ "sp-api",
+ "sp-runtime",
+]
+
+[[package]]
 name = "pallet-elections-phragmen"
 version = "5.0.0-dev"
 dependencies = [
