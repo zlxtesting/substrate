@@ -1705,10 +1705,12 @@ impl_runtime_apis! {
 
 	impl pallet_election_provider_multi_phase_rpc_runtime_api::EpmRuntimeApi<Block, AccountId, Address, Call, SignedExtra, NposSolution16, Signature> for Runtime {
 		fn submit(
-			origin: AccountId,
+			account: AccountId,
 			raw_solution: sp_std::boxed::Box<pallet_election_provider_multi_phase_rpc_runtime_api::RawSolution<NposSolution16>>
 		) -> UncheckedExtrinsic {
-			ElectionProviderMultiPhase::submit(origin, raw_solution).expect("todo error handling")
+			// This returns `DispatchResult`..
+			let res: Result<(), _> = ElectionProviderMultiPhase::submit(Origin::signed(account), raw_solution);
+			todo!("How to get an `UncheckedExtrinsic here?");
 		}
 	}
 
