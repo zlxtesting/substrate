@@ -1708,9 +1708,30 @@ impl_runtime_apis! {
 			account: AccountId,
 			raw_solution: sp_std::boxed::Box<pallet_election_provider_multi_phase_rpc_runtime_api::RawSolution<NposSolution16>>
 		) -> UncheckedExtrinsic {
-			// This returns `DispatchResult`..
-			let res: Result<(), _> = ElectionProviderMultiPhase::submit(Origin::signed(account), raw_solution);
-			todo!("How to get an `UncheckedExtrinsic here?");
+			use frame_system::offchain::CreateSignedTransaction;
+			use frame_system::offchain::SigningTypes;
+			use sp_core::crypto::UncheckedFrom;
+			use sp_runtime::MultiSigner;
+
+			type Public = <Runtime as SigningTypes>::Public;
+
+			let bytes: [u8; 32] = account.clone().into();
+			let public = Public::unchecked_from(bytes);
+			let call = Call::ElectionProviderMultiPhase(pallet_election_provider_multi_phase::Call::submit { raw_solution });
+			let nonce = System::account_nonce(account.clone());
+
+			struct AppCrypto;
+
+			impl frame_system::offchain::AppCrypto<Public, Signature> for AppCrypto {
+				type RuntimeAppPublic = ();
+				type GenericSignature = sp_application_crypto::sr25519::Signature;
+				type GenericPublic = sp_application_crypto::sr25519::Public;
+			}
+
+			let (_call, xt) = <Runtime as CreateSignedTransaction<Call>>::create_transaction::<AppCrypto>(call, public, account, nonce).unwrap();
+
+			todo!();
+
 		}
 	}
 
