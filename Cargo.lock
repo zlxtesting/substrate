@@ -3076,7 +3076,8 @@ dependencies = [
 [[package]]
 name = "jsonrpsee"
 version = "0.10.1"
-source = "git+https://github.com/paritytech/jsonrpsee#5c8f1f77052151caff0b47ee3e1d4e0577d326c0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "91dc760c341fa81173f9a434931aaf32baad5552b0230cc6c93e8fb7eaad4c19"
 dependencies = [
  "jsonrpsee-core",
  "jsonrpsee-http-server",
@@ -3089,7 +3090,8 @@ dependencies = [
 [[package]]
 name = "jsonrpsee-client-transport"
 version = "0.10.1"
-source = "git+https://github.com/paritytech/jsonrpsee#5c8f1f77052151caff0b47ee3e1d4e0577d326c0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "765f7a36d5087f74e3b3b47805c2188fef8eb54afcb587b078d9f8ebfe9c7220"
 dependencies = [
  "futures",
  "http",
@@ -3109,7 +3111,8 @@ dependencies = [
 [[package]]
 name = "jsonrpsee-core"
 version = "0.10.1"
-source = "git+https://github.com/paritytech/jsonrpsee#5c8f1f77052151caff0b47ee3e1d4e0577d326c0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "82ef77ecd20c2254d54f5da8c0738eacca61e6b6511268a8f2753e3148c6c706"
 dependencies = [
  "anyhow",
  "arrayvec 0.7.1",
@@ -3133,7 +3136,8 @@ dependencies = [
 [[package]]
 name = "jsonrpsee-http-server"
 version = "0.10.1"
-source = "git+https://github.com/paritytech/jsonrpsee#5c8f1f77052151caff0b47ee3e1d4e0577d326c0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "d35477aab03691360d21a77dd475f384474bc138c2051aafa766fe4aed50ac50"
 dependencies = [
  "futures-channel",
  "futures-util",
@@ -3151,7 +3155,8 @@ dependencies = [
 [[package]]
 name = "jsonrpsee-proc-macros"
 version = "0.10.1"
-source = "git+https://github.com/paritytech/jsonrpsee#5c8f1f77052151caff0b47ee3e1d4e0577d326c0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "b7291c72805bc7d413b457e50d8ef3e87aa554da65ecbbc278abb7dfc283e7f0"
 dependencies = [
  "proc-macro-crate",
  "proc-macro2",
@@ -3181,7 +3186,8 @@ dependencies = [
 [[package]]
 name = "jsonrpsee-types"
 version = "0.10.1"
-source = "git+https://github.com/paritytech/jsonrpsee#5c8f1f77052151caff0b47ee3e1d4e0577d326c0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "38b6aa52f322cbf20c762407629b8300f39bcc0cf0619840d9252a2f65fd2dd9"
 dependencies = [
  "anyhow",
  "beef",
@@ -3218,7 +3224,8 @@ dependencies = [
 [[package]]
 name = "jsonrpsee-ws-client"
 version = "0.10.1"
-source = "git+https://github.com/paritytech/jsonrpsee#5c8f1f77052151caff0b47ee3e1d4e0577d326c0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "dd66d18bab78d956df24dd0d2e41e4c00afbb818fda94a98264bdd12ce8506ac"
 dependencies = [
  "jsonrpsee-client-transport",
  "jsonrpsee-core",
@@ -3228,7 +3235,8 @@ dependencies = [
 [[package]]
 name = "jsonrpsee-ws-server"
 version = "0.10.1"
-source = "git+https://github.com/paritytech/jsonrpsee#5c8f1f77052151caff0b47ee3e1d4e0577d326c0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "a382e22db11cd9a1f04f5a4cc5446f155a3cd20cd1778fc65f30a76aff524120"
 dependencies = [
  "futures-channel",
  "futures-util",
