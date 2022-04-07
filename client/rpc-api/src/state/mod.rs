@@ -118,6 +118,7 @@ pub trait StateApi<Hash> {
 	/// New runtime version subscription
 	#[subscription(
 		name = "state_subscribeRuntimeVersion" => "state_runtimeVersion",
+		unsubscribe = "state_unsubscribeRuntimeVersion",
 		aliases = ["chain_subscribeRuntimeVersion"],
 		unsubscribe_aliases = ["chain_unsubscribeRuntimeVersion"],
         item = RuntimeVersion,
@@ -127,6 +128,7 @@ pub trait StateApi<Hash> {
 	/// New storage subscription
 	#[subscription(
         name = "state_subscribeStorage" => "state_storage",
+		unsubscribe = "state_unsubscribeStorage",
         item = StorageChangeSet<Hash>,
     )]
 	fn subscribe_storage(&self, keys: Option<Vec<StorageKey>>) -> RpcResult<()>;
