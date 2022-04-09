@@ -29,7 +29,7 @@ use crate::SubscriptionTaskExecutor;
 
 use jsonrpsee::{
 	core::{async_trait, RpcResult},
-	SubscriptionSink,
+	PendingSubscription,
 };
 use sc_client_api::BlockchainEvents;
 use sp_rpc::{list::ListOrValue, number::NumberOrHex};
@@ -99,13 +99,13 @@ where
 	}
 
 	/// All new head subscription
-	fn subscribe_all_heads(&self, sink: SubscriptionSink) -> Result<(), Error>;
+	fn subscribe_all_heads(&self, sink: PendingSubscription) -> Result<(), Error>;
 
 	/// New best head subscription
-	fn subscribe_new_heads(&self, sink: SubscriptionSink) -> Result<(), Error>;
+	fn subscribe_new_heads(&self, sink: PendingSubscription) -> Result<(), Error>;
 
 	/// Finalized head subscription
-	fn subscribe_finalized_heads(&self, sink: SubscriptionSink) -> Result<(), Error>;
+	fn subscribe_finalized_heads(&self, sink: PendingSubscription) -> Result<(), Error>;
 }
 
 /// Create new state API that works on full node.
@@ -165,15 +165,15 @@ where
 		self.backend.finalized_head().map_err(Into::into)
 	}
 
-	fn subscribe_all_heads(&self, sink: SubscriptionSink) -> RpcResult<()> {
+	fn subscribe_all_heads(&self, sink: PendingSubscription) -> RpcResult<()> {
 		self.backend.subscribe_all_heads(sink).map_err(Into::into)
 	}
 
-	fn subscribe_new_heads(&self, sink: SubscriptionSink) -> RpcResult<()> {
+	fn subscribe_new_heads(&self, sink: PendingSubscription) -> RpcResult<()> {
 		self.backend.subscribe_new_heads(sink).map_err(Into::into)
 	}
 
-	fn subscribe_finalized_heads(&self, sink: SubscriptionSink) -> RpcResult<()> {
+	fn subscribe_finalized_heads(&self, sink: PendingSubscription) -> RpcResult<()> {
 		self.backend.subscribe_finalized_heads(sink).map_err(Into::into)
 	}
 }

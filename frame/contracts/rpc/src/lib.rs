@@ -24,9 +24,9 @@ use std::{marker::PhantomData, sync::Arc};
 use anyhow::anyhow;
 use codec::Codec;
 use jsonrpsee::{
-	core::{async_trait, to_json_raw_value, Error as JsonRpseeError, RpcResult},
+	core::{async_trait, Error as JsonRpseeError, RpcResult},
 	proc_macros::rpc,
-	types::error::CallError,
+	types::error::{CallError, ErrorObjectOwned},
 };
 use pallet_contracts_primitives::{
 	Code, CodeUploadResult, ContractExecResult, ContractInstantiateResult,
@@ -69,11 +69,10 @@ impl From<ContractAccessError> for JsonRpseeError {
 	fn from(e: ContractAccessError) -> Self {
 		use pallet_contracts_primitives::ContractAccessError::*;
 		match e.0 {
-			DoesntExist => CallError::Custom {
-				code: CONTRACT_DOESNT_EXIST,
-				message: "The specified contract doesn't exist.".into(),
-				data: None,
-			}
+			DoesntExist => CallError::Custom(ErrorObjectOwned::code_and_message(
+				CONTRACT_DOESNT_EXIST,
+				"The specified contract doesn't exist.",
+			))
 			.into(),
 		}
 	}
@@ -310,12 +309,8 @@ where
 
 /// Converts a runtime trap into an RPC error.
 fn runtime_error_into_rpc_err(err: impl std::fmt::Debug) -> JsonRpseeError {
-	CallError::Custom {
-		code: RUNTIME_ERROR,
-		message: "Runtime error".into(),
-		data: to_json_raw_value(&format!("{:?}", err)).ok(),
-	}
-	.into()
+	CallError::Custom(ErrorObjectOwned::new(RUNTIME_ERROR, "Runtime error", format!("{:?}", err)))
+		.into()
 }
 
 fn decode_hex<H: std::fmt::Debug + Copy, T: TryFrom<H>>(

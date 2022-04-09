@@ -23,7 +23,7 @@ use codec::{self, Codec, Decode, Encode};
 use jsonrpsee::{
 	core::{async_trait, Error as JsonRpseeError, RpcResult},
 	proc_macros::rpc,
-	types::error::CallError,
+	types::error::{CallError, ErrorObjectOwned},
 };
 
 use sc_rpc_api::DenyUnsafe;
@@ -116,16 +116,19 @@ where
 		let api = self.client.runtime_api();
 		let at = BlockId::<Block>::hash(at.unwrap_or_else(|| self.client.info().best_hash));
 		let uxt: <Block as traits::Block>::Extrinsic =
-			Decode::decode(&mut &*extrinsic).map_err(|e| CallError::Custom {
-				code: Error::DecodeError.into(),
-				message: "Unable to dry run extrinsic.".into(),
-				data: serde_json::value::to_raw_value(&e.to_string()).ok(),
+			Decode::decode(&mut &*extrinsic).map_err(|e| {
+				CallError::Custom(ErrorObjectOwned::new(
+					Error::DecodeError.into(),
+					"Unable to dry run extrinsic",
+					e.to_string(),
+				))
 			})?;
-		let result = api.apply_extrinsic(&at, uxt).map_err(|e| CallError::Custom {
-			code: Error::RuntimeError.into(),
-			message: "Unable to dry run extrinsic".into(),
-			data: serde_json::value::to_raw_value(&e.to_string()).ok(),
-		})?;
+		let result = api.apply_extrinsic(&at, uxt).map_err(|e|
+			CallError::Custom(ErrorObjectOwned::new(
+				Error::RuntimeError.into(),
+				"Unable to dry run extrinsic",
+				&e.to_string()
+			)))?;
 		Ok(Encode::encode(&result).into())
 	}
 }

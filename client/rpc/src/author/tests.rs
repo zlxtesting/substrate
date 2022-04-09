@@ -22,10 +22,7 @@ use crate::testing::timeout_secs;
 use assert_matches::assert_matches;
 use codec::Encode;
 use jsonrpsee::{
-	core::{
-		error::{SubscriptionClosed, SubscriptionClosedReason},
-		Error as RpcError,
-	},
+	core::{error::SubscriptionClosed, Error as RpcError},
 	types::{error::CallError, EmptyParams},
 	RpcModule,
 };
@@ -166,7 +163,7 @@ async fn author_should_return_watch_validation_error() {
 		.unwrap()
 		.unwrap()
 		.unwrap();
-	assert_matches!(pool_error.close_reason(), SubscriptionClosedReason::Server(reason) => {
+	assert_matches!(pool_error, SubscriptionClosed::Server(reason) => {
 		assert_eq!(reason, "Transaction pool error")
 	});
 }

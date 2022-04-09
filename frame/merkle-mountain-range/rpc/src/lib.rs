@@ -23,10 +23,13 @@
 use std::{marker::PhantomData, sync::Arc};
 
 use codec::{Codec, Encode};
-use jsonrpsee::{core::async_trait, proc_macros::rpc, types::error::CallError};
+use jsonrpsee::{
+	core::async_trait,
+	proc_macros::rpc,
+	types::error::{CallError, ErrorObjectOwned},
+};
 use pallet_mmr_primitives::{Error as MmrError, Proof};
 use serde::{Deserialize, Serialize};
-use serde_json::value::to_raw_value;
 
 use sp_api::ProvideRuntimeApi;
 use sp_blockchain::HeaderBackend;
@@ -129,29 +132,25 @@ where
 
 /// Converts a mmr-specific error into a [`CallError`].
 fn mmr_error_into_rpc_error(err: MmrError) -> CallError {
-	let data = to_raw_value(&format!("{:?}", err)).ok();
+	let data = format!("{:?}", err);
 	match err {
-		MmrError::LeafNotFound => CallError::Custom {
-			code: LEAF_NOT_FOUND_ERROR,
-			message: "Leaf was not found".into(),
+		MmrError::LeafNotFound => CallError::Custom(ErrorObjectOwned::new(
+			LEAF_NOT_FOUND_ERROR,
+			"Leaf was not found",
 			data,
-		},
-		MmrError::GenerateProof => CallError::Custom {
-			code: GENERATE_PROOF_ERROR,
-			message: "Error while generating the proof".into(),
+		)),
+		MmrError::GenerateProof => CallError::Custom(ErrorObjectOwned::new(
+			GENERATE_PROOF_ERROR,
+			"Error while generating the proof",
 			data,
-		},
-		_ => CallError::Custom { code: MMR_ERROR, message: "Unexpected MMR error".into(), data },
+		)),
+		_ => CallError::Custom(ErrorObjectOwned::new(MMR_ERROR, "Unexpected MMR error", data)),
 	}
 }
 
 /// Converts a runtime trap into a [`CallError`].
 fn runtime_error_into_rpc_error(err: impl std::fmt::Debug) -> CallError {
-	CallError::Custom {
-		code: RUNTIME_ERROR,
-		message: "Runtime trapped".into(),
-		data: to_raw_value(&format!("{:?}", err)).ok(),
-	}
+	CallError::Custom(ErrorObjectOwned::new(RUNTIME_ERROR, "Runtime trapped", format!("{:?}", err)))
 }
 
 #[cfg(test)]

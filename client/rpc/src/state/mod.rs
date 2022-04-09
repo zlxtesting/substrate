@@ -29,7 +29,7 @@ use crate::SubscriptionTaskExecutor;
 
 use jsonrpsee::{
 	core::{async_trait, Error as JsonRpseeError, RpcResult},
-	ws_server::SubscriptionSink,
+	ws_server::PendingSubscription,
 };
 
 use sc_rpc_api::{state::ReadProof, DenyUnsafe};
@@ -156,12 +156,12 @@ where
 	) -> Result<sp_rpc::tracing::TraceBlockResponse, Error>;
 
 	/// New runtime version subscription
-	fn subscribe_runtime_version(&self, sink: SubscriptionSink) -> Result<(), Error>;
+	fn subscribe_runtime_version(&self, sink: PendingSubscription) -> Result<(), Error>;
 
 	/// New storage subscription
 	fn subscribe_storage(
 		&self,
-		sink: SubscriptionSink,
+		sink: PendingSubscription,
 		keys: Option<Vec<StorageKey>>,
 	) -> Result<(), Error>;
 }
@@ -259,7 +259,7 @@ where
 			return Err(JsonRpseeError::to_call_error(Error::InvalidCount {
 				value: count,
 				max: STORAGE_KEYS_PAGED_MAX_COUNT,
-			}))
+			}));
 		}
 		self.backend
 			.storage_keys_paged(block, prefix, count, start_key)
@@ -365,7 +365,7 @@ where
 			.map_err(|e| JsonRpseeError::to_call_error(e))
 	}
 
-	fn subscribe_runtime_version(&self, sink: SubscriptionSink) -> RpcResult<()> {
+	fn subscribe_runtime_version(&self, sink: PendingSubscription) -> RpcResult<()> {
 		self.backend
 			.subscribe_runtime_version(sink)
 			.map_err(|e| JsonRpseeError::to_call_error(e))
@@ -373,7 +373,7 @@ where
 
 	fn subscribe_storage(
 		&self,
-		sink: SubscriptionSink,
+		sink: PendingSubscription,
 		keys: Option<Vec<StorageKey>>,
 	) -> RpcResult<()> {
 		self.backend
