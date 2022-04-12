@@ -179,14 +179,12 @@ impl From<Error> for JsonRpseeError {
 					"The pool is not accepting future transactions",
 				))
 			},
-			Error::UnsupportedKeyType => CallError::Custom {
-				code: UNSUPPORTED_KEY_TYPE,
-				message: "Unknown key type crypto".into(),
-				data: to_json_raw_value(
-					&"The crypto for the given key type is unknown, please add the public key to the \
+			Error::UnsupportedKeyType => CallError::Custom(ErrorObjectOwned::new(
+				UNSUPPORTED_KEY_TYPE,
+				"Unknown key type crypto",
+				"The crypto for the given key type is unknown, please add the public key to the \
 					request to insert the key successfully."
-				).ok(),
-			},
+			)),
 			Error::UnsafeRpcCalled(e) => e.into(),
 			Error::Client(e) => CallError::Failed(anyhow::anyhow!(e)),
 			Error::BadSeedPhrase | Error::BadKeyType => CallError::InvalidParams(e.into()),
