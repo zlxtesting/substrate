@@ -23,7 +23,10 @@ use assert_matches::assert_matches;
 use codec::Encode;
 use jsonrpsee::{
 	core::{error::SubscriptionClosed, Error as RpcError},
-	types::{error::CallError, EmptyParams},
+	types::{
+		error::{CallError, ErrorObjectOwned},
+		EmptyParams,
+	},
 	RpcModule,
 };
 use sc_transaction_pool::{BasicPool, FullChainApi};
@@ -104,7 +107,7 @@ async fn author_submit_transaction_should_not_cause_error() {
 
 	assert_matches!(
 		api.call::<_, H256>("author_submitExtrinsic", [xt]).await,
-		Err(RpcError::Call(CallError::Custom { message, ..})) if message.contains("Already imported")
+		Err(RpcError::Call(CallError::Custom(ErrorObjectOwned { message, ..}))) if message.contains("Already imported")
 	);
 }
 
@@ -153,19 +156,18 @@ async fn author_should_return_watch_validation_error() {
 	const METHOD: &'static str = "author_submitAndWatchExtrinsic";
 
 	let api = TestSetup::into_rpc();
-	let mut sub = api
-		.subscribe(METHOD, [to_hex(&uxt(AccountKeyring::Alice, 179).encode(), true)])
-		.await
-		.unwrap();
+	let xt = to_hex(&uxt(AccountKeyring::Alice, 179).encode(), true);
+	let sub = api.subscribe(METHOD, [xt]).await;
 
-	let (pool_error, _) = timeout_secs(10, sub.next::<SubscriptionClosed>())
+	assert!(sub.is_err());
+	/*let (pool_error, _) = timeout_secs(10, sub.next::<SubscriptionClosed>())
 		.await
 		.unwrap()
 		.unwrap()
 		.unwrap();
 	assert_matches!(pool_error, SubscriptionClosed::Server(reason) => {
 		assert_eq!(reason, "Transaction pool error")
-	});
+	});*/
 }
 
 #[tokio::test]
@@ -284,7 +286,7 @@ async fn author_has_session_keys() {
 
 	assert_matches!(
 		api.call::<_, bool>("author_hasSessionKeys", vec![Bytes::from(vec![1, 2, 3])]).await,
-		Err(RpcError::Call(CallError::Custom { message, ..})) if message.as_str() == "Session keys are not encoded correctly"
+		Err(RpcError::Call(CallError::Custom(ErrorObjectOwned{ message, ..}))) if message.as_str() == "Session keys are not encoded correctly"
 	);
 }
 

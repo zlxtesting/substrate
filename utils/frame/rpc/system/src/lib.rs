@@ -123,12 +123,13 @@ where
 					e.to_string(),
 				))
 			})?;
-		let result = api.apply_extrinsic(&at, uxt).map_err(|e|
+		let result = api.apply_extrinsic(&at, uxt).map_err(|e| {
 			CallError::Custom(ErrorObjectOwned::new(
 				Error::RuntimeError.into(),
 				"Unable to dry run extrinsic",
-				&e.to_string()
-			)))?;
+				&e.to_string(),
+			))
+		})?;
 		Ok(Encode::encode(&result).into())
 	}
 }

@@ -211,7 +211,7 @@ mod tests {
 			if response != not_ready {
 				assert_eq!(response, expected);
 				// Success
-				return;
+				return
 			}
 			std::thread::sleep(std::time::Duration::from_millis(50))
 		}
@@ -240,14 +240,11 @@ mod tests {
 		);
 		let (response, _) = rpc.raw_json_request(&unsub_req).await.unwrap();
 
-		assert_eq!(response, r#"{"jsonrpc":"2.0","result":"Unsubscribed","id":1}"#);
+		assert_eq!(response, r#"{"jsonrpc":"2.0","result":true,"id":1}"#);
 
 		// Unsubscribe again and fail
 		let (response, _) = rpc.raw_json_request(&unsub_req).await.unwrap();
-		let expected = format!(
-			r#"{{"jsonrpc":"2.0","error":{{"code":-32002,"message":"Server error","data":"Invalid subscription ID={}"}},"id":1}}"#,
-			ser_id
-		);
+		let expected = r#"{"jsonrpc":"2.0","result":false,"id":1}"#;
 
 		assert_eq!(response, expected);
 	}
@@ -268,7 +265,7 @@ mod tests {
 			)
 			.await
 			.unwrap();
-		let expected = r#"{"jsonrpc":"2.0","error":{"code":-32002,"message":"Server error","data":"Invalid subscription ID=\"FOO\""},"id":1}"#;
+		let expected = r#"{"jsonrpc":"2.0","result":false,"id":1}"#;
 
 		assert_eq!(response, expected);
 	}

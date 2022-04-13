@@ -183,7 +183,7 @@ where
 				log::debug!("[author_watchExtrinsic] failed to decode extrinsic: {:?}", e);
 				let err = JsonRpseeError::to_call_error(e);
 				let _ = pending.reject_from_error_object(err.to_error_object());
-				return Err(err);
+				return Err(err)
 			},
 		};
 
@@ -196,14 +196,14 @@ where
 				Ok(stream) => stream,
 				Err(err) => {
 					let _ = pending.reject(JsonRpseeError::to_call_error(err));
-					return;
+					return
 				},
 			};
 
 			let mut sink = match pending.accept() {
 				Ok(sink) => sink,
 				_ => {
-					return;
+					return
 				},
 			};
 

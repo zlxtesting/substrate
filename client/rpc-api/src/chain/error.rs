@@ -42,10 +42,9 @@ const BASE_ERROR: i32 = 3000;
 impl From<Error> for JsonRpseeError {
 	fn from(e: Error) -> Self {
 		match e {
-			Error::Other(message) => {
+			Error::Other(message) =>
 				CallError::Custom(ErrorObjectOwned::code_and_message(BASE_ERROR + 1, message))
-					.into()
-			},
+					.into(),
 			e => e.into(),
 		}
 	}

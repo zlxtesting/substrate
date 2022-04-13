@@ -237,9 +237,9 @@ async fn test_head_subscription(method: &str) {
 		sub
 	};
 
-	assert_matches!(timeout_secs(10, sub.next::<Header>()).await, Ok(Some(_)));
-	assert_matches!(timeout_secs(10, sub.next::<Header>()).await, Ok(Some(_)));
+	assert_matches!(timeout_secs(10, sub.next::<Header>()).await, Ok(Ok(Some(_))));
+	assert_matches!(timeout_secs(10, sub.next::<Header>()).await, Ok(Ok(Some(_))));
 
 	sub.close();
-	assert_matches!(timeout_secs(10, sub.next::<SubscriptionClosed>()).await, Ok(Some(_)))
+	assert_matches!(timeout_secs(10, sub.next::<Header>()).await, Ok(Ok(None)));
 }

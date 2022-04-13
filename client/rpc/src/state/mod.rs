@@ -259,7 +259,7 @@ where
 			return Err(JsonRpseeError::to_call_error(Error::InvalidCount {
 				value: count,
 				max: STORAGE_KEYS_PAGED_MAX_COUNT,
-			}));
+			}))
 		}
 		self.backend
 			.storage_keys_paged(block, prefix, count, start_key)

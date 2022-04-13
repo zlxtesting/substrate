@@ -60,14 +60,12 @@ const BASE_ERROR: i32 = 4000;
 impl From<Error> for JsonRpseeError {
 	fn from(e: Error) -> Self {
 		match e {
-			Error::InvalidBlockRange { .. } => {
+			Error::InvalidBlockRange { .. } =>
 				CallError::Custom(ErrorObjectOwned::code_and_message(BASE_ERROR + 1, e.to_string()))
-					.into()
-			},
-			Error::InvalidCount { .. } => {
+					.into(),
+			Error::InvalidCount { .. } =>
 				CallError::Custom(ErrorObjectOwned::code_and_message(BASE_ERROR + 2, e.to_string()))
-					.into()
-			},
+					.into(),
 			e => e.into(),
 		}
 	}

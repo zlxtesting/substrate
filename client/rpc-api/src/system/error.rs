@@ -45,12 +45,10 @@ const MALFORMATTED_PEER_ARG_ERROR: i32 = BASE_ERROR + 2;
 impl From<Error> for CallError {
 	fn from(e: Error) -> Self {
 		match e {
-			Error::NotHealthy(ref h) => {
-				Self::Custom(ErrorObjectOwned::new(NOT_HEALTHY_ERROR, e.to_string(), h))
-			},
-			Error::MalformattedPeerArg(e) => {
-				Self::Custom(ErrorObjectOwned::code_and_message(MALFORMATTED_PEER_ARG_ERROR + 2, e))
-			},
+			Error::NotHealthy(ref h) =>
+				Self::Custom(ErrorObjectOwned::new(NOT_HEALTHY_ERROR, e.to_string(), h)),
+			Error::MalformattedPeerArg(e) =>
+				Self::Custom(ErrorObjectOwned::code_and_message(MALFORMATTED_PEER_ARG_ERROR + 2, e)),
 		}
 	}
 }
