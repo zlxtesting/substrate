@@ -175,15 +175,15 @@ where
 			.collect())
 	}
 
-	fn watch_extrinsic(&self, pending: PendingSubscription, xt: Bytes) -> RpcResult<()> {
+	fn watch_extrinsic(&self, pending: PendingSubscription, xt: Bytes) {
 		let best_block_hash = self.client.info().best_hash;
 		let dxt = match TransactionFor::<P>::decode(&mut &xt[..]) {
 			Ok(dxt) => dxt,
 			Err(e) => {
 				log::debug!("[author_watchExtrinsic] failed to decode extrinsic: {:?}", e);
 				let err = JsonRpseeError::to_call_error(e);
-				let _ = pending.reject_from_error_object(err.to_error_object());
-				return Err(err)
+				let _ = pending.reject(err);
+				return;
 			},
 		};
 
@@ -201,7 +201,7 @@ where
 			};
 
 			let mut sink = match pending.accept() {
-				Ok(sink) => sink,
+				Some(sink) => sink,
 				_ => {
 					return
 				},
@@ -211,8 +211,6 @@ where
 		}
 		.boxed();
 
-		self.executor
-			.spawn_obj(fut.into())
-			.map_err(|e| JsonRpseeError::to_call_error(e))
+		let _ = self.executor.spawn_obj(fut.into());
 	}
 }

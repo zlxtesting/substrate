@@ -123,15 +123,15 @@ pub trait StateApi<Hash> {
 		unsubscribe_aliases = ["chain_unsubscribeRuntimeVersion"],
         item = RuntimeVersion,
 	)]
-	fn subscribe_runtime_version(&self) -> RpcResult<()>;
+	fn subscribe_runtime_version(&self);
 
 	/// New storage subscription
 	#[subscription(
         name = "state_subscribeStorage" => "state_storage",
 		unsubscribe = "state_unsubscribeStorage",
-        item = StorageChangeSet<Hash>,
-    )]
-	fn subscribe_storage(&self, keys: Option<Vec<StorageKey>>) -> RpcResult<()>;
+		item = StorageChangeSet<Hash>,
+	)]
+	fn subscribe_storage(&self, keys: Option<Vec<StorageKey>>);
 
 	/// The `traceBlock` RPC provides a way to trace the re-execution of a single
 	/// block, collecting Spans and Events from both the client and the relevant WASM runtime.

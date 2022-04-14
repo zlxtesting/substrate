@@ -156,14 +156,10 @@ where
 	) -> Result<sp_rpc::tracing::TraceBlockResponse, Error>;
 
 	/// New runtime version subscription
-	fn subscribe_runtime_version(&self, sink: PendingSubscription) -> Result<(), Error>;
+	fn subscribe_runtime_version(&self, sink: PendingSubscription);
 
 	/// New storage subscription
-	fn subscribe_storage(
-		&self,
-		sink: PendingSubscription,
-		keys: Option<Vec<StorageKey>>,
-	) -> Result<(), Error>;
+	fn subscribe_storage(&self, sink: PendingSubscription, keys: Option<Vec<StorageKey>>);
 }
 
 /// Create new state API that works on full node.
@@ -365,20 +361,12 @@ where
 			.map_err(|e| JsonRpseeError::to_call_error(e))
 	}
 
-	fn subscribe_runtime_version(&self, sink: PendingSubscription) -> RpcResult<()> {
-		self.backend
-			.subscribe_runtime_version(sink)
-			.map_err(|e| JsonRpseeError::to_call_error(e))
+	fn subscribe_runtime_version(&self, sink: PendingSubscription) {
+		self.backend.subscribe_runtime_version(sink)
 	}
 
-	fn subscribe_storage(
-		&self,
-		sink: PendingSubscription,
-		keys: Option<Vec<StorageKey>>,
-	) -> RpcResult<()> {
-		self.backend
-			.subscribe_storage(sink, keys)
-			.map_err(|e| JsonRpseeError::to_call_error(e))
+	fn subscribe_storage(&self, sink: PendingSubscription, keys: Option<Vec<StorageKey>>) {
+		self.backend.subscribe_storage(sink, keys)
 	}
 }
 

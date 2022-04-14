@@ -57,7 +57,7 @@ pub trait GrandpaApi<Notification, Hash, Number> {
 		unsubscribe = "grandpa_unsubscribeJustifications",
 		item = Notification
 	)]
-	fn subscribe_justifications(&self) -> RpcResult<()>;
+	fn subscribe_justifications(&self);
 
 	/// Prove finality for the given block number by returning the Justification for the last block
 	/// in the set and all the intermediary headers to link them together.
@@ -103,21 +103,21 @@ where
 			.map_err(|e| JsonRpseeError::to_call_error(e))
 	}
 
-	fn subscribe_justifications(&self, pending: PendingSubscription) -> RpcResult<()> {
+	fn subscribe_justifications(&self, pending: PendingSubscription) {
 		let stream = self.justification_stream.subscribe().map(
 			|x: sc_finality_grandpa::GrandpaJustification<Block>| {
 				JustificationNotification::from(x)
 			},
 		);
 
-		let mut sink = pending.accept()?;
 		let fut = async move {
-			sink.pipe_from_stream(stream).await;
+			if let Some(mut sink) = pending.accept() {
+				sink.pipe_from_stream(stream).await;
+			}
 		}
 		.boxed();
-		self.executor
-			.spawn_obj(fut.into())
-			.map_err(|e| JsonRpseeError::to_call_error(e))
+
+		let _ = self.executor.spawn_obj(fut.into());
 	}
 
 	async fn prove_finality(
@@ -279,7 +279,7 @@ mod tests {
 	#[tokio::test]
 	async fn uninitialized_rpc_handler() {
 		let (rpc, _) = setup_io_handler(EmptyVoterState);
-		let expected_response = r#"{"jsonrpc":"2.0","error":{"code":-32000,"message":"GRANDPA RPC endpoint not ready"},"id":0}"#.to_string();
+		let expected_response = r#"{"jsonrpc":"2.0","error":{"code":-32000,"message":"RPC call failed: GRANDPA RPC endpoint not ready"},"id":0}"#.to_string();
 		let request = r#"{"jsonrpc":"2.0","method":"grandpa_roundState","params":[],"id":0}"#;
 		let (result, _) = rpc.raw_json_request(&request).await.unwrap();
 
@@ -326,14 +326,11 @@ mod tests {
 		);
 		let (response, _) = rpc.raw_json_request(&unsub_req).await.unwrap();
 
-		assert_eq!(response, r#"{"jsonrpc":"2.0","result":"Unsubscribed","id":1}"#);
+		assert_eq!(response, r#"{"jsonrpc":"2.0","result":true,"id":1}"#);
 
 		// Unsubscribe again and fail
 		let (response, _) = rpc.raw_json_request(&unsub_req).await.unwrap();
-		let expected = format!(
-			r#"{{"jsonrpc":"2.0","error":{{"code":-32002,"message":"Server error","data":"Invalid subscription ID={}"}},"id":1}}"#,
-			ser_id
-		);
+		let expected = r#"{"jsonrpc":"2.0","result":false,"id":1}"#;
 
 		assert_eq!(response, expected);
 	}
@@ -354,7 +351,7 @@ mod tests {
 			)
 			.await
 			.unwrap();
-		let expected = r#"{"jsonrpc":"2.0","error":{"code":-32002,"message":"Server error","data":"Invalid subscription ID=\"FOO\""},"id":1}"#;
+		let expected = r#"{"jsonrpc":"2.0","result":false,"id":1}"#;
 
 		assert_eq!(response, expected);
 	}

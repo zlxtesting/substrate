@@ -23,7 +23,7 @@ use codec::{self, Codec, Decode, Encode};
 use jsonrpsee::{
 	core::{async_trait, Error as JsonRpseeError, RpcResult},
 	proc_macros::rpc,
-	types::error::{CallError, ErrorObjectOwned},
+	types::error::{CallError, ErrorObject},
 };
 
 use sc_rpc_api::DenyUnsafe;
@@ -117,17 +117,17 @@ where
 		let at = BlockId::<Block>::hash(at.unwrap_or_else(|| self.client.info().best_hash));
 		let uxt: <Block as traits::Block>::Extrinsic =
 			Decode::decode(&mut &*extrinsic).map_err(|e| {
-				CallError::Custom(ErrorObjectOwned::new(
+				CallError::Custom(ErrorObject::owned(
 					Error::DecodeError.into(),
 					"Unable to dry run extrinsic",
-					e.to_string(),
+					Some(e.to_string()),
 				))
 			})?;
 		let result = api.apply_extrinsic(&at, uxt).map_err(|e| {
-			CallError::Custom(ErrorObjectOwned::new(
+			CallError::Custom(ErrorObject::owned(
 				Error::RuntimeError.into(),
 				"Unable to dry run extrinsic",
-				&e.to_string(),
+				Some(e.to_string())
 			))
 		})?;
 		Ok(Encode::encode(&result).into())

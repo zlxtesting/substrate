@@ -360,10 +360,7 @@ where
 			.map_err(client_err)
 	}
 
-	fn subscribe_runtime_version(
-		&self,
-		pending: PendingSubscription,
-	) -> std::result::Result<(), Error> {
+	fn subscribe_runtime_version(&self, pending: PendingSubscription) {
 		let client = self.client.clone();
 
 		let res: std::result::Result<RuntimeVersion, sp_blockchain::Error> =
@@ -374,9 +371,8 @@ where
 		let initial = match res {
 			Ok(i) => i,
 			Err(e) => {
-				let err = JsonRpseeError::to_call_error(e);
-				let _ = pending.reject_from_error_object(err.to_error_object());
-				return Err(Error::Client(Box::new(err)))
+				let _ = pending.reject(JsonRpseeError::to_call_error(e));
+				return;
 			},
 		};
 
@@ -401,26 +397,23 @@ where
 			});
 
 		let stream = futures::stream::once(future::ready(initial)).chain(version_stream);
-		let mut sink = pending.accept().map_err(|e| Error::Client(Box::new(e)))?;
+
 		let fut = async move {
-			sink.pipe_from_stream(stream).await;
+			if let Some(mut sink) = pending.accept() {
+				sink.pipe_from_stream(stream).await;
+			}
 		}
 		.boxed();
 
-		self.executor.spawn_obj(fut.into()).map_err(|e| Error::Client(Box::new(e)))
+		let _ = self.executor.spawn_obj(fut.into());
 	}
 
-	fn subscribe_storage(
-		&self,
-		pending: PendingSubscription,
-		keys: Option<Vec<StorageKey>>,
-	) -> std::result::Result<(), Error> {
+	fn subscribe_storage(&self, pending: PendingSubscription, keys: Option<Vec<StorageKey>>) {
 		let stream = match self.client.storage_changes_notification_stream(keys.as_deref(), None) {
 			Ok(stream) => stream,
 			Err(blockchain_err) => {
-				let err = JsonRpseeError::to_call_error(blockchain_err);
-				let _ = pending.reject_from_error_object(err.to_error_object());
-				return Err(Error::Client(Box::new(err)))
+				let _ = pending.reject(JsonRpseeError::to_call_error(blockchain_err));
+				return;
 			},
 		};
 
@@ -450,12 +443,13 @@ where
 			.chain(storage_stream)
 			.filter(|storage| future::ready(!storage.changes.is_empty()));
 
-		let mut sink = pending.accept().map_err(|e| Error::Client(Box::new(e)))?;
 		let fut = async move {
-			sink.pipe_from_stream(stream).await;
+			if let Some(mut sink) = pending.accept() {
+				sink.pipe_from_stream(stream).await;
+			}
 		}
 		.boxed();
-		self.executor.spawn_obj(fut.into()).map_err(|e| Error::Client(Box::new(e)))
+		let _ = self.executor.spawn_obj(fut.into());
 	}
 
 	async fn trace_block(

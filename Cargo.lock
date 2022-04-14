@@ -3076,7 +3076,7 @@ dependencies = [
 [[package]]
 name = "jsonrpsee"
 version = "0.10.1"
-source = "git+https://github.com/paritytech/jsonrpsee?branch=na-jsonrpsee-pubsub-should-not-respond-to-bad-params#bdc9075fb604bf3c79998e2b7d178c209aa9398f"
+source = "git+https://github.com/paritytech/jsonrpsee?branch=na-jsonrpsee-pubsub-should-not-respond-to-bad-params#06951c9acd39abe068b9a7a9f0f6e7223126b863"
 dependencies = [
  "jsonrpsee-core",
  "jsonrpsee-http-server",
@@ -3089,7 +3089,7 @@ dependencies = [
 [[package]]
 name = "jsonrpsee-client-transport"
 version = "0.10.1"
-source = "git+https://github.com/paritytech/jsonrpsee?branch=na-jsonrpsee-pubsub-should-not-respond-to-bad-params#bdc9075fb604bf3c79998e2b7d178c209aa9398f"
+source = "git+https://github.com/paritytech/jsonrpsee?branch=na-jsonrpsee-pubsub-should-not-respond-to-bad-params#06951c9acd39abe068b9a7a9f0f6e7223126b863"
 dependencies = [
  "futures",
  "http",
@@ -3109,7 +3109,7 @@ dependencies = [
 [[package]]
 name = "jsonrpsee-core"
 version = "0.10.1"
-source = "git+https://github.com/paritytech/jsonrpsee?branch=na-jsonrpsee-pubsub-should-not-respond-to-bad-params#bdc9075fb604bf3c79998e2b7d178c209aa9398f"
+source = "git+https://github.com/paritytech/jsonrpsee?branch=na-jsonrpsee-pubsub-should-not-respond-to-bad-params#06951c9acd39abe068b9a7a9f0f6e7223126b863"
 dependencies = [
  "anyhow",
  "arrayvec 0.7.1",
@@ -3133,7 +3133,7 @@ dependencies = [
 [[package]]
 name = "jsonrpsee-http-server"
 version = "0.10.1"
-source = "git+https://github.com/paritytech/jsonrpsee?branch=na-jsonrpsee-pubsub-should-not-respond-to-bad-params#bdc9075fb604bf3c79998e2b7d178c209aa9398f"
+source = "git+https://github.com/paritytech/jsonrpsee?branch=na-jsonrpsee-pubsub-should-not-respond-to-bad-params#06951c9acd39abe068b9a7a9f0f6e7223126b863"
 dependencies = [
  "futures-channel",
  "futures-util",
@@ -3151,7 +3151,7 @@ dependencies = [
 [[package]]
 name = "jsonrpsee-proc-macros"
 version = "0.10.1"
-source = "git+https://github.com/paritytech/jsonrpsee?branch=na-jsonrpsee-pubsub-should-not-respond-to-bad-params#bdc9075fb604bf3c79998e2b7d178c209aa9398f"
+source = "git+https://github.com/paritytech/jsonrpsee?branch=na-jsonrpsee-pubsub-should-not-respond-to-bad-params#06951c9acd39abe068b9a7a9f0f6e7223126b863"
 dependencies = [
  "proc-macro-crate",
  "proc-macro2",
@@ -3181,7 +3181,7 @@ dependencies = [
 [[package]]
 name = "jsonrpsee-types"
 version = "0.10.1"
-source = "git+https://github.com/paritytech/jsonrpsee?branch=na-jsonrpsee-pubsub-should-not-respond-to-bad-params#bdc9075fb604bf3c79998e2b7d178c209aa9398f"
+source = "git+https://github.com/paritytech/jsonrpsee?branch=na-jsonrpsee-pubsub-should-not-respond-to-bad-params#06951c9acd39abe068b9a7a9f0f6e7223126b863"
 dependencies = [
  "anyhow",
  "beef",
@@ -3218,7 +3218,7 @@ dependencies = [
 [[package]]
 name = "jsonrpsee-ws-client"
 version = "0.10.1"
-source = "git+https://github.com/paritytech/jsonrpsee?branch=na-jsonrpsee-pubsub-should-not-respond-to-bad-params#bdc9075fb604bf3c79998e2b7d178c209aa9398f"
+source = "git+https://github.com/paritytech/jsonrpsee?branch=na-jsonrpsee-pubsub-should-not-respond-to-bad-params#06951c9acd39abe068b9a7a9f0f6e7223126b863"
 dependencies = [
  "jsonrpsee-client-transport",
  "jsonrpsee-core",
@@ -3228,7 +3228,7 @@ dependencies = [
 [[package]]
 name = "jsonrpsee-ws-server"
 version = "0.10.1"
-source = "git+https://github.com/paritytech/jsonrpsee?branch=na-jsonrpsee-pubsub-should-not-respond-to-bad-params#bdc9075fb604bf3c79998e2b7d178c209aa9398f"
+source = "git+https://github.com/paritytech/jsonrpsee?branch=na-jsonrpsee-pubsub-should-not-respond-to-bad-params#06951c9acd39abe068b9a7a9f0f6e7223126b863"
 dependencies = [
  "futures-channel",
  "futures-util",
