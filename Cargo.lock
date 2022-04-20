@@ -5424,7 +5424,6 @@ dependencies = [
 name = "pallet-contracts-rpc"
 version = "4.0.0-dev"
 dependencies = [
- "anyhow",
  "jsonrpsee",
  "pallet-contracts-primitives",
  "pallet-contracts-rpc-runtime-api",
@@ -6229,7 +6228,6 @@ dependencies = [
 name = "pallet-transaction-payment-rpc"
 version = "4.0.0-dev"
 dependencies = [
- "anyhow",
  "jsonrpsee",
  "pallet-transaction-payment-rpc-runtime-api",
  "parity-scale-codec",
@@ -8496,7 +8494,6 @@ dependencies = [
 name = "sc-rpc"
 version = "4.0.0-dev"
 dependencies = [
- "anyhow",
  "assert_matches",
  "async-trait",
  "env_logger 0.9.0",
@@ -8536,7 +8533,6 @@ dependencies = [
 name = "sc-rpc-api"
 version = "0.10.0-dev"
 dependencies = [
- "anyhow",
  "futures",
  "jsonrpsee",
  "log",
@@ -8559,7 +8555,6 @@ dependencies = [
 name = "sc-rpc-server"
 version = "4.0.0-dev"
 dependencies = [
- "anyhow",
  "jsonrpsee",
  "log",
  "serde_json",
@@ -10319,7 +10314,6 @@ dependencies = [
 name = "substrate-state-trie-migration-rpc"
 version = "4.0.0-dev"
 dependencies = [
- "anyhow",
  "jsonrpsee",
  "log",
  "parity-scale-codec",
