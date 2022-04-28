@@ -148,8 +148,8 @@ fn subscribe_headers<Block, Client, F, G, S>(
 	let stream = stream::iter(maybe_header).chain(stream());
 
 	let fut = async move {
-		if let Some(mut sink) = pending.accept() {
-			sink.pipe_from_stream(stream).await;
+		if let Some(sink) = pending.accept() {
+			sink.pipe_from_stream(stream, |_, _| {}).await;
 		}
 	}
 	.boxed();

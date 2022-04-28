@@ -116,8 +116,8 @@ where
 			.map(|sc| notification::EncodedSignedCommitment::new::<Block>(sc));
 
 		let fut = async move {
-			if let Some(mut sink) = pending.accept() {
-				sink.pipe_from_stream(stream).await;
+			if let Some(sink) = pending.accept() {
+				sink.pipe_from_stream(stream, |_, _| {}).await;
 			}
 		}
 		.boxed();

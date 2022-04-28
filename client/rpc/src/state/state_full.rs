@@ -399,8 +399,8 @@ where
 		let stream = futures::stream::once(future::ready(initial)).chain(version_stream);
 
 		let fut = async move {
-			if let Some(mut sink) = pending.accept() {
-				sink.pipe_from_stream(stream).await;
+			if let Some(sink) = pending.accept() {
+				sink.pipe_from_stream(stream, |_, _| {}).await;
 			}
 		}
 		.boxed();
@@ -445,8 +445,8 @@ where
 			.filter(|storage| future::ready(!storage.changes.is_empty()));
 
 		let fut = async move {
-			if let Some(mut sink) = pending.accept() {
-				sink.pipe_from_stream(stream).await;
+			if let Some(sink) = pending.accept() {
+				sink.pipe_from_stream(stream, |_, _| {}).await;
 			}
 		}
 		.boxed();
