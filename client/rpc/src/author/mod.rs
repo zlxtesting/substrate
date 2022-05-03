@@ -200,14 +200,14 @@ where
 				},
 			};
 
-			let sink = match pending.accept() {
+			let mut sink = match pending.accept() {
 				Some(sink) => sink,
 				_ => {
 					return;
 				},
 			};
 
-			sink.pipe_from_stream(stream, |_, _| {}).await;
+			sink.pipe_from_stream(stream).await;
 		}
 		.boxed();
 

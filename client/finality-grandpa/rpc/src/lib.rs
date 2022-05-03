@@ -111,8 +111,8 @@ where
 		);
 
 		let fut = async move {
-			if let Some(sink) = pending.accept() {
-				sink.pipe_from_stream(stream, |_, _| {}).await;
+			if let Some(mut sink) = pending.accept() {
+				sink.pipe_from_stream(stream).await;
 			}
 		}
 		.boxed();

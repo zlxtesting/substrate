@@ -3159,7 +3159,7 @@ dependencies = [
 [[package]]
 name = "jsonrpsee"
 version = "0.11.0"
-source = "git+https://github.com/paritytech/jsonrpsee?branch=na-subscriptions-debug#366176a81d95d81d6cc7d2eb0d8b3c949f47815a"
+source = "git+https://github.com/paritytech/jsonrpsee?branch=na-729-with-subscriptions-debug#7607a284383dca33561625ac348737e298010f90"
 dependencies = [
  "jsonrpsee-core",
  "jsonrpsee-http-server",
@@ -3172,7 +3172,7 @@ dependencies = [
 [[package]]
 name = "jsonrpsee-client-transport"
 version = "0.11.0"
-source = "git+https://github.com/paritytech/jsonrpsee?branch=na-subscriptions-debug#366176a81d95d81d6cc7d2eb0d8b3c949f47815a"
+source = "git+https://github.com/paritytech/jsonrpsee?branch=na-729-with-subscriptions-debug#7607a284383dca33561625ac348737e298010f90"
 dependencies = [
  "futures-util",
  "http",
@@ -3192,7 +3192,7 @@ dependencies = [
 [[package]]
 name = "jsonrpsee-core"
 version = "0.11.0"
-source = "git+https://github.com/paritytech/jsonrpsee?branch=na-subscriptions-debug#366176a81d95d81d6cc7d2eb0d8b3c949f47815a"
+source = "git+https://github.com/paritytech/jsonrpsee?branch=na-729-with-subscriptions-debug#7607a284383dca33561625ac348737e298010f90"
 dependencies = [
  "anyhow",
  "arrayvec 0.7.1",
@@ -3218,7 +3218,7 @@ dependencies = [
 [[package]]
 name = "jsonrpsee-http-server"
 version = "0.11.0"
-source = "git+https://github.com/paritytech/jsonrpsee?branch=na-subscriptions-debug#366176a81d95d81d6cc7d2eb0d8b3c949f47815a"
+source = "git+https://github.com/paritytech/jsonrpsee?branch=na-729-with-subscriptions-debug#7607a284383dca33561625ac348737e298010f90"
 dependencies = [
  "futures-channel",
  "futures-util",
@@ -3236,7 +3236,7 @@ dependencies = [
 [[package]]
 name = "jsonrpsee-proc-macros"
 version = "0.11.0"
-source = "git+https://github.com/paritytech/jsonrpsee?branch=na-subscriptions-debug#366176a81d95d81d6cc7d2eb0d8b3c949f47815a"
+source = "git+https://github.com/paritytech/jsonrpsee?branch=na-729-with-subscriptions-debug#7607a284383dca33561625ac348737e298010f90"
 dependencies = [
  "proc-macro-crate",
  "proc-macro2",
@@ -3247,7 +3247,7 @@ dependencies = [
 [[package]]
 name = "jsonrpsee-types"
 version = "0.11.0"
-source = "git+https://github.com/paritytech/jsonrpsee?branch=na-subscriptions-debug#366176a81d95d81d6cc7d2eb0d8b3c949f47815a"
+source = "git+https://github.com/paritytech/jsonrpsee?branch=na-729-with-subscriptions-debug#7607a284383dca33561625ac348737e298010f90"
 dependencies = [
  "anyhow",
  "beef",
@@ -3260,7 +3260,7 @@ dependencies = [
 [[package]]
 name = "jsonrpsee-ws-client"
 version = "0.11.0"
-source = "git+https://github.com/paritytech/jsonrpsee?branch=na-subscriptions-debug#366176a81d95d81d6cc7d2eb0d8b3c949f47815a"
+source = "git+https://github.com/paritytech/jsonrpsee?branch=na-729-with-subscriptions-debug#7607a284383dca33561625ac348737e298010f90"
 dependencies = [
  "jsonrpsee-client-transport",
  "jsonrpsee-core",
@@ -3270,7 +3270,7 @@ dependencies = [
 [[package]]
 name = "jsonrpsee-ws-server"
 version = "0.11.0"
-source = "git+https://github.com/paritytech/jsonrpsee?branch=na-subscriptions-debug#366176a81d95d81d6cc7d2eb0d8b3c949f47815a"
+source = "git+https://github.com/paritytech/jsonrpsee?branch=na-729-with-subscriptions-debug#7607a284383dca33561625ac348737e298010f90"
 dependencies = [
  "futures-channel",
  "futures-util",
@@ -10941,9 +10941,9 @@ version = "1.6.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "4ee73e6e4924fe940354b8d4d98cad5231175d615cd855b758adc658c0aac6a0"
 dependencies = [
- "cfg-if 1.0.0",
+ "cfg-if 0.1.10",
  "digest 0.10.3",
- "rand 0.8.4",
+ "rand 0.6.5",
  "static_assertions",
 ]
 
