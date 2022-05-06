@@ -51,5 +51,5 @@ substrate-test-runtime-client = { version = "2.0.0", path = "../../test-utils/ru
 
 serde = "1.0.136"
 strum = { version = "0.23", features = ["derive"] }
-tokio = "1.15"
+tokio = "1.17.0"
 tempfile = "3.1.0"
