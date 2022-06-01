@@ -103,7 +103,7 @@ pub async fn start_http<M: Send + Sync + 'static>(
 		.max_request_body_size(max_payload_in as u32)
 		.max_response_body_size(max_payload_out as u32)
 		.set_access_control(acl.build())
-		.health_api("/health", "system_health")
+		.health_api("/health", "system_health")?
 		.custom_tokio_runtime(rt);
 
 	let rpc_api = build_rpc_api(rpc_api);
@@ -146,6 +146,7 @@ pub async fn start_ws<M: Send + Sync + 'static>(
 		.max_response_body_size(max_payload_out)
 		.max_connections(max_connections)
 		.max_subscriptions_per_connection(max_subs_per_conn)
+		.ping_interval(std::time::Duration::from_secs(30))
 		.custom_tokio_runtime(rt);
 
 	if let Some(provider) = id_provider {
