@@ -55,7 +55,6 @@ while getopts 'bfp:v' flag; do
   esac
 done
 
-
 if [ "$skip_build" != true ]
 then
   echo "[+] Compiling Substrate benchmarks..."
@@ -65,30 +64,15 @@ fi
 # The executable to use.
 SUBSTRATE=./target/production/substrate
 
-# Manually exclude some pallets.
-EXCLUDED_PALLETS=(
-  # Helper pallets
-  "pallet_election_provider_support_benchmarking"
-  # Pallets without automatic benchmarking
-  "pallet_babe"
-  "pallet_grandpa"
-  "pallet_mmr"
-  "pallet_offences"
+PALLETS=(
+  "frame_system"
+  "pallet_assets"
+  "pallet_balances"
+  "pallet_utility"
+  "pallet_uniques"
 )
 
-# Load all pallet names in an array.
-ALL_PALLETS=($(
-  $SUBSTRATE benchmark pallet --list --chain=dev |\
-    tail -n+2 |\
-    cut -d',' -f1 |\
-    sort |\
-    uniq
-))
-
-# Filter out the excluded pallets by concatenating the arrays and discarding duplicates.
-PALLETS=($({ printf '%s\n' "${ALL_PALLETS[@]}" "${EXCLUDED_PALLETS[@]}"; } | sort | uniq -u))
-
-echo "[+] Benchmarking ${#PALLETS[@]} Substrate pallets by excluding ${#EXCLUDED_PALLETS[@]} from ${#ALL_PALLETS[@]}."
+echo "[+] Benchmarking ${#PALLETS[@]} Substrate pallets."
 
 # Define the error file.
 ERR_FILE="benchmarking_errors.txt"
@@ -145,13 +129,7 @@ if [ $? -ne 0 ]; then
 fi
 
 echo "[+] Benchmarking the machine..."
-OUTPUT=$(
-  $SUBSTRATE benchmark machine --chain=dev 2>&1
-)
-if [ $? -ne 0 ]; then
-  # Do not write the error to the error file since it is not a benchmarking error.
-  echo "[-] Failed the machine benchmark:\n$OUTPUT"
-fi
+$SUBSTRATE benchmark machine --chain=dev --allow-fail
 
 # Check if the error file exists.
 if [ -f "$ERR_FILE" ]; then
