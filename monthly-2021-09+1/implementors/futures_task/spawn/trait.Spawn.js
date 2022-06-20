@@ -1,0 +1,3 @@
+(function() {var implementors = {};
+implementors["sc_rpc"] = [{"text":"impl Spawn for <a class=\"struct\" href=\"sc_rpc/testing/struct.TaskExecutor.html\" title=\"struct sc_rpc::testing::TaskExecutor\">TaskExecutor</a>","synthetic":false,"types":["sc_rpc::testing::TaskExecutor"]},{"text":"impl Spawn for <a class=\"struct\" href=\"sc_rpc/struct.SubscriptionTaskExecutor.html\" title=\"struct sc_rpc::SubscriptionTaskExecutor\">SubscriptionTaskExecutor</a>","synthetic":false,"types":["sc_rpc::SubscriptionTaskExecutor"]}];
+if (window.register_implementors) {window.register_implementors(implementors);} else {window.pending_implementors = implementors;}})()
