@@ -669,6 +669,11 @@
 <span id="664">664</span>
 <span id="665">665</span>
 <span id="666">666</span>
+<span id="667">667</span>
+<span id="668">668</span>
+<span id="669">669</span>
+<span id="670">670</span>
+<span id="671">671</span>
 </pre><pre class="rust"><code><span class="comment">// This file is part of Substrate.</span>
 
 <span class="comment">// Copyright (C) 2017-2022 Parity Technologies (UK) Ltd.</span>
@@ -902,12 +907,17 @@
 			)
 		}
 
-		<span class="doccomment">/// Note that the current authority set of the GRANDPA finality gadget has</span>
-		<span class="doccomment">/// stalled. This will trigger a forced authority set change at the beginning</span>
-		<span class="doccomment">/// of the next session, to be enacted `delay` blocks after that. The delay</span>
-		<span class="doccomment">/// should be high enough to safely assume that the block signalling the</span>
-		<span class="doccomment">/// forced change will not be re-orged (e.g. 1000 blocks). The GRANDPA voters</span>
-		<span class="doccomment">/// will start the new authority set using the given finalized block as base.</span>
+		<span class="doccomment">/// Note that the current authority set of the GRANDPA finality gadget has stalled.</span>
+		<span class="doccomment">///</span>
+		<span class="doccomment">/// This will trigger a forced authority set change at the beginning of the next session, to</span>
+		<span class="doccomment">/// be enacted `delay` blocks after that. The `delay` should be high enough to safely assume</span>
+		<span class="doccomment">/// that the block signalling the forced change will not be re-orged e.g. 1000 blocks.</span>
+		<span class="doccomment">/// The block production rate (which may be slowed down because of finality lagging) should</span>
+		<span class="doccomment">/// be taken into account when choosing the `delay`. The GRANDPA voters based on the new</span>
+		<span class="doccomment">/// authority will start voting on top of `best_finalized_block_number` for new finalized</span>
+		<span class="doccomment">/// blocks. `best_finalized_block_number` should be the highest of the latest finalized</span>
+		<span class="doccomment">/// block of all validators of the new authority set.</span>
+		<span class="doccomment">///</span>
 		<span class="doccomment">/// Only callable by root.</span>
 		<span class="attribute">#[<span class="ident">pallet::weight</span>(<span class="ident">T::WeightInfo::note_stalled</span>())]</span>
 		<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">note_stalled</span>(

@@ -502,6 +502,13 @@
 <span id="497">497</span>
 <span id="498">498</span>
 <span id="499">499</span>
+<span id="500">500</span>
+<span id="501">501</span>
+<span id="502">502</span>
+<span id="503">503</span>
+<span id="504">504</span>
+<span id="505">505</span>
+<span id="506">506</span>
 </pre><pre class="rust"><code><span class="comment">// This file is part of Substrate.</span>
 
 <span class="comment">// Copyright (C) 2018-2022 Parity Technologies (UK) Ltd.</span>
@@ -527,8 +534,9 @@
 <span class="kw">use</span> <span class="ident">node_runtime</span>::{
 	<span class="ident">constants::currency</span>::<span class="kw-2">*</span>, <span class="ident">wasm_binary_unwrap</span>, <span class="ident">AuthorityDiscoveryConfig</span>, <span class="ident">BabeConfig</span>,
 	<span class="ident">BalancesConfig</span>, <span class="ident">Block</span>, <span class="ident">CouncilConfig</span>, <span class="ident">DemocracyConfig</span>, <span class="ident">ElectionsConfig</span>, <span class="ident">GrandpaConfig</span>,
-	<span class="ident">ImOnlineConfig</span>, <span class="ident">IndicesConfig</span>, <span class="ident">MaxNominations</span>, <span class="ident">SessionConfig</span>, <span class="ident">SessionKeys</span>, <span class="ident">SocietyConfig</span>,
-	<span class="ident">StakerStatus</span>, <span class="ident">StakingConfig</span>, <span class="ident">SudoConfig</span>, <span class="ident">SystemConfig</span>, <span class="ident">TechnicalCommitteeConfig</span>,
+	<span class="ident">ImOnlineConfig</span>, <span class="ident">IndicesConfig</span>, <span class="ident">MaxNominations</span>, <span class="ident">NominationPoolsConfig</span>, <span class="ident">SessionConfig</span>,
+	<span class="ident">SessionKeys</span>, <span class="ident">SocietyConfig</span>, <span class="ident">StakerStatus</span>, <span class="ident">StakingConfig</span>, <span class="ident">SudoConfig</span>, <span class="ident">SystemConfig</span>,
+	<span class="ident">TechnicalCommitteeConfig</span>,
 };
 <span class="kw">use</span> <span class="ident">pallet_im_online::sr25519::AuthorityId</span> <span class="kw">as</span> <span class="ident">ImOnlineId</span>;
 <span class="kw">use</span> <span class="ident">sc_chain_spec::ChainSpecExtension</span>;
@@ -867,7 +875,13 @@
 		<span class="ident">gilt</span>: <span class="ident">Default::default</span>(),
 		<span class="ident">transaction_storage</span>: <span class="ident">Default::default</span>(),
 		<span class="ident">transaction_payment</span>: <span class="ident">Default::default</span>(),
-		<span class="ident">nomination_pools</span>: <span class="ident">Default::default</span>(),
+		<span class="ident">alliance</span>: <span class="ident">Default::default</span>(),
+		<span class="ident">alliance_motion</span>: <span class="ident">Default::default</span>(),
+		<span class="ident">nomination_pools</span>: <span class="ident">NominationPoolsConfig</span> {
+			<span class="ident">min_create_bond</span>: <span class="number">10</span> <span class="op">*</span> <span class="ident">DOLLARS</span>,
+			<span class="ident">min_join_bond</span>: <span class="number">1</span> <span class="op">*</span> <span class="ident">DOLLARS</span>,
+			..<span class="ident">Default::default</span>()
+		},
 	}
 }
 

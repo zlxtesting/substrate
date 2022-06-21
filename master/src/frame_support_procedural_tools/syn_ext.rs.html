@@ -232,6 +232,7 @@
 <span id="227">227</span>
 <span id="228">228</span>
 <span id="229">229</span>
+<span id="230">230</span>
 </pre><pre class="rust"><code><span class="comment">// This file is part of Substrate.</span>
 
 <span class="comment">// Copyright (C) 2017-2022 Parity Technologies (UK) Ltd.</span>
@@ -281,7 +282,8 @@
 
 		<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">P</span>: <span class="ident">Parse</span><span class="op">&gt;</span> <span class="ident">Parse</span> <span class="kw">for</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">name</span><span class="op">&lt;</span><span class="ident">P</span><span class="op">&gt;</span> {
 			<span class="kw">fn</span> <span class="ident">parse</span>(<span class="ident">input</span>: <span class="ident">ParseStream</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="self">Self</span><span class="op">&gt;</span> {
-				<span class="kw">let</span> <span class="ident">syn::group</span>::<span class="macro-nonterminal">$</span><span class="macro-nonterminal">name</span> { <span class="ident">token</span>, <span class="ident">content</span> } <span class="op">=</span> <span class="ident">syn::group</span>::<span class="macro-nonterminal">$</span><span class="macro-nonterminal">parse</span>(<span class="ident">input</span>)<span class="question-mark">?</span>;
+				<span class="kw">let</span> <span class="ident">content</span>;
+				<span class="kw">let</span> <span class="ident">token</span> <span class="op">=</span> <span class="ident">syn</span>::<span class="macro-nonterminal">$</span><span class="macro">parse!</span>(<span class="macro-nonterminal">content</span> <span class="kw">in</span> <span class="ident">input</span>);
 				<span class="kw">let</span> <span class="ident">content</span> <span class="op">=</span> <span class="ident">content</span>.<span class="ident">parse</span>()<span class="question-mark">?</span>;
 				<span class="prelude-val">Ok</span>(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">name</span> { <span class="ident">token</span>, <span class="ident">content</span> })
 			}
@@ -305,9 +307,9 @@
 	};
 }
 
-<span class="macro">groups_impl!</span>(<span class="ident">Braces</span>, <span class="ident">Brace</span>, <span class="ident">Brace</span>, <span class="ident">parse_braces</span>);
-<span class="macro">groups_impl!</span>(<span class="ident">Brackets</span>, <span class="ident">Bracket</span>, <span class="ident">Bracket</span>, <span class="ident">parse_brackets</span>);
-<span class="macro">groups_impl!</span>(<span class="ident">Parens</span>, <span class="ident">Paren</span>, <span class="ident">Parenthesis</span>, <span class="ident">parse_parens</span>);
+<span class="macro">groups_impl!</span>(<span class="ident">Braces</span>, <span class="ident">Brace</span>, <span class="ident">Brace</span>, <span class="ident">braced</span>);
+<span class="macro">groups_impl!</span>(<span class="ident">Brackets</span>, <span class="ident">Bracket</span>, <span class="ident">Bracket</span>, <span class="ident">bracketed</span>);
+<span class="macro">groups_impl!</span>(<span class="ident">Parens</span>, <span class="ident">Paren</span>, <span class="ident">Parenthesis</span>, <span class="ident">parenthesized</span>);
 
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">PunctuatedInner</span><span class="op">&lt;</span><span class="ident">P</span>, <span class="ident">T</span>, <span class="ident">V</span><span class="op">&gt;</span> {

@@ -100,6 +100,7 @@
 <span id="95">95</span>
 <span id="96">96</span>
 <span id="97">97</span>
+<span id="98">98</span>
 </pre><pre class="rust"><code><span class="comment">// This file is part of Substrate.</span>
 
 <span class="comment">// Copyright (C) 2020-2022 Parity Technologies (UK) Ltd.</span>
@@ -125,8 +126,8 @@
 <span class="kw">use</span> <span class="ident">honggfuzz::fuzz</span>;
 <span class="kw">use</span> <span class="ident">rand</span>::{<span class="self">self</span>, <span class="ident">SeedableRng</span>};
 <span class="kw">use</span> <span class="ident">sp_npos_elections</span>::{
-	<span class="ident">assignment_ratio_to_staked_normalized</span>, <span class="ident">seq_phragmen</span>, <span class="ident">to_supports</span>, <span class="ident">ElectionResult</span>,
-	<span class="ident">EvaluateSupport</span>, <span class="ident">VoteWeight</span>,
+	<span class="ident">assignment_ratio_to_staked_normalized</span>, <span class="ident">seq_phragmen</span>, <span class="ident">to_supports</span>, <span class="ident">BalancingConfig</span>,
+	<span class="ident">ElectionResult</span>, <span class="ident">EvaluateSupport</span>, <span class="ident">VoteWeight</span>,
 };
 <span class="kw">use</span> <span class="ident">sp_runtime::Perbill</span>;
 
@@ -168,8 +169,9 @@
 			};
 
 			<span class="kw">if</span> <span class="ident">iterations</span> <span class="op">&gt;</span> <span class="number">0</span> {
+				<span class="kw">let</span> <span class="ident">config</span> <span class="op">=</span> <span class="ident">BalancingConfig</span> { <span class="ident">iterations</span>, <span class="ident">tolerance</span>: <span class="number">0</span> };
 				<span class="kw">let</span> <span class="ident">balanced</span>: <span class="ident">ElectionResult</span><span class="op">&lt;</span><span class="ident">AccountId</span>, <span class="ident">sp_runtime::Perbill</span><span class="op">&gt;</span> <span class="op">=</span>
-					<span class="ident">seq_phragmen</span>(<span class="ident">to_elect</span>, <span class="ident">candidates</span>, <span class="ident">voters</span>, <span class="prelude-val">Some</span>((<span class="ident">iterations</span>, <span class="number">0</span>))).<span class="ident">unwrap</span>();
+					<span class="ident">seq_phragmen</span>(<span class="ident">to_elect</span>, <span class="ident">candidates</span>, <span class="ident">voters</span>, <span class="prelude-val">Some</span>(<span class="ident">config</span>)).<span class="ident">unwrap</span>();
 
 				<span class="kw">let</span> <span class="ident">balanced_score</span> <span class="op">=</span> {
 					<span class="kw">let</span> <span class="ident">staked</span> <span class="op">=</span>

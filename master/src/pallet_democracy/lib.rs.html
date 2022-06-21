@@ -1943,6 +1943,9 @@
 <span id="1938">1938</span>
 <span id="1939">1939</span>
 <span id="1940">1940</span>
+<span id="1941">1941</span>
+<span id="1942">1942</span>
+<span id="1943">1943</span>
 </pre><pre class="rust"><code><span class="comment">// This file is part of Substrate.</span>
 
 <span class="comment">// Copyright (C) 2017-2022 Parity Technologies (UK) Ltd.</span>
@@ -2482,6 +2485,8 @@
 		<span class="ident">Voted</span> { <span class="ident">voter</span>: <span class="ident">T::AccountId</span>, <span class="ident">ref_index</span>: <span class="ident">ReferendumIndex</span>, <span class="ident">vote</span>: <span class="ident">AccountVote</span><span class="op">&lt;</span><span class="ident">BalanceOf</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span><span class="op">&gt;</span> },
 		<span class="doccomment">/// An account has secconded a proposal</span>
 		<span class="ident">Seconded</span> { <span class="ident">seconder</span>: <span class="ident">T::AccountId</span>, <span class="ident">prop_index</span>: <span class="ident">PropIndex</span> },
+		<span class="doccomment">/// A proposal got canceled.</span>
+		<span class="ident">ProposalCanceled</span> { <span class="ident">prop_index</span>: <span class="ident">PropIndex</span> },
 	}
 
 	<span class="attribute">#[<span class="ident">pallet::error</span>]</span>
@@ -3222,6 +3227,7 @@
 				}
 			}
 
+			<span class="ident"><span class="self">Self</span>::deposit_event</span>(<span class="ident">Event</span>::<span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span><span class="ident">::ProposalCanceled</span> { <span class="ident">prop_index</span> });
 			<span class="prelude-val">Ok</span>(())
 		}
 	}

@@ -690,7 +690,7 @@
 
 <span class="kw">use</span> <span class="ident">frame_benchmarking</span>::{<span class="ident">account</span>, <span class="ident">frame_support::traits::Currency</span>, <span class="ident">vec</span>, <span class="ident">whitelist_account</span>, <span class="ident">Vec</span>};
 <span class="kw">use</span> <span class="ident">frame_election_provider_support::SortedListProvider</span>;
-<span class="kw">use</span> <span class="ident">frame_support</span>::{<span class="ident">ensure</span>, <span class="ident">traits::Get</span>};
+<span class="kw">use</span> <span class="ident">frame_support</span>::{<span class="ident">assert_ok</span>, <span class="ident">ensure</span>, <span class="ident">traits::Get</span>};
 <span class="kw">use</span> <span class="ident">frame_system::RawOrigin</span> <span class="kw">as</span> <span class="ident">Origin</span>;
 <span class="kw">use</span> <span class="ident">pallet_nomination_pools</span>::{
 	<span class="ident">BalanceOf</span>, <span class="ident">BondExtra</span>, <span class="ident">BondedPoolInner</span>, <span class="ident">BondedPools</span>, <span class="ident">ConfigOp</span>, <span class="ident">MaxPoolMembers</span>,
@@ -713,6 +713,12 @@
 }
 
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">Pallet</span><span class="op">&lt;</span><span class="ident">T</span>: <span class="ident">Config</span><span class="op">&gt;</span>(<span class="ident">Pools</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>);
+
+<span class="kw">fn</span> <span class="ident">min_create_bond</span><span class="op">&lt;</span><span class="ident">T</span>: <span class="ident">Config</span><span class="op">&gt;</span>() -&gt; <span class="ident">BalanceOf</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span> {
+	<span class="ident">MinCreateBond</span>::<span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span><span class="ident">::get</span>()
+		.<span class="ident">max</span>(<span class="ident">T::StakingInterface::minimum_bond</span>())
+		.<span class="ident">max</span>(<span class="ident">CurrencyOf</span>::<span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span><span class="ident">::minimum_balance</span>())
+}
 
 <span class="kw">fn</span> <span class="ident">create_funded_user_with_balance</span><span class="op">&lt;</span><span class="ident">T</span>: <span class="ident">pallet_nomination_pools::Config</span><span class="op">&gt;</span>(
 	<span class="ident">string</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;static</span> <span class="ident">str</span>,
@@ -875,9 +881,7 @@
 
 <span class="macro">frame_benchmarking::benchmarks!</span> {
 	<span class="ident">join</span> {
-		<span class="kw">let</span> <span class="ident">origin_weight</span> <span class="op">=</span> <span class="ident">pallet_nomination_pools::MinCreateBond</span>::<span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span><span class="ident">::get</span>()
-			.<span class="ident">max</span>(<span class="ident">CurrencyOf</span>::<span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span><span class="ident">::minimum_balance</span>())
-			<span class="op">*</span> <span class="number">2u32</span>.<span class="ident">into</span>();
+		<span class="kw">let</span> <span class="ident">origin_weight</span> <span class="op">=</span> <span class="ident">min_create_bond</span>::<span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>() <span class="op">*</span> <span class="number">2u32</span>.<span class="ident">into</span>();
 
 		<span class="comment">// setup the worst case list scenario.</span>
 		<span class="kw">let</span> <span class="ident">scenario</span> <span class="op">=</span> <span class="ident">ListScenario</span>::<span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span><span class="ident">::new</span>(<span class="ident">origin_weight</span>, <span class="bool-val">true</span>)<span class="question-mark">?</span>;
@@ -903,9 +907,7 @@
 	}
 
 	<span class="ident">bond_extra_transfer</span> {
-		<span class="kw">let</span> <span class="ident">origin_weight</span> <span class="op">=</span> <span class="ident">pallet_nomination_pools::MinCreateBond</span>::<span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span><span class="ident">::get</span>()
-			.<span class="ident">max</span>(<span class="ident">CurrencyOf</span>::<span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span><span class="ident">::minimum_balance</span>())
-			<span class="op">*</span> <span class="number">2u32</span>.<span class="ident">into</span>();
+		<span class="kw">let</span> <span class="ident">origin_weight</span> <span class="op">=</span> <span class="ident">min_create_bond</span>::<span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>() <span class="op">*</span> <span class="number">2u32</span>.<span class="ident">into</span>();
 		<span class="kw">let</span> <span class="ident">scenario</span> <span class="op">=</span> <span class="ident">ListScenario</span>::<span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span><span class="ident">::new</span>(<span class="ident">origin_weight</span>, <span class="bool-val">true</span>)<span class="question-mark">?</span>;
 		<span class="kw">let</span> <span class="ident">extra</span> <span class="op">=</span> <span class="ident">scenario</span>.<span class="ident">dest_weight</span>.<span class="ident">clone</span>() <span class="op">-</span> <span class="ident">origin_weight</span>;
 
@@ -920,9 +922,7 @@
 	}
 
 	<span class="ident">bond_extra_reward</span> {
-		<span class="kw">let</span> <span class="ident">origin_weight</span> <span class="op">=</span> <span class="ident">pallet_nomination_pools::MinCreateBond</span>::<span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span><span class="ident">::get</span>()
-			.<span class="ident">max</span>(<span class="ident">CurrencyOf</span>::<span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span><span class="ident">::minimum_balance</span>())
-			<span class="op">*</span> <span class="number">2u32</span>.<span class="ident">into</span>();
+		<span class="kw">let</span> <span class="ident">origin_weight</span> <span class="op">=</span> <span class="ident">min_create_bond</span>::<span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>() <span class="op">*</span> <span class="number">2u32</span>.<span class="ident">into</span>();
 		<span class="kw">let</span> <span class="ident">scenario</span> <span class="op">=</span> <span class="ident">ListScenario</span>::<span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span><span class="ident">::new</span>(<span class="ident">origin_weight</span>, <span class="bool-val">true</span>)<span class="question-mark">?</span>;
 		<span class="kw">let</span> <span class="ident">extra</span> <span class="op">=</span> (<span class="ident">scenario</span>.<span class="ident">dest_weight</span>.<span class="ident">clone</span>() <span class="op">-</span> <span class="ident">origin_weight</span>).<span class="ident">max</span>(<span class="ident">CurrencyOf</span>::<span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span><span class="ident">::minimum_balance</span>());
 
@@ -940,7 +940,7 @@
 	}
 
 	<span class="ident">claim_payout</span> {
-		<span class="kw">let</span> <span class="ident">origin_weight</span> <span class="op">=</span> <span class="ident">pallet_nomination_pools::MinCreateBond</span>::<span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span><span class="ident">::get</span>().<span class="ident">max</span>(<span class="ident">CurrencyOf</span>::<span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span><span class="ident">::minimum_balance</span>()) <span class="op">*</span> <span class="number">2u32</span>.<span class="ident">into</span>();
+		<span class="kw">let</span> <span class="ident">origin_weight</span> <span class="op">=</span> <span class="ident">min_create_bond</span>::<span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>() <span class="op">*</span> <span class="number">2u32</span>.<span class="ident">into</span>();
 		<span class="kw">let</span> <span class="ident">ed</span> <span class="op">=</span> <span class="ident">CurrencyOf</span>::<span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span><span class="ident">::minimum_balance</span>();
 		<span class="kw">let</span> (<span class="ident">depositor</span>, <span class="ident">pool_account</span>) <span class="op">=</span> <span class="ident">create_pool_account</span>::<span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>(<span class="number">0</span>, <span class="ident">origin_weight</span>);
 		<span class="kw">let</span> <span class="ident">reward_account</span> <span class="op">=</span> <span class="ident">Pools</span>::<span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span><span class="ident">::create_reward_account</span>(<span class="number">1</span>);
@@ -970,9 +970,7 @@
 	<span class="ident">unbond</span> {
 		<span class="comment">// The weight the nominator will start at. The value used here is expected to be</span>
 		<span class="comment">// significantly higher than the first position in a list (e.g. the first bag threshold).</span>
-		<span class="kw">let</span> <span class="ident">origin_weight</span> <span class="op">=</span> <span class="ident">BalanceOf</span>::<span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span><span class="ident">::try_from</span>(<span class="number">952_994_955_240_703u128</span>)
-			.<span class="ident">map_err</span>(<span class="op">|</span><span class="kw">_</span><span class="op">|</span> <span class="string">&quot;balance expected to be a u128&quot;</span>)
-			.<span class="ident">unwrap</span>();
+		<span class="kw">let</span> <span class="ident">origin_weight</span> <span class="op">=</span> <span class="ident">min_create_bond</span>::<span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>() <span class="op">*</span> <span class="number">200u32</span>.<span class="ident">into</span>();
 		<span class="kw">let</span> <span class="ident">scenario</span> <span class="op">=</span> <span class="ident">ListScenario</span>::<span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span><span class="ident">::new</span>(<span class="ident">origin_weight</span>, <span class="bool-val">false</span>)<span class="question-mark">?</span>;
 		<span class="kw">let</span> <span class="ident">amount</span> <span class="op">=</span> <span class="ident">origin_weight</span> <span class="op">-</span> <span class="ident">scenario</span>.<span class="ident">dest_weight</span>.<span class="ident">clone</span>();
 
@@ -1002,9 +1000,7 @@
 	<span class="ident">pool_withdraw_unbonded</span> {
 		<span class="kw">let</span> <span class="ident">s</span> <span class="kw">in</span> <span class="number">0</span> .. <span class="ident">MAX_SPANS</span>;
 
-		<span class="kw">let</span> <span class="ident">min_create_bond</span> <span class="op">=</span> <span class="ident">MinCreateBond</span>::<span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span><span class="ident">::get</span>()
-			.<span class="ident">max</span>(<span class="ident">T::StakingInterface::minimum_bond</span>())
-			.<span class="ident">max</span>(<span class="ident">CurrencyOf</span>::<span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span><span class="ident">::minimum_balance</span>());
+		<span class="kw">let</span> <span class="ident">min_create_bond</span> <span class="op">=</span> <span class="ident">min_create_bond</span>::<span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>();
 		<span class="kw">let</span> (<span class="ident">depositor</span>, <span class="ident">pool_account</span>) <span class="op">=</span> <span class="ident">create_pool_account</span>::<span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>(<span class="number">0</span>, <span class="ident">min_create_bond</span>);
 
 		<span class="comment">// Add a new member</span>
@@ -1046,9 +1042,7 @@
 	<span class="ident">withdraw_unbonded_update</span> {
 		<span class="kw">let</span> <span class="ident">s</span> <span class="kw">in</span> <span class="number">0</span> .. <span class="ident">MAX_SPANS</span>;
 
-		<span class="kw">let</span> <span class="ident">min_create_bond</span> <span class="op">=</span> <span class="ident">MinCreateBond</span>::<span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span><span class="ident">::get</span>()
-			.<span class="ident">max</span>(<span class="ident">T::StakingInterface::minimum_bond</span>())
-			.<span class="ident">max</span>(<span class="ident">CurrencyOf</span>::<span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span><span class="ident">::minimum_balance</span>());
+		<span class="kw">let</span> <span class="ident">min_create_bond</span> <span class="op">=</span> <span class="ident">min_create_bond</span>::<span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>();
 		<span class="kw">let</span> (<span class="ident">depositor</span>, <span class="ident">pool_account</span>) <span class="op">=</span> <span class="ident">create_pool_account</span>::<span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>(<span class="number">0</span>, <span class="ident">min_create_bond</span>);
 
 		<span class="comment">// Add a new member</span>
@@ -1093,10 +1087,7 @@
 	<span class="ident">withdraw_unbonded_kill</span> {
 		<span class="kw">let</span> <span class="ident">s</span> <span class="kw">in</span> <span class="number">0</span> .. <span class="ident">MAX_SPANS</span>;
 
-		<span class="kw">let</span> <span class="ident">min_create_bond</span> <span class="op">=</span> <span class="ident">MinCreateBond</span>::<span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span><span class="ident">::get</span>()
-			.<span class="ident">max</span>(<span class="ident">T::StakingInterface::minimum_bond</span>())
-			.<span class="ident">max</span>(<span class="ident">CurrencyOf</span>::<span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span><span class="ident">::minimum_balance</span>());
-
+		<span class="kw">let</span> <span class="ident">min_create_bond</span> <span class="op">=</span> <span class="ident">min_create_bond</span>::<span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>();
 		<span class="kw">let</span> (<span class="ident">depositor</span>, <span class="ident">pool_account</span>) <span class="op">=</span> <span class="ident">create_pool_account</span>::<span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>(<span class="number">0</span>, <span class="ident">min_create_bond</span>);
 
 		<span class="comment">// We set the pool to the destroying state so the depositor can leave</span>
@@ -1160,9 +1151,7 @@
 	}
 
 	<span class="ident">create</span> {
-		<span class="kw">let</span> <span class="ident">min_create_bond</span> <span class="op">=</span> <span class="ident">MinCreateBond</span>::<span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span><span class="ident">::get</span>()
-			.<span class="ident">max</span>(<span class="ident">T::StakingInterface::minimum_bond</span>())
-			.<span class="ident">max</span>(<span class="ident">CurrencyOf</span>::<span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span><span class="ident">::minimum_balance</span>());
+		<span class="kw">let</span> <span class="ident">min_create_bond</span> <span class="op">=</span> <span class="ident">min_create_bond</span>::<span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>();
 		<span class="kw">let</span> <span class="ident">depositor</span>: <span class="ident">T::AccountId</span> <span class="op">=</span> <span class="ident">account</span>(<span class="string">&quot;depositor&quot;</span>, <span class="ident">USER_SEED</span>, <span class="number">0</span>);
 
 		<span class="comment">// Give the depositor some balance to bond</span>
@@ -1208,9 +1197,7 @@
 		<span class="kw">let</span> <span class="ident">n</span> <span class="kw">in</span> <span class="number">1</span> .. <span class="ident">T::MaxNominations::get</span>();
 
 		<span class="comment">// Create a pool</span>
-		<span class="kw">let</span> <span class="ident">min_create_bond</span> <span class="op">=</span> <span class="ident">MinCreateBond</span>::<span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span><span class="ident">::get</span>()
-			.<span class="ident">max</span>(<span class="ident">T::StakingInterface::minimum_bond</span>())
-			.<span class="ident">max</span>(<span class="ident">CurrencyOf</span>::<span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span><span class="ident">::minimum_balance</span>());
+		<span class="kw">let</span> <span class="ident">min_create_bond</span> <span class="op">=</span> <span class="ident">min_create_bond</span>::<span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>() <span class="op">*</span> <span class="number">2u32</span>.<span class="ident">into</span>();
 		<span class="kw">let</span> (<span class="ident">depositor</span>, <span class="ident">pool_account</span>) <span class="op">=</span> <span class="ident">create_pool_account</span>::<span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>(<span class="number">0</span>, <span class="ident">min_create_bond</span>);
 
 		<span class="comment">// Create some accounts to nominate. For the sake of benchmarking they don&#39;t need to be</span>
@@ -1247,9 +1234,7 @@
 
 	<span class="ident">set_state</span> {
 		<span class="comment">// Create a pool</span>
-		<span class="kw">let</span> <span class="ident">min_create_bond</span> <span class="op">=</span> <span class="ident">MinCreateBond</span>::<span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span><span class="ident">::get</span>()
-			.<span class="ident">max</span>(<span class="ident">T::StakingInterface::minimum_bond</span>())
-			.<span class="ident">max</span>(<span class="ident">CurrencyOf</span>::<span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span><span class="ident">::minimum_balance</span>());
+		<span class="kw">let</span> <span class="ident">min_create_bond</span> <span class="op">=</span> <span class="ident">min_create_bond</span>::<span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>();
 		<span class="kw">let</span> (<span class="ident">depositor</span>, <span class="ident">pool_account</span>) <span class="op">=</span> <span class="ident">create_pool_account</span>::<span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>(<span class="number">0</span>, <span class="ident">min_create_bond</span>);
 		<span class="ident">BondedPools</span>::<span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span><span class="ident">::mutate</span>(<span class="kw-2">&amp;</span><span class="number">1</span>, <span class="op">|</span><span class="ident">maybe_pool</span><span class="op">|</span> {
 			<span class="comment">// Force the pool into an invalid state</span>
@@ -1267,10 +1252,7 @@
 		<span class="kw">let</span> <span class="ident">n</span> <span class="kw">in</span> <span class="number">1</span> .. <span class="op">&lt;</span><span class="ident">T</span> <span class="kw">as</span> <span class="ident">pallet_nomination_pools::Config</span><span class="op">&gt;</span><span class="ident">::MaxMetadataLen::get</span>();
 
 		<span class="comment">// Create a pool</span>
-		<span class="kw">let</span> <span class="ident">min_create_bond</span> <span class="op">=</span> <span class="ident">MinCreateBond</span>::<span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span><span class="ident">::get</span>()
-			.<span class="ident">max</span>(<span class="ident">T::StakingInterface::minimum_bond</span>())
-			.<span class="ident">max</span>(<span class="ident">CurrencyOf</span>::<span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span><span class="ident">::minimum_balance</span>());
-		<span class="kw">let</span> (<span class="ident">depositor</span>, <span class="ident">pool_account</span>) <span class="op">=</span> <span class="ident">create_pool_account</span>::<span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>(<span class="number">0</span>, <span class="ident">min_create_bond</span>);
+		<span class="kw">let</span> (<span class="ident">depositor</span>, <span class="ident">pool_account</span>) <span class="op">=</span> <span class="ident">create_pool_account</span>::<span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>(<span class="number">0</span>, <span class="ident">min_create_bond</span>::<span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>() <span class="op">*</span> <span class="number">2u32</span>.<span class="ident">into</span>());
 
 		<span class="comment">// Create metadata of the max possible size</span>
 		<span class="kw">let</span> <span class="ident">metadata</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">u8</span><span class="op">&gt;</span> <span class="op">=</span> (<span class="number">0</span>..<span class="ident">n</span>).<span class="ident">map</span>(<span class="op">|</span><span class="kw">_</span><span class="op">|</span> <span class="number">42</span>).<span class="ident">collect</span>();
@@ -1299,7 +1281,7 @@
 
 	<span class="ident">update_roles</span> {
 		<span class="kw">let</span> <span class="ident">first_id</span> <span class="op">=</span> <span class="ident">pallet_nomination_pools::LastPoolId</span>::<span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span><span class="ident">::get</span>() <span class="op">+</span> <span class="number">1</span>;
-		<span class="kw">let</span> (<span class="ident">root</span>, <span class="kw">_</span>) <span class="op">=</span> <span class="ident">create_pool_account</span>::<span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>(<span class="number">0</span>, <span class="ident">CurrencyOf</span>::<span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span><span class="ident">::minimum_balance</span>() <span class="op">*</span> <span class="number">2u32</span>.<span class="ident">into</span>());
+		<span class="kw">let</span> (<span class="ident">root</span>, <span class="kw">_</span>) <span class="op">=</span> <span class="ident">create_pool_account</span>::<span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>(<span class="number">0</span>, <span class="ident">min_create_bond</span>::<span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>() <span class="op">*</span> <span class="number">2u32</span>.<span class="ident">into</span>());
 		<span class="kw">let</span> <span class="ident">random</span>: <span class="ident">T::AccountId</span> <span class="op">=</span> <span class="ident">account</span>(<span class="string">&quot;but is anything really random in computers..?&quot;</span>, <span class="number">0</span>, <span class="ident">USER_SEED</span>);
 	}:<span class="kw">_</span>(
 		<span class="ident">Origin::Signed</span>(<span class="ident">root</span>.<span class="ident">clone</span>()),
@@ -1317,6 +1299,24 @@
 				<span class="ident">root</span>: <span class="prelude-val">Some</span>(<span class="ident">random</span>),
 			},
 		)
+	}
+
+	<span class="ident">chill</span> {
+		<span class="comment">// Create a pool</span>
+		<span class="kw">let</span> (<span class="ident">depositor</span>, <span class="ident">pool_account</span>) <span class="op">=</span> <span class="ident">create_pool_account</span>::<span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>(<span class="number">0</span>, <span class="ident">min_create_bond</span>::<span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>() <span class="op">*</span> <span class="number">2u32</span>.<span class="ident">into</span>());
+
+		<span class="comment">// Nominate with the pool.</span>
+		 <span class="kw">let</span> <span class="ident">validators</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="kw">_</span><span class="op">&gt;</span> <span class="op">=</span> (<span class="number">0</span>..<span class="ident">T::MaxNominations::get</span>())
+			.<span class="ident">map</span>(<span class="op">|</span><span class="ident">i</span><span class="op">|</span> <span class="ident">account</span>(<span class="string">&quot;stash&quot;</span>, <span class="ident">USER_SEED</span>, <span class="ident">i</span>))
+			.<span class="ident">collect</span>();
+
+		<span class="macro">assert_ok!</span>(<span class="ident">Pools</span>::<span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span><span class="ident">::nominate</span>(<span class="ident">Origin::Signed</span>(<span class="ident">depositor</span>.<span class="ident">clone</span>()).<span class="ident">into</span>(), <span class="number">1</span>, <span class="ident">validators</span>));
+		<span class="macro">assert!</span>(<span class="ident">T::StakingInterface::nominations</span>(<span class="ident">Pools</span>::<span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span><span class="ident">::create_bonded_account</span>(<span class="number">1</span>)).<span class="ident">is_some</span>());
+
+		<span class="macro">whitelist_account!</span>(<span class="ident">depositor</span>);
+	}:<span class="kw">_</span>(<span class="ident">Origin::Signed</span>(<span class="ident">depositor</span>.<span class="ident">clone</span>()), <span class="number">1</span>)
+	<span class="ident">verify</span> {
+		<span class="macro">assert!</span>(<span class="ident">T::StakingInterface::nominations</span>(<span class="ident">Pools</span>::<span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span><span class="ident">::create_bonded_account</span>(<span class="number">1</span>)).<span class="ident">is_none</span>());
 	}
 
 	<span class="macro">impl_benchmark_test_suite!</span>(

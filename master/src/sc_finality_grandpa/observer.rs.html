@@ -591,7 +591,7 @@
 			<span class="prelude-val">Err</span>(<span class="ident">e</span>) =&gt; <span class="kw">return</span> <span class="ident">future::err</span>(<span class="ident">e</span>.<span class="ident">into</span>()),
 		};
 
-		<span class="kw">if</span> <span class="ident">validation_result</span>.<span class="ident">ghost</span>().<span class="ident">is_some</span>() {
+		<span class="kw">if</span> <span class="ident">validation_result</span>.<span class="ident">is_valid</span>() {
 			<span class="kw">let</span> <span class="ident">finalized_hash</span> <span class="op">=</span> <span class="ident">commit</span>.<span class="ident">target_hash</span>;
 			<span class="kw">let</span> <span class="ident">finalized_number</span> <span class="op">=</span> <span class="ident">commit</span>.<span class="ident">target_number</span>;
 

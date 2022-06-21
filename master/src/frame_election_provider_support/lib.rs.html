@@ -623,12 +623,6 @@
 <span id="618">618</span>
 <span id="619">619</span>
 <span id="620">620</span>
-<span id="621">621</span>
-<span id="622">622</span>
-<span id="623">623</span>
-<span id="624">624</span>
-<span id="625">625</span>
-<span id="626">626</span>
 </pre><pre class="rust"><code><span class="comment">// This file is part of Substrate.</span>
 
 <span class="comment">// Copyright (C) 2020-2022 Parity Technologies (UK) Ltd.</span>
@@ -808,8 +802,8 @@
 <span class="doccomment">/// Re-export some type as they are used in the interface.</span>
 <span class="kw">pub</span> <span class="kw">use</span> <span class="ident">sp_arithmetic::PerThing</span>;
 <span class="kw">pub</span> <span class="kw">use</span> <span class="ident">sp_npos_elections</span>::{
-	<span class="ident">Assignment</span>, <span class="ident">ElectionResult</span>, <span class="ident">Error</span>, <span class="ident">ExtendedBalance</span>, <span class="ident">IdentifierT</span>, <span class="ident">PerThing128</span>, <span class="ident">Support</span>,
-	<span class="ident">Supports</span>, <span class="ident">VoteWeight</span>,
+	<span class="ident">Assignment</span>, <span class="ident">BalancingConfig</span>, <span class="ident">ElectionResult</span>, <span class="ident">Error</span>, <span class="ident">ExtendedBalance</span>, <span class="ident">IdentifierT</span>, <span class="ident">PerThing128</span>,
+	<span class="ident">Support</span>, <span class="ident">Supports</span>, <span class="ident">VoteWeight</span>,
 };
 <span class="kw">pub</span> <span class="kw">use</span> <span class="ident">traits::NposSolution</span>;
 
@@ -1199,11 +1193,8 @@
 	<span class="ident">sp_std::marker::PhantomData</span><span class="op">&lt;</span>(<span class="ident">AccountId</span>, <span class="ident">Accuracy</span>, <span class="ident">Balancing</span>)<span class="op">&gt;</span>,
 );
 
-<span class="kw">impl</span><span class="op">&lt;</span>
-		<span class="ident">AccountId</span>: <span class="ident">IdentifierT</span>,
-		<span class="ident">Accuracy</span>: <span class="ident">PerThing128</span>,
-		<span class="ident">Balancing</span>: <span class="ident">Get</span><span class="op">&lt;</span><span class="prelude-ty">Option</span><span class="op">&lt;</span>(<span class="ident">usize</span>, <span class="ident">ExtendedBalance</span>)<span class="op">&gt;</span><span class="op">&gt;</span>,
-	<span class="op">&gt;</span> <span class="ident">NposSolver</span> <span class="kw">for</span> <span class="ident">SequentialPhragmen</span><span class="op">&lt;</span><span class="ident">AccountId</span>, <span class="ident">Accuracy</span>, <span class="ident">Balancing</span><span class="op">&gt;</span>
+<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">AccountId</span>: <span class="ident">IdentifierT</span>, <span class="ident">Accuracy</span>: <span class="ident">PerThing128</span>, <span class="ident">Balancing</span>: <span class="ident">Get</span><span class="op">&lt;</span><span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">BalancingConfig</span><span class="op">&gt;</span><span class="op">&gt;</span><span class="op">&gt;</span>
+	<span class="ident">NposSolver</span> <span class="kw">for</span> <span class="ident">SequentialPhragmen</span><span class="op">&lt;</span><span class="ident">AccountId</span>, <span class="ident">Accuracy</span>, <span class="ident">Balancing</span><span class="op">&gt;</span>
 {
 	<span class="kw">type</span> <span class="ident">AccountId</span> <span class="op">=</span> <span class="ident">AccountId</span>;
 	<span class="kw">type</span> <span class="ident">Accuracy</span> <span class="op">=</span> <span class="ident">Accuracy</span>;
@@ -1227,11 +1218,8 @@
 	<span class="ident">sp_std::marker::PhantomData</span><span class="op">&lt;</span>(<span class="ident">AccountId</span>, <span class="ident">Accuracy</span>, <span class="ident">Balancing</span>)<span class="op">&gt;</span>,
 );
 
-<span class="kw">impl</span><span class="op">&lt;</span>
-		<span class="ident">AccountId</span>: <span class="ident">IdentifierT</span>,
-		<span class="ident">Accuracy</span>: <span class="ident">PerThing128</span>,
-		<span class="ident">Balancing</span>: <span class="ident">Get</span><span class="op">&lt;</span><span class="prelude-ty">Option</span><span class="op">&lt;</span>(<span class="ident">usize</span>, <span class="ident">ExtendedBalance</span>)<span class="op">&gt;</span><span class="op">&gt;</span>,
-	<span class="op">&gt;</span> <span class="ident">NposSolver</span> <span class="kw">for</span> <span class="ident">PhragMMS</span><span class="op">&lt;</span><span class="ident">AccountId</span>, <span class="ident">Accuracy</span>, <span class="ident">Balancing</span><span class="op">&gt;</span>
+<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">AccountId</span>: <span class="ident">IdentifierT</span>, <span class="ident">Accuracy</span>: <span class="ident">PerThing128</span>, <span class="ident">Balancing</span>: <span class="ident">Get</span><span class="op">&lt;</span><span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">BalancingConfig</span><span class="op">&gt;</span><span class="op">&gt;</span><span class="op">&gt;</span>
+	<span class="ident">NposSolver</span> <span class="kw">for</span> <span class="ident">PhragMMS</span><span class="op">&lt;</span><span class="ident">AccountId</span>, <span class="ident">Accuracy</span>, <span class="ident">Balancing</span><span class="op">&gt;</span>
 {
 	<span class="kw">type</span> <span class="ident">AccountId</span> <span class="op">=</span> <span class="ident">AccountId</span>;
 	<span class="kw">type</span> <span class="ident">Accuracy</span> <span class="op">=</span> <span class="ident">Accuracy</span>;

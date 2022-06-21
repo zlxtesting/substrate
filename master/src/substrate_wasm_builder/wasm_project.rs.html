@@ -823,6 +823,56 @@
 <span id="818">818</span>
 <span id="819">819</span>
 <span id="820">820</span>
+<span id="821">821</span>
+<span id="822">822</span>
+<span id="823">823</span>
+<span id="824">824</span>
+<span id="825">825</span>
+<span id="826">826</span>
+<span id="827">827</span>
+<span id="828">828</span>
+<span id="829">829</span>
+<span id="830">830</span>
+<span id="831">831</span>
+<span id="832">832</span>
+<span id="833">833</span>
+<span id="834">834</span>
+<span id="835">835</span>
+<span id="836">836</span>
+<span id="837">837</span>
+<span id="838">838</span>
+<span id="839">839</span>
+<span id="840">840</span>
+<span id="841">841</span>
+<span id="842">842</span>
+<span id="843">843</span>
+<span id="844">844</span>
+<span id="845">845</span>
+<span id="846">846</span>
+<span id="847">847</span>
+<span id="848">848</span>
+<span id="849">849</span>
+<span id="850">850</span>
+<span id="851">851</span>
+<span id="852">852</span>
+<span id="853">853</span>
+<span id="854">854</span>
+<span id="855">855</span>
+<span id="856">856</span>
+<span id="857">857</span>
+<span id="858">858</span>
+<span id="859">859</span>
+<span id="860">860</span>
+<span id="861">861</span>
+<span id="862">862</span>
+<span id="863">863</span>
+<span id="864">864</span>
+<span id="865">865</span>
+<span id="866">866</span>
+<span id="867">867</span>
+<span id="868">868</span>
+<span id="869">869</span>
+<span id="870">870</span>
 </pre><pre class="rust"><code><span class="comment">// This file is part of Substrate.</span>
 
 <span class="comment">// Copyright (C) 2019-2022 Parity Technologies (UK) Ltd.</span>
@@ -875,6 +925,11 @@
 	<span class="doccomment">/// Returns the escaped path to the bloaty wasm binary.</span>
 	<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">wasm_binary_bloaty_path_escaped</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">String</span> {
 		<span class="self">self</span>.<span class="number">0</span>.<span class="ident">display</span>().<span class="ident">to_string</span>().<span class="ident">escape_default</span>().<span class="ident">to_string</span>()
+	}
+
+	<span class="doccomment">/// Returns the path to the wasm binary.</span>
+	<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">wasm_binary_bloaty_path</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;</span><span class="ident">Path</span> {
+		<span class="kw-2">&amp;</span><span class="self">self</span>.<span class="number">0</span>
 	}
 }
 
@@ -962,9 +1017,49 @@
 		<span class="ident">copy_wasm_to_target_directory</span>(<span class="ident">project_cargo_toml</span>, <span class="ident">wasm_binary_compressed</span>)
 	});
 
-	<span class="ident">generate_rerun_if_changed_instructions</span>(<span class="ident">project_cargo_toml</span>, <span class="kw-2">&amp;</span><span class="ident">project</span>, <span class="kw-2">&amp;</span><span class="ident">wasm_workspace</span>);
+	<span class="kw">let</span> <span class="ident">final_wasm_binary</span> <span class="op">=</span> <span class="ident">wasm_binary_compressed</span>.<span class="ident">or</span>(<span class="ident">wasm_binary</span>);
 
-	(<span class="ident">wasm_binary_compressed</span>.<span class="ident">or</span>(<span class="ident">wasm_binary</span>), <span class="ident">bloaty</span>)
+	<span class="ident">generate_rerun_if_changed_instructions</span>(
+		<span class="ident">project_cargo_toml</span>,
+		<span class="kw-2">&amp;</span><span class="ident">project</span>,
+		<span class="kw-2">&amp;</span><span class="ident">wasm_workspace</span>,
+		<span class="ident">final_wasm_binary</span>.<span class="ident">as_ref</span>(),
+		<span class="kw-2">&amp;</span><span class="ident">bloaty</span>,
+	);
+
+	<span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Err</span>(<span class="ident">err</span>) <span class="op">=</span> <span class="ident">adjust_mtime</span>(<span class="kw-2">&amp;</span><span class="ident">bloaty</span>, <span class="ident">final_wasm_binary</span>.<span class="ident">as_ref</span>()) {
+		<span class="macro">build_helper::warning!</span>(<span class="string">&quot;Error while adjusting the mtime of the wasm binaries: {}&quot;</span>, <span class="ident">err</span>)
+	}
+
+	(<span class="ident">final_wasm_binary</span>, <span class="ident">bloaty</span>)
+}
+
+<span class="doccomment">/// Adjust the mtime of the bloaty and compressed/compact wasm files.</span>
+<span class="doccomment">///</span>
+<span class="doccomment">/// We add the bloaty and the compressed/compact wasm file to the `rerun-if-changed` files.</span>
+<span class="doccomment">/// Cargo/Rustc determines based on the timestamp of the `invoked.timestamp` file that can be found</span>
+<span class="doccomment">/// in the `OUT_DIR/..`, if it needs to rerun a `build.rs` script. The problem is that this</span>
+<span class="doccomment">/// `invoked.timestamp` is created when the `build.rs` is executed and the wasm binaries are created</span>
+<span class="doccomment">/// later. This leads to them having a later mtime than the `invoked.timestamp` file and thus,</span>
+<span class="doccomment">/// cargo/rustc always re-executes the `build.rs` script. To hack around this, we copy the mtime of</span>
+<span class="doccomment">/// the `invoked.timestamp` to the wasm binaries.</span>
+<span class="kw">fn</span> <span class="ident">adjust_mtime</span>(
+	<span class="ident">bloaty_wasm</span>: <span class="kw-2">&amp;</span><span class="ident">WasmBinaryBloaty</span>,
+	<span class="ident">compressed_or_compact_wasm</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="ident">WasmBinary</span><span class="op">&gt;</span>,
+) -&gt; <span class="ident">std::io::Result</span><span class="op">&lt;</span>()<span class="op">&gt;</span> {
+	<span class="kw">let</span> <span class="ident">out_dir</span> <span class="op">=</span> <span class="ident">build_helper::out_dir</span>();
+	<span class="kw">let</span> <span class="ident">invoked_timestamp</span> <span class="op">=</span> <span class="ident">out_dir</span>.<span class="ident">join</span>(<span class="string">&quot;../invoked.timestamp&quot;</span>);
+
+	<span class="comment">// Get the mtime of the `invoked.timestamp`</span>
+	<span class="kw">let</span> <span class="ident">metadata</span> <span class="op">=</span> <span class="ident">fs::metadata</span>(<span class="ident">invoked_timestamp</span>)<span class="question-mark">?</span>;
+	<span class="kw">let</span> <span class="ident">mtime</span> <span class="op">=</span> <span class="ident">filetime::FileTime::from_last_modification_time</span>(<span class="kw-2">&amp;</span><span class="ident">metadata</span>);
+
+	<span class="ident">filetime::set_file_mtime</span>(<span class="ident">bloaty_wasm</span>.<span class="ident">wasm_binary_bloaty_path</span>(), <span class="ident">mtime</span>)<span class="question-mark">?</span>;
+	<span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">binary</span>) <span class="op">=</span> <span class="ident">compressed_or_compact_wasm</span>.<span class="ident">as_ref</span>() {
+		<span class="ident">filetime::set_file_mtime</span>(<span class="ident">binary</span>.<span class="ident">wasm_binary_path</span>(), <span class="ident">mtime</span>)<span class="question-mark">?</span>;
+	}
+
+	<span class="prelude-val">Ok</span>(())
 }
 
 <span class="doccomment">/// Find the `Cargo.lock` relative to the `OUT_DIR` environment variable.</span>
@@ -1537,6 +1632,8 @@
 	<span class="ident">cargo_manifest</span>: <span class="kw-2">&amp;</span><span class="ident">Path</span>,
 	<span class="ident">project_folder</span>: <span class="kw-2">&amp;</span><span class="ident">Path</span>,
 	<span class="ident">wasm_workspace</span>: <span class="kw-2">&amp;</span><span class="ident">Path</span>,
+	<span class="ident">compressed_or_compact_wasm</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="ident">WasmBinary</span><span class="op">&gt;</span>,
+	<span class="ident">bloaty_wasm</span>: <span class="kw-2">&amp;</span><span class="ident">WasmBinaryBloaty</span>,
 ) {
 	<span class="comment">// Rerun `build.rs` if the `Cargo.lock` changes</span>
 	<span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">cargo_lock</span>) <span class="op">=</span> <span class="ident">find_cargo_lock</span>(<span class="ident">cargo_manifest</span>) {
@@ -1585,6 +1682,9 @@
 
 	<span class="comment">// Make sure that if any file/folder of a dependency change, we need to rerun the `build.rs`</span>
 	<span class="ident">packages</span>.<span class="ident">iter</span>().<span class="ident">for_each</span>(<span class="ident">package_rerun_if_changed</span>);
+
+	<span class="ident">compressed_or_compact_wasm</span>.<span class="ident">map</span>(<span class="op">|</span><span class="ident">w</span><span class="op">|</span> <span class="ident">rerun_if_changed</span>(<span class="ident">w</span>.<span class="ident">wasm_binary_path</span>()));
+	<span class="ident">rerun_if_changed</span>(<span class="ident">bloaty_wasm</span>.<span class="ident">wasm_binary_bloaty_path</span>());
 
 	<span class="comment">// Register our env variables</span>
 	<span class="macro">println!</span>(<span class="string">&quot;cargo:rerun-if-env-changed={}&quot;</span>, <span class="ident"><span class="kw">crate</span>::SKIP_BUILD_ENV</span>);

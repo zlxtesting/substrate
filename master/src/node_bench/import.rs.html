@@ -192,6 +192,7 @@
 <span id="187">187</span>
 <span id="188">188</span>
 <span id="189">189</span>
+<span id="190">190</span>
 </pre><pre class="rust"><code><span class="comment">// This file is part of Substrate.</span>
 
 <span class="comment">// Copyright (C) 2020-2022 Parity Technologies (UK) Ltd.</span>
@@ -329,9 +330,10 @@
 			.<span class="ident">inspect_state</span>(<span class="op">|</span><span class="op">|</span> {
 				<span class="kw">match</span> <span class="self">self</span>.<span class="ident">block_type</span> {
 					<span class="ident">BlockType::RandomTransfersKeepAlive</span> =&gt; {
-						<span class="comment">// should be 7 per signed extrinsic + 1 per unsigned</span>
+						<span class="comment">// should be 8 per signed extrinsic + 1 per unsigned</span>
 						<span class="comment">// we have 1 unsigned and the rest are signed in the block</span>
-						<span class="comment">// those 7 events per signed are:</span>
+						<span class="comment">// those 8 events per signed are:</span>
+						<span class="comment">//    - transaction paid for the transaction payment</span>
 						<span class="comment">//    - withdraw (Balances::Withdraw) for charging the transaction fee</span>
 						<span class="comment">//    - new account (System::NewAccount) as we always transfer fund to</span>
 						<span class="comment">//      non-existent account</span>
@@ -342,7 +344,7 @@
 						<span class="comment">//    - extrinsic success</span>
 						<span class="macro">assert_eq!</span>(
 							<span class="ident">node_runtime::System::events</span>().<span class="ident">len</span>(),
-							(<span class="self">self</span>.<span class="ident">block</span>.<span class="ident">extrinsics</span>.<span class="ident">len</span>() <span class="op">-</span> <span class="number">1</span>) <span class="op">*</span> <span class="number">7</span> <span class="op">+</span> <span class="number">1</span>,
+							(<span class="self">self</span>.<span class="ident">block</span>.<span class="ident">extrinsics</span>.<span class="ident">len</span>() <span class="op">-</span> <span class="number">1</span>) <span class="op">*</span> <span class="number">8</span> <span class="op">+</span> <span class="number">1</span>,
 						);
 					},
 					<span class="ident">BlockType::Noop</span> =&gt; {

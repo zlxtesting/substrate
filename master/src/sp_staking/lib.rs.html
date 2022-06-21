@@ -135,6 +135,15 @@
 <span id="130">130</span>
 <span id="131">131</span>
 <span id="132">132</span>
+<span id="133">133</span>
+<span id="134">134</span>
+<span id="135">135</span>
+<span id="136">136</span>
+<span id="137">137</span>
+<span id="138">138</span>
+<span id="139">139</span>
+<span id="140">140</span>
+<span id="141">141</span>
 </pre><pre class="rust"><code><span class="comment">// This file is part of Substrate.</span>
 
 <span class="comment">// Copyright (C) 2019-2022 Parity Technologies (UK) Ltd.</span>
@@ -245,6 +254,9 @@
 		<span class="ident">validators</span>: <span class="ident">sp_std::vec::Vec</span><span class="op">&lt;</span><span class="ident"><span class="self">Self</span>::AccountId</span><span class="op">&gt;</span>,
 	) -&gt; <span class="ident">DispatchResult</span>;
 
+	<span class="doccomment">/// Chill `stash`.</span>
+	<span class="kw">fn</span> <span class="ident">chill</span>(<span class="ident">controller</span>: <span class="ident"><span class="self">Self</span>::AccountId</span>) -&gt; <span class="ident">DispatchResult</span>;
+
 	<span class="doccomment">/// Bond some extra amount in the _Stash_&#39;s free balance against the active bonded balance of</span>
 	<span class="doccomment">/// the account. The amount extra actually bonded will never be more than the _Stash_&#39;s free</span>
 	<span class="doccomment">/// balance.</span>
@@ -262,10 +274,16 @@
 	<span class="kw">fn</span> <span class="ident">unbond</span>(<span class="ident">stash</span>: <span class="ident"><span class="self">Self</span>::AccountId</span>, <span class="ident">value</span>: <span class="ident"><span class="self">Self</span>::Balance</span>) -&gt; <span class="ident">DispatchResult</span>;
 
 	<span class="doccomment">/// Unlock any funds schedule to unlock before or at the current era.</span>
+	<span class="doccomment">///</span>
+	<span class="doccomment">/// Returns whether the stash was killed because of this withdraw or not.</span>
 	<span class="kw">fn</span> <span class="ident">withdraw_unbonded</span>(
 		<span class="ident">stash</span>: <span class="ident"><span class="self">Self</span>::AccountId</span>,
 		<span class="ident">num_slashing_spans</span>: <span class="ident">u32</span>,
-	) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">u64</span>, <span class="ident">DispatchError</span><span class="op">&gt;</span>;
+	) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">bool</span>, <span class="ident">DispatchError</span><span class="op">&gt;</span>;
+
+	<span class="doccomment">/// Get the nominations of a stash, if they are a nominator, `None` otherwise.</span>
+	<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;runtime-benchmarks&quot;</span>)]</span>
+	<span class="kw">fn</span> <span class="ident">nominations</span>(<span class="ident">who</span>: <span class="ident"><span class="self">Self</span>::AccountId</span>) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">sp_std::prelude::Vec</span><span class="op">&lt;</span><span class="ident"><span class="self">Self</span>::AccountId</span><span class="op">&gt;</span><span class="op">&gt;</span>;
 }
 </code></pre></div>
 </section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="sp_staking" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.62.0-nightly (6dd68402c 2022-05-11)" ></div>

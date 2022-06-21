@@ -196,7 +196,7 @@
 <span class="attribute">#![<span class="ident">allow</span>(<span class="ident">dead_code</span>)]</span>
 
 <span class="kw">use</span> <span class="ident">rand</span>::{<span class="self">self</span>, <span class="ident">seq::SliceRandom</span>, <span class="ident">Rng</span>, <span class="ident">RngCore</span>};
-<span class="kw">use</span> <span class="ident">sp_npos_elections</span>::{<span class="ident">phragmms</span>, <span class="ident">seq_phragmen</span>, <span class="ident">ElectionResult</span>, <span class="ident">VoteWeight</span>};
+<span class="kw">use</span> <span class="ident">sp_npos_elections</span>::{<span class="ident">phragmms</span>, <span class="ident">seq_phragmen</span>, <span class="ident">BalancingConfig</span>, <span class="ident">ElectionResult</span>, <span class="ident">VoteWeight</span>};
 <span class="kw">use</span> <span class="ident">sp_runtime::Perbill</span>;
 <span class="kw">use</span> <span class="ident">std::collections</span>::{<span class="ident">BTreeMap</span>, <span class="ident">HashSet</span>};
 
@@ -213,8 +213,8 @@
 }
 
 <span class="kw">pub</span> <span class="kw">enum</span> <span class="ident">ElectionType</span> {
-	<span class="ident">Phragmen</span>(<span class="prelude-ty">Option</span><span class="op">&lt;</span>(<span class="ident">usize</span>, <span class="ident">u128</span>)<span class="op">&gt;</span>),
-	<span class="ident">Phragmms</span>(<span class="prelude-ty">Option</span><span class="op">&lt;</span>(<span class="ident">usize</span>, <span class="ident">u128</span>)<span class="op">&gt;</span>),
+	<span class="ident">Phragmen</span>(<span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">BalancingConfig</span><span class="op">&gt;</span>),
+	<span class="ident">Phragmms</span>(<span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">BalancingConfig</span><span class="op">&gt;</span>),
 }
 
 <span class="kw">pub</span> <span class="kw">type</span> <span class="ident">AccountId</span> <span class="op">=</span> <span class="ident">u64</span>;

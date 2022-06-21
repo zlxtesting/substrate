@@ -302,34 +302,6 @@
 <span id="297">297</span>
 <span id="298">298</span>
 <span id="299">299</span>
-<span id="300">300</span>
-<span id="301">301</span>
-<span id="302">302</span>
-<span id="303">303</span>
-<span id="304">304</span>
-<span id="305">305</span>
-<span id="306">306</span>
-<span id="307">307</span>
-<span id="308">308</span>
-<span id="309">309</span>
-<span id="310">310</span>
-<span id="311">311</span>
-<span id="312">312</span>
-<span id="313">313</span>
-<span id="314">314</span>
-<span id="315">315</span>
-<span id="316">316</span>
-<span id="317">317</span>
-<span id="318">318</span>
-<span id="319">319</span>
-<span id="320">320</span>
-<span id="321">321</span>
-<span id="322">322</span>
-<span id="323">323</span>
-<span id="324">324</span>
-<span id="325">325</span>
-<span id="326">326</span>
-<span id="327">327</span>
 </pre><pre class="rust"><code><span class="comment">// This file is part of Substrate.</span>
 
 <span class="comment">// Copyright (C) 2021-2022 Parity Technologies (UK) Ltd.</span>
@@ -571,34 +543,6 @@
 		<span class="macro">panic!</span>(
 			<span class="string">&quot;Deadline reached while waiting for best BEEFY block to update. Perhaps the background task is broken?&quot;</span>
 		);
-	}
-
-	<span class="attribute">#[<span class="ident">tokio::test</span>]</span>
-	<span class="kw">async</span> <span class="kw">fn</span> <span class="ident">subscribe_and_unsubscribe_to_justifications</span>() {
-		<span class="kw">let</span> (<span class="ident">rpc</span>, <span class="kw">_</span>) <span class="op">=</span> <span class="ident">setup_io_handler</span>();
-
-		<span class="comment">// Subscribe call.</span>
-		<span class="kw">let</span> <span class="ident">sub</span> <span class="op">=</span> <span class="ident">rpc</span>
-			.<span class="ident">subscribe</span>(<span class="string">&quot;beefy_subscribeJustifications&quot;</span>, <span class="ident">EmptyParams::new</span>())
-			.<span class="kw">await</span>
-			.<span class="ident">unwrap</span>();
-
-		<span class="kw">let</span> <span class="ident">ser_id</span> <span class="op">=</span> <span class="ident">serde_json::to_string</span>(<span class="ident">sub</span>.<span class="ident">subscription_id</span>()).<span class="ident">unwrap</span>();
-
-		<span class="comment">// Unsubscribe</span>
-		<span class="kw">let</span> <span class="ident">unsub_req</span> <span class="op">=</span> <span class="macro">format!</span>(
-			<span class="string">&quot;{{\&quot;jsonrpc\&quot;:\&quot;2.0\&quot;,\&quot;method\&quot;:\&quot;beefy_unsubscribeJustifications\&quot;,\&quot;params\&quot;:[{}],\&quot;id\&quot;:1}}&quot;</span>,
-			<span class="ident">ser_id</span>
-		);
-		<span class="kw">let</span> (<span class="ident">response</span>, <span class="kw">_</span>) <span class="op">=</span> <span class="ident">rpc</span>.<span class="ident">raw_json_request</span>(<span class="kw-2">&amp;</span><span class="ident">unsub_req</span>).<span class="kw">await</span>.<span class="ident">unwrap</span>();
-
-		<span class="macro">assert_eq!</span>(<span class="ident">response</span>, <span class="string">r#&quot;{&quot;jsonrpc&quot;:&quot;2.0&quot;,&quot;result&quot;:true,&quot;id&quot;:1}&quot;#</span>);
-
-		<span class="comment">// Unsubscribe again and fail</span>
-		<span class="kw">let</span> (<span class="ident">response</span>, <span class="kw">_</span>) <span class="op">=</span> <span class="ident">rpc</span>.<span class="ident">raw_json_request</span>(<span class="kw-2">&amp;</span><span class="ident">unsub_req</span>).<span class="kw">await</span>.<span class="ident">unwrap</span>();
-		<span class="kw">let</span> <span class="ident">expected</span> <span class="op">=</span> <span class="string">r#&quot;{&quot;jsonrpc&quot;:&quot;2.0&quot;,&quot;result&quot;:false,&quot;id&quot;:1}&quot;#</span>;
-
-		<span class="macro">assert_eq!</span>(<span class="ident">response</span>, <span class="ident">expected</span>);
 	}
 
 	<span class="attribute">#[<span class="ident">tokio::test</span>]</span>
