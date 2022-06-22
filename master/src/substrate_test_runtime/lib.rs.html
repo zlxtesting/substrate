@@ -1369,6 +1369,16 @@
 <span id="1364">1364</span>
 <span id="1365">1365</span>
 <span id="1366">1366</span>
+<span id="1367">1367</span>
+<span id="1368">1368</span>
+<span id="1369">1369</span>
+<span id="1370">1370</span>
+<span id="1371">1371</span>
+<span id="1372">1372</span>
+<span id="1373">1373</span>
+<span id="1374">1374</span>
+<span id="1375">1375</span>
+<span id="1376">1376</span>
 </pre><pre class="rust"><code><span class="comment">// This file is part of Substrate.</span>
 
 <span class="comment">// Copyright (C) 2017-2022 Parity Technologies (UK) Ltd.</span>
@@ -2315,6 +2325,16 @@
 			<span class="kw">impl</span> <span class="ident">beefy_primitives::BeefyApi</span><span class="op">&lt;</span><span class="ident">Block</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">RuntimeApi</span> {
 				<span class="kw">fn</span> <span class="ident">validator_set</span>() -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">beefy_primitives::ValidatorSet</span><span class="op">&lt;</span><span class="ident">beefy_primitives::crypto::AuthorityId</span><span class="op">&gt;</span><span class="op">&gt;</span> {
 					<span class="prelude-val">None</span>
+				}
+			}
+
+			<span class="kw">impl</span> <span class="ident">beefy_merkle_tree::BeefyMmrApi</span><span class="op">&lt;</span><span class="ident">Block</span>, <span class="ident">beefy_primitives::MmrRootHash</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">RuntimeApi</span> {
+				<span class="kw">fn</span> <span class="ident">authority_set_proof</span>() -&gt; <span class="ident">beefy_primitives::mmr::BeefyAuthoritySet</span><span class="op">&lt;</span><span class="ident">beefy_primitives::MmrRootHash</span><span class="op">&gt;</span> {
+					<span class="ident">Default::default</span>()
+				}
+
+				<span class="kw">fn</span> <span class="ident">next_authority_set_proof</span>() -&gt; <span class="ident">beefy_primitives::mmr::BeefyNextAuthoritySet</span><span class="op">&lt;</span><span class="ident">beefy_primitives::MmrRootHash</span><span class="op">&gt;</span> {
+					<span class="ident">Default::default</span>()
 				}
 			}
 

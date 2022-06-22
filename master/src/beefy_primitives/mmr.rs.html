@@ -150,6 +150,9 @@
 <span id="145">145</span>
 <span id="146">146</span>
 <span id="147">147</span>
+<span id="148">148</span>
+<span id="149">149</span>
+<span id="150">150</span>
 </pre><pre class="rust"><code><span class="comment">// This file is part of Substrate.</span>
 
 <span class="comment">// Copyright (C) 2021-2022 Parity Technologies (UK) Ltd.</span>
@@ -247,10 +250,10 @@
 	}
 }
 
-<span class="doccomment">/// Details of the next BEEFY authority set.</span>
+<span class="doccomment">/// Details of a BEEFY authority set.</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>, <span class="ident">Default</span>, <span class="ident">PartialEq</span>, <span class="ident">Eq</span>, <span class="ident">Clone</span>, <span class="ident">Encode</span>, <span class="ident">Decode</span>, <span class="ident">TypeInfo</span>, <span class="ident">MaxEncodedLen</span>)]</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">BeefyNextAuthoritySet</span><span class="op">&lt;</span><span class="ident">MerkleRoot</span><span class="op">&gt;</span> {
-	<span class="doccomment">/// Id of the next set.</span>
+<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">BeefyAuthoritySet</span><span class="op">&lt;</span><span class="ident">MerkleRoot</span><span class="op">&gt;</span> {
+	<span class="doccomment">/// Id of the set.</span>
 	<span class="doccomment">///</span>
 	<span class="doccomment">/// Id is required to correlate BEEFY signed commitments with the validator set.</span>
 	<span class="doccomment">/// Light Client can easily verify that the commitment witness it is getting is</span>
@@ -258,17 +261,20 @@
 	<span class="kw">pub</span> <span class="ident">id</span>: <span class="ident"><span class="kw">crate</span>::ValidatorSetId</span>,
 	<span class="doccomment">/// Number of validators in the set.</span>
 	<span class="doccomment">///</span>
-	<span class="doccomment">/// Some BEEFY Light Clients may use an interactive protocol to verify only subset</span>
+	<span class="doccomment">/// Some BEEFY Light Clients may use an interactive protocol to verify only a subset</span>
 	<span class="doccomment">/// of signatures. We put set length here, so that these clients can verify the minimal</span>
 	<span class="doccomment">/// number of required signatures.</span>
 	<span class="kw">pub</span> <span class="ident">len</span>: <span class="ident">u32</span>,
-	<span class="doccomment">/// Merkle Root Hash build from BEEFY AuthorityIds.</span>
+	<span class="doccomment">/// Merkle Root Hash built from BEEFY AuthorityIds.</span>
 	<span class="doccomment">///</span>
 	<span class="doccomment">/// This is used by Light Clients to confirm that the commitments are signed by the correct</span>
 	<span class="doccomment">/// validator set. Light Clients using interactive protocol, might verify only subset of</span>
 	<span class="doccomment">/// signatures, hence don&#39;t require the full list here (will receive inclusion proofs).</span>
 	<span class="kw">pub</span> <span class="ident">root</span>: <span class="ident">MerkleRoot</span>,
 }
+
+<span class="doccomment">/// Details of the next BEEFY authority set.</span>
+<span class="kw">pub</span> <span class="kw">type</span> <span class="ident">BeefyNextAuthoritySet</span><span class="op">&lt;</span><span class="ident">MerkleRoot</span><span class="op">&gt;</span> <span class="op">=</span> <span class="ident">BeefyAuthoritySet</span><span class="op">&lt;</span><span class="ident">MerkleRoot</span><span class="op">&gt;</span>;
 
 <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">test</span>)]</span>
 <span class="kw">mod</span> <span class="ident">tests</span> {
