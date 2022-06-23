@@ -169,7 +169,7 @@
 		<span class="doccomment">/// doesn&#39;t exist, or doesn&#39;t have a contract then `Err` is returned.</span>
 		<span class="kw">fn</span> <span class="ident">get_storage</span>(
 			<span class="ident">address</span>: <span class="ident">AccountId</span>,
-			<span class="ident">key</span>: [<span class="ident">u8</span>; <span class="number">32</span>],
+			<span class="ident">key</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">u8</span><span class="op">&gt;</span>,
 		) -&gt; <span class="ident">GetStorageResult</span>;
 	}
 }

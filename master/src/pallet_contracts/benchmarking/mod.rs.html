@@ -2925,6 +2925,37 @@
 <span id="2920">2920</span>
 <span id="2921">2921</span>
 <span id="2922">2922</span>
+<span id="2923">2923</span>
+<span id="2924">2924</span>
+<span id="2925">2925</span>
+<span id="2926">2926</span>
+<span id="2927">2927</span>
+<span id="2928">2928</span>
+<span id="2929">2929</span>
+<span id="2930">2930</span>
+<span id="2931">2931</span>
+<span id="2932">2932</span>
+<span id="2933">2933</span>
+<span id="2934">2934</span>
+<span id="2935">2935</span>
+<span id="2936">2936</span>
+<span id="2937">2937</span>
+<span id="2938">2938</span>
+<span id="2939">2939</span>
+<span id="2940">2940</span>
+<span id="2941">2941</span>
+<span id="2942">2942</span>
+<span id="2943">2943</span>
+<span id="2944">2944</span>
+<span id="2945">2945</span>
+<span id="2946">2946</span>
+<span id="2947">2947</span>
+<span id="2948">2948</span>
+<span id="2949">2949</span>
+<span id="2950">2950</span>
+<span id="2951">2951</span>
+<span id="2952">2952</span>
+<span id="2953">2953</span>
 </pre><pre class="rust"><code><span class="comment">// This file is part of Substrate.</span>
 
 <span class="comment">// Copyright (C) 2020-2022 Parity Technologies (UK) Ltd.</span>
@@ -2957,7 +2988,7 @@
 	<span class="ident">sandbox::Sandbox</span>,
 };
 <span class="kw">use</span> <span class="kw">crate</span>::{
-	<span class="ident">exec</span>::{<span class="ident">AccountIdOf</span>, <span class="ident">StorageKey</span>},
+	<span class="ident">exec</span>::{<span class="ident">AccountIdOf</span>, <span class="ident">FixSizedKey</span>, <span class="ident">VarSizedKey</span>},
 	<span class="ident">schedule</span>::{<span class="ident">API_BENCHMARK_BATCH_SIZE</span>, <span class="ident">INSTR_BENCHMARK_BATCH_SIZE</span>},
 	<span class="ident">storage::Storage</span>,
 	<span class="ident">wasm::CallFlags</span>,
@@ -3059,11 +3090,17 @@
 	}
 
 	<span class="doccomment">/// Store the supplied storage items into this contracts storage.</span>
-	<span class="kw">fn</span> <span class="ident">store</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">items</span>: <span class="kw-2">&amp;</span><span class="ident">Vec</span><span class="op">&lt;</span>(<span class="ident">StorageKey</span>, <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">u8</span><span class="op">&gt;</span>)<span class="op">&gt;</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span>(), <span class="kw-2">&amp;</span><span class="lifetime">&#39;static</span> <span class="ident">str</span><span class="op">&gt;</span> {
+	<span class="kw">fn</span> <span class="ident">store</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">items</span>: <span class="kw-2">&amp;</span><span class="ident">Vec</span><span class="op">&lt;</span>(<span class="ident">FixSizedKey</span>, <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">u8</span><span class="op">&gt;</span>)<span class="op">&gt;</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span>(), <span class="kw-2">&amp;</span><span class="lifetime">&#39;static</span> <span class="ident">str</span><span class="op">&gt;</span> {
 		<span class="kw">let</span> <span class="ident">info</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">info</span>()<span class="question-mark">?</span>;
 		<span class="kw">for</span> <span class="ident">item</span> <span class="kw">in</span> <span class="ident">items</span> {
-			<span class="ident">Storage</span>::<span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span><span class="ident">::write</span>(<span class="kw-2">&amp;</span><span class="ident">info</span>.<span class="ident">trie_id</span>, <span class="kw-2">&amp;</span><span class="ident">item</span>.<span class="number">0</span>, <span class="prelude-val">Some</span>(<span class="ident">item</span>.<span class="number">1</span>.<span class="ident">clone</span>()), <span class="prelude-val">None</span>, <span class="bool-val">false</span>)
-				.<span class="ident">map_err</span>(<span class="op">|</span><span class="kw">_</span><span class="op">|</span> <span class="string">&quot;Failed to write storage to restoration dest&quot;</span>)<span class="question-mark">?</span>;
+			<span class="ident">Storage</span>::<span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span><span class="ident">::write</span>(
+				<span class="kw-2">&amp;</span><span class="ident">info</span>.<span class="ident">trie_id</span>,
+				<span class="kw-2">&amp;</span><span class="ident">item</span>.<span class="number">0</span> <span class="kw">as</span> <span class="kw-2">&amp;</span><span class="ident">FixSizedKey</span>,
+				<span class="prelude-val">Some</span>(<span class="ident">item</span>.<span class="number">1</span>.<span class="ident">clone</span>()),
+				<span class="prelude-val">None</span>,
+				<span class="bool-val">false</span>,
+			)
+			.<span class="ident">map_err</span>(<span class="op">|</span><span class="kw">_</span><span class="op">|</span> <span class="string">&quot;Failed to write storage to restoration dest&quot;</span>)<span class="question-mark">?</span>;
 		}
 		<span class="op">&lt;</span><span class="ident">ContractInfoOf</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span><span class="op">&gt;</span><span class="ident">::insert</span>(<span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">account_id</span>, <span class="ident">info</span>);
 		<span class="prelude-val">Ok</span>(())
@@ -3823,33 +3860,37 @@
 	}: <span class="ident">call</span>(<span class="ident">origin</span>, <span class="ident">instance</span>.<span class="ident">addr</span>, <span class="number">0u32</span>.<span class="ident">into</span>(), <span class="ident">Weight::MAX</span>, <span class="prelude-val">None</span>, <span class="macro">vec!</span>[])
 
 	<span class="comment">// Only the overhead of calling the function itself with minimal arguments.</span>
-	<span class="comment">// The contract is a bit more complex because I needs to use different keys in order</span>
+	<span class="comment">// The contract is a bit more complex because it needs to use different keys in order</span>
 	<span class="comment">// to generate unique storage accesses. However, it is still dominated by the storage</span>
-	<span class="comment">// accesses.</span>
+	<span class="comment">// accesses. We store all the keys that we are about to write at beforehand</span>
+	<span class="comment">// because re-writing at an existing key is always more expensive than writing</span>
+	<span class="comment">// it at a virgin key.</span>
 	<span class="attribute">#[<span class="ident">skip_meta</span>]</span>
 	<span class="ident">seal_set_storage</span> {
-		<span class="kw">let</span> <span class="ident">r</span> <span class="kw">in</span> <span class="number">0</span> .. <span class="ident">API_BENCHMARK_BATCHES</span>;
+		<span class="kw">let</span> <span class="ident">r</span> <span class="kw">in</span> <span class="number">0</span> .. <span class="ident">API_BENCHMARK_BATCHES</span><span class="op">/</span><span class="number">2</span>;
+		<span class="kw">let</span> <span class="ident">max_key_len</span> <span class="op">=</span> <span class="ident">T::MaxStorageKeyLen::get</span>();
 		<span class="kw">let</span> <span class="ident">keys</span> <span class="op">=</span> (<span class="number">0</span> .. <span class="ident">r</span> <span class="op">*</span> <span class="ident">API_BENCHMARK_BATCH_SIZE</span>)
-			.<span class="ident">map</span>(<span class="op">|</span><span class="ident">n</span><span class="op">|</span> <span class="ident">T::Hashing::hash_of</span>(<span class="kw-2">&amp;</span><span class="ident">n</span>).<span class="ident">as_ref</span>().<span class="ident">to_vec</span>())
-			.<span class="ident">collect</span>::<span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="kw">_</span><span class="op">&gt;</span><span class="op">&gt;</span>();
-		<span class="kw">let</span> <span class="ident">key_len</span> <span class="op">=</span> <span class="ident">keys</span>.<span class="ident">get</span>(<span class="number">0</span>).<span class="ident">map</span>(<span class="op">|</span><span class="ident">i</span><span class="op">|</span> <span class="ident">i</span>.<span class="ident">len</span>() <span class="kw">as</span> <span class="ident">u32</span>).<span class="ident">unwrap_or</span>(<span class="number">0</span>);
-		<span class="kw">let</span> <span class="ident">key_bytes</span> <span class="op">=</span> <span class="ident">keys</span>.<span class="ident">iter</span>().<span class="ident">flatten</span>().<span class="ident">cloned</span>().<span class="ident">collect</span>::<span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="kw">_</span><span class="op">&gt;</span><span class="op">&gt;</span>();
+				.<span class="ident">map</span>(<span class="op">|</span><span class="ident">n</span><span class="op">|</span> { <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">h</span> <span class="op">=</span> <span class="ident">T::Hashing::hash_of</span>(<span class="kw-2">&amp;</span><span class="ident">n</span>).<span class="ident">as_ref</span>().<span class="ident">to_vec</span>();
+						<span class="ident">h</span>.<span class="ident">resize</span>(<span class="ident">max_key_len</span>.<span class="ident">try_into</span>().<span class="ident">unwrap</span>(), <span class="ident">n</span>.<span class="ident">to_le_bytes</span>()[<span class="number">0</span>]); <span class="ident">h</span> })
+		.<span class="ident">collect</span>::<span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="kw">_</span><span class="op">&gt;</span><span class="op">&gt;</span>();
+		<span class="kw">let</span> <span class="ident">keys_bytes</span> <span class="op">=</span> <span class="ident">keys</span>.<span class="ident">iter</span>().<span class="ident">flatten</span>().<span class="ident">cloned</span>().<span class="ident">collect</span>::<span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="kw">_</span><span class="op">&gt;</span><span class="op">&gt;</span>();
 		<span class="kw">let</span> <span class="ident">code</span> <span class="op">=</span> <span class="ident">WasmModule</span>::<span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span><span class="ident">::from</span>(<span class="ident">ModuleDefinition</span> {
 			<span class="ident">memory</span>: <span class="prelude-val">Some</span>(<span class="ident">ImportedMemory::max</span>::<span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>()),
 			<span class="ident">imported_functions</span>: <span class="macro">vec!</span>[<span class="ident">ImportedFunction</span> {
-				<span class="ident">module</span>: <span class="string">&quot;seal1&quot;</span>,
+				<span class="ident">module</span>: <span class="string">&quot;__unstable__&quot;</span>,
 				<span class="ident">name</span>: <span class="string">&quot;seal_set_storage&quot;</span>,
-				<span class="ident">params</span>: <span class="macro">vec!</span>[<span class="ident">ValueType::I32</span>, <span class="ident">ValueType::I32</span>, <span class="ident">ValueType::I32</span>],
+				<span class="ident">params</span>: <span class="macro">vec!</span>[<span class="ident">ValueType::I32</span>, <span class="ident">ValueType::I32</span>, <span class="ident">ValueType::I32</span>, <span class="ident">ValueType::I32</span>],
 				<span class="ident">return_type</span>: <span class="prelude-val">Some</span>(<span class="ident">ValueType::I32</span>),
 			}],
 			<span class="ident">data_segments</span>: <span class="macro">vec!</span>[
 				<span class="ident">DataSegment</span> {
 					<span class="ident">offset</span>: <span class="number">0</span>,
-					<span class="ident">value</span>: <span class="ident">key_bytes</span>,
+					<span class="ident">value</span>: <span class="ident">keys_bytes</span>,
 				},
 			],
 			<span class="ident">call_body</span>: <span class="prelude-val">Some</span>(<span class="ident">body::repeated_dyn</span>(<span class="ident">r</span> <span class="op">*</span> <span class="ident">API_BENCHMARK_BATCH_SIZE</span>, <span class="macro">vec!</span>[
-				<span class="ident">Counter</span>(<span class="number">0</span>, <span class="ident">key_len</span> <span class="kw">as</span> <span class="ident">u32</span>), <span class="comment">// key_ptr</span>
+				<span class="ident">Counter</span>(<span class="number">0</span>, <span class="ident">max_key_len</span> <span class="kw">as</span> <span class="ident">u32</span>), <span class="comment">// key_ptr</span>
+				<span class="ident">Regular</span>(<span class="ident">Instruction::I32Const</span>(<span class="ident">max_key_len</span> <span class="kw">as</span> <span class="ident">i32</span>)), <span class="comment">// key_len</span>
 				<span class="ident">Regular</span>(<span class="ident">Instruction::I32Const</span>(<span class="number">0</span>)), <span class="comment">// value_ptr</span>
 				<span class="ident">Regular</span>(<span class="ident">Instruction::I32Const</span>(<span class="number">0</span>)), <span class="comment">// value_len</span>
 				<span class="ident">Regular</span>(<span class="ident">Instruction::Call</span>(<span class="number">0</span>)),
@@ -3862,7 +3903,7 @@
 		<span class="kw">for</span> <span class="ident">key</span> <span class="kw">in</span> <span class="ident">keys</span> {
 			<span class="ident">Storage</span>::<span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span><span class="ident">::write</span>(
 				<span class="kw-2">&amp;</span><span class="ident">info</span>.<span class="ident">trie_id</span>,
-				<span class="ident">key</span>.<span class="ident">as_slice</span>().<span class="ident">try_into</span>().<span class="ident">map_err</span>(<span class="op">|</span><span class="ident">e</span><span class="op">|</span> <span class="string">&quot;Key has wrong length&quot;</span>)<span class="question-mark">?</span>,
+				<span class="kw-2">&amp;</span><span class="ident">VarSizedKey</span>::<span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span><span class="ident">::try_from</span>(<span class="ident">key</span>).<span class="ident">map_err</span>(<span class="op">|</span><span class="ident">e</span><span class="op">|</span> <span class="string">&quot;Key has wrong length&quot;</span>)<span class="question-mark">?</span>,
 				<span class="prelude-val">Some</span>(<span class="macro">vec!</span>[]),
 				<span class="prelude-val">None</span>,
 				<span class="bool-val">false</span>,
@@ -3874,18 +3915,19 @@
 
 	<span class="attribute">#[<span class="ident">skip_meta</span>]</span>
 	<span class="ident">seal_set_storage_per_new_kb</span> {
-		<span class="kw">let</span> <span class="ident">n</span> <span class="kw">in</span> <span class="number">0</span> .. <span class="ident">T::Schedule::get</span>().<span class="ident">limits</span>.<span class="ident">payload_len</span> <span class="op">/</span> <span class="number">1024</span>;
-		<span class="kw">let</span> <span class="ident">keys</span> <span class="op">=</span> (<span class="number">0</span> .. <span class="ident">API_BENCHMARK_BATCH_SIZE</span>)
-			.<span class="ident">map</span>(<span class="op">|</span><span class="ident">n</span><span class="op">|</span> <span class="ident">T::Hashing::hash_of</span>(<span class="kw-2">&amp;</span><span class="ident">n</span>).<span class="ident">as_ref</span>().<span class="ident">to_vec</span>())
-			.<span class="ident">collect</span>::<span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="kw">_</span><span class="op">&gt;</span><span class="op">&gt;</span>();
-		<span class="kw">let</span> <span class="ident">key_len</span> <span class="op">=</span> <span class="ident">keys</span>.<span class="ident">get</span>(<span class="number">0</span>).<span class="ident">map</span>(<span class="op">|</span><span class="ident">i</span><span class="op">|</span> <span class="ident">i</span>.<span class="ident">len</span>() <span class="kw">as</span> <span class="ident">u32</span>).<span class="ident">unwrap_or</span>(<span class="number">0</span>);
+		<span class="kw">let</span> <span class="ident">n</span> <span class="kw">in</span> <span class="number">0</span> .. <span class="ident">T::Schedule::get</span>().<span class="ident">limits</span>.<span class="ident">payload_len</span> <span class="op">/</span> <span class="number">2048</span>; <span class="comment">// half of the max payload_len in kb</span>
+		<span class="kw">let</span> <span class="ident">max_key_len</span> <span class="op">=</span> <span class="ident">T::MaxStorageKeyLen::get</span>();
+		<span class="kw">let</span> <span class="ident">keys</span> <span class="op">=</span> (<span class="number">0</span> .. <span class="ident">n</span> <span class="op">*</span> <span class="ident">API_BENCHMARK_BATCH_SIZE</span>)
+				.<span class="ident">map</span>(<span class="op">|</span><span class="ident">n</span><span class="op">|</span> { <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">h</span> <span class="op">=</span> <span class="ident">T::Hashing::hash_of</span>(<span class="kw-2">&amp;</span><span class="ident">n</span>).<span class="ident">as_ref</span>().<span class="ident">to_vec</span>();
+						<span class="ident">h</span>.<span class="ident">resize</span>(<span class="ident">max_key_len</span>.<span class="ident">try_into</span>().<span class="ident">unwrap</span>(), <span class="ident">n</span>.<span class="ident">to_le_bytes</span>()[<span class="number">0</span>]); <span class="ident">h</span> })
+		.<span class="ident">collect</span>::<span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="kw">_</span><span class="op">&gt;</span><span class="op">&gt;</span>();
 		<span class="kw">let</span> <span class="ident">key_bytes</span> <span class="op">=</span> <span class="ident">keys</span>.<span class="ident">iter</span>().<span class="ident">flatten</span>().<span class="ident">cloned</span>().<span class="ident">collect</span>::<span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="kw">_</span><span class="op">&gt;</span><span class="op">&gt;</span>();
 		<span class="kw">let</span> <span class="ident">code</span> <span class="op">=</span> <span class="ident">WasmModule</span>::<span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span><span class="ident">::from</span>(<span class="ident">ModuleDefinition</span> {
 			<span class="ident">memory</span>: <span class="prelude-val">Some</span>(<span class="ident">ImportedMemory::max</span>::<span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>()),
 			<span class="ident">imported_functions</span>: <span class="macro">vec!</span>[<span class="ident">ImportedFunction</span> {
-				<span class="ident">module</span>: <span class="string">&quot;seal1&quot;</span>,
+				<span class="ident">module</span>: <span class="string">&quot;__unstable__&quot;</span>,
 				<span class="ident">name</span>: <span class="string">&quot;seal_set_storage&quot;</span>,
-				<span class="ident">params</span>: <span class="macro">vec!</span>[<span class="ident">ValueType::I32</span>, <span class="ident">ValueType::I32</span>, <span class="ident">ValueType::I32</span>],
+				<span class="ident">params</span>: <span class="macro">vec!</span>[<span class="ident">ValueType::I32</span>, <span class="ident">ValueType::I32</span>, <span class="ident">ValueType::I32</span>, <span class="ident">ValueType::I32</span>],
 				<span class="ident">return_type</span>: <span class="prelude-val">Some</span>(<span class="ident">ValueType::I32</span>),
 			}],
 			<span class="ident">data_segments</span>: <span class="macro">vec!</span>[
@@ -3895,9 +3937,10 @@
 				},
 			],
 			<span class="ident">call_body</span>: <span class="prelude-val">Some</span>(<span class="ident">body::repeated_dyn</span>(<span class="ident">API_BENCHMARK_BATCH_SIZE</span>, <span class="macro">vec!</span>[
-				<span class="ident">Counter</span>(<span class="number">0</span>, <span class="ident">key_len</span> <span class="kw">as</span> <span class="ident">u32</span>), <span class="comment">// key_ptr</span>
+				<span class="ident">Counter</span>(<span class="number">0</span>, <span class="ident">max_key_len</span> <span class="kw">as</span> <span class="ident">u32</span>), <span class="comment">// key_ptr</span>
+				<span class="ident">Regular</span>(<span class="ident">Instruction::I32Const</span>(<span class="ident">max_key_len</span> <span class="kw">as</span> <span class="ident">i32</span>)), <span class="comment">// key_len</span>
 				<span class="ident">Regular</span>(<span class="ident">Instruction::I32Const</span>(<span class="number">0</span>)), <span class="comment">// value_ptr</span>
-				<span class="ident">Regular</span>(<span class="ident">Instruction::I32Const</span>((<span class="ident">n</span> <span class="op">*</span> <span class="number">1024</span>) <span class="kw">as</span> <span class="ident">i32</span>)), <span class="comment">// value_len</span>
+				<span class="ident">Regular</span>(<span class="ident">Instruction::I32Const</span>((<span class="ident">n</span> <span class="op">*</span> <span class="number">2048</span>) <span class="kw">as</span> <span class="ident">i32</span>)), <span class="comment">// value_len increments by 2kb up to max payload_len</span>
 				<span class="ident">Regular</span>(<span class="ident">Instruction::Call</span>(<span class="number">0</span>)),
 				<span class="ident">Regular</span>(<span class="ident">Instruction::Drop</span>),
 			])),
@@ -3908,7 +3951,7 @@
 		<span class="kw">for</span> <span class="ident">key</span> <span class="kw">in</span> <span class="ident">keys</span> {
 			<span class="ident">Storage</span>::<span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span><span class="ident">::write</span>(
 				<span class="kw-2">&amp;</span><span class="ident">info</span>.<span class="ident">trie_id</span>,
-				<span class="ident">key</span>.<span class="ident">as_slice</span>().<span class="ident">try_into</span>().<span class="ident">map_err</span>(<span class="op">|</span><span class="ident">e</span><span class="op">|</span> <span class="string">&quot;Key has wrong length&quot;</span>)<span class="question-mark">?</span>,
+				<span class="kw-2">&amp;</span><span class="ident">VarSizedKey</span>::<span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span><span class="ident">::try_from</span>(<span class="ident">key</span>).<span class="ident">map_err</span>(<span class="op">|</span><span class="ident">e</span><span class="op">|</span> <span class="string">&quot;Key has wrong length&quot;</span>)<span class="question-mark">?</span>,
 				<span class="prelude-val">Some</span>(<span class="macro">vec!</span>[]),
 				<span class="prelude-val">None</span>,
 				<span class="bool-val">false</span>,
@@ -3920,18 +3963,19 @@
 
 	<span class="attribute">#[<span class="ident">skip_meta</span>]</span>
 	<span class="ident">seal_set_storage_per_old_kb</span> {
-		<span class="kw">let</span> <span class="ident">n</span> <span class="kw">in</span> <span class="number">0</span> .. <span class="ident">T::Schedule::get</span>().<span class="ident">limits</span>.<span class="ident">payload_len</span> <span class="op">/</span> <span class="number">1024</span>;
-		<span class="kw">let</span> <span class="ident">keys</span> <span class="op">=</span> (<span class="number">0</span> .. <span class="ident">API_BENCHMARK_BATCH_SIZE</span>)
-			.<span class="ident">map</span>(<span class="op">|</span><span class="ident">n</span><span class="op">|</span> <span class="ident">T::Hashing::hash_of</span>(<span class="kw-2">&amp;</span><span class="ident">n</span>).<span class="ident">as_ref</span>().<span class="ident">to_vec</span>())
-			.<span class="ident">collect</span>::<span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="kw">_</span><span class="op">&gt;</span><span class="op">&gt;</span>();
-		<span class="kw">let</span> <span class="ident">key_len</span> <span class="op">=</span> <span class="ident">keys</span>.<span class="ident">get</span>(<span class="number">0</span>).<span class="ident">map</span>(<span class="op">|</span><span class="ident">i</span><span class="op">|</span> <span class="ident">i</span>.<span class="ident">len</span>() <span class="kw">as</span> <span class="ident">u32</span>).<span class="ident">unwrap_or</span>(<span class="number">0</span>);
+		<span class="kw">let</span> <span class="ident">n</span> <span class="kw">in</span> <span class="number">0</span> .. <span class="ident">T::Schedule::get</span>().<span class="ident">limits</span>.<span class="ident">payload_len</span> <span class="op">/</span> <span class="number">2048</span>; <span class="comment">// half of the max payload_len in kb</span>
+		<span class="kw">let</span> <span class="ident">max_key_len</span> <span class="op">=</span> <span class="ident">T::MaxStorageKeyLen::get</span>();
+		<span class="kw">let</span> <span class="ident">keys</span> <span class="op">=</span> (<span class="number">0</span> .. <span class="ident">n</span> <span class="op">*</span> <span class="ident">API_BENCHMARK_BATCH_SIZE</span>)
+				.<span class="ident">map</span>(<span class="op">|</span><span class="ident">n</span><span class="op">|</span> { <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">h</span> <span class="op">=</span> <span class="ident">T::Hashing::hash_of</span>(<span class="kw-2">&amp;</span><span class="ident">n</span>).<span class="ident">as_ref</span>().<span class="ident">to_vec</span>();
+						<span class="ident">h</span>.<span class="ident">resize</span>(<span class="ident">max_key_len</span>.<span class="ident">try_into</span>().<span class="ident">unwrap</span>(), <span class="ident">n</span>.<span class="ident">to_le_bytes</span>()[<span class="number">0</span>]); <span class="ident">h</span> })
+		.<span class="ident">collect</span>::<span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="kw">_</span><span class="op">&gt;</span><span class="op">&gt;</span>();
 		<span class="kw">let</span> <span class="ident">key_bytes</span> <span class="op">=</span> <span class="ident">keys</span>.<span class="ident">iter</span>().<span class="ident">flatten</span>().<span class="ident">cloned</span>().<span class="ident">collect</span>::<span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="kw">_</span><span class="op">&gt;</span><span class="op">&gt;</span>();
 		<span class="kw">let</span> <span class="ident">code</span> <span class="op">=</span> <span class="ident">WasmModule</span>::<span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span><span class="ident">::from</span>(<span class="ident">ModuleDefinition</span> {
 			<span class="ident">memory</span>: <span class="prelude-val">Some</span>(<span class="ident">ImportedMemory::max</span>::<span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>()),
 			<span class="ident">imported_functions</span>: <span class="macro">vec!</span>[<span class="ident">ImportedFunction</span> {
-				<span class="ident">module</span>: <span class="string">&quot;seal1&quot;</span>,
+				<span class="ident">module</span>: <span class="string">&quot;__unstable__&quot;</span>,
 				<span class="ident">name</span>: <span class="string">&quot;seal_set_storage&quot;</span>,
-				<span class="ident">params</span>: <span class="macro">vec!</span>[<span class="ident">ValueType::I32</span>, <span class="ident">ValueType::I32</span>, <span class="ident">ValueType::I32</span>],
+				<span class="ident">params</span>: <span class="macro">vec!</span>[<span class="ident">ValueType::I32</span>, <span class="ident">ValueType::I32</span>, <span class="ident">ValueType::I32</span>, <span class="ident">ValueType::I32</span>],
 				<span class="ident">return_type</span>: <span class="prelude-val">Some</span>(<span class="ident">ValueType::I32</span>),
 			}],
 			<span class="ident">data_segments</span>: <span class="macro">vec!</span>[
@@ -3941,9 +3985,10 @@
 				},
 			],
 			<span class="ident">call_body</span>: <span class="prelude-val">Some</span>(<span class="ident">body::repeated_dyn</span>(<span class="ident">API_BENCHMARK_BATCH_SIZE</span>, <span class="macro">vec!</span>[
-				<span class="ident">Counter</span>(<span class="number">0</span>, <span class="ident">key_len</span> <span class="kw">as</span> <span class="ident">u32</span>), <span class="comment">// key_ptr</span>
+				<span class="ident">Counter</span>(<span class="number">0</span>, <span class="ident">max_key_len</span> <span class="kw">as</span> <span class="ident">u32</span>), <span class="comment">// key_ptr</span>
+				<span class="ident">Regular</span>(<span class="ident">Instruction::I32Const</span>(<span class="ident">max_key_len</span> <span class="kw">as</span> <span class="ident">i32</span>)), <span class="comment">// key_len</span>
 				<span class="ident">Regular</span>(<span class="ident">Instruction::I32Const</span>(<span class="number">0</span>)), <span class="comment">// value_ptr</span>
-				<span class="ident">Regular</span>(<span class="ident">Instruction::I32Const</span>(<span class="number">0</span>)), <span class="comment">// value_len</span>
+				<span class="ident">Regular</span>(<span class="ident">Instruction::I32Const</span>(<span class="number">0</span>)), <span class="comment">// value_len is 0 as testing vs pre-existing value len</span>
 				<span class="ident">Regular</span>(<span class="ident">Instruction::Call</span>(<span class="number">0</span>)),
 				<span class="ident">Regular</span>(<span class="ident">Instruction::Drop</span>),
 			])),
@@ -3954,8 +3999,8 @@
 		<span class="kw">for</span> <span class="ident">key</span> <span class="kw">in</span> <span class="ident">keys</span> {
 			<span class="ident">Storage</span>::<span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span><span class="ident">::write</span>(
 				<span class="kw-2">&amp;</span><span class="ident">info</span>.<span class="ident">trie_id</span>,
-				<span class="ident">key</span>.<span class="ident">as_slice</span>().<span class="ident">try_into</span>().<span class="ident">map_err</span>(<span class="op">|</span><span class="ident">e</span><span class="op">|</span> <span class="string">&quot;Key has wrong length&quot;</span>)<span class="question-mark">?</span>,
-				<span class="prelude-val">Some</span>(<span class="macro">vec!</span>[<span class="number">42u8</span>; (<span class="ident">n</span> <span class="op">*</span> <span class="number">1024</span>) <span class="kw">as</span> <span class="ident">usize</span>]),
+				<span class="kw-2">&amp;</span><span class="ident">VarSizedKey</span>::<span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span><span class="ident">::try_from</span>(<span class="ident">key</span>).<span class="ident">map_err</span>(<span class="op">|</span><span class="ident">e</span><span class="op">|</span> <span class="string">&quot;Key has wrong length&quot;</span>)<span class="question-mark">?</span>,
+				<span class="prelude-val">Some</span>(<span class="macro">vec!</span>[<span class="number">42u8</span>; (<span class="ident">n</span> <span class="op">*</span> <span class="number">2048</span>) <span class="kw">as</span> <span class="ident">usize</span>]), <span class="comment">// value_len increments by 2kb up to max payload_len</span>
 				<span class="prelude-val">None</span>,
 				<span class="bool-val">false</span>,
 			)
@@ -3964,23 +4009,25 @@
 		<span class="kw">let</span> <span class="ident">origin</span> <span class="op">=</span> <span class="ident">RawOrigin::Signed</span>(<span class="ident">instance</span>.<span class="ident">caller</span>.<span class="ident">clone</span>());
 	}: <span class="ident">call</span>(<span class="ident">origin</span>, <span class="ident">instance</span>.<span class="ident">addr</span>, <span class="number">0u32</span>.<span class="ident">into</span>(), <span class="ident">Weight::MAX</span>, <span class="prelude-val">None</span>, <span class="macro">vec!</span>[])
 
-	<span class="comment">// Similar to seal_set_storage. However, we store all the keys that we are about to</span>
+	<span class="comment">// Similar to seal_set_storage. We store all the keys that we are about to</span>
 	<span class="comment">// delete beforehand in order to prevent any optimizations that could occur when</span>
-	<span class="comment">// deleting a non existing key.</span>
+	<span class="comment">// deleting a non existing key. We generate keys of a maximum length, and have to</span>
+	<span class="comment">// reduce batch size in order to make resulting contract code size less than MaxCodeLen.</span>
 	<span class="attribute">#[<span class="ident">skip_meta</span>]</span>
 	<span class="ident">seal_clear_storage</span> {
-		<span class="kw">let</span> <span class="ident">r</span> <span class="kw">in</span> <span class="number">0</span> .. <span class="ident">API_BENCHMARK_BATCHES</span>;
+		<span class="kw">let</span> <span class="ident">r</span> <span class="kw">in</span> <span class="number">0</span> .. <span class="ident">API_BENCHMARK_BATCHES</span><span class="op">/</span><span class="number">2</span>;
+		<span class="kw">let</span> <span class="ident">max_key_len</span> <span class="op">=</span> <span class="ident">T::MaxStorageKeyLen::get</span>();
 		<span class="kw">let</span> <span class="ident">keys</span> <span class="op">=</span> (<span class="number">0</span> .. <span class="ident">r</span> <span class="op">*</span> <span class="ident">API_BENCHMARK_BATCH_SIZE</span>)
-			.<span class="ident">map</span>(<span class="op">|</span><span class="ident">n</span><span class="op">|</span> <span class="ident">T::Hashing::hash_of</span>(<span class="kw-2">&amp;</span><span class="ident">n</span>).<span class="ident">as_ref</span>().<span class="ident">to_vec</span>())
-			.<span class="ident">collect</span>::<span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="kw">_</span><span class="op">&gt;</span><span class="op">&gt;</span>();
+				.<span class="ident">map</span>(<span class="op">|</span><span class="ident">n</span><span class="op">|</span> { <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">h</span> <span class="op">=</span> <span class="ident">T::Hashing::hash_of</span>(<span class="kw-2">&amp;</span><span class="ident">n</span>).<span class="ident">as_ref</span>().<span class="ident">to_vec</span>();
+						<span class="ident">h</span>.<span class="ident">resize</span>(<span class="ident">max_key_len</span>.<span class="ident">try_into</span>().<span class="ident">unwrap</span>(), <span class="ident">n</span>.<span class="ident">to_le_bytes</span>()[<span class="number">0</span>]); <span class="ident">h</span> })
+		.<span class="ident">collect</span>::<span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="kw">_</span><span class="op">&gt;</span><span class="op">&gt;</span>();
 		<span class="kw">let</span> <span class="ident">key_bytes</span> <span class="op">=</span> <span class="ident">keys</span>.<span class="ident">iter</span>().<span class="ident">flatten</span>().<span class="ident">cloned</span>().<span class="ident">collect</span>::<span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="kw">_</span><span class="op">&gt;</span><span class="op">&gt;</span>();
-		<span class="kw">let</span> <span class="ident">key_len</span> <span class="op">=</span> <span class="ident">keys</span>.<span class="ident">get</span>(<span class="number">0</span>).<span class="ident">map</span>(<span class="op">|</span><span class="ident">i</span><span class="op">|</span> <span class="ident">i</span>.<span class="ident">len</span>() <span class="kw">as</span> <span class="ident">u32</span>).<span class="ident">unwrap_or</span>(<span class="number">0</span>);
 		<span class="kw">let</span> <span class="ident">code</span> <span class="op">=</span> <span class="ident">WasmModule</span>::<span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span><span class="ident">::from</span>(<span class="ident">ModuleDefinition</span> {
 			<span class="ident">memory</span>: <span class="prelude-val">Some</span>(<span class="ident">ImportedMemory::max</span>::<span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>()),
 			<span class="ident">imported_functions</span>: <span class="macro">vec!</span>[<span class="ident">ImportedFunction</span> {
 				<span class="ident">module</span>: <span class="string">&quot;__unstable__&quot;</span>,
 				<span class="ident">name</span>: <span class="string">&quot;seal_clear_storage&quot;</span>,
-				<span class="ident">params</span>: <span class="macro">vec!</span>[<span class="ident">ValueType::I32</span>],
+				<span class="ident">params</span>: <span class="macro">vec!</span>[<span class="ident">ValueType::I32</span>, <span class="ident">ValueType::I32</span>],
 				<span class="ident">return_type</span>: <span class="prelude-val">Some</span>(<span class="ident">ValueType::I32</span>),
 			}],
 			<span class="ident">data_segments</span>: <span class="macro">vec!</span>[
@@ -3990,7 +4037,8 @@
 				},
 			],
 			<span class="ident">call_body</span>: <span class="prelude-val">Some</span>(<span class="ident">body::repeated_dyn</span>(<span class="ident">r</span> <span class="op">*</span> <span class="ident">API_BENCHMARK_BATCH_SIZE</span>, <span class="macro">vec!</span>[
-				<span class="ident">Counter</span>(<span class="number">0</span>, <span class="ident">key_len</span> <span class="kw">as</span> <span class="ident">u32</span>),
+				<span class="ident">Counter</span>(<span class="number">0</span>, <span class="ident">max_key_len</span> <span class="kw">as</span> <span class="ident">u32</span>), <span class="comment">// key_ptr</span>
+				<span class="ident">Regular</span>(<span class="ident">Instruction::I32Const</span>(<span class="ident">max_key_len</span> <span class="kw">as</span> <span class="ident">i32</span>)), <span class="comment">// key_len</span>
 				<span class="ident">Regular</span>(<span class="ident">Instruction::Call</span>(<span class="number">0</span>)),
 				<span class="ident">Regular</span>(<span class="ident">Instruction::Drop</span>),
 			])),
@@ -4001,7 +4049,7 @@
 		<span class="kw">for</span> <span class="ident">key</span> <span class="kw">in</span> <span class="ident">keys</span> {
 			<span class="ident">Storage</span>::<span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span><span class="ident">::write</span>(
 				<span class="kw-2">&amp;</span><span class="ident">info</span>.<span class="ident">trie_id</span>,
-				<span class="ident">key</span>.<span class="ident">as_slice</span>().<span class="ident">try_into</span>().<span class="ident">map_err</span>(<span class="op">|</span><span class="ident">e</span><span class="op">|</span> <span class="string">&quot;Key has wrong length&quot;</span>)<span class="question-mark">?</span>,
+				<span class="kw-2">&amp;</span><span class="ident">VarSizedKey</span>::<span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span><span class="ident">::try_from</span>(<span class="ident">key</span>).<span class="ident">map_err</span>(<span class="op">|</span><span class="ident">e</span><span class="op">|</span> <span class="string">&quot;Key has wrong length&quot;</span>)<span class="question-mark">?</span>,
 				<span class="prelude-val">Some</span>(<span class="macro">vec!</span>[]),
 				<span class="prelude-val">None</span>,
 				<span class="bool-val">false</span>,
@@ -4014,18 +4062,19 @@
 
 	<span class="attribute">#[<span class="ident">skip_meta</span>]</span>
 	<span class="ident">seal_clear_storage_per_kb</span> {
-		<span class="kw">let</span> <span class="ident">n</span> <span class="kw">in</span> <span class="number">0</span> .. <span class="ident">T::Schedule::get</span>().<span class="ident">limits</span>.<span class="ident">payload_len</span> <span class="op">/</span> <span class="number">1024</span>;
-		<span class="kw">let</span> <span class="ident">keys</span> <span class="op">=</span> (<span class="number">0</span> .. <span class="ident">API_BENCHMARK_BATCH_SIZE</span>)
-			.<span class="ident">map</span>(<span class="op">|</span><span class="ident">n</span><span class="op">|</span> <span class="ident">T::Hashing::hash_of</span>(<span class="kw-2">&amp;</span><span class="ident">n</span>).<span class="ident">as_ref</span>().<span class="ident">to_vec</span>())
-			.<span class="ident">collect</span>::<span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="kw">_</span><span class="op">&gt;</span><span class="op">&gt;</span>();
-		<span class="kw">let</span> <span class="ident">key_len</span> <span class="op">=</span> <span class="ident">keys</span>.<span class="ident">get</span>(<span class="number">0</span>).<span class="ident">map</span>(<span class="op">|</span><span class="ident">i</span><span class="op">|</span> <span class="ident">i</span>.<span class="ident">len</span>() <span class="kw">as</span> <span class="ident">u32</span>).<span class="ident">unwrap_or</span>(<span class="number">0</span>);
+		<span class="kw">let</span> <span class="ident">n</span> <span class="kw">in</span> <span class="number">0</span> .. <span class="ident">T::Schedule::get</span>().<span class="ident">limits</span>.<span class="ident">payload_len</span> <span class="op">/</span> <span class="number">2048</span>; <span class="comment">// half of the max payload_len in kb</span>
+		<span class="kw">let</span> <span class="ident">max_key_len</span> <span class="op">=</span> <span class="ident">T::MaxStorageKeyLen::get</span>();
+		<span class="kw">let</span> <span class="ident">keys</span> <span class="op">=</span> (<span class="number">0</span> .. <span class="ident">n</span> <span class="op">*</span> <span class="ident">API_BENCHMARK_BATCH_SIZE</span>)
+				.<span class="ident">map</span>(<span class="op">|</span><span class="ident">n</span><span class="op">|</span> { <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">h</span> <span class="op">=</span> <span class="ident">T::Hashing::hash_of</span>(<span class="kw-2">&amp;</span><span class="ident">n</span>).<span class="ident">as_ref</span>().<span class="ident">to_vec</span>();
+						<span class="ident">h</span>.<span class="ident">resize</span>(<span class="ident">max_key_len</span>.<span class="ident">try_into</span>().<span class="ident">unwrap</span>(), <span class="ident">n</span>.<span class="ident">to_le_bytes</span>()[<span class="number">0</span>]); <span class="ident">h</span> })
+		.<span class="ident">collect</span>::<span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="kw">_</span><span class="op">&gt;</span><span class="op">&gt;</span>();
 		<span class="kw">let</span> <span class="ident">key_bytes</span> <span class="op">=</span> <span class="ident">keys</span>.<span class="ident">iter</span>().<span class="ident">flatten</span>().<span class="ident">cloned</span>().<span class="ident">collect</span>::<span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="kw">_</span><span class="op">&gt;</span><span class="op">&gt;</span>();
 		<span class="kw">let</span> <span class="ident">code</span> <span class="op">=</span> <span class="ident">WasmModule</span>::<span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span><span class="ident">::from</span>(<span class="ident">ModuleDefinition</span> {
 			<span class="ident">memory</span>: <span class="prelude-val">Some</span>(<span class="ident">ImportedMemory::max</span>::<span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>()),
 			<span class="ident">imported_functions</span>: <span class="macro">vec!</span>[<span class="ident">ImportedFunction</span> {
 				<span class="ident">module</span>: <span class="string">&quot;__unstable__&quot;</span>,
 				<span class="ident">name</span>: <span class="string">&quot;seal_clear_storage&quot;</span>,
-				<span class="ident">params</span>: <span class="macro">vec!</span>[<span class="ident">ValueType::I32</span>],
+				<span class="ident">params</span>: <span class="macro">vec!</span>[<span class="ident">ValueType::I32</span>, <span class="ident">ValueType::I32</span>],
 				<span class="ident">return_type</span>: <span class="prelude-val">Some</span>(<span class="ident">ValueType::I32</span>),
 			}],
 			<span class="ident">data_segments</span>: <span class="macro">vec!</span>[
@@ -4035,7 +4084,8 @@
 				},
 			],
 			<span class="ident">call_body</span>: <span class="prelude-val">Some</span>(<span class="ident">body::repeated_dyn</span>(<span class="ident">API_BENCHMARK_BATCH_SIZE</span>, <span class="macro">vec!</span>[
-				<span class="ident">Counter</span>(<span class="number">0</span>, <span class="ident">key_len</span> <span class="kw">as</span> <span class="ident">u32</span>), <span class="comment">// key_ptr</span>
+				<span class="ident">Counter</span>(<span class="number">0</span>, <span class="ident">max_key_len</span> <span class="kw">as</span> <span class="ident">u32</span>), <span class="comment">// key_ptr</span>
+				<span class="ident">Regular</span>(<span class="ident">Instruction::I32Const</span>(<span class="ident">max_key_len</span> <span class="kw">as</span> <span class="ident">i32</span>)), <span class="comment">// key_len</span>
 				<span class="ident">Regular</span>(<span class="ident">Instruction::Call</span>(<span class="number">0</span>)),
 				<span class="ident">Regular</span>(<span class="ident">Instruction::Drop</span>),
 			])),
@@ -4046,8 +4096,8 @@
 		<span class="kw">for</span> <span class="ident">key</span> <span class="kw">in</span> <span class="ident">keys</span> {
 			<span class="ident">Storage</span>::<span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span><span class="ident">::write</span>(
 				<span class="kw-2">&amp;</span><span class="ident">info</span>.<span class="ident">trie_id</span>,
-				<span class="ident">key</span>.<span class="ident">as_slice</span>().<span class="ident">try_into</span>().<span class="ident">map_err</span>(<span class="op">|</span><span class="ident">e</span><span class="op">|</span> <span class="string">&quot;Key has wrong length&quot;</span>)<span class="question-mark">?</span>,
-				<span class="prelude-val">Some</span>(<span class="macro">vec!</span>[<span class="number">42u8</span>; (<span class="ident">n</span> <span class="op">*</span> <span class="number">1024</span>) <span class="kw">as</span> <span class="ident">usize</span>]),
+				<span class="kw-2">&amp;</span><span class="ident">VarSizedKey</span>::<span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span><span class="ident">::try_from</span>(<span class="ident">key</span>).<span class="ident">map_err</span>(<span class="op">|</span><span class="ident">e</span><span class="op">|</span> <span class="string">&quot;Key has wrong length&quot;</span>)<span class="question-mark">?</span>,
+				<span class="prelude-val">Some</span>(<span class="macro">vec!</span>[<span class="number">42u8</span>; (<span class="ident">n</span> <span class="op">*</span> <span class="number">2048</span>) <span class="kw">as</span> <span class="ident">usize</span>]), <span class="comment">// value_len increments by 2kb up to max payload_len</span>
 				<span class="prelude-val">None</span>,
 				<span class="bool-val">false</span>,
 			)
@@ -4059,19 +4109,20 @@
 	<span class="comment">// We make sure that all storage accesses are to unique keys.</span>
 	<span class="attribute">#[<span class="ident">skip_meta</span>]</span>
 	<span class="ident">seal_get_storage</span> {
-		<span class="kw">let</span> <span class="ident">r</span> <span class="kw">in</span> <span class="number">0</span> .. <span class="ident">API_BENCHMARK_BATCHES</span>;
+		<span class="kw">let</span> <span class="ident">r</span> <span class="kw">in</span> <span class="number">0</span> .. <span class="ident">API_BENCHMARK_BATCHES</span><span class="op">/</span><span class="number">2</span>;
+		<span class="kw">let</span> <span class="ident">max_key_len</span> <span class="op">=</span> <span class="ident">T::MaxStorageKeyLen::get</span>();
 		<span class="kw">let</span> <span class="ident">keys</span> <span class="op">=</span> (<span class="number">0</span> .. <span class="ident">r</span> <span class="op">*</span> <span class="ident">API_BENCHMARK_BATCH_SIZE</span>)
-			.<span class="ident">map</span>(<span class="op">|</span><span class="ident">n</span><span class="op">|</span> <span class="ident">T::Hashing::hash_of</span>(<span class="kw-2">&amp;</span><span class="ident">n</span>).<span class="ident">as_ref</span>().<span class="ident">to_vec</span>())
-			.<span class="ident">collect</span>::<span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="kw">_</span><span class="op">&gt;</span><span class="op">&gt;</span>();
-		<span class="kw">let</span> <span class="ident">key_len</span> <span class="op">=</span> <span class="ident">keys</span>.<span class="ident">get</span>(<span class="number">0</span>).<span class="ident">map</span>(<span class="op">|</span><span class="ident">i</span><span class="op">|</span> <span class="ident">i</span>.<span class="ident">len</span>() <span class="kw">as</span> <span class="ident">u32</span>).<span class="ident">unwrap_or</span>(<span class="number">0</span>);
+				.<span class="ident">map</span>(<span class="op">|</span><span class="ident">n</span><span class="op">|</span> { <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">h</span> <span class="op">=</span> <span class="ident">T::Hashing::hash_of</span>(<span class="kw-2">&amp;</span><span class="ident">n</span>).<span class="ident">as_ref</span>().<span class="ident">to_vec</span>();
+						<span class="ident">h</span>.<span class="ident">resize</span>(<span class="ident">max_key_len</span>.<span class="ident">try_into</span>().<span class="ident">unwrap</span>(), <span class="ident">n</span>.<span class="ident">to_le_bytes</span>()[<span class="number">0</span>]); <span class="ident">h</span> })
+		.<span class="ident">collect</span>::<span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="kw">_</span><span class="op">&gt;</span><span class="op">&gt;</span>();
 		<span class="kw">let</span> <span class="ident">key_bytes</span> <span class="op">=</span> <span class="ident">keys</span>.<span class="ident">iter</span>().<span class="ident">flatten</span>().<span class="ident">cloned</span>().<span class="ident">collect</span>::<span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="kw">_</span><span class="op">&gt;</span><span class="op">&gt;</span>();
 		<span class="kw">let</span> <span class="ident">key_bytes_len</span> <span class="op">=</span> <span class="ident">key_bytes</span>.<span class="ident">len</span>();
 		<span class="kw">let</span> <span class="ident">code</span> <span class="op">=</span> <span class="ident">WasmModule</span>::<span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span><span class="ident">::from</span>(<span class="ident">ModuleDefinition</span> {
 			<span class="ident">memory</span>: <span class="prelude-val">Some</span>(<span class="ident">ImportedMemory::max</span>::<span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>()),
 			<span class="ident">imported_functions</span>: <span class="macro">vec!</span>[<span class="ident">ImportedFunction</span> {
-				<span class="ident">module</span>: <span class="string">&quot;seal0&quot;</span>,
+				<span class="ident">module</span>: <span class="string">&quot;__unstable__&quot;</span>,
 				<span class="ident">name</span>: <span class="string">&quot;seal_get_storage&quot;</span>,
-				<span class="ident">params</span>: <span class="macro">vec!</span>[<span class="ident">ValueType::I32</span>, <span class="ident">ValueType::I32</span>, <span class="ident">ValueType::I32</span>],
+				<span class="ident">params</span>: <span class="macro">vec!</span>[<span class="ident">ValueType::I32</span>, <span class="ident">ValueType::I32</span>, <span class="ident">ValueType::I32</span>, <span class="ident">ValueType::I32</span>],
 				<span class="ident">return_type</span>: <span class="prelude-val">Some</span>(<span class="ident">ValueType::I32</span>),
 			}],
 			<span class="ident">data_segments</span>: <span class="macro">vec!</span>[
@@ -4085,7 +4136,8 @@
 				},
 			],
 			<span class="ident">call_body</span>: <span class="prelude-val">Some</span>(<span class="ident">body::repeated_dyn</span>(<span class="ident">r</span> <span class="op">*</span> <span class="ident">API_BENCHMARK_BATCH_SIZE</span>, <span class="macro">vec!</span>[
-				<span class="ident">Counter</span>(<span class="number">0</span>, <span class="ident">key_len</span> <span class="kw">as</span> <span class="ident">u32</span>), <span class="comment">// key_ptr</span>
+				<span class="ident">Counter</span>(<span class="number">0</span>, <span class="ident">max_key_len</span> <span class="kw">as</span> <span class="ident">u32</span>), <span class="comment">// key_ptr</span>
+				<span class="ident">Regular</span>(<span class="ident">Instruction::I32Const</span>(<span class="ident">max_key_len</span> <span class="kw">as</span> <span class="ident">i32</span>)), <span class="comment">// key_len</span>
 				<span class="ident">Regular</span>(<span class="ident">Instruction::I32Const</span>((<span class="ident">key_bytes_len</span> <span class="op">+</span> <span class="number">4</span>) <span class="kw">as</span> <span class="ident">i32</span>)), <span class="comment">// out_ptr</span>
 				<span class="ident">Regular</span>(<span class="ident">Instruction::I32Const</span>(<span class="ident">key_bytes_len</span> <span class="kw">as</span> <span class="ident">i32</span>)), <span class="comment">// out_len_ptr</span>
 				<span class="ident">Regular</span>(<span class="ident">Instruction::Call</span>(<span class="number">0</span>)),
@@ -4098,7 +4150,7 @@
 		<span class="kw">for</span> <span class="ident">key</span> <span class="kw">in</span> <span class="ident">keys</span> {
 			<span class="ident">Storage</span>::<span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span><span class="ident">::write</span>(
 				<span class="kw-2">&amp;</span><span class="ident">info</span>.<span class="ident">trie_id</span>,
-				<span class="ident">key</span>.<span class="ident">as_slice</span>().<span class="ident">try_into</span>().<span class="ident">map_err</span>(<span class="op">|</span><span class="ident">e</span><span class="op">|</span> <span class="string">&quot;Key has wrong length&quot;</span>)<span class="question-mark">?</span>,
+				<span class="kw-2">&amp;</span><span class="ident">VarSizedKey</span>::<span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span><span class="ident">::try_from</span>(<span class="ident">key</span>).<span class="ident">map_err</span>(<span class="op">|</span><span class="ident">e</span><span class="op">|</span> <span class="string">&quot;Key has wrong length&quot;</span>)<span class="question-mark">?</span>,
 				<span class="prelude-val">Some</span>(<span class="macro">vec!</span>[]),
 				<span class="prelude-val">None</span>,
 				<span class="bool-val">false</span>,
@@ -4111,19 +4163,20 @@
 
 	<span class="attribute">#[<span class="ident">skip_meta</span>]</span>
 	<span class="ident">seal_get_storage_per_kb</span> {
-		<span class="kw">let</span> <span class="ident">n</span> <span class="kw">in</span> <span class="number">0</span> .. <span class="ident">T::Schedule::get</span>().<span class="ident">limits</span>.<span class="ident">payload_len</span> <span class="op">/</span> <span class="number">1024</span>;
-		<span class="kw">let</span> <span class="ident">keys</span> <span class="op">=</span> (<span class="number">0</span> .. <span class="ident">API_BENCHMARK_BATCH_SIZE</span>)
-			.<span class="ident">map</span>(<span class="op">|</span><span class="ident">n</span><span class="op">|</span> <span class="ident">T::Hashing::hash_of</span>(<span class="kw-2">&amp;</span><span class="ident">n</span>).<span class="ident">as_ref</span>().<span class="ident">to_vec</span>())
-			.<span class="ident">collect</span>::<span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="kw">_</span><span class="op">&gt;</span><span class="op">&gt;</span>();
-		<span class="kw">let</span> <span class="ident">key_len</span> <span class="op">=</span> <span class="ident">keys</span>.<span class="ident">get</span>(<span class="number">0</span>).<span class="ident">map</span>(<span class="op">|</span><span class="ident">i</span><span class="op">|</span> <span class="ident">i</span>.<span class="ident">len</span>() <span class="kw">as</span> <span class="ident">u32</span>).<span class="ident">unwrap_or</span>(<span class="number">0</span>);
+		<span class="kw">let</span> <span class="ident">n</span> <span class="kw">in</span> <span class="number">0</span> .. <span class="ident">T::Schedule::get</span>().<span class="ident">limits</span>.<span class="ident">payload_len</span> <span class="op">/</span> <span class="number">2048</span>; <span class="comment">// half of the max payload_len in kb</span>
+		<span class="kw">let</span> <span class="ident">max_key_len</span> <span class="op">=</span> <span class="ident">T::MaxStorageKeyLen::get</span>();
+		<span class="kw">let</span> <span class="ident">keys</span> <span class="op">=</span> (<span class="number">0</span> .. <span class="ident">n</span> <span class="op">*</span> <span class="ident">API_BENCHMARK_BATCH_SIZE</span>)
+				.<span class="ident">map</span>(<span class="op">|</span><span class="ident">n</span><span class="op">|</span> { <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">h</span> <span class="op">=</span> <span class="ident">T::Hashing::hash_of</span>(<span class="kw-2">&amp;</span><span class="ident">n</span>).<span class="ident">as_ref</span>().<span class="ident">to_vec</span>();
+						<span class="ident">h</span>.<span class="ident">resize</span>(<span class="ident">max_key_len</span>.<span class="ident">try_into</span>().<span class="ident">unwrap</span>(), <span class="ident">n</span>.<span class="ident">to_le_bytes</span>()[<span class="number">0</span>]); <span class="ident">h</span> })
+		.<span class="ident">collect</span>::<span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="kw">_</span><span class="op">&gt;</span><span class="op">&gt;</span>();
 		<span class="kw">let</span> <span class="ident">key_bytes</span> <span class="op">=</span> <span class="ident">keys</span>.<span class="ident">iter</span>().<span class="ident">flatten</span>().<span class="ident">cloned</span>().<span class="ident">collect</span>::<span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="kw">_</span><span class="op">&gt;</span><span class="op">&gt;</span>();
 		<span class="kw">let</span> <span class="ident">key_bytes_len</span> <span class="op">=</span> <span class="ident">key_bytes</span>.<span class="ident">len</span>();
 		<span class="kw">let</span> <span class="ident">code</span> <span class="op">=</span> <span class="ident">WasmModule</span>::<span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span><span class="ident">::from</span>(<span class="ident">ModuleDefinition</span> {
 			<span class="ident">memory</span>: <span class="prelude-val">Some</span>(<span class="ident">ImportedMemory::max</span>::<span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>()),
 			<span class="ident">imported_functions</span>: <span class="macro">vec!</span>[<span class="ident">ImportedFunction</span> {
-				<span class="ident">module</span>: <span class="string">&quot;seal0&quot;</span>,
+				<span class="ident">module</span>: <span class="string">&quot;__unstable__&quot;</span>,
 				<span class="ident">name</span>: <span class="string">&quot;seal_get_storage&quot;</span>,
-				<span class="ident">params</span>: <span class="macro">vec!</span>[<span class="ident">ValueType::I32</span>, <span class="ident">ValueType::I32</span>, <span class="ident">ValueType::I32</span>],
+				<span class="ident">params</span>: <span class="macro">vec!</span>[<span class="ident">ValueType::I32</span>, <span class="ident">ValueType::I32</span>, <span class="ident">ValueType::I32</span>, <span class="ident">ValueType::I32</span>],
 				<span class="ident">return_type</span>: <span class="prelude-val">Some</span>(<span class="ident">ValueType::I32</span>),
 			}],
 			<span class="ident">data_segments</span>: <span class="macro">vec!</span>[
@@ -4137,7 +4190,8 @@
 				},
 			],
 			<span class="ident">call_body</span>: <span class="prelude-val">Some</span>(<span class="ident">body::repeated_dyn</span>(<span class="ident">API_BENCHMARK_BATCH_SIZE</span>, <span class="macro">vec!</span>[
-				<span class="ident">Counter</span>(<span class="number">0</span>, <span class="ident">key_len</span> <span class="kw">as</span> <span class="ident">u32</span>), <span class="comment">// key_ptr</span>
+				<span class="ident">Counter</span>(<span class="number">0</span>, <span class="ident">max_key_len</span> <span class="kw">as</span> <span class="ident">u32</span>), <span class="comment">// key_ptr</span>
+				<span class="ident">Regular</span>(<span class="ident">Instruction::I32Const</span>(<span class="ident">max_key_len</span> <span class="kw">as</span> <span class="ident">i32</span>)), <span class="comment">// key_len</span>
 				<span class="ident">Regular</span>(<span class="ident">Instruction::I32Const</span>((<span class="ident">key_bytes_len</span> <span class="op">+</span> <span class="number">4</span>) <span class="kw">as</span> <span class="ident">i32</span>)), <span class="comment">// out_ptr</span>
 				<span class="ident">Regular</span>(<span class="ident">Instruction::I32Const</span>(<span class="ident">key_bytes_len</span> <span class="kw">as</span> <span class="ident">i32</span>)), <span class="comment">// out_len_ptr</span>
 				<span class="ident">Regular</span>(<span class="ident">Instruction::Call</span>(<span class="number">0</span>)),
@@ -4150,8 +4204,8 @@
 		<span class="kw">for</span> <span class="ident">key</span> <span class="kw">in</span> <span class="ident">keys</span> {
 			<span class="ident">Storage</span>::<span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span><span class="ident">::write</span>(
 				<span class="kw-2">&amp;</span><span class="ident">info</span>.<span class="ident">trie_id</span>,
-				<span class="ident">key</span>.<span class="ident">as_slice</span>().<span class="ident">try_into</span>().<span class="ident">map_err</span>(<span class="op">|</span><span class="ident">e</span><span class="op">|</span> <span class="string">&quot;Key has wrong length&quot;</span>)<span class="question-mark">?</span>,
-				<span class="prelude-val">Some</span>(<span class="macro">vec!</span>[<span class="number">42u8</span>; (<span class="ident">n</span> <span class="op">*</span> <span class="number">1024</span>) <span class="kw">as</span> <span class="ident">usize</span>]),
+				<span class="kw-2">&amp;</span><span class="ident">VarSizedKey</span>::<span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span><span class="ident">::try_from</span>(<span class="ident">key</span>).<span class="ident">map_err</span>(<span class="op">|</span><span class="ident">e</span><span class="op">|</span> <span class="string">&quot;Key has wrong length&quot;</span>)<span class="question-mark">?</span>,
+				<span class="prelude-val">Some</span>(<span class="macro">vec!</span>[<span class="number">42u8</span>; (<span class="ident">n</span> <span class="op">*</span> <span class="number">2048</span>) <span class="kw">as</span> <span class="ident">usize</span>]), <span class="comment">// value_len increments by 2kb up to max payload_len</span>
 				<span class="prelude-val">None</span>,
 				<span class="bool-val">false</span>,
 			)
@@ -4164,19 +4218,20 @@
 	<span class="comment">// We make sure that all storage accesses are to unique keys.</span>
 	<span class="attribute">#[<span class="ident">skip_meta</span>]</span>
 	<span class="ident">seal_contains_storage</span> {
-		<span class="kw">let</span> <span class="ident">r</span> <span class="kw">in</span> <span class="number">0</span> .. <span class="ident">API_BENCHMARK_BATCHES</span>;
+		<span class="kw">let</span> <span class="ident">r</span> <span class="kw">in</span> <span class="number">0</span> .. <span class="ident">API_BENCHMARK_BATCHES</span><span class="op">/</span><span class="number">2</span>;
+		<span class="kw">let</span> <span class="ident">max_key_len</span> <span class="op">=</span> <span class="ident">T::MaxStorageKeyLen::get</span>();
 		<span class="kw">let</span> <span class="ident">keys</span> <span class="op">=</span> (<span class="number">0</span> .. <span class="ident">r</span> <span class="op">*</span> <span class="ident">API_BENCHMARK_BATCH_SIZE</span>)
-			.<span class="ident">map</span>(<span class="op">|</span><span class="ident">n</span><span class="op">|</span> <span class="ident">T::Hashing::hash_of</span>(<span class="kw-2">&amp;</span><span class="ident">n</span>).<span class="ident">as_ref</span>().<span class="ident">to_vec</span>())
-			.<span class="ident">collect</span>::<span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="kw">_</span><span class="op">&gt;</span><span class="op">&gt;</span>();
-		<span class="kw">let</span> <span class="ident">key_len</span> <span class="op">=</span> <span class="ident">keys</span>.<span class="ident">get</span>(<span class="number">0</span>).<span class="ident">map</span>(<span class="op">|</span><span class="ident">i</span><span class="op">|</span> <span class="ident">i</span>.<span class="ident">len</span>() <span class="kw">as</span> <span class="ident">u32</span>).<span class="ident">unwrap_or</span>(<span class="number">0</span>);
+				.<span class="ident">map</span>(<span class="op">|</span><span class="ident">n</span><span class="op">|</span> { <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">h</span> <span class="op">=</span> <span class="ident">T::Hashing::hash_of</span>(<span class="kw-2">&amp;</span><span class="ident">n</span>).<span class="ident">as_ref</span>().<span class="ident">to_vec</span>();
+						<span class="ident">h</span>.<span class="ident">resize</span>(<span class="ident">max_key_len</span>.<span class="ident">try_into</span>().<span class="ident">unwrap</span>(), <span class="ident">n</span>.<span class="ident">to_le_bytes</span>()[<span class="number">0</span>]); <span class="ident">h</span> })
+		.<span class="ident">collect</span>::<span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="kw">_</span><span class="op">&gt;</span><span class="op">&gt;</span>();
 		<span class="kw">let</span> <span class="ident">key_bytes</span> <span class="op">=</span> <span class="ident">keys</span>.<span class="ident">iter</span>().<span class="ident">flatten</span>().<span class="ident">cloned</span>().<span class="ident">collect</span>::<span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="kw">_</span><span class="op">&gt;</span><span class="op">&gt;</span>();
 		<span class="kw">let</span> <span class="ident">key_bytes_len</span> <span class="op">=</span> <span class="ident">key_bytes</span>.<span class="ident">len</span>();
 		<span class="kw">let</span> <span class="ident">code</span> <span class="op">=</span> <span class="ident">WasmModule</span>::<span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span><span class="ident">::from</span>(<span class="ident">ModuleDefinition</span> {
 			<span class="ident">memory</span>: <span class="prelude-val">Some</span>(<span class="ident">ImportedMemory::max</span>::<span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>()),
 			<span class="ident">imported_functions</span>: <span class="macro">vec!</span>[<span class="ident">ImportedFunction</span> {
-				<span class="ident">module</span>: <span class="string">&quot;seal0&quot;</span>,
+				<span class="ident">module</span>: <span class="string">&quot;__unstable__&quot;</span>,
 				<span class="ident">name</span>: <span class="string">&quot;seal_contains_storage&quot;</span>,
-				<span class="ident">params</span>: <span class="macro">vec!</span>[<span class="ident">ValueType::I32</span>],
+				<span class="ident">params</span>: <span class="macro">vec!</span>[<span class="ident">ValueType::I32</span>, <span class="ident">ValueType::I32</span>],
 				<span class="ident">return_type</span>: <span class="prelude-val">Some</span>(<span class="ident">ValueType::I32</span>),
 			}],
 			<span class="ident">data_segments</span>: <span class="macro">vec!</span>[
@@ -4186,7 +4241,8 @@
 				},
 			],
 			<span class="ident">call_body</span>: <span class="prelude-val">Some</span>(<span class="ident">body::repeated_dyn</span>(<span class="ident">r</span> <span class="op">*</span> <span class="ident">API_BENCHMARK_BATCH_SIZE</span>, <span class="macro">vec!</span>[
-				<span class="ident">Counter</span>(<span class="number">0</span>, <span class="ident">key_len</span> <span class="kw">as</span> <span class="ident">u32</span>), <span class="comment">// key_ptr</span>
+				<span class="ident">Counter</span>(<span class="number">0</span>, <span class="ident">max_key_len</span> <span class="kw">as</span> <span class="ident">u32</span>), <span class="comment">// key_ptr</span>
+				<span class="ident">Regular</span>(<span class="ident">Instruction::I32Const</span>(<span class="ident">max_key_len</span> <span class="kw">as</span> <span class="ident">i32</span>)), <span class="comment">// key_len</span>
 				<span class="ident">Regular</span>(<span class="ident">Instruction::Call</span>(<span class="number">0</span>)),
 				<span class="ident">Regular</span>(<span class="ident">Instruction::Drop</span>),
 			])),
@@ -4197,7 +4253,7 @@
 		<span class="kw">for</span> <span class="ident">key</span> <span class="kw">in</span> <span class="ident">keys</span> {
 			<span class="ident">Storage</span>::<span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span><span class="ident">::write</span>(
 				<span class="kw-2">&amp;</span><span class="ident">info</span>.<span class="ident">trie_id</span>,
-				<span class="ident">key</span>.<span class="ident">as_slice</span>().<span class="ident">try_into</span>().<span class="ident">map_err</span>(<span class="op">|</span><span class="ident">e</span><span class="op">|</span> <span class="string">&quot;Key has wrong length&quot;</span>)<span class="question-mark">?</span>,
+				<span class="kw-2">&amp;</span><span class="ident">VarSizedKey</span>::<span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span><span class="ident">::try_from</span>(<span class="ident">key</span>).<span class="ident">map_err</span>(<span class="op">|</span><span class="ident">e</span><span class="op">|</span> <span class="string">&quot;Key has wrong length&quot;</span>)<span class="question-mark">?</span>,
 				<span class="prelude-val">Some</span>(<span class="macro">vec!</span>[]),
 				<span class="prelude-val">None</span>,
 				<span class="bool-val">false</span>,
@@ -4210,18 +4266,19 @@
 
 	<span class="attribute">#[<span class="ident">skip_meta</span>]</span>
 	<span class="ident">seal_contains_storage_per_kb</span> {
-		<span class="kw">let</span> <span class="ident">n</span> <span class="kw">in</span> <span class="number">0</span> .. <span class="ident">T::Schedule::get</span>().<span class="ident">limits</span>.<span class="ident">payload_len</span> <span class="op">/</span> <span class="number">1024</span>;
-		<span class="kw">let</span> <span class="ident">keys</span> <span class="op">=</span> (<span class="number">0</span> .. <span class="ident">API_BENCHMARK_BATCH_SIZE</span>)
-			.<span class="ident">map</span>(<span class="op">|</span><span class="ident">n</span><span class="op">|</span> <span class="ident">T::Hashing::hash_of</span>(<span class="kw-2">&amp;</span><span class="ident">n</span>).<span class="ident">as_ref</span>().<span class="ident">to_vec</span>())
-			.<span class="ident">collect</span>::<span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="kw">_</span><span class="op">&gt;</span><span class="op">&gt;</span>();
-		<span class="kw">let</span> <span class="ident">key_len</span> <span class="op">=</span> <span class="ident">keys</span>.<span class="ident">get</span>(<span class="number">0</span>).<span class="ident">map</span>(<span class="op">|</span><span class="ident">i</span><span class="op">|</span> <span class="ident">i</span>.<span class="ident">len</span>() <span class="kw">as</span> <span class="ident">u32</span>).<span class="ident">unwrap_or</span>(<span class="number">0</span>);
+		<span class="kw">let</span> <span class="ident">n</span> <span class="kw">in</span> <span class="number">0</span> .. <span class="ident">T::Schedule::get</span>().<span class="ident">limits</span>.<span class="ident">payload_len</span> <span class="op">/</span> <span class="number">2048</span>; <span class="comment">// half of the max payload_len in kb</span>
+		<span class="kw">let</span> <span class="ident">max_key_len</span> <span class="op">=</span> <span class="ident">T::MaxStorageKeyLen::get</span>();
+		<span class="kw">let</span> <span class="ident">keys</span> <span class="op">=</span> (<span class="number">0</span> .. <span class="ident">n</span> <span class="op">*</span> <span class="ident">API_BENCHMARK_BATCH_SIZE</span>)
+				.<span class="ident">map</span>(<span class="op">|</span><span class="ident">n</span><span class="op">|</span> { <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">h</span> <span class="op">=</span> <span class="ident">T::Hashing::hash_of</span>(<span class="kw-2">&amp;</span><span class="ident">n</span>).<span class="ident">as_ref</span>().<span class="ident">to_vec</span>();
+						<span class="ident">h</span>.<span class="ident">resize</span>(<span class="ident">max_key_len</span>.<span class="ident">try_into</span>().<span class="ident">unwrap</span>(), <span class="ident">n</span>.<span class="ident">to_le_bytes</span>()[<span class="number">0</span>]); <span class="ident">h</span> })
+		.<span class="ident">collect</span>::<span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="kw">_</span><span class="op">&gt;</span><span class="op">&gt;</span>();
 		<span class="kw">let</span> <span class="ident">key_bytes</span> <span class="op">=</span> <span class="ident">keys</span>.<span class="ident">iter</span>().<span class="ident">flatten</span>().<span class="ident">cloned</span>().<span class="ident">collect</span>::<span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="kw">_</span><span class="op">&gt;</span><span class="op">&gt;</span>();
 		<span class="kw">let</span> <span class="ident">code</span> <span class="op">=</span> <span class="ident">WasmModule</span>::<span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span><span class="ident">::from</span>(<span class="ident">ModuleDefinition</span> {
 			<span class="ident">memory</span>: <span class="prelude-val">Some</span>(<span class="ident">ImportedMemory::max</span>::<span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>()),
 			<span class="ident">imported_functions</span>: <span class="macro">vec!</span>[<span class="ident">ImportedFunction</span> {
-				<span class="ident">module</span>: <span class="string">&quot;seal0&quot;</span>,
+				<span class="ident">module</span>: <span class="string">&quot;__unstable__&quot;</span>,
 				<span class="ident">name</span>: <span class="string">&quot;seal_contains_storage&quot;</span>,
-				<span class="ident">params</span>: <span class="macro">vec!</span>[<span class="ident">ValueType::I32</span>],
+				<span class="ident">params</span>: <span class="macro">vec!</span>[<span class="ident">ValueType::I32</span>, <span class="ident">ValueType::I32</span>],
 				<span class="ident">return_type</span>: <span class="prelude-val">Some</span>(<span class="ident">ValueType::I32</span>),
 			}],
 			<span class="ident">data_segments</span>: <span class="macro">vec!</span>[
@@ -4231,7 +4288,8 @@
 				},
 			],
 			<span class="ident">call_body</span>: <span class="prelude-val">Some</span>(<span class="ident">body::repeated_dyn</span>(<span class="ident">API_BENCHMARK_BATCH_SIZE</span>, <span class="macro">vec!</span>[
-				<span class="ident">Counter</span>(<span class="number">0</span>, <span class="ident">key_len</span> <span class="kw">as</span> <span class="ident">u32</span>), <span class="comment">// key_ptr</span>
+				<span class="ident">Counter</span>(<span class="number">0</span>, <span class="ident">max_key_len</span> <span class="kw">as</span> <span class="ident">u32</span>), <span class="comment">// key_ptr</span>
+				<span class="ident">Regular</span>(<span class="ident">Instruction::I32Const</span>(<span class="ident">max_key_len</span> <span class="kw">as</span> <span class="ident">i32</span>)), <span class="comment">// key_len</span>
 				<span class="ident">Regular</span>(<span class="ident">Instruction::Call</span>(<span class="number">0</span>)),
 				<span class="ident">Regular</span>(<span class="ident">Instruction::Drop</span>),
 			])),
@@ -4242,8 +4300,8 @@
 		<span class="kw">for</span> <span class="ident">key</span> <span class="kw">in</span> <span class="ident">keys</span> {
 			<span class="ident">Storage</span>::<span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span><span class="ident">::write</span>(
 				<span class="kw-2">&amp;</span><span class="ident">info</span>.<span class="ident">trie_id</span>,
-				<span class="ident">key</span>.<span class="ident">as_slice</span>().<span class="ident">try_into</span>().<span class="ident">map_err</span>(<span class="op">|</span><span class="ident">e</span><span class="op">|</span> <span class="string">&quot;Key has wrong length&quot;</span>)<span class="question-mark">?</span>,
-				<span class="prelude-val">Some</span>(<span class="macro">vec!</span>[<span class="number">42u8</span>; (<span class="ident">n</span> <span class="op">*</span> <span class="number">1024</span>) <span class="kw">as</span> <span class="ident">usize</span>]),
+				<span class="kw-2">&amp;</span><span class="ident">VarSizedKey</span>::<span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span><span class="ident">::try_from</span>(<span class="ident">key</span>).<span class="ident">map_err</span>(<span class="op">|</span><span class="ident">e</span><span class="op">|</span> <span class="string">&quot;Key has wrong length&quot;</span>)<span class="question-mark">?</span>,
+				<span class="prelude-val">Some</span>(<span class="macro">vec!</span>[<span class="number">42u8</span>; (<span class="ident">n</span> <span class="op">*</span> <span class="number">2048</span>) <span class="kw">as</span> <span class="ident">usize</span>]), <span class="comment">// value_len increments by 2kb up to max payload_len</span>
 				<span class="prelude-val">None</span>,
 				<span class="bool-val">false</span>,
 			)
@@ -4255,11 +4313,12 @@
 
 	<span class="attribute">#[<span class="ident">skip_meta</span>]</span>
 	<span class="ident">seal_take_storage</span> {
-		<span class="kw">let</span> <span class="ident">r</span> <span class="kw">in</span> <span class="number">0</span> .. <span class="ident">API_BENCHMARK_BATCHES</span>;
+		<span class="kw">let</span> <span class="ident">r</span> <span class="kw">in</span> <span class="number">0</span> .. <span class="ident">API_BENCHMARK_BATCHES</span><span class="op">/</span><span class="number">2</span>;
+		<span class="kw">let</span> <span class="ident">max_key_len</span> <span class="op">=</span> <span class="ident">T::MaxStorageKeyLen::get</span>();
 		<span class="kw">let</span> <span class="ident">keys</span> <span class="op">=</span> (<span class="number">0</span> .. <span class="ident">r</span> <span class="op">*</span> <span class="ident">API_BENCHMARK_BATCH_SIZE</span>)
-			.<span class="ident">map</span>(<span class="op">|</span><span class="ident">n</span><span class="op">|</span> <span class="ident">T::Hashing::hash_of</span>(<span class="kw-2">&amp;</span><span class="ident">n</span>).<span class="ident">as_ref</span>().<span class="ident">to_vec</span>())
-			.<span class="ident">collect</span>::<span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="kw">_</span><span class="op">&gt;</span><span class="op">&gt;</span>();
-		<span class="kw">let</span> <span class="ident">key_len</span> <span class="op">=</span> <span class="ident">keys</span>.<span class="ident">get</span>(<span class="number">0</span>).<span class="ident">map</span>(<span class="op">|</span><span class="ident">i</span><span class="op">|</span> <span class="ident">i</span>.<span class="ident">len</span>() <span class="kw">as</span> <span class="ident">u32</span>).<span class="ident">unwrap_or</span>(<span class="number">0</span>);
+				.<span class="ident">map</span>(<span class="op">|</span><span class="ident">n</span><span class="op">|</span> { <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">h</span> <span class="op">=</span> <span class="ident">T::Hashing::hash_of</span>(<span class="kw-2">&amp;</span><span class="ident">n</span>).<span class="ident">as_ref</span>().<span class="ident">to_vec</span>();
+						<span class="ident">h</span>.<span class="ident">resize</span>(<span class="ident">max_key_len</span>.<span class="ident">try_into</span>().<span class="ident">unwrap</span>(), <span class="ident">n</span>.<span class="ident">to_le_bytes</span>()[<span class="number">0</span>]); <span class="ident">h</span> })
+		.<span class="ident">collect</span>::<span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="kw">_</span><span class="op">&gt;</span><span class="op">&gt;</span>();
 		<span class="kw">let</span> <span class="ident">key_bytes</span> <span class="op">=</span> <span class="ident">keys</span>.<span class="ident">iter</span>().<span class="ident">flatten</span>().<span class="ident">cloned</span>().<span class="ident">collect</span>::<span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="kw">_</span><span class="op">&gt;</span><span class="op">&gt;</span>();
 		<span class="kw">let</span> <span class="ident">key_bytes_len</span> <span class="op">=</span> <span class="ident">key_bytes</span>.<span class="ident">len</span>();
 		<span class="kw">let</span> <span class="ident">code</span> <span class="op">=</span> <span class="ident">WasmModule</span>::<span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span><span class="ident">::from</span>(<span class="ident">ModuleDefinition</span> {
@@ -4267,7 +4326,7 @@
 			<span class="ident">imported_functions</span>: <span class="macro">vec!</span>[<span class="ident">ImportedFunction</span> {
 				<span class="ident">module</span>: <span class="string">&quot;__unstable__&quot;</span>,
 				<span class="ident">name</span>: <span class="string">&quot;seal_take_storage&quot;</span>,
-				<span class="ident">params</span>: <span class="macro">vec!</span>[<span class="ident">ValueType::I32</span>, <span class="ident">ValueType::I32</span>, <span class="ident">ValueType::I32</span>],
+				<span class="ident">params</span>: <span class="macro">vec!</span>[<span class="ident">ValueType::I32</span>, <span class="ident">ValueType::I32</span>, <span class="ident">ValueType::I32</span>, <span class="ident">ValueType::I32</span>],
 				<span class="ident">return_type</span>: <span class="prelude-val">Some</span>(<span class="ident">ValueType::I32</span>),
 			}],
 			<span class="ident">data_segments</span>: <span class="macro">vec!</span>[
@@ -4281,7 +4340,8 @@
 				},
 			],
 			<span class="ident">call_body</span>: <span class="prelude-val">Some</span>(<span class="ident">body::repeated_dyn</span>(<span class="ident">r</span> <span class="op">*</span> <span class="ident">API_BENCHMARK_BATCH_SIZE</span>, <span class="macro">vec!</span>[
-				<span class="ident">Counter</span>(<span class="number">0</span>, <span class="ident">key_len</span> <span class="kw">as</span> <span class="ident">u32</span>), <span class="comment">// key_ptr</span>
+				<span class="ident">Counter</span>(<span class="number">0</span>, <span class="ident">max_key_len</span> <span class="kw">as</span> <span class="ident">u32</span>), <span class="comment">// key_ptr</span>
+				<span class="ident">Regular</span>(<span class="ident">Instruction::I32Const</span>(<span class="ident">max_key_len</span> <span class="kw">as</span> <span class="ident">i32</span>)), <span class="comment">// key_len</span>
 				<span class="ident">Regular</span>(<span class="ident">Instruction::I32Const</span>((<span class="ident">key_bytes_len</span> <span class="op">+</span> <span class="number">4</span>) <span class="kw">as</span> <span class="ident">i32</span>)), <span class="comment">// out_ptr</span>
 				<span class="ident">Regular</span>(<span class="ident">Instruction::I32Const</span>(<span class="ident">key_bytes_len</span> <span class="kw">as</span> <span class="ident">i32</span>)), <span class="comment">// out_len_ptr</span>
 				<span class="ident">Regular</span>(<span class="ident">Instruction::Call</span>(<span class="number">0</span>)),
@@ -4294,7 +4354,7 @@
 		<span class="kw">for</span> <span class="ident">key</span> <span class="kw">in</span> <span class="ident">keys</span> {
 			<span class="ident">Storage</span>::<span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span><span class="ident">::write</span>(
 				<span class="kw-2">&amp;</span><span class="ident">info</span>.<span class="ident">trie_id</span>,
-				<span class="ident">key</span>.<span class="ident">as_slice</span>().<span class="ident">try_into</span>().<span class="ident">map_err</span>(<span class="op">|</span><span class="ident">e</span><span class="op">|</span> <span class="string">&quot;Key has wrong length&quot;</span>)<span class="question-mark">?</span>,
+				<span class="kw-2">&amp;</span><span class="ident">VarSizedKey</span>::<span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span><span class="ident">::try_from</span>(<span class="ident">key</span>).<span class="ident">map_err</span>(<span class="op">|</span><span class="ident">e</span><span class="op">|</span> <span class="string">&quot;Key has wrong length&quot;</span>)<span class="question-mark">?</span>,
 				<span class="prelude-val">Some</span>(<span class="macro">vec!</span>[]),
 				<span class="prelude-val">None</span>,
 				<span class="bool-val">false</span>,
@@ -4307,11 +4367,12 @@
 
 	<span class="attribute">#[<span class="ident">skip_meta</span>]</span>
 	<span class="ident">seal_take_storage_per_kb</span> {
-		<span class="kw">let</span> <span class="ident">n</span> <span class="kw">in</span> <span class="number">0</span> .. <span class="ident">T::Schedule::get</span>().<span class="ident">limits</span>.<span class="ident">payload_len</span> <span class="op">/</span> <span class="number">1024</span>;
-		<span class="kw">let</span> <span class="ident">keys</span> <span class="op">=</span> (<span class="number">0</span> .. <span class="ident">API_BENCHMARK_BATCH_SIZE</span>)
-			.<span class="ident">map</span>(<span class="op">|</span><span class="ident">n</span><span class="op">|</span> <span class="ident">T::Hashing::hash_of</span>(<span class="kw-2">&amp;</span><span class="ident">n</span>).<span class="ident">as_ref</span>().<span class="ident">to_vec</span>())
-			.<span class="ident">collect</span>::<span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="kw">_</span><span class="op">&gt;</span><span class="op">&gt;</span>();
-		<span class="kw">let</span> <span class="ident">key_len</span> <span class="op">=</span> <span class="ident">keys</span>.<span class="ident">get</span>(<span class="number">0</span>).<span class="ident">map</span>(<span class="op">|</span><span class="ident">i</span><span class="op">|</span> <span class="ident">i</span>.<span class="ident">len</span>() <span class="kw">as</span> <span class="ident">u32</span>).<span class="ident">unwrap_or</span>(<span class="number">0</span>);
+		<span class="kw">let</span> <span class="ident">n</span> <span class="kw">in</span> <span class="number">0</span> .. <span class="ident">T::Schedule::get</span>().<span class="ident">limits</span>.<span class="ident">payload_len</span> <span class="op">/</span> <span class="number">2048</span>; <span class="comment">// half of the max payload_len in kb</span>
+		<span class="kw">let</span> <span class="ident">max_key_len</span> <span class="op">=</span> <span class="ident">T::MaxStorageKeyLen::get</span>();
+		<span class="kw">let</span> <span class="ident">keys</span> <span class="op">=</span> (<span class="number">0</span> .. <span class="ident">n</span> <span class="op">*</span> <span class="ident">API_BENCHMARK_BATCH_SIZE</span>)
+				.<span class="ident">map</span>(<span class="op">|</span><span class="ident">n</span><span class="op">|</span> { <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">h</span> <span class="op">=</span> <span class="ident">T::Hashing::hash_of</span>(<span class="kw-2">&amp;</span><span class="ident">n</span>).<span class="ident">as_ref</span>().<span class="ident">to_vec</span>();
+						<span class="ident">h</span>.<span class="ident">resize</span>(<span class="ident">max_key_len</span>.<span class="ident">try_into</span>().<span class="ident">unwrap</span>(), <span class="ident">n</span>.<span class="ident">to_le_bytes</span>()[<span class="number">0</span>]); <span class="ident">h</span> })
+		.<span class="ident">collect</span>::<span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="kw">_</span><span class="op">&gt;</span><span class="op">&gt;</span>();
 		<span class="kw">let</span> <span class="ident">key_bytes</span> <span class="op">=</span> <span class="ident">keys</span>.<span class="ident">iter</span>().<span class="ident">flatten</span>().<span class="ident">cloned</span>().<span class="ident">collect</span>::<span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="kw">_</span><span class="op">&gt;</span><span class="op">&gt;</span>();
 		<span class="kw">let</span> <span class="ident">key_bytes_len</span> <span class="op">=</span> <span class="ident">key_bytes</span>.<span class="ident">len</span>();
 		<span class="kw">let</span> <span class="ident">code</span> <span class="op">=</span> <span class="ident">WasmModule</span>::<span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span><span class="ident">::from</span>(<span class="ident">ModuleDefinition</span> {
@@ -4319,7 +4380,7 @@
 			<span class="ident">imported_functions</span>: <span class="macro">vec!</span>[<span class="ident">ImportedFunction</span> {
 				<span class="ident">module</span>: <span class="string">&quot;__unstable__&quot;</span>,
 				<span class="ident">name</span>: <span class="string">&quot;seal_take_storage&quot;</span>,
-				<span class="ident">params</span>: <span class="macro">vec!</span>[<span class="ident">ValueType::I32</span>, <span class="ident">ValueType::I32</span>, <span class="ident">ValueType::I32</span>],
+				<span class="ident">params</span>: <span class="macro">vec!</span>[<span class="ident">ValueType::I32</span>, <span class="ident">ValueType::I32</span>, <span class="ident">ValueType::I32</span>, <span class="ident">ValueType::I32</span>],
 				<span class="ident">return_type</span>: <span class="prelude-val">Some</span>(<span class="ident">ValueType::I32</span>),
 			}],
 			<span class="ident">data_segments</span>: <span class="macro">vec!</span>[
@@ -4333,7 +4394,8 @@
 				},
 			],
 			<span class="ident">call_body</span>: <span class="prelude-val">Some</span>(<span class="ident">body::repeated_dyn</span>(<span class="ident">API_BENCHMARK_BATCH_SIZE</span>, <span class="macro">vec!</span>[
-				<span class="ident">Counter</span>(<span class="number">0</span>, <span class="ident">key_len</span> <span class="kw">as</span> <span class="ident">u32</span>), <span class="comment">// key_ptr</span>
+				<span class="ident">Counter</span>(<span class="number">0</span>, <span class="ident">max_key_len</span> <span class="kw">as</span> <span class="ident">u32</span>), <span class="comment">// key_ptr</span>
+				<span class="ident">Regular</span>(<span class="ident">Instruction::I32Const</span>(<span class="ident">max_key_len</span> <span class="kw">as</span> <span class="ident">i32</span>)), <span class="comment">// key_len</span>
 				<span class="ident">Regular</span>(<span class="ident">Instruction::I32Const</span>((<span class="ident">key_bytes_len</span> <span class="op">+</span> <span class="number">4</span>) <span class="kw">as</span> <span class="ident">i32</span>)), <span class="comment">// out_ptr</span>
 				<span class="ident">Regular</span>(<span class="ident">Instruction::I32Const</span>(<span class="ident">key_bytes_len</span> <span class="kw">as</span> <span class="ident">i32</span>)), <span class="comment">// out_len_ptr</span>
 				<span class="ident">Regular</span>(<span class="ident">Instruction::Call</span>(<span class="number">0</span>)),
@@ -4346,8 +4408,8 @@
 		<span class="kw">for</span> <span class="ident">key</span> <span class="kw">in</span> <span class="ident">keys</span> {
 			<span class="ident">Storage</span>::<span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span><span class="ident">::write</span>(
 				<span class="kw-2">&amp;</span><span class="ident">info</span>.<span class="ident">trie_id</span>,
-				<span class="ident">key</span>.<span class="ident">as_slice</span>().<span class="ident">try_into</span>().<span class="ident">map_err</span>(<span class="op">|</span><span class="ident">e</span><span class="op">|</span> <span class="string">&quot;Key has wrong length&quot;</span>)<span class="question-mark">?</span>,
-				<span class="prelude-val">Some</span>(<span class="macro">vec!</span>[<span class="number">42u8</span>; (<span class="ident">n</span> <span class="op">*</span> <span class="number">1024</span>) <span class="kw">as</span> <span class="ident">usize</span>]),
+				<span class="kw-2">&amp;</span><span class="ident">VarSizedKey</span>::<span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span><span class="ident">::try_from</span>(<span class="ident">key</span>).<span class="ident">map_err</span>(<span class="op">|</span><span class="ident">e</span><span class="op">|</span> <span class="string">&quot;Key has wrong length&quot;</span>)<span class="question-mark">?</span>,
+				<span class="prelude-val">Some</span>(<span class="macro">vec!</span>[<span class="number">42u8</span>; (<span class="ident">n</span> <span class="op">*</span> <span class="number">2048</span>) <span class="kw">as</span> <span class="ident">usize</span>]), <span class="comment">// value_len increments by 2kb up to max payload_len</span>
 				<span class="prelude-val">None</span>,
 				<span class="bool-val">false</span>,
 			)
