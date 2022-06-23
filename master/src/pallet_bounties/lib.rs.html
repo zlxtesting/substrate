@@ -907,6 +907,7 @@
 <span id="902">902</span>
 <span id="903">903</span>
 <span id="904">904</span>
+<span id="905">905</span>
 </pre><pre class="rust"><code><span class="comment">// This file is part of Substrate.</span>
 
 <span class="comment">// Copyright (C) 2017-2022 Parity Technologies (UK) Ltd.</span>
@@ -1016,9 +1017,9 @@
 
 <span class="kw">pub</span> <span class="kw">use</span> <span class="ident">pallet</span>::<span class="kw-2">*</span>;
 
-<span class="kw">type</span> <span class="ident">BalanceOf</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span> <span class="op">=</span> <span class="ident">pallet_treasury::BalanceOf</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>;
+<span class="kw">type</span> <span class="ident">BalanceOf</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">I</span> <span class="op">=</span> ()<span class="op">&gt;</span> <span class="op">=</span> <span class="ident">pallet_treasury::BalanceOf</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">I</span><span class="op">&gt;</span>;
 
-<span class="kw">type</span> <span class="ident">PositiveImbalanceOf</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span> <span class="op">=</span> <span class="ident">pallet_treasury::PositiveImbalanceOf</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>;
+<span class="kw">type</span> <span class="ident">PositiveImbalanceOf</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">I</span> <span class="op">=</span> ()<span class="op">&gt;</span> <span class="op">=</span> <span class="ident">pallet_treasury::PositiveImbalanceOf</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">I</span><span class="op">&gt;</span>;
 
 <span class="doccomment">/// An index of a bounty. Just a `u32`.</span>
 <span class="kw">pub</span> <span class="kw">type</span> <span class="ident">BountyIndex</span> <span class="op">=</span> <span class="ident">u32</span>;
@@ -1097,13 +1098,13 @@
 
 	<span class="attribute">#[<span class="ident">pallet::pallet</span>]</span>
 	<span class="attribute">#[<span class="ident">pallet::generate_store</span>(<span class="kw">pub</span>(<span class="kw">super</span>) <span class="kw">trait</span> <span class="ident">Store</span>)]</span>
-	<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">Pallet</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>(<span class="kw">_</span>);
+	<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">Pallet</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">I</span> <span class="op">=</span> ()<span class="op">&gt;</span>(<span class="kw">_</span>);
 
 	<span class="attribute">#[<span class="ident">pallet::config</span>]</span>
-	<span class="kw">pub</span> <span class="kw">trait</span> <span class="ident">Config</span>: <span class="ident">frame_system::Config</span> <span class="op">+</span> <span class="ident">pallet_treasury::Config</span> {
+	<span class="kw">pub</span> <span class="kw">trait</span> <span class="ident">Config</span><span class="op">&lt;</span><span class="ident">I</span>: <span class="lifetime">&#39;static</span> <span class="op">=</span> ()<span class="op">&gt;</span>: <span class="ident">frame_system::Config</span> <span class="op">+</span> <span class="ident">pallet_treasury::Config</span><span class="op">&lt;</span><span class="ident">I</span><span class="op">&gt;</span> {
 		<span class="doccomment">/// The amount held on deposit for placing a bounty proposal.</span>
 		<span class="attribute">#[<span class="ident">pallet::constant</span>]</span>
-		<span class="kw">type</span> <span class="ident">BountyDepositBase</span>: <span class="ident">Get</span><span class="op">&lt;</span><span class="ident">BalanceOf</span><span class="op">&lt;</span><span class="self">Self</span><span class="op">&gt;</span><span class="op">&gt;</span>;
+		<span class="kw">type</span> <span class="ident">BountyDepositBase</span>: <span class="ident">Get</span><span class="op">&lt;</span><span class="ident">BalanceOf</span><span class="op">&lt;</span><span class="self">Self</span>, <span class="ident">I</span><span class="op">&gt;</span><span class="op">&gt;</span>;
 
 		<span class="doccomment">/// The delay period for which a bounty beneficiary need to wait before claim the payout.</span>
 		<span class="attribute">#[<span class="ident">pallet::constant</span>]</span>
@@ -1122,22 +1123,22 @@
 
 		<span class="doccomment">/// Maximum amount of funds that should be placed in a deposit for making a proposal.</span>
 		<span class="attribute">#[<span class="ident">pallet::constant</span>]</span>
-		<span class="kw">type</span> <span class="ident">CuratorDepositMax</span>: <span class="ident">Get</span><span class="op">&lt;</span><span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">BalanceOf</span><span class="op">&lt;</span><span class="self">Self</span><span class="op">&gt;</span><span class="op">&gt;</span><span class="op">&gt;</span>;
+		<span class="kw">type</span> <span class="ident">CuratorDepositMax</span>: <span class="ident">Get</span><span class="op">&lt;</span><span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">BalanceOf</span><span class="op">&lt;</span><span class="self">Self</span>, <span class="ident">I</span><span class="op">&gt;</span><span class="op">&gt;</span><span class="op">&gt;</span>;
 
 		<span class="doccomment">/// Minimum amount of funds that should be placed in a deposit for making a proposal.</span>
 		<span class="attribute">#[<span class="ident">pallet::constant</span>]</span>
-		<span class="kw">type</span> <span class="ident">CuratorDepositMin</span>: <span class="ident">Get</span><span class="op">&lt;</span><span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">BalanceOf</span><span class="op">&lt;</span><span class="self">Self</span><span class="op">&gt;</span><span class="op">&gt;</span><span class="op">&gt;</span>;
+		<span class="kw">type</span> <span class="ident">CuratorDepositMin</span>: <span class="ident">Get</span><span class="op">&lt;</span><span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">BalanceOf</span><span class="op">&lt;</span><span class="self">Self</span>, <span class="ident">I</span><span class="op">&gt;</span><span class="op">&gt;</span><span class="op">&gt;</span>;
 
 		<span class="doccomment">/// Minimum value for a bounty.</span>
 		<span class="attribute">#[<span class="ident">pallet::constant</span>]</span>
-		<span class="kw">type</span> <span class="ident">BountyValueMinimum</span>: <span class="ident">Get</span><span class="op">&lt;</span><span class="ident">BalanceOf</span><span class="op">&lt;</span><span class="self">Self</span><span class="op">&gt;</span><span class="op">&gt;</span>;
+		<span class="kw">type</span> <span class="ident">BountyValueMinimum</span>: <span class="ident">Get</span><span class="op">&lt;</span><span class="ident">BalanceOf</span><span class="op">&lt;</span><span class="self">Self</span>, <span class="ident">I</span><span class="op">&gt;</span><span class="op">&gt;</span>;
 
 		<span class="doccomment">/// The amount held on deposit per byte within the tip report reason or bounty description.</span>
 		<span class="attribute">#[<span class="ident">pallet::constant</span>]</span>
-		<span class="kw">type</span> <span class="ident">DataDepositPerByte</span>: <span class="ident">Get</span><span class="op">&lt;</span><span class="ident">BalanceOf</span><span class="op">&lt;</span><span class="self">Self</span><span class="op">&gt;</span><span class="op">&gt;</span>;
+		<span class="kw">type</span> <span class="ident">DataDepositPerByte</span>: <span class="ident">Get</span><span class="op">&lt;</span><span class="ident">BalanceOf</span><span class="op">&lt;</span><span class="self">Self</span>, <span class="ident">I</span><span class="op">&gt;</span><span class="op">&gt;</span>;
 
 		<span class="doccomment">/// The overarching event type.</span>
-		<span class="kw">type</span> <span class="ident">Event</span>: <span class="ident">From</span><span class="op">&lt;</span><span class="ident">Event</span><span class="op">&lt;</span><span class="self">Self</span><span class="op">&gt;</span><span class="op">&gt;</span> <span class="op">+</span> <span class="ident">IsType</span><span class="op">&lt;</span><span class="op">&lt;</span><span class="self">Self</span> <span class="kw">as</span> <span class="ident">frame_system::Config</span><span class="op">&gt;</span><span class="ident">::Event</span><span class="op">&gt;</span>;
+		<span class="kw">type</span> <span class="ident">Event</span>: <span class="ident">From</span><span class="op">&lt;</span><span class="ident">Event</span><span class="op">&lt;</span><span class="self">Self</span>, <span class="ident">I</span><span class="op">&gt;</span><span class="op">&gt;</span> <span class="op">+</span> <span class="ident">IsType</span><span class="op">&lt;</span><span class="op">&lt;</span><span class="self">Self</span> <span class="kw">as</span> <span class="ident">frame_system::Config</span><span class="op">&gt;</span><span class="ident">::Event</span><span class="op">&gt;</span>;
 
 		<span class="doccomment">/// Maximum acceptable reason length.</span>
 		<span class="doccomment">///</span>
@@ -1149,11 +1150,11 @@
 		<span class="kw">type</span> <span class="ident">WeightInfo</span>: <span class="ident">WeightInfo</span>;
 
 		<span class="doccomment">/// The child bounty manager.</span>
-		<span class="kw">type</span> <span class="ident">ChildBountyManager</span>: <span class="ident">ChildBountyManager</span><span class="op">&lt;</span><span class="ident">BalanceOf</span><span class="op">&lt;</span><span class="self">Self</span><span class="op">&gt;</span><span class="op">&gt;</span>;
+		<span class="kw">type</span> <span class="ident">ChildBountyManager</span>: <span class="ident">ChildBountyManager</span><span class="op">&lt;</span><span class="ident">BalanceOf</span><span class="op">&lt;</span><span class="self">Self</span>, <span class="ident">I</span><span class="op">&gt;</span><span class="op">&gt;</span>;
 	}
 
 	<span class="attribute">#[<span class="ident">pallet::error</span>]</span>
-	<span class="kw">pub</span> <span class="kw">enum</span> <span class="ident">Error</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span> {
+	<span class="kw">pub</span> <span class="kw">enum</span> <span class="ident">Error</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">I</span> <span class="op">=</span> ()<span class="op">&gt;</span> {
 		<span class="doccomment">/// Proposer&#39;s balance is too low.</span>
 		<span class="ident">InsufficientProposersBalance</span>,
 		<span class="doccomment">/// No proposal or bounty at that index.</span>
@@ -1181,17 +1182,17 @@
 
 	<span class="attribute">#[<span class="ident">pallet::event</span>]</span>
 	<span class="attribute">#[<span class="ident">pallet::generate_deposit</span>(<span class="kw">pub</span>(<span class="kw">super</span>) <span class="kw">fn</span> <span class="ident">deposit_event</span>)]</span>
-	<span class="kw">pub</span> <span class="kw">enum</span> <span class="ident">Event</span><span class="op">&lt;</span><span class="ident">T</span>: <span class="ident">Config</span><span class="op">&gt;</span> {
+	<span class="kw">pub</span> <span class="kw">enum</span> <span class="ident">Event</span><span class="op">&lt;</span><span class="ident">T</span>: <span class="ident">Config</span><span class="op">&lt;</span><span class="ident">I</span><span class="op">&gt;</span>, <span class="ident">I</span>: <span class="lifetime">&#39;static</span> <span class="op">=</span> ()<span class="op">&gt;</span> {
 		<span class="doccomment">/// New bounty proposal.</span>
 		<span class="ident">BountyProposed</span> { <span class="ident">index</span>: <span class="ident">BountyIndex</span> },
 		<span class="doccomment">/// A bounty proposal was rejected; funds were slashed.</span>
-		<span class="ident">BountyRejected</span> { <span class="ident">index</span>: <span class="ident">BountyIndex</span>, <span class="ident">bond</span>: <span class="ident">BalanceOf</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span> },
+		<span class="ident">BountyRejected</span> { <span class="ident">index</span>: <span class="ident">BountyIndex</span>, <span class="ident">bond</span>: <span class="ident">BalanceOf</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">I</span><span class="op">&gt;</span> },
 		<span class="doccomment">/// A bounty proposal is funded and became active.</span>
 		<span class="ident">BountyBecameActive</span> { <span class="ident">index</span>: <span class="ident">BountyIndex</span> },
 		<span class="doccomment">/// A bounty is awarded to a beneficiary.</span>
 		<span class="ident">BountyAwarded</span> { <span class="ident">index</span>: <span class="ident">BountyIndex</span>, <span class="ident">beneficiary</span>: <span class="ident">T::AccountId</span> },
 		<span class="doccomment">/// A bounty is claimed by beneficiary.</span>
-		<span class="ident">BountyClaimed</span> { <span class="ident">index</span>: <span class="ident">BountyIndex</span>, <span class="ident">payout</span>: <span class="ident">BalanceOf</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>, <span class="ident">beneficiary</span>: <span class="ident">T::AccountId</span> },
+		<span class="ident">BountyClaimed</span> { <span class="ident">index</span>: <span class="ident">BountyIndex</span>, <span class="ident">payout</span>: <span class="ident">BalanceOf</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">I</span><span class="op">&gt;</span>, <span class="ident">beneficiary</span>: <span class="ident">T::AccountId</span> },
 		<span class="doccomment">/// A bounty is cancelled.</span>
 		<span class="ident">BountyCanceled</span> { <span class="ident">index</span>: <span class="ident">BountyIndex</span> },
 		<span class="doccomment">/// A bounty expiry is extended.</span>
@@ -1201,32 +1202,32 @@
 	<span class="doccomment">/// Number of bounty proposals that have been made.</span>
 	<span class="attribute">#[<span class="ident">pallet::storage</span>]</span>
 	<span class="attribute">#[<span class="ident">pallet::getter</span>(<span class="kw">fn</span> <span class="ident">bounty_count</span>)]</span>
-	<span class="kw">pub</span> <span class="kw">type</span> <span class="ident">BountyCount</span><span class="op">&lt;</span><span class="ident">T</span>: <span class="ident">Config</span><span class="op">&gt;</span> <span class="op">=</span> <span class="ident">StorageValue</span><span class="op">&lt;</span><span class="kw">_</span>, <span class="ident">BountyIndex</span>, <span class="ident">ValueQuery</span><span class="op">&gt;</span>;
+	<span class="kw">pub</span> <span class="kw">type</span> <span class="ident">BountyCount</span><span class="op">&lt;</span><span class="ident">T</span>: <span class="ident">Config</span><span class="op">&lt;</span><span class="ident">I</span><span class="op">&gt;</span>, <span class="ident">I</span>: <span class="lifetime">&#39;static</span> <span class="op">=</span> ()<span class="op">&gt;</span> <span class="op">=</span> <span class="ident">StorageValue</span><span class="op">&lt;</span><span class="kw">_</span>, <span class="ident">BountyIndex</span>, <span class="ident">ValueQuery</span><span class="op">&gt;</span>;
 
 	<span class="doccomment">/// Bounties that have been made.</span>
 	<span class="attribute">#[<span class="ident">pallet::storage</span>]</span>
 	<span class="attribute">#[<span class="ident">pallet::getter</span>(<span class="kw">fn</span> <span class="ident">bounties</span>)]</span>
-	<span class="kw">pub</span> <span class="kw">type</span> <span class="ident">Bounties</span><span class="op">&lt;</span><span class="ident">T</span>: <span class="ident">Config</span><span class="op">&gt;</span> <span class="op">=</span> <span class="ident">StorageMap</span><span class="op">&lt;</span>
+	<span class="kw">pub</span> <span class="kw">type</span> <span class="ident">Bounties</span><span class="op">&lt;</span><span class="ident">T</span>: <span class="ident">Config</span><span class="op">&lt;</span><span class="ident">I</span><span class="op">&gt;</span>, <span class="ident">I</span>: <span class="lifetime">&#39;static</span> <span class="op">=</span> ()<span class="op">&gt;</span> <span class="op">=</span> <span class="ident">StorageMap</span><span class="op">&lt;</span>
 		<span class="kw">_</span>,
 		<span class="ident">Twox64Concat</span>,
 		<span class="ident">BountyIndex</span>,
-		<span class="ident">Bounty</span><span class="op">&lt;</span><span class="ident">T::AccountId</span>, <span class="ident">BalanceOf</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>, <span class="ident">T::BlockNumber</span><span class="op">&gt;</span>,
+		<span class="ident">Bounty</span><span class="op">&lt;</span><span class="ident">T::AccountId</span>, <span class="ident">BalanceOf</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">I</span><span class="op">&gt;</span>, <span class="ident">T::BlockNumber</span><span class="op">&gt;</span>,
 	<span class="op">&gt;</span>;
 
 	<span class="doccomment">/// The description of each bounty.</span>
 	<span class="attribute">#[<span class="ident">pallet::storage</span>]</span>
 	<span class="attribute">#[<span class="ident">pallet::getter</span>(<span class="kw">fn</span> <span class="ident">bounty_descriptions</span>)]</span>
-	<span class="kw">pub</span> <span class="kw">type</span> <span class="ident">BountyDescriptions</span><span class="op">&lt;</span><span class="ident">T</span>: <span class="ident">Config</span><span class="op">&gt;</span> <span class="op">=</span>
+	<span class="kw">pub</span> <span class="kw">type</span> <span class="ident">BountyDescriptions</span><span class="op">&lt;</span><span class="ident">T</span>: <span class="ident">Config</span><span class="op">&lt;</span><span class="ident">I</span><span class="op">&gt;</span>, <span class="ident">I</span>: <span class="lifetime">&#39;static</span> <span class="op">=</span> ()<span class="op">&gt;</span> <span class="op">=</span>
 		<span class="ident">StorageMap</span><span class="op">&lt;</span><span class="kw">_</span>, <span class="ident">Twox64Concat</span>, <span class="ident">BountyIndex</span>, <span class="ident">BoundedVec</span><span class="op">&lt;</span><span class="ident">u8</span>, <span class="ident">T::MaximumReasonLength</span><span class="op">&gt;</span><span class="op">&gt;</span>;
 
 	<span class="doccomment">/// Bounty indices that have been approved but not yet funded.</span>
 	<span class="attribute">#[<span class="ident">pallet::storage</span>]</span>
 	<span class="attribute">#[<span class="ident">pallet::getter</span>(<span class="kw">fn</span> <span class="ident">bounty_approvals</span>)]</span>
-	<span class="kw">pub</span> <span class="kw">type</span> <span class="ident">BountyApprovals</span><span class="op">&lt;</span><span class="ident">T</span>: <span class="ident">Config</span><span class="op">&gt;</span> <span class="op">=</span>
+	<span class="kw">pub</span> <span class="kw">type</span> <span class="ident">BountyApprovals</span><span class="op">&lt;</span><span class="ident">T</span>: <span class="ident">Config</span><span class="op">&lt;</span><span class="ident">I</span><span class="op">&gt;</span>, <span class="ident">I</span>: <span class="lifetime">&#39;static</span> <span class="op">=</span> ()<span class="op">&gt;</span> <span class="op">=</span>
 		<span class="ident">StorageValue</span><span class="op">&lt;</span><span class="kw">_</span>, <span class="ident">BoundedVec</span><span class="op">&lt;</span><span class="ident">BountyIndex</span>, <span class="ident">T::MaxApprovals</span><span class="op">&gt;</span>, <span class="ident">ValueQuery</span><span class="op">&gt;</span>;
 
 	<span class="attribute">#[<span class="ident">pallet::call</span>]</span>
-	<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">T</span>: <span class="ident">Config</span><span class="op">&gt;</span> <span class="ident">Pallet</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span> {
+	<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">T</span>: <span class="ident">Config</span><span class="op">&lt;</span><span class="ident">I</span><span class="op">&gt;</span>, <span class="ident">I</span>: <span class="lifetime">&#39;static</span><span class="op">&gt;</span> <span class="ident">Pallet</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">I</span><span class="op">&gt;</span> {
 		<span class="doccomment">/// Propose a new bounty.</span>
 		<span class="doccomment">///</span>
 		<span class="doccomment">/// The dispatch origin for this call must be _Signed_.</span>
@@ -1239,10 +1240,10 @@
 		<span class="doccomment">/// - `fee`: The curator fee.</span>
 		<span class="doccomment">/// - `value`: The total payment amount of this bounty, curator fee included.</span>
 		<span class="doccomment">/// - `description`: The description of this bounty.</span>
-		<span class="attribute">#[<span class="ident">pallet::weight</span>(<span class="op">&lt;</span><span class="ident">T</span> <span class="kw">as</span> <span class="ident">Config</span><span class="op">&gt;</span><span class="ident">::WeightInfo::propose_bounty</span>(<span class="ident">description</span>.<span class="ident">len</span>() <span class="kw">as</span> <span class="ident">u32</span>))]</span>
+		<span class="attribute">#[<span class="ident">pallet::weight</span>(<span class="op">&lt;</span><span class="ident">T</span> <span class="kw">as</span> <span class="ident">Config</span><span class="op">&lt;</span><span class="ident">I</span><span class="op">&gt;</span><span class="op">&gt;</span><span class="ident">::WeightInfo::propose_bounty</span>(<span class="ident">description</span>.<span class="ident">len</span>() <span class="kw">as</span> <span class="ident">u32</span>))]</span>
 		<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">propose_bounty</span>(
 			<span class="ident">origin</span>: <span class="ident">OriginFor</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>,
-			<span class="attribute">#[<span class="ident">pallet::compact</span>]</span> <span class="ident">value</span>: <span class="ident">BalanceOf</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>,
+			<span class="attribute">#[<span class="ident">pallet::compact</span>]</span> <span class="ident">value</span>: <span class="ident">BalanceOf</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">I</span><span class="op">&gt;</span>,
 			<span class="ident">description</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">u8</span><span class="op">&gt;</span>,
 		) -&gt; <span class="ident">DispatchResult</span> {
 			<span class="kw">let</span> <span class="ident">proposer</span> <span class="op">=</span> <span class="ident">ensure_signed</span>(<span class="ident">origin</span>)<span class="question-mark">?</span>;
@@ -1258,21 +1259,21 @@
 		<span class="doccomment">/// # &lt;weight&gt;</span>
 		<span class="doccomment">/// - O(1).</span>
 		<span class="doccomment">/// # &lt;/weight&gt;</span>
-		<span class="attribute">#[<span class="ident">pallet::weight</span>(<span class="op">&lt;</span><span class="ident">T</span> <span class="kw">as</span> <span class="ident">Config</span><span class="op">&gt;</span><span class="ident">::WeightInfo::approve_bounty</span>())]</span>
+		<span class="attribute">#[<span class="ident">pallet::weight</span>(<span class="op">&lt;</span><span class="ident">T</span> <span class="kw">as</span> <span class="ident">Config</span><span class="op">&lt;</span><span class="ident">I</span><span class="op">&gt;</span><span class="op">&gt;</span><span class="ident">::WeightInfo::approve_bounty</span>())]</span>
 		<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">approve_bounty</span>(
 			<span class="ident">origin</span>: <span class="ident">OriginFor</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>,
 			<span class="attribute">#[<span class="ident">pallet::compact</span>]</span> <span class="ident">bounty_id</span>: <span class="ident">BountyIndex</span>,
 		) -&gt; <span class="ident">DispatchResult</span> {
 			<span class="ident">T::ApproveOrigin::ensure_origin</span>(<span class="ident">origin</span>)<span class="question-mark">?</span>;
 
-			<span class="ident">Bounties</span>::<span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span><span class="ident">::try_mutate_exists</span>(<span class="ident">bounty_id</span>, <span class="op">|</span><span class="ident">maybe_bounty</span><span class="op">|</span> -&gt; <span class="ident">DispatchResult</span> {
-				<span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">bounty</span> <span class="op">=</span> <span class="ident">maybe_bounty</span>.<span class="ident">as_mut</span>().<span class="ident">ok_or</span>(<span class="ident">Error</span>::<span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span><span class="ident">::InvalidIndex</span>)<span class="question-mark">?</span>;
-				<span class="macro">ensure!</span>(<span class="ident">bounty</span>.<span class="ident">status</span> <span class="op">==</span> <span class="ident">BountyStatus::Proposed</span>, <span class="ident">Error</span>::<span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span><span class="ident">::UnexpectedStatus</span>);
+			<span class="ident">Bounties</span>::<span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">I</span><span class="op">&gt;</span><span class="ident">::try_mutate_exists</span>(<span class="ident">bounty_id</span>, <span class="op">|</span><span class="ident">maybe_bounty</span><span class="op">|</span> -&gt; <span class="ident">DispatchResult</span> {
+				<span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">bounty</span> <span class="op">=</span> <span class="ident">maybe_bounty</span>.<span class="ident">as_mut</span>().<span class="ident">ok_or</span>(<span class="ident">Error</span>::<span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">I</span><span class="op">&gt;</span><span class="ident">::InvalidIndex</span>)<span class="question-mark">?</span>;
+				<span class="macro">ensure!</span>(<span class="ident">bounty</span>.<span class="ident">status</span> <span class="op">==</span> <span class="ident">BountyStatus::Proposed</span>, <span class="ident">Error</span>::<span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">I</span><span class="op">&gt;</span><span class="ident">::UnexpectedStatus</span>);
 
 				<span class="ident">bounty</span>.<span class="ident">status</span> <span class="op">=</span> <span class="ident">BountyStatus::Approved</span>;
 
-				<span class="ident">BountyApprovals</span>::<span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span><span class="ident">::try_append</span>(<span class="ident">bounty_id</span>)
-					.<span class="ident">map_err</span>(<span class="op">|</span>()<span class="op">|</span> <span class="ident">Error</span>::<span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span><span class="ident">::TooManyQueued</span>)<span class="question-mark">?</span>;
+				<span class="ident">BountyApprovals</span>::<span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">I</span><span class="op">&gt;</span><span class="ident">::try_append</span>(<span class="ident">bounty_id</span>)
+					.<span class="ident">map_err</span>(<span class="op">|</span>()<span class="op">|</span> <span class="ident">Error</span>::<span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">I</span><span class="op">&gt;</span><span class="ident">::TooManyQueued</span>)<span class="question-mark">?</span>;
 
 				<span class="prelude-val">Ok</span>(())
 			})<span class="question-mark">?</span>;
@@ -1286,24 +1287,24 @@
 		<span class="doccomment">/// # &lt;weight&gt;</span>
 		<span class="doccomment">/// - O(1).</span>
 		<span class="doccomment">/// # &lt;/weight&gt;</span>
-		<span class="attribute">#[<span class="ident">pallet::weight</span>(<span class="op">&lt;</span><span class="ident">T</span> <span class="kw">as</span> <span class="ident">Config</span><span class="op">&gt;</span><span class="ident">::WeightInfo::propose_curator</span>())]</span>
+		<span class="attribute">#[<span class="ident">pallet::weight</span>(<span class="op">&lt;</span><span class="ident">T</span> <span class="kw">as</span> <span class="ident">Config</span><span class="op">&lt;</span><span class="ident">I</span><span class="op">&gt;</span><span class="op">&gt;</span><span class="ident">::WeightInfo::propose_curator</span>())]</span>
 		<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">propose_curator</span>(
 			<span class="ident">origin</span>: <span class="ident">OriginFor</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>,
 			<span class="attribute">#[<span class="ident">pallet::compact</span>]</span> <span class="ident">bounty_id</span>: <span class="ident">BountyIndex</span>,
 			<span class="ident">curator</span>: <span class="op">&lt;</span><span class="ident">T::Lookup</span> <span class="kw">as</span> <span class="ident">StaticLookup</span><span class="op">&gt;</span><span class="ident">::Source</span>,
-			<span class="attribute">#[<span class="ident">pallet::compact</span>]</span> <span class="ident">fee</span>: <span class="ident">BalanceOf</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>,
+			<span class="attribute">#[<span class="ident">pallet::compact</span>]</span> <span class="ident">fee</span>: <span class="ident">BalanceOf</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">I</span><span class="op">&gt;</span>,
 		) -&gt; <span class="ident">DispatchResult</span> {
 			<span class="ident">T::ApproveOrigin::ensure_origin</span>(<span class="ident">origin</span>)<span class="question-mark">?</span>;
 
 			<span class="kw">let</span> <span class="ident">curator</span> <span class="op">=</span> <span class="ident">T::Lookup::lookup</span>(<span class="ident">curator</span>)<span class="question-mark">?</span>;
-			<span class="ident">Bounties</span>::<span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span><span class="ident">::try_mutate_exists</span>(<span class="ident">bounty_id</span>, <span class="op">|</span><span class="ident">maybe_bounty</span><span class="op">|</span> -&gt; <span class="ident">DispatchResult</span> {
-				<span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">bounty</span> <span class="op">=</span> <span class="ident">maybe_bounty</span>.<span class="ident">as_mut</span>().<span class="ident">ok_or</span>(<span class="ident">Error</span>::<span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span><span class="ident">::InvalidIndex</span>)<span class="question-mark">?</span>;
+			<span class="ident">Bounties</span>::<span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">I</span><span class="op">&gt;</span><span class="ident">::try_mutate_exists</span>(<span class="ident">bounty_id</span>, <span class="op">|</span><span class="ident">maybe_bounty</span><span class="op">|</span> -&gt; <span class="ident">DispatchResult</span> {
+				<span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">bounty</span> <span class="op">=</span> <span class="ident">maybe_bounty</span>.<span class="ident">as_mut</span>().<span class="ident">ok_or</span>(<span class="ident">Error</span>::<span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">I</span><span class="op">&gt;</span><span class="ident">::InvalidIndex</span>)<span class="question-mark">?</span>;
 				<span class="kw">match</span> <span class="ident">bounty</span>.<span class="ident">status</span> {
 					<span class="ident">BountyStatus::Proposed</span> <span class="op">|</span> <span class="ident">BountyStatus::Approved</span> <span class="op">|</span> <span class="ident">BountyStatus::Funded</span> =&gt; {},
-					<span class="kw">_</span> =&gt; <span class="kw">return</span> <span class="prelude-val">Err</span>(<span class="ident">Error</span>::<span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span><span class="ident">::UnexpectedStatus</span>.<span class="ident">into</span>()),
+					<span class="kw">_</span> =&gt; <span class="kw">return</span> <span class="prelude-val">Err</span>(<span class="ident">Error</span>::<span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">I</span><span class="op">&gt;</span><span class="ident">::UnexpectedStatus</span>.<span class="ident">into</span>()),
 				};
 
-				<span class="macro">ensure!</span>(<span class="ident">fee</span> <span class="op">&lt;</span> <span class="ident">bounty</span>.<span class="ident">value</span>, <span class="ident">Error</span>::<span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span><span class="ident">::InvalidFee</span>);
+				<span class="macro">ensure!</span>(<span class="ident">fee</span> <span class="op">&lt;</span> <span class="ident">bounty</span>.<span class="ident">value</span>, <span class="ident">Error</span>::<span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">I</span><span class="op">&gt;</span><span class="ident">::InvalidFee</span>);
 
 				<span class="ident">bounty</span>.<span class="ident">status</span> <span class="op">=</span> <span class="ident">BountyStatus::CuratorProposed</span> { <span class="ident">curator</span> };
 				<span class="ident">bounty</span>.<span class="ident">fee</span> <span class="op">=</span> <span class="ident">fee</span>;
@@ -1331,7 +1332,7 @@
 		<span class="doccomment">/// # &lt;weight&gt;</span>
 		<span class="doccomment">/// - O(1).</span>
 		<span class="doccomment">/// # &lt;/weight&gt;</span>
-		<span class="attribute">#[<span class="ident">pallet::weight</span>(<span class="op">&lt;</span><span class="ident">T</span> <span class="kw">as</span> <span class="ident">Config</span><span class="op">&gt;</span><span class="ident">::WeightInfo::unassign_curator</span>())]</span>
+		<span class="attribute">#[<span class="ident">pallet::weight</span>(<span class="op">&lt;</span><span class="ident">T</span> <span class="kw">as</span> <span class="ident">Config</span><span class="op">&lt;</span><span class="ident">I</span><span class="op">&gt;</span><span class="op">&gt;</span><span class="ident">::WeightInfo::unassign_curator</span>())]</span>
 		<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">unassign_curator</span>(
 			<span class="ident">origin</span>: <span class="ident">OriginFor</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>,
 			<span class="attribute">#[<span class="ident">pallet::compact</span>]</span> <span class="ident">bounty_id</span>: <span class="ident">BountyIndex</span>,
@@ -1340,10 +1341,11 @@
 				.<span class="ident">map</span>(<span class="prelude-val">Some</span>)
 				.<span class="ident">or_else</span>(<span class="op">|</span><span class="kw">_</span><span class="op">|</span> <span class="ident">T::RejectOrigin::ensure_origin</span>(<span class="ident">origin</span>).<span class="ident">map</span>(<span class="op">|</span><span class="kw">_</span><span class="op">|</span> <span class="prelude-val">None</span>))<span class="question-mark">?</span>;
 
-			<span class="ident">Bounties</span>::<span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span><span class="ident">::try_mutate_exists</span>(<span class="ident">bounty_id</span>, <span class="op">|</span><span class="ident">maybe_bounty</span><span class="op">|</span> -&gt; <span class="ident">DispatchResult</span> {
-				<span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">bounty</span> <span class="op">=</span> <span class="ident">maybe_bounty</span>.<span class="ident">as_mut</span>().<span class="ident">ok_or</span>(<span class="ident">Error</span>::<span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span><span class="ident">::InvalidIndex</span>)<span class="question-mark">?</span>;
+			<span class="ident">Bounties</span>::<span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">I</span><span class="op">&gt;</span><span class="ident">::try_mutate_exists</span>(<span class="ident">bounty_id</span>, <span class="op">|</span><span class="ident">maybe_bounty</span><span class="op">|</span> -&gt; <span class="ident">DispatchResult</span> {
+				<span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">bounty</span> <span class="op">=</span> <span class="ident">maybe_bounty</span>.<span class="ident">as_mut</span>().<span class="ident">ok_or</span>(<span class="ident">Error</span>::<span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">I</span><span class="op">&gt;</span><span class="ident">::InvalidIndex</span>)<span class="question-mark">?</span>;
 
-				<span class="kw">let</span> <span class="ident">slash_curator</span> <span class="op">=</span> <span class="op">|</span><span class="ident">curator</span>: <span class="kw-2">&amp;</span><span class="ident">T::AccountId</span>, <span class="ident">curator_deposit</span>: <span class="kw-2">&amp;mut</span> <span class="ident">BalanceOf</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span><span class="op">|</span> {
+				<span class="kw">let</span> <span class="ident">slash_curator</span> <span class="op">=</span> <span class="op">|</span><span class="ident">curator</span>: <span class="kw-2">&amp;</span><span class="ident">T::AccountId</span>,
+				                     <span class="ident">curator_deposit</span>: <span class="kw-2">&amp;mut</span> <span class="ident">BalanceOf</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">I</span><span class="op">&gt;</span><span class="op">|</span> {
 					<span class="kw">let</span> <span class="ident">imbalance</span> <span class="op">=</span> <span class="ident">T::Currency::slash_reserved</span>(<span class="ident">curator</span>, <span class="kw-2">*</span><span class="ident">curator_deposit</span>).<span class="number">0</span>;
 					<span class="ident">T::OnSlash::on_unbalanced</span>(<span class="ident">imbalance</span>);
 					<span class="kw-2">*</span><span class="ident">curator_deposit</span> <span class="op">=</span> <span class="ident">Zero::zero</span>();
@@ -1352,7 +1354,7 @@
 				<span class="kw">match</span> <span class="ident">bounty</span>.<span class="ident">status</span> {
 					<span class="ident">BountyStatus::Proposed</span> <span class="op">|</span> <span class="ident">BountyStatus::Approved</span> <span class="op">|</span> <span class="ident">BountyStatus::Funded</span> =&gt; {
 						<span class="comment">// No curator to unassign at this point.</span>
-						<span class="kw">return</span> <span class="prelude-val">Err</span>(<span class="ident">Error</span>::<span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span><span class="ident">::UnexpectedStatus</span>.<span class="ident">into</span>())
+						<span class="kw">return</span> <span class="prelude-val">Err</span>(<span class="ident">Error</span>::<span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">I</span><span class="op">&gt;</span><span class="ident">::UnexpectedStatus</span>.<span class="ident">into</span>())
 					},
 					<span class="ident">BountyStatus::CuratorProposed</span> { <span class="kw-2">ref</span> <span class="ident">curator</span> } =&gt; {
 						<span class="comment">// A curator has been proposed, but not accepted yet.</span>
@@ -1377,7 +1379,7 @@
 									<span class="comment">// Continue to change bounty status below...</span>
 									} <span class="kw">else</span> {
 										<span class="comment">// Curator has more time to give an update.</span>
-										<span class="kw">return</span> <span class="prelude-val">Err</span>(<span class="ident">Error</span>::<span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span><span class="ident">::Premature</span>.<span class="ident">into</span>())
+										<span class="kw">return</span> <span class="prelude-val">Err</span>(<span class="ident">Error</span>::<span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">I</span><span class="op">&gt;</span><span class="ident">::Premature</span>.<span class="ident">into</span>())
 									}
 								} <span class="kw">else</span> {
 									<span class="comment">// Else this is the curator, willingly giving up their role.</span>
@@ -1415,19 +1417,19 @@
 		<span class="doccomment">/// # &lt;weight&gt;</span>
 		<span class="doccomment">/// - O(1).</span>
 		<span class="doccomment">/// # &lt;/weight&gt;</span>
-		<span class="attribute">#[<span class="ident">pallet::weight</span>(<span class="op">&lt;</span><span class="ident">T</span> <span class="kw">as</span> <span class="ident">Config</span><span class="op">&gt;</span><span class="ident">::WeightInfo::accept_curator</span>())]</span>
+		<span class="attribute">#[<span class="ident">pallet::weight</span>(<span class="op">&lt;</span><span class="ident">T</span> <span class="kw">as</span> <span class="ident">Config</span><span class="op">&lt;</span><span class="ident">I</span><span class="op">&gt;</span><span class="op">&gt;</span><span class="ident">::WeightInfo::accept_curator</span>())]</span>
 		<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">accept_curator</span>(
 			<span class="ident">origin</span>: <span class="ident">OriginFor</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>,
 			<span class="attribute">#[<span class="ident">pallet::compact</span>]</span> <span class="ident">bounty_id</span>: <span class="ident">BountyIndex</span>,
 		) -&gt; <span class="ident">DispatchResult</span> {
 			<span class="kw">let</span> <span class="ident">signer</span> <span class="op">=</span> <span class="ident">ensure_signed</span>(<span class="ident">origin</span>)<span class="question-mark">?</span>;
 
-			<span class="ident">Bounties</span>::<span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span><span class="ident">::try_mutate_exists</span>(<span class="ident">bounty_id</span>, <span class="op">|</span><span class="ident">maybe_bounty</span><span class="op">|</span> -&gt; <span class="ident">DispatchResult</span> {
-				<span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">bounty</span> <span class="op">=</span> <span class="ident">maybe_bounty</span>.<span class="ident">as_mut</span>().<span class="ident">ok_or</span>(<span class="ident">Error</span>::<span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span><span class="ident">::InvalidIndex</span>)<span class="question-mark">?</span>;
+			<span class="ident">Bounties</span>::<span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">I</span><span class="op">&gt;</span><span class="ident">::try_mutate_exists</span>(<span class="ident">bounty_id</span>, <span class="op">|</span><span class="ident">maybe_bounty</span><span class="op">|</span> -&gt; <span class="ident">DispatchResult</span> {
+				<span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">bounty</span> <span class="op">=</span> <span class="ident">maybe_bounty</span>.<span class="ident">as_mut</span>().<span class="ident">ok_or</span>(<span class="ident">Error</span>::<span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">I</span><span class="op">&gt;</span><span class="ident">::InvalidIndex</span>)<span class="question-mark">?</span>;
 
 				<span class="kw">match</span> <span class="ident">bounty</span>.<span class="ident">status</span> {
 					<span class="ident">BountyStatus::CuratorProposed</span> { <span class="kw-2">ref</span> <span class="ident">curator</span> } =&gt; {
-						<span class="macro">ensure!</span>(<span class="ident">signer</span> <span class="op">==</span> <span class="kw-2">*</span><span class="ident">curator</span>, <span class="ident">Error</span>::<span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span><span class="ident">::RequireCurator</span>);
+						<span class="macro">ensure!</span>(<span class="ident">signer</span> <span class="op">==</span> <span class="kw-2">*</span><span class="ident">curator</span>, <span class="ident">Error</span>::<span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">I</span><span class="op">&gt;</span><span class="ident">::RequireCurator</span>);
 
 						<span class="kw">let</span> <span class="ident">deposit</span> <span class="op">=</span> <span class="ident"><span class="self">Self</span>::calculate_curator_deposit</span>(<span class="kw-2">&amp;</span><span class="ident">bounty</span>.<span class="ident">fee</span>);
 						<span class="ident">T::Currency::reserve</span>(<span class="ident">curator</span>, <span class="ident">deposit</span>)<span class="question-mark">?</span>;
@@ -1440,7 +1442,7 @@
 
 						<span class="prelude-val">Ok</span>(())
 					},
-					<span class="kw">_</span> =&gt; <span class="prelude-val">Err</span>(<span class="ident">Error</span>::<span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span><span class="ident">::UnexpectedStatus</span>.<span class="ident">into</span>()),
+					<span class="kw">_</span> =&gt; <span class="prelude-val">Err</span>(<span class="ident">Error</span>::<span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">I</span><span class="op">&gt;</span><span class="ident">::UnexpectedStatus</span>.<span class="ident">into</span>()),
 				}
 			})<span class="question-mark">?</span>;
 			<span class="prelude-val">Ok</span>(())
@@ -1457,7 +1459,7 @@
 		<span class="doccomment">/// # &lt;weight&gt;</span>
 		<span class="doccomment">/// - O(1).</span>
 		<span class="doccomment">/// # &lt;/weight&gt;</span>
-		<span class="attribute">#[<span class="ident">pallet::weight</span>(<span class="op">&lt;</span><span class="ident">T</span> <span class="kw">as</span> <span class="ident">Config</span><span class="op">&gt;</span><span class="ident">::WeightInfo::award_bounty</span>())]</span>
+		<span class="attribute">#[<span class="ident">pallet::weight</span>(<span class="op">&lt;</span><span class="ident">T</span> <span class="kw">as</span> <span class="ident">Config</span><span class="op">&lt;</span><span class="ident">I</span><span class="op">&gt;</span><span class="op">&gt;</span><span class="ident">::WeightInfo::award_bounty</span>())]</span>
 		<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">award_bounty</span>(
 			<span class="ident">origin</span>: <span class="ident">OriginFor</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>,
 			<span class="attribute">#[<span class="ident">pallet::compact</span>]</span> <span class="ident">bounty_id</span>: <span class="ident">BountyIndex</span>,
@@ -1466,20 +1468,20 @@
 			<span class="kw">let</span> <span class="ident">signer</span> <span class="op">=</span> <span class="ident">ensure_signed</span>(<span class="ident">origin</span>)<span class="question-mark">?</span>;
 			<span class="kw">let</span> <span class="ident">beneficiary</span> <span class="op">=</span> <span class="ident">T::Lookup::lookup</span>(<span class="ident">beneficiary</span>)<span class="question-mark">?</span>;
 
-			<span class="ident">Bounties</span>::<span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span><span class="ident">::try_mutate_exists</span>(<span class="ident">bounty_id</span>, <span class="op">|</span><span class="ident">maybe_bounty</span><span class="op">|</span> -&gt; <span class="ident">DispatchResult</span> {
-				<span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">bounty</span> <span class="op">=</span> <span class="ident">maybe_bounty</span>.<span class="ident">as_mut</span>().<span class="ident">ok_or</span>(<span class="ident">Error</span>::<span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span><span class="ident">::InvalidIndex</span>)<span class="question-mark">?</span>;
+			<span class="ident">Bounties</span>::<span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">I</span><span class="op">&gt;</span><span class="ident">::try_mutate_exists</span>(<span class="ident">bounty_id</span>, <span class="op">|</span><span class="ident">maybe_bounty</span><span class="op">|</span> -&gt; <span class="ident">DispatchResult</span> {
+				<span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">bounty</span> <span class="op">=</span> <span class="ident">maybe_bounty</span>.<span class="ident">as_mut</span>().<span class="ident">ok_or</span>(<span class="ident">Error</span>::<span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">I</span><span class="op">&gt;</span><span class="ident">::InvalidIndex</span>)<span class="question-mark">?</span>;
 
 				<span class="comment">// Ensure no active child bounties before processing the call.</span>
 				<span class="macro">ensure!</span>(
 					<span class="ident">T::ChildBountyManager::child_bounties_count</span>(<span class="ident">bounty_id</span>) <span class="op">==</span> <span class="number">0</span>,
-					<span class="ident">Error</span>::<span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span><span class="ident">::HasActiveChildBounty</span>
+					<span class="ident">Error</span>::<span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">I</span><span class="op">&gt;</span><span class="ident">::HasActiveChildBounty</span>
 				);
 
 				<span class="kw">match</span> <span class="kw-2">&amp;</span><span class="ident">bounty</span>.<span class="ident">status</span> {
 					<span class="ident">BountyStatus::Active</span> { <span class="ident">curator</span>, .. } =&gt; {
-						<span class="macro">ensure!</span>(<span class="ident">signer</span> <span class="op">==</span> <span class="kw-2">*</span><span class="ident">curator</span>, <span class="ident">Error</span>::<span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span><span class="ident">::RequireCurator</span>);
+						<span class="macro">ensure!</span>(<span class="ident">signer</span> <span class="op">==</span> <span class="kw-2">*</span><span class="ident">curator</span>, <span class="ident">Error</span>::<span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">I</span><span class="op">&gt;</span><span class="ident">::RequireCurator</span>);
 					},
-					<span class="kw">_</span> =&gt; <span class="kw">return</span> <span class="prelude-val">Err</span>(<span class="ident">Error</span>::<span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span><span class="ident">::UnexpectedStatus</span>.<span class="ident">into</span>()),
+					<span class="kw">_</span> =&gt; <span class="kw">return</span> <span class="prelude-val">Err</span>(<span class="ident">Error</span>::<span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">I</span><span class="op">&gt;</span><span class="ident">::UnexpectedStatus</span>.<span class="ident">into</span>()),
 				}
 				<span class="ident">bounty</span>.<span class="ident">status</span> <span class="op">=</span> <span class="ident">BountyStatus::PendingPayout</span> {
 					<span class="ident">curator</span>: <span class="ident">signer</span>,
@@ -1491,7 +1493,7 @@
 				<span class="prelude-val">Ok</span>(())
 			})<span class="question-mark">?</span>;
 
-			<span class="ident"><span class="self">Self</span>::deposit_event</span>(<span class="ident">Event</span>::<span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span><span class="ident">::BountyAwarded</span> { <span class="ident">index</span>: <span class="ident">bounty_id</span>, <span class="ident">beneficiary</span> });
+			<span class="ident"><span class="self">Self</span>::deposit_event</span>(<span class="ident">Event</span>::<span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">I</span><span class="op">&gt;</span><span class="ident">::BountyAwarded</span> { <span class="ident">index</span>: <span class="ident">bounty_id</span>, <span class="ident">beneficiary</span> });
 			<span class="prelude-val">Ok</span>(())
 		}
 
@@ -1504,21 +1506,21 @@
 		<span class="doccomment">/// # &lt;weight&gt;</span>
 		<span class="doccomment">/// - O(1).</span>
 		<span class="doccomment">/// # &lt;/weight&gt;</span>
-		<span class="attribute">#[<span class="ident">pallet::weight</span>(<span class="op">&lt;</span><span class="ident">T</span> <span class="kw">as</span> <span class="ident">Config</span><span class="op">&gt;</span><span class="ident">::WeightInfo::claim_bounty</span>())]</span>
+		<span class="attribute">#[<span class="ident">pallet::weight</span>(<span class="op">&lt;</span><span class="ident">T</span> <span class="kw">as</span> <span class="ident">Config</span><span class="op">&lt;</span><span class="ident">I</span><span class="op">&gt;</span><span class="op">&gt;</span><span class="ident">::WeightInfo::claim_bounty</span>())]</span>
 		<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">claim_bounty</span>(
 			<span class="ident">origin</span>: <span class="ident">OriginFor</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>,
 			<span class="attribute">#[<span class="ident">pallet::compact</span>]</span> <span class="ident">bounty_id</span>: <span class="ident">BountyIndex</span>,
 		) -&gt; <span class="ident">DispatchResult</span> {
 			<span class="kw">let</span> <span class="kw">_</span> <span class="op">=</span> <span class="ident">ensure_signed</span>(<span class="ident">origin</span>)<span class="question-mark">?</span>; <span class="comment">// anyone can trigger claim</span>
 
-			<span class="ident">Bounties</span>::<span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span><span class="ident">::try_mutate_exists</span>(<span class="ident">bounty_id</span>, <span class="op">|</span><span class="ident">maybe_bounty</span><span class="op">|</span> -&gt; <span class="ident">DispatchResult</span> {
-				<span class="kw">let</span> <span class="ident">bounty</span> <span class="op">=</span> <span class="ident">maybe_bounty</span>.<span class="ident">take</span>().<span class="ident">ok_or</span>(<span class="ident">Error</span>::<span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span><span class="ident">::InvalidIndex</span>)<span class="question-mark">?</span>;
+			<span class="ident">Bounties</span>::<span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">I</span><span class="op">&gt;</span><span class="ident">::try_mutate_exists</span>(<span class="ident">bounty_id</span>, <span class="op">|</span><span class="ident">maybe_bounty</span><span class="op">|</span> -&gt; <span class="ident">DispatchResult</span> {
+				<span class="kw">let</span> <span class="ident">bounty</span> <span class="op">=</span> <span class="ident">maybe_bounty</span>.<span class="ident">take</span>().<span class="ident">ok_or</span>(<span class="ident">Error</span>::<span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">I</span><span class="op">&gt;</span><span class="ident">::InvalidIndex</span>)<span class="question-mark">?</span>;
 				<span class="kw">if</span> <span class="kw">let</span> <span class="ident">BountyStatus::PendingPayout</span> { <span class="ident">curator</span>, <span class="ident">beneficiary</span>, <span class="ident">unlock_at</span> } <span class="op">=</span>
 					<span class="ident">bounty</span>.<span class="ident">status</span>
 				{
 					<span class="macro">ensure!</span>(
 						<span class="ident">frame_system::Pallet</span>::<span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span><span class="ident">::block_number</span>() <span class="op">&gt;</span><span class="op">=</span> <span class="ident">unlock_at</span>,
-						<span class="ident">Error</span>::<span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span><span class="ident">::Premature</span>
+						<span class="ident">Error</span>::<span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">I</span><span class="op">&gt;</span><span class="ident">::Premature</span>
 					);
 					<span class="kw">let</span> <span class="ident">bounty_account</span> <span class="op">=</span> <span class="ident"><span class="self">Self</span>::bounty_account_id</span>(<span class="ident">bounty_id</span>);
 					<span class="kw">let</span> <span class="ident">balance</span> <span class="op">=</span> <span class="ident">T::Currency::free_balance</span>(<span class="kw-2">&amp;</span><span class="ident">bounty_account</span>);
@@ -1542,16 +1544,16 @@
 
 					<span class="kw-2">*</span><span class="ident">maybe_bounty</span> <span class="op">=</span> <span class="prelude-val">None</span>;
 
-					<span class="ident">BountyDescriptions</span>::<span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span><span class="ident">::remove</span>(<span class="ident">bounty_id</span>);
+					<span class="ident">BountyDescriptions</span>::<span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">I</span><span class="op">&gt;</span><span class="ident">::remove</span>(<span class="ident">bounty_id</span>);
 
-					<span class="ident"><span class="self">Self</span>::deposit_event</span>(<span class="ident">Event</span>::<span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span><span class="ident">::BountyClaimed</span> {
+					<span class="ident"><span class="self">Self</span>::deposit_event</span>(<span class="ident">Event</span>::<span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">I</span><span class="op">&gt;</span><span class="ident">::BountyClaimed</span> {
 						<span class="ident">index</span>: <span class="ident">bounty_id</span>,
 						<span class="ident">payout</span>,
 						<span class="ident">beneficiary</span>,
 					});
 					<span class="prelude-val">Ok</span>(())
 				} <span class="kw">else</span> {
-					<span class="prelude-val">Err</span>(<span class="ident">Error</span>::<span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span><span class="ident">::UnexpectedStatus</span>.<span class="ident">into</span>())
+					<span class="prelude-val">Err</span>(<span class="ident">Error</span>::<span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">I</span><span class="op">&gt;</span><span class="ident">::UnexpectedStatus</span>.<span class="ident">into</span>())
 				}
 			})<span class="question-mark">?</span>;
 			<span class="prelude-val">Ok</span>(())
@@ -1567,47 +1569,47 @@
 		<span class="doccomment">/// # &lt;weight&gt;</span>
 		<span class="doccomment">/// - O(1).</span>
 		<span class="doccomment">/// # &lt;/weight&gt;</span>
-		<span class="attribute">#[<span class="ident">pallet::weight</span>(<span class="op">&lt;</span><span class="ident">T</span> <span class="kw">as</span> <span class="ident">Config</span><span class="op">&gt;</span><span class="ident">::WeightInfo::close_bounty_proposed</span>()
-			.<span class="ident">max</span>(<span class="op">&lt;</span><span class="ident">T</span> <span class="kw">as</span> <span class="ident">Config</span><span class="op">&gt;</span><span class="ident">::WeightInfo::close_bounty_active</span>()))]</span>
+		<span class="attribute">#[<span class="ident">pallet::weight</span>(<span class="op">&lt;</span><span class="ident">T</span> <span class="kw">as</span> <span class="ident">Config</span><span class="op">&lt;</span><span class="ident">I</span><span class="op">&gt;</span><span class="op">&gt;</span><span class="ident">::WeightInfo::close_bounty_proposed</span>()
+			.<span class="ident">max</span>(<span class="op">&lt;</span><span class="ident">T</span> <span class="kw">as</span> <span class="ident">Config</span><span class="op">&lt;</span><span class="ident">I</span><span class="op">&gt;</span><span class="op">&gt;</span><span class="ident">::WeightInfo::close_bounty_active</span>()))]</span>
 		<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">close_bounty</span>(
 			<span class="ident">origin</span>: <span class="ident">OriginFor</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>,
 			<span class="attribute">#[<span class="ident">pallet::compact</span>]</span> <span class="ident">bounty_id</span>: <span class="ident">BountyIndex</span>,
 		) -&gt; <span class="ident">DispatchResultWithPostInfo</span> {
 			<span class="ident">T::RejectOrigin::ensure_origin</span>(<span class="ident">origin</span>)<span class="question-mark">?</span>;
 
-			<span class="ident">Bounties</span>::<span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span><span class="ident">::try_mutate_exists</span>(
+			<span class="ident">Bounties</span>::<span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">I</span><span class="op">&gt;</span><span class="ident">::try_mutate_exists</span>(
 				<span class="ident">bounty_id</span>,
 				<span class="op">|</span><span class="ident">maybe_bounty</span><span class="op">|</span> -&gt; <span class="ident">DispatchResultWithPostInfo</span> {
-					<span class="kw">let</span> <span class="ident">bounty</span> <span class="op">=</span> <span class="ident">maybe_bounty</span>.<span class="ident">as_ref</span>().<span class="ident">ok_or</span>(<span class="ident">Error</span>::<span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span><span class="ident">::InvalidIndex</span>)<span class="question-mark">?</span>;
+					<span class="kw">let</span> <span class="ident">bounty</span> <span class="op">=</span> <span class="ident">maybe_bounty</span>.<span class="ident">as_ref</span>().<span class="ident">ok_or</span>(<span class="ident">Error</span>::<span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">I</span><span class="op">&gt;</span><span class="ident">::InvalidIndex</span>)<span class="question-mark">?</span>;
 
 					<span class="comment">// Ensure no active child bounties before processing the call.</span>
 					<span class="macro">ensure!</span>(
 						<span class="ident">T::ChildBountyManager::child_bounties_count</span>(<span class="ident">bounty_id</span>) <span class="op">==</span> <span class="number">0</span>,
-						<span class="ident">Error</span>::<span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span><span class="ident">::HasActiveChildBounty</span>
+						<span class="ident">Error</span>::<span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">I</span><span class="op">&gt;</span><span class="ident">::HasActiveChildBounty</span>
 					);
 
 					<span class="kw">match</span> <span class="kw-2">&amp;</span><span class="ident">bounty</span>.<span class="ident">status</span> {
 						<span class="ident">BountyStatus::Proposed</span> =&gt; {
 							<span class="comment">// The reject origin would like to cancel a proposed bounty.</span>
-							<span class="ident">BountyDescriptions</span>::<span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span><span class="ident">::remove</span>(<span class="ident">bounty_id</span>);
+							<span class="ident">BountyDescriptions</span>::<span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">I</span><span class="op">&gt;</span><span class="ident">::remove</span>(<span class="ident">bounty_id</span>);
 							<span class="kw">let</span> <span class="ident">value</span> <span class="op">=</span> <span class="ident">bounty</span>.<span class="ident">bond</span>;
 							<span class="kw">let</span> <span class="ident">imbalance</span> <span class="op">=</span> <span class="ident">T::Currency::slash_reserved</span>(<span class="kw-2">&amp;</span><span class="ident">bounty</span>.<span class="ident">proposer</span>, <span class="ident">value</span>).<span class="number">0</span>;
 							<span class="ident">T::OnSlash::on_unbalanced</span>(<span class="ident">imbalance</span>);
 							<span class="kw-2">*</span><span class="ident">maybe_bounty</span> <span class="op">=</span> <span class="prelude-val">None</span>;
 
-							<span class="ident"><span class="self">Self</span>::deposit_event</span>(<span class="ident">Event</span>::<span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span><span class="ident">::BountyRejected</span> {
+							<span class="ident"><span class="self">Self</span>::deposit_event</span>(<span class="ident">Event</span>::<span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">I</span><span class="op">&gt;</span><span class="ident">::BountyRejected</span> {
 								<span class="ident">index</span>: <span class="ident">bounty_id</span>,
 								<span class="ident">bond</span>: <span class="ident">value</span>,
 							});
 							<span class="comment">// Return early, nothing else to do.</span>
 							<span class="kw">return</span> <span class="prelude-val">Ok</span>(
-								<span class="prelude-val">Some</span>(<span class="op">&lt;</span><span class="ident">T</span> <span class="kw">as</span> <span class="ident">Config</span><span class="op">&gt;</span><span class="ident">::WeightInfo::close_bounty_proposed</span>()).<span class="ident">into</span>()
+								<span class="prelude-val">Some</span>(<span class="op">&lt;</span><span class="ident">T</span> <span class="kw">as</span> <span class="ident">Config</span><span class="op">&lt;</span><span class="ident">I</span><span class="op">&gt;</span><span class="op">&gt;</span><span class="ident">::WeightInfo::close_bounty_proposed</span>()).<span class="ident">into</span>()
 							)
 						},
 						<span class="ident">BountyStatus::Approved</span> =&gt; {
 							<span class="comment">// For weight reasons, we don&#39;t allow a council to cancel in this phase.</span>
 							<span class="comment">// We ask for them to wait until it is funded before they can cancel.</span>
-							<span class="kw">return</span> <span class="prelude-val">Err</span>(<span class="ident">Error</span>::<span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span><span class="ident">::UnexpectedStatus</span>.<span class="ident">into</span>())
+							<span class="kw">return</span> <span class="prelude-val">Err</span>(<span class="ident">Error</span>::<span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">I</span><span class="op">&gt;</span><span class="ident">::UnexpectedStatus</span>.<span class="ident">into</span>())
 						},
 						<span class="ident">BountyStatus::Funded</span> <span class="op">|</span> <span class="ident">BountyStatus::CuratorProposed</span> { .. } =&gt; {
 							<span class="comment">// Nothing extra to do besides the removal of the bounty below.</span>
@@ -1624,13 +1626,13 @@
 							<span class="comment">// this bounty, it should mean the curator was acting maliciously.</span>
 							<span class="comment">// So the council should first unassign the curator, slashing their</span>
 							<span class="comment">// deposit.</span>
-							<span class="kw">return</span> <span class="prelude-val">Err</span>(<span class="ident">Error</span>::<span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span><span class="ident">::PendingPayout</span>.<span class="ident">into</span>())
+							<span class="kw">return</span> <span class="prelude-val">Err</span>(<span class="ident">Error</span>::<span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">I</span><span class="op">&gt;</span><span class="ident">::PendingPayout</span>.<span class="ident">into</span>())
 						},
 					}
 
 					<span class="kw">let</span> <span class="ident">bounty_account</span> <span class="op">=</span> <span class="ident"><span class="self">Self</span>::bounty_account_id</span>(<span class="ident">bounty_id</span>);
 
-					<span class="ident">BountyDescriptions</span>::<span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span><span class="ident">::remove</span>(<span class="ident">bounty_id</span>);
+					<span class="ident">BountyDescriptions</span>::<span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">I</span><span class="op">&gt;</span><span class="ident">::remove</span>(<span class="ident">bounty_id</span>);
 
 					<span class="kw">let</span> <span class="ident">balance</span> <span class="op">=</span> <span class="ident">T::Currency::free_balance</span>(<span class="kw-2">&amp;</span><span class="ident">bounty_account</span>);
 					<span class="kw">let</span> <span class="ident">res</span> <span class="op">=</span> <span class="ident">T::Currency::transfer</span>(
@@ -1642,8 +1644,8 @@
 					<span class="macro">debug_assert!</span>(<span class="ident">res</span>.<span class="ident">is_ok</span>());
 					<span class="kw-2">*</span><span class="ident">maybe_bounty</span> <span class="op">=</span> <span class="prelude-val">None</span>;
 
-					<span class="ident"><span class="self">Self</span>::deposit_event</span>(<span class="ident">Event</span>::<span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span><span class="ident">::BountyCanceled</span> { <span class="ident">index</span>: <span class="ident">bounty_id</span> });
-					<span class="prelude-val">Ok</span>(<span class="prelude-val">Some</span>(<span class="op">&lt;</span><span class="ident">T</span> <span class="kw">as</span> <span class="ident">Config</span><span class="op">&gt;</span><span class="ident">::WeightInfo::close_bounty_active</span>()).<span class="ident">into</span>())
+					<span class="ident"><span class="self">Self</span>::deposit_event</span>(<span class="ident">Event</span>::<span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">I</span><span class="op">&gt;</span><span class="ident">::BountyCanceled</span> { <span class="ident">index</span>: <span class="ident">bounty_id</span> });
+					<span class="prelude-val">Ok</span>(<span class="prelude-val">Some</span>(<span class="op">&lt;</span><span class="ident">T</span> <span class="kw">as</span> <span class="ident">Config</span><span class="op">&lt;</span><span class="ident">I</span><span class="op">&gt;</span><span class="op">&gt;</span><span class="ident">::WeightInfo::close_bounty_active</span>()).<span class="ident">into</span>())
 				},
 			)
 		}
@@ -1658,7 +1660,7 @@
 		<span class="doccomment">/// # &lt;weight&gt;</span>
 		<span class="doccomment">/// - O(1).</span>
 		<span class="doccomment">/// # &lt;/weight&gt;</span>
-		<span class="attribute">#[<span class="ident">pallet::weight</span>(<span class="op">&lt;</span><span class="ident">T</span> <span class="kw">as</span> <span class="ident">Config</span><span class="op">&gt;</span><span class="ident">::WeightInfo::extend_bounty_expiry</span>())]</span>
+		<span class="attribute">#[<span class="ident">pallet::weight</span>(<span class="op">&lt;</span><span class="ident">T</span> <span class="kw">as</span> <span class="ident">Config</span><span class="op">&lt;</span><span class="ident">I</span><span class="op">&gt;</span><span class="op">&gt;</span><span class="ident">::WeightInfo::extend_bounty_expiry</span>())]</span>
 		<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">extend_bounty_expiry</span>(
 			<span class="ident">origin</span>: <span class="ident">OriginFor</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>,
 			<span class="attribute">#[<span class="ident">pallet::compact</span>]</span> <span class="ident">bounty_id</span>: <span class="ident">BountyIndex</span>,
@@ -1666,30 +1668,30 @@
 		) -&gt; <span class="ident">DispatchResult</span> {
 			<span class="kw">let</span> <span class="ident">signer</span> <span class="op">=</span> <span class="ident">ensure_signed</span>(<span class="ident">origin</span>)<span class="question-mark">?</span>;
 
-			<span class="ident">Bounties</span>::<span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span><span class="ident">::try_mutate_exists</span>(<span class="ident">bounty_id</span>, <span class="op">|</span><span class="ident">maybe_bounty</span><span class="op">|</span> -&gt; <span class="ident">DispatchResult</span> {
-				<span class="kw">let</span> <span class="ident">bounty</span> <span class="op">=</span> <span class="ident">maybe_bounty</span>.<span class="ident">as_mut</span>().<span class="ident">ok_or</span>(<span class="ident">Error</span>::<span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span><span class="ident">::InvalidIndex</span>)<span class="question-mark">?</span>;
+			<span class="ident">Bounties</span>::<span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">I</span><span class="op">&gt;</span><span class="ident">::try_mutate_exists</span>(<span class="ident">bounty_id</span>, <span class="op">|</span><span class="ident">maybe_bounty</span><span class="op">|</span> -&gt; <span class="ident">DispatchResult</span> {
+				<span class="kw">let</span> <span class="ident">bounty</span> <span class="op">=</span> <span class="ident">maybe_bounty</span>.<span class="ident">as_mut</span>().<span class="ident">ok_or</span>(<span class="ident">Error</span>::<span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">I</span><span class="op">&gt;</span><span class="ident">::InvalidIndex</span>)<span class="question-mark">?</span>;
 
 				<span class="kw">match</span> <span class="ident">bounty</span>.<span class="ident">status</span> {
 					<span class="ident">BountyStatus::Active</span> { <span class="kw-2">ref</span> <span class="ident">curator</span>, <span class="kw-2">ref</span> <span class="kw-2">mut</span> <span class="ident">update_due</span> } =&gt; {
-						<span class="macro">ensure!</span>(<span class="kw-2">*</span><span class="ident">curator</span> <span class="op">==</span> <span class="ident">signer</span>, <span class="ident">Error</span>::<span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span><span class="ident">::RequireCurator</span>);
+						<span class="macro">ensure!</span>(<span class="kw-2">*</span><span class="ident">curator</span> <span class="op">==</span> <span class="ident">signer</span>, <span class="ident">Error</span>::<span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">I</span><span class="op">&gt;</span><span class="ident">::RequireCurator</span>);
 						<span class="kw-2">*</span><span class="ident">update_due</span> <span class="op">=</span> (<span class="ident">frame_system::Pallet</span>::<span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span><span class="ident">::block_number</span>() <span class="op">+</span>
 							<span class="ident">T::BountyUpdatePeriod::get</span>())
 						.<span class="ident">max</span>(<span class="kw-2">*</span><span class="ident">update_due</span>);
 					},
-					<span class="kw">_</span> =&gt; <span class="kw">return</span> <span class="prelude-val">Err</span>(<span class="ident">Error</span>::<span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span><span class="ident">::UnexpectedStatus</span>.<span class="ident">into</span>()),
+					<span class="kw">_</span> =&gt; <span class="kw">return</span> <span class="prelude-val">Err</span>(<span class="ident">Error</span>::<span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">I</span><span class="op">&gt;</span><span class="ident">::UnexpectedStatus</span>.<span class="ident">into</span>()),
 				}
 
 				<span class="prelude-val">Ok</span>(())
 			})<span class="question-mark">?</span>;
 
-			<span class="ident"><span class="self">Self</span>::deposit_event</span>(<span class="ident">Event</span>::<span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span><span class="ident">::BountyExtended</span> { <span class="ident">index</span>: <span class="ident">bounty_id</span> });
+			<span class="ident"><span class="self">Self</span>::deposit_event</span>(<span class="ident">Event</span>::<span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">I</span><span class="op">&gt;</span><span class="ident">::BountyExtended</span> { <span class="ident">index</span>: <span class="ident">bounty_id</span> });
 			<span class="prelude-val">Ok</span>(())
 		}
 	}
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">T</span>: <span class="ident">Config</span><span class="op">&gt;</span> <span class="ident">Pallet</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span> {
-	<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">calculate_curator_deposit</span>(<span class="ident">fee</span>: <span class="kw-2">&amp;</span><span class="ident">BalanceOf</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>) -&gt; <span class="ident">BalanceOf</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span> {
+<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">T</span>: <span class="ident">Config</span><span class="op">&lt;</span><span class="ident">I</span><span class="op">&gt;</span>, <span class="ident">I</span>: <span class="lifetime">&#39;static</span><span class="op">&gt;</span> <span class="ident">Pallet</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">I</span><span class="op">&gt;</span> {
+	<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">calculate_curator_deposit</span>(<span class="ident">fee</span>: <span class="kw-2">&amp;</span><span class="ident">BalanceOf</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">I</span><span class="op">&gt;</span>) -&gt; <span class="ident">BalanceOf</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">I</span><span class="op">&gt;</span> {
 		<span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">deposit</span> <span class="op">=</span> <span class="ident">T::CuratorDepositMultiplier::get</span>() <span class="op">*</span> <span class="kw-2">*</span><span class="ident">fee</span>;
 
 		<span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">max_deposit</span>) <span class="op">=</span> <span class="ident">T::CuratorDepositMax::get</span>() {
@@ -1721,11 +1723,11 @@
 	<span class="kw">fn</span> <span class="ident">create_bounty</span>(
 		<span class="ident">proposer</span>: <span class="ident">T::AccountId</span>,
 		<span class="ident">description</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">u8</span><span class="op">&gt;</span>,
-		<span class="ident">value</span>: <span class="ident">BalanceOf</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>,
+		<span class="ident">value</span>: <span class="ident">BalanceOf</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">I</span><span class="op">&gt;</span>,
 	) -&gt; <span class="ident">DispatchResult</span> {
 		<span class="kw">let</span> <span class="ident">bounded_description</span>: <span class="ident">BoundedVec</span><span class="op">&lt;</span><span class="kw">_</span>, <span class="kw">_</span><span class="op">&gt;</span> <span class="op">=</span>
-			<span class="ident">description</span>.<span class="ident">try_into</span>().<span class="ident">map_err</span>(<span class="op">|</span>()<span class="op">|</span> <span class="ident">Error</span>::<span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span><span class="ident">::ReasonTooBig</span>)<span class="question-mark">?</span>;
-		<span class="macro">ensure!</span>(<span class="ident">value</span> <span class="op">&gt;</span><span class="op">=</span> <span class="ident">T::BountyValueMinimum::get</span>(), <span class="ident">Error</span>::<span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span><span class="ident">::InvalidValue</span>);
+			<span class="ident">description</span>.<span class="ident">try_into</span>().<span class="ident">map_err</span>(<span class="op">|</span>()<span class="op">|</span> <span class="ident">Error</span>::<span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">I</span><span class="op">&gt;</span><span class="ident">::ReasonTooBig</span>)<span class="question-mark">?</span>;
+		<span class="macro">ensure!</span>(<span class="ident">value</span> <span class="op">&gt;</span><span class="op">=</span> <span class="ident">T::BountyValueMinimum::get</span>(), <span class="ident">Error</span>::<span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">I</span><span class="op">&gt;</span><span class="ident">::InvalidValue</span>);
 
 		<span class="kw">let</span> <span class="ident">index</span> <span class="op">=</span> <span class="ident"><span class="self">Self</span>::bounty_count</span>();
 
@@ -1733,9 +1735,9 @@
 		<span class="kw">let</span> <span class="ident">bond</span> <span class="op">=</span> <span class="ident">T::BountyDepositBase::get</span>() <span class="op">+</span>
 			<span class="ident">T::DataDepositPerByte::get</span>() <span class="op">*</span> (<span class="ident">bounded_description</span>.<span class="ident">len</span>() <span class="kw">as</span> <span class="ident">u32</span>).<span class="ident">into</span>();
 		<span class="ident">T::Currency::reserve</span>(<span class="kw-2">&amp;</span><span class="ident">proposer</span>, <span class="ident">bond</span>)
-			.<span class="ident">map_err</span>(<span class="op">|</span><span class="kw">_</span><span class="op">|</span> <span class="ident">Error</span>::<span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span><span class="ident">::InsufficientProposersBalance</span>)<span class="question-mark">?</span>;
+			.<span class="ident">map_err</span>(<span class="op">|</span><span class="kw">_</span><span class="op">|</span> <span class="ident">Error</span>::<span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">I</span><span class="op">&gt;</span><span class="ident">::InsufficientProposersBalance</span>)<span class="question-mark">?</span>;
 
-		<span class="ident">BountyCount</span>::<span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span><span class="ident">::put</span>(<span class="ident">index</span> <span class="op">+</span> <span class="number">1</span>);
+		<span class="ident">BountyCount</span>::<span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">I</span><span class="op">&gt;</span><span class="ident">::put</span>(<span class="ident">index</span> <span class="op">+</span> <span class="number">1</span>);
 
 		<span class="kw">let</span> <span class="ident">bounty</span> <span class="op">=</span> <span class="ident">Bounty</span> {
 			<span class="ident">proposer</span>,
@@ -1746,26 +1748,26 @@
 			<span class="ident">status</span>: <span class="ident">BountyStatus::Proposed</span>,
 		};
 
-		<span class="ident">Bounties</span>::<span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span><span class="ident">::insert</span>(<span class="ident">index</span>, <span class="kw-2">&amp;</span><span class="ident">bounty</span>);
-		<span class="ident">BountyDescriptions</span>::<span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span><span class="ident">::insert</span>(<span class="ident">index</span>, <span class="ident">bounded_description</span>);
+		<span class="ident">Bounties</span>::<span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">I</span><span class="op">&gt;</span><span class="ident">::insert</span>(<span class="ident">index</span>, <span class="kw-2">&amp;</span><span class="ident">bounty</span>);
+		<span class="ident">BountyDescriptions</span>::<span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">I</span><span class="op">&gt;</span><span class="ident">::insert</span>(<span class="ident">index</span>, <span class="ident">bounded_description</span>);
 
-		<span class="ident"><span class="self">Self</span>::deposit_event</span>(<span class="ident">Event</span>::<span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span><span class="ident">::BountyProposed</span> { <span class="ident">index</span> });
+		<span class="ident"><span class="self">Self</span>::deposit_event</span>(<span class="ident">Event</span>::<span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">I</span><span class="op">&gt;</span><span class="ident">::BountyProposed</span> { <span class="ident">index</span> });
 
 		<span class="prelude-val">Ok</span>(())
 	}
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">T</span>: <span class="ident">Config</span><span class="op">&gt;</span> <span class="ident">pallet_treasury::SpendFunds</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">Pallet</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span> {
+<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">T</span>: <span class="ident">Config</span><span class="op">&lt;</span><span class="ident">I</span><span class="op">&gt;</span>, <span class="ident">I</span>: <span class="lifetime">&#39;static</span><span class="op">&gt;</span> <span class="ident">pallet_treasury::SpendFunds</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">I</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">Pallet</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">I</span><span class="op">&gt;</span> {
 	<span class="kw">fn</span> <span class="ident">spend_funds</span>(
-		<span class="ident">budget_remaining</span>: <span class="kw-2">&amp;mut</span> <span class="ident">BalanceOf</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>,
-		<span class="ident">imbalance</span>: <span class="kw-2">&amp;mut</span> <span class="ident">PositiveImbalanceOf</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>,
+		<span class="ident">budget_remaining</span>: <span class="kw-2">&amp;mut</span> <span class="ident">BalanceOf</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">I</span><span class="op">&gt;</span>,
+		<span class="ident">imbalance</span>: <span class="kw-2">&amp;mut</span> <span class="ident">PositiveImbalanceOf</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">I</span><span class="op">&gt;</span>,
 		<span class="ident">total_weight</span>: <span class="kw-2">&amp;mut</span> <span class="ident">Weight</span>,
 		<span class="ident">missed_any</span>: <span class="kw-2">&amp;mut</span> <span class="ident">bool</span>,
 	) {
-		<span class="kw">let</span> <span class="ident">bounties_len</span> <span class="op">=</span> <span class="ident">BountyApprovals</span>::<span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span><span class="ident">::mutate</span>(<span class="op">|</span><span class="ident">v</span><span class="op">|</span> {
+		<span class="kw">let</span> <span class="ident">bounties_len</span> <span class="op">=</span> <span class="ident">BountyApprovals</span>::<span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">I</span><span class="op">&gt;</span><span class="ident">::mutate</span>(<span class="op">|</span><span class="ident">v</span><span class="op">|</span> {
 			<span class="kw">let</span> <span class="ident">bounties_approval_len</span> <span class="op">=</span> <span class="ident">v</span>.<span class="ident">len</span>() <span class="kw">as</span> <span class="ident">u32</span>;
 			<span class="ident">v</span>.<span class="ident">retain</span>(<span class="op">|</span><span class="kw-2">&amp;</span><span class="ident">index</span><span class="op">|</span> {
-				<span class="ident">Bounties</span>::<span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span><span class="ident">::mutate</span>(<span class="ident">index</span>, <span class="op">|</span><span class="ident">bounty</span><span class="op">|</span> {
+				<span class="ident">Bounties</span>::<span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">I</span><span class="op">&gt;</span><span class="ident">::mutate</span>(<span class="ident">index</span>, <span class="op">|</span><span class="ident">bounty</span><span class="op">|</span> {
 					<span class="comment">// Should always be true, but shouldn&#39;t panic if false or we&#39;re screwed.</span>
 					<span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">bounty</span>) <span class="op">=</span> <span class="ident">bounty</span> {
 						<span class="kw">if</span> <span class="ident">bounty</span>.<span class="ident">value</span> <span class="op">&lt;</span><span class="op">=</span> <span class="kw-2">*</span><span class="ident">budget_remaining</span> {
@@ -1783,7 +1785,7 @@
 								<span class="ident">bounty</span>.<span class="ident">value</span>,
 							));
 
-							<span class="ident"><span class="self">Self</span>::deposit_event</span>(<span class="ident">Event</span>::<span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span><span class="ident">::BountyBecameActive</span> { <span class="ident">index</span> });
+							<span class="ident"><span class="self">Self</span>::deposit_event</span>(<span class="ident">Event</span>::<span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">I</span><span class="op">&gt;</span><span class="ident">::BountyBecameActive</span> { <span class="ident">index</span> });
 							<span class="bool-val">false</span>
 						} <span class="kw">else</span> {
 							<span class="kw-2">*</span><span class="ident">missed_any</span> <span class="op">=</span> <span class="bool-val">true</span>;
@@ -1797,7 +1799,7 @@
 			<span class="ident">bounties_approval_len</span>
 		});
 
-		<span class="kw-2">*</span><span class="ident">total_weight</span> <span class="op">+</span><span class="op">=</span> <span class="op">&lt;</span><span class="ident">T</span> <span class="kw">as</span> <span class="ident">Config</span><span class="op">&gt;</span><span class="ident">::WeightInfo::spend_funds</span>(<span class="ident">bounties_len</span>);
+		<span class="kw-2">*</span><span class="ident">total_weight</span> <span class="op">+</span><span class="op">=</span> <span class="op">&lt;</span><span class="ident">T</span> <span class="kw">as</span> <span class="ident">pallet::Config</span><span class="op">&lt;</span><span class="ident">I</span><span class="op">&gt;</span><span class="op">&gt;</span><span class="ident">::WeightInfo::spend_funds</span>(<span class="ident">bounties_len</span>);
 	}
 }
 
