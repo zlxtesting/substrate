@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/cargo_home/registry/src/github.com-1ecc6299db9ec823/wasmtime-0.35.3/src/store/data.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>data.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" type="text/css" href="../../../normalize.css"><link rel="stylesheet" type="text/css" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../../ayu.css" disabled><link rel="stylesheet" type="text/css" href="../../../dark.css" disabled><link rel="stylesheet" type="text/css" href="../../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../../storage.js"></script><script src="../../../crates.js"></script><script defer src="../../../main.js"></script><script defer src="../../../source-script.js"></script><script defer src="../../../source-files.js"></script>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/cargo_home/registry/src/github.com-1ecc6299db9ec823/wasmtime-0.38.0/src/store/data.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>data.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" type="text/css" href="../../../normalize.css"><link rel="stylesheet" type="text/css" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../../ayu.css" disabled><link rel="stylesheet" type="text/css" href="../../../dark.css" disabled><link rel="stylesheet" type="text/css" href="../../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../../storage.js"></script><script src="../../../crates.js"></script><script defer src="../../../main.js"></script><script defer src="../../../source-script.js"></script><script defer src="../../../source-files.js"></script>
     <noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="sidebar-logo" href="../../../wasmtime/index.html"><div class="logo-container"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></div>
         </a><h2 class="location"></h2>
     </nav>
@@ -236,13 +236,59 @@
 <span id="231">231</span>
 <span id="232">232</span>
 <span id="233">233</span>
+<span id="234">234</span>
+<span id="235">235</span>
+<span id="236">236</span>
+<span id="237">237</span>
+<span id="238">238</span>
+<span id="239">239</span>
+<span id="240">240</span>
+<span id="241">241</span>
+<span id="242">242</span>
+<span id="243">243</span>
+<span id="244">244</span>
+<span id="245">245</span>
+<span id="246">246</span>
+<span id="247">247</span>
+<span id="248">248</span>
+<span id="249">249</span>
+<span id="250">250</span>
+<span id="251">251</span>
+<span id="252">252</span>
+<span id="253">253</span>
+<span id="254">254</span>
+<span id="255">255</span>
+<span id="256">256</span>
+<span id="257">257</span>
+<span id="258">258</span>
+<span id="259">259</span>
+<span id="260">260</span>
+<span id="261">261</span>
+<span id="262">262</span>
+<span id="263">263</span>
+<span id="264">264</span>
+<span id="265">265</span>
+<span id="266">266</span>
+<span id="267">267</span>
+<span id="268">268</span>
+<span id="269">269</span>
+<span id="270">270</span>
+<span id="271">271</span>
+<span id="272">272</span>
+<span id="273">273</span>
+<span id="274">274</span>
+<span id="275">275</span>
+<span id="276">276</span>
+<span id="277">277</span>
+<span id="278">278</span>
+<span id="279">279</span>
 </pre><pre class="rust"><code><span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::store::StoreOpaque</span>;
 <span class="kw">use</span> <span class="kw">crate</span>::{<span class="ident">StoreContext</span>, <span class="ident">StoreContextMut</span>};
 <span class="kw">use</span> <span class="ident">std::fmt</span>;
 <span class="kw">use</span> <span class="ident">std::marker</span>;
 <span class="kw">use</span> <span class="ident">std::num::NonZeroU64</span>;
 <span class="kw">use</span> <span class="ident">std::ops</span>::{<span class="ident">Index</span>, <span class="ident">IndexMut</span>};
-<span class="kw">use</span> <span class="ident">std::sync::atomic</span>::{<span class="ident">AtomicU64</span>, <span class="ident">Ordering::SeqCst</span>};
+<span class="kw">use</span> <span class="ident">std::sync::atomic</span>::{<span class="ident">AtomicU64</span>, <span class="ident">Ordering::Relaxed</span>};
 
 <span class="comment">// This is defined here, in a private submodule, so we can explicitly reexport</span>
 <span class="comment">// it only as `pub(crate)`. This avoids a ton of</span>
@@ -252,12 +298,14 @@
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">InstanceId</span>(<span class="kw">pub</span>(<span class="kw">super</span>) <span class="ident">usize</span>);
 
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">StoreData</span> {
-    <span class="ident">id</span>: <span class="ident">NonZeroU64</span>,
+    <span class="ident">id</span>: <span class="ident">StoreId</span>,
     <span class="ident">funcs</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident"><span class="kw">crate</span>::func::FuncData</span><span class="op">&gt;</span>,
     <span class="ident">tables</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">wasmtime_runtime::ExportTable</span><span class="op">&gt;</span>,
     <span class="ident">globals</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">wasmtime_runtime::ExportGlobal</span><span class="op">&gt;</span>,
     <span class="ident">instances</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident"><span class="kw">crate</span>::instance::InstanceData</span><span class="op">&gt;</span>,
     <span class="ident">memories</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">wasmtime_runtime::ExportMemory</span><span class="op">&gt;</span>,
+    <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;component-model&quot;</span>)]</span>
+    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="ident">components</span>: <span class="ident"><span class="kw">crate</span>::component::ComponentStoreData</span>,
 }
 
 <span class="kw">pub</span> <span class="kw">trait</span> <span class="ident">StoredData</span>: <span class="ident">Sized</span> {
@@ -286,24 +334,20 @@
 
 <span class="kw">impl</span> <span class="ident">StoreData</span> {
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new</span>() -&gt; <span class="ident">StoreData</span> {
-        <span class="kw">static</span> <span class="ident">NEXT_ID</span>: <span class="ident">AtomicU64</span> <span class="op">=</span> <span class="ident">AtomicU64::new</span>(<span class="number">0</span>);
-
-        <span class="comment">// Only allow 2^63 stores at which point we start panicking to prevent</span>
-        <span class="comment">// overflow. This should still last us to effectively the end of time.</span>
-        <span class="kw">let</span> <span class="ident">id</span> <span class="op">=</span> <span class="ident">NEXT_ID</span>.<span class="ident">fetch_add</span>(<span class="number">1</span>, <span class="ident">SeqCst</span>);
-        <span class="kw">if</span> <span class="ident">id</span> <span class="op">&amp;</span> (<span class="number">1</span> <span class="op">&lt;</span><span class="op">&lt;</span> <span class="number">63</span>) <span class="op">!</span><span class="op">=</span> <span class="number">0</span> {
-            <span class="ident">NEXT_ID</span>.<span class="ident">store</span>(<span class="number">1</span> <span class="op">&lt;</span><span class="op">&lt;</span> <span class="number">63</span>, <span class="ident">SeqCst</span>);
-            <span class="macro">panic!</span>(<span class="string">&quot;store id allocator overflow&quot;</span>);
-        }
-
         <span class="ident">StoreData</span> {
-            <span class="ident">id</span>: <span class="ident">NonZeroU64::new</span>(<span class="ident">id</span> <span class="op">+</span> <span class="number">1</span>).<span class="ident">unwrap</span>(),
+            <span class="ident">id</span>: <span class="ident">StoreId::allocate</span>(),
             <span class="ident">funcs</span>: <span class="ident">Vec::new</span>(),
             <span class="ident">tables</span>: <span class="ident">Vec::new</span>(),
             <span class="ident">globals</span>: <span class="ident">Vec::new</span>(),
             <span class="ident">instances</span>: <span class="ident">Vec::new</span>(),
             <span class="ident">memories</span>: <span class="ident">Vec::new</span>(),
+            <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;component-model&quot;</span>)]</span>
+            <span class="ident">components</span>: <span class="ident">Default::default</span>(),
         }
+    }
+
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">id</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">StoreId</span> {
+        <span class="self">self</span>.<span class="ident">id</span>
     }
 
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">insert</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="ident">data</span>: <span class="ident">T</span>) -&gt; <span class="ident">Stored</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>
@@ -327,14 +371,12 @@
     <span class="kw">where</span>
         <span class="ident">T</span>: <span class="ident">StoredData</span>,
     {
-        <span class="kw">if</span> <span class="ident">id</span>.<span class="ident">store_id</span>() <span class="op">!</span><span class="op">=</span> <span class="self">self</span>.<span class="ident">id</span> {
+        <span class="kw">if</span> <span class="ident">id</span>.<span class="ident">store_id</span> <span class="op">!</span><span class="op">=</span> <span class="self">self</span>.<span class="ident">id</span> {
             <span class="kw">return</span> <span class="bool-val">false</span>;
         }
         <span class="comment">// This should be true as an invariant of our API, but double-check with</span>
         <span class="comment">// debug assertions enabled.</span>
-        <span class="kw">if</span> <span class="macro">cfg!</span>(<span class="ident">debug_assertions</span>) {
-            <span class="macro">assert!</span>(<span class="ident">id</span>.<span class="ident">index</span>() <span class="op">&lt;</span> <span class="ident">T::list</span>(<span class="self">self</span>).<span class="ident">len</span>());
-        }
+        <span class="macro">debug_assert!</span>(<span class="ident">id</span>.<span class="ident">index</span>() <span class="op">&lt;</span> <span class="ident">T::list</span>(<span class="self">self</span>).<span class="ident">len</span>());
         <span class="bool-val">true</span>
     }
 
@@ -355,10 +397,12 @@
 
     <span class="attribute">#[<span class="ident">inline</span>]</span>
     <span class="kw">fn</span> <span class="ident">index</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">index</span>: <span class="ident">Stored</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>) -&gt; <span class="kw-2">&amp;</span><span class="ident"><span class="self">Self</span>::Output</span> {
-        <span class="macro">assert!</span>(
-            <span class="ident">index</span>.<span class="ident">store_id</span>() <span class="op">==</span> <span class="self">self</span>.<span class="ident">id</span>,
-            <span class="string">&quot;object used with the wrong store&quot;</span>
-        );
+        <span class="ident">index</span>.<span class="ident">assert_belongs_to</span>(<span class="self">self</span>.<span class="ident">id</span>);
+        <span class="comment">// Note that if this is ever a performance bottleneck it should be safe</span>
+        <span class="comment">// to use unchecked indexing here because presence of a `Stored&lt;T&gt;` is</span>
+        <span class="comment">// proof of an item having been inserted into a store and lists in</span>
+        <span class="comment">// stores are never shrunk. After the store check above the actual index</span>
+        <span class="comment">// should always be valid.</span>
         <span class="kw-2">&amp;</span><span class="ident">T::list</span>(<span class="self">self</span>)[<span class="ident">index</span>.<span class="ident">index</span>()]
     }
 }
@@ -369,10 +413,9 @@
 {
     <span class="attribute">#[<span class="ident">inline</span>]</span>
     <span class="kw">fn</span> <span class="ident">index_mut</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="ident">index</span>: <span class="ident">Stored</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>) -&gt; <span class="kw-2">&amp;mut</span> <span class="ident"><span class="self">Self</span>::Output</span> {
-        <span class="macro">assert!</span>(
-            <span class="ident">index</span>.<span class="ident">store_id</span>() <span class="op">==</span> <span class="self">self</span>.<span class="ident">id</span>,
-            <span class="string">&quot;object used with the wrong store&quot;</span>
-        );
+        <span class="ident">index</span>.<span class="ident">assert_belongs_to</span>(<span class="self">self</span>.<span class="ident">id</span>);
+        <span class="comment">// Note that this could be unchecked indexing, see the note in `Index`</span>
+        <span class="comment">// above.</span>
         <span class="kw-2">&amp;mut</span> <span class="ident">T::list_mut</span>(<span class="self">self</span>)[<span class="ident">index</span>.<span class="ident">index</span>()]
     }
 }
@@ -425,15 +468,58 @@
     }
 }
 
+<span class="doccomment">/// A unique identifier to get attached to a store.</span>
+<span class="doccomment">///</span>
+<span class="doccomment">/// This identifier is embedded into the `Stored&lt;T&gt;` structure and is used to</span>
+<span class="doccomment">/// identify the original store that items come from. For example a `Memory` is</span>
+<span class="doccomment">/// owned by a `Store` and will embed a `StoreId` internally to say which store</span>
+<span class="doccomment">/// it came from. Comparisons with this value are how panics are generated for</span>
+<span class="doccomment">/// mismatching the item that a store belongs to.</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>, <span class="ident">Copy</span>, <span class="ident">Clone</span>, <span class="ident">PartialEq</span>)]</span>
+<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">StoreId</span>(<span class="ident">NonZeroU64</span>);
+
+<span class="kw">impl</span> <span class="ident">StoreId</span> {
+    <span class="doccomment">/// Allocates a new unique identifier for a store that has never before been</span>
+    <span class="doccomment">/// used in this process.</span>
+    <span class="kw">fn</span> <span class="ident">allocate</span>() -&gt; <span class="ident">StoreId</span> {
+        <span class="kw">static</span> <span class="ident">NEXT_ID</span>: <span class="ident">AtomicU64</span> <span class="op">=</span> <span class="ident">AtomicU64::new</span>(<span class="number">0</span>);
+
+        <span class="comment">// Only allow 2^63 stores at which point we start panicking to prevent</span>
+        <span class="comment">// overflow.</span>
+        <span class="comment">//</span>
+        <span class="comment">// If a store is created once per microsecond then this will last the</span>
+        <span class="comment">// current process for 584,540 years before overflowing.</span>
+        <span class="comment">//</span>
+        <span class="comment">// Also note the usage of `Relaxed` ordering here which should be ok</span>
+        <span class="comment">// since we&#39;re only looking for atomicity on this counter and this</span>
+        <span class="comment">// otherwise isn&#39;t used to synchronize memory stored anywhere else.</span>
+        <span class="kw">let</span> <span class="ident">id</span> <span class="op">=</span> <span class="ident">NEXT_ID</span>.<span class="ident">fetch_add</span>(<span class="number">1</span>, <span class="ident">Relaxed</span>);
+        <span class="kw">if</span> <span class="ident">id</span> <span class="op">&amp;</span> (<span class="number">1</span> <span class="op">&lt;</span><span class="op">&lt;</span> <span class="number">63</span>) <span class="op">!</span><span class="op">=</span> <span class="number">0</span> {
+            <span class="ident">NEXT_ID</span>.<span class="ident">store</span>(<span class="number">1</span> <span class="op">&lt;</span><span class="op">&lt;</span> <span class="number">63</span>, <span class="ident">Relaxed</span>);
+            <span class="macro">panic!</span>(<span class="string">&quot;store id allocator overflow&quot;</span>);
+        }
+
+        <span class="ident">StoreId</span>(<span class="ident">NonZeroU64::new</span>(<span class="ident">id</span> <span class="op">+</span> <span class="number">1</span>).<span class="ident">unwrap</span>())
+    }
+
+    <span class="attribute">#[<span class="ident">inline</span>]</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">assert_belongs_to</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">store</span>: <span class="ident">StoreId</span>) {
+        <span class="kw">if</span> <span class="kw-2">*</span><span class="self">self</span> <span class="op">==</span> <span class="ident">store</span> {
+            <span class="kw">return</span>;
+        }
+        <span class="ident">store_id_mismatch</span>();
+    }
+}
+
 <span class="attribute">#[<span class="ident">repr</span>(<span class="ident">C</span>)]</span> <span class="comment">// used by reference in the C API</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">Stored</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span> {
-    <span class="ident">store_id</span>: <span class="ident">NonZeroU64</span>,
+    <span class="ident">store_id</span>: <span class="ident">StoreId</span>,
     <span class="ident">index</span>: <span class="ident">usize</span>,
     <span class="ident">_marker</span>: <span class="ident">marker::PhantomData</span><span class="op">&lt;</span><span class="kw">fn</span>() -&gt; <span class="ident">T</span><span class="op">&gt;</span>,
 }
 
 <span class="kw">impl</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span> <span class="ident">Stored</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span> {
-    <span class="kw">fn</span> <span class="ident">new</span>(<span class="ident">store_id</span>: <span class="ident">NonZeroU64</span>, <span class="ident">index</span>: <span class="ident">usize</span>) -&gt; <span class="ident">Stored</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span> {
+    <span class="kw">fn</span> <span class="ident">new</span>(<span class="ident">store_id</span>: <span class="ident">StoreId</span>, <span class="ident">index</span>: <span class="ident">usize</span>) -&gt; <span class="ident">Stored</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span> {
         <span class="ident">Stored</span> {
             <span class="ident">store_id</span>,
             <span class="ident">index</span>,
@@ -441,13 +527,19 @@
         }
     }
 
-    <span class="kw">fn</span> <span class="ident">store_id</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">NonZeroU64</span> {
-        <span class="self">self</span>.<span class="ident">store_id</span>
+    <span class="attribute">#[<span class="ident">inline</span>]</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">assert_belongs_to</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">store</span>: <span class="ident">StoreId</span>) {
+        <span class="self">self</span>.<span class="ident">store_id</span>.<span class="ident">assert_belongs_to</span>(<span class="ident">store</span>)
     }
 
     <span class="kw">fn</span> <span class="ident">index</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">usize</span> {
         <span class="self">self</span>.<span class="ident">index</span>
     }
+}
+
+<span class="attribute">#[<span class="ident">cold</span>]</span>
+<span class="kw">fn</span> <span class="ident">store_id_mismatch</span>() {
+    <span class="macro">panic!</span>(<span class="string">&quot;object used with the wrong store&quot;</span>);
 }
 
 <span class="kw">impl</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span> <span class="ident">PartialEq</span> <span class="kw">for</span> <span class="ident">Stored</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span> {
@@ -466,7 +558,7 @@
 
 <span class="kw">impl</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span> <span class="ident">fmt::Debug</span> <span class="kw">for</span> <span class="ident">Stored</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span> {
     <span class="kw">fn</span> <span class="ident">fmt</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">f</span>: <span class="kw-2">&amp;mut</span> <span class="ident">fmt::Formatter</span><span class="op">&lt;</span><span class="lifetime">&#39;_</span><span class="op">&gt;</span>) -&gt; <span class="ident">fmt::Result</span> {
-        <span class="macro">write!</span>(<span class="ident">f</span>, <span class="string">&quot;store={}, index={}&quot;</span>, <span class="self">self</span>.<span class="ident">store_id</span>(), <span class="self">self</span>.<span class="ident">index</span>())
+        <span class="macro">write!</span>(<span class="ident">f</span>, <span class="string">&quot;store={}, index={}&quot;</span>, <span class="self">self</span>.<span class="ident">store_id</span>.<span class="number">0</span>, <span class="self">self</span>.<span class="ident">index</span>())
     }
 }
 </code></pre></div>

@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/cargo_home/registry/src/github.com-1ecc6299db9ec823/wasmtime-cranelift-0.35.3/src/obj.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>obj.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" type="text/css" href="../../normalize.css"><link rel="stylesheet" type="text/css" href="../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../ayu.css" disabled><link rel="stylesheet" type="text/css" href="../../dark.css" disabled><link rel="stylesheet" type="text/css" href="../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../storage.js"></script><script src="../../crates.js"></script><script defer src="../../main.js"></script><script defer src="../../source-script.js"></script><script defer src="../../source-files.js"></script>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/cargo_home/registry/src/github.com-1ecc6299db9ec823/wasmtime-cranelift-0.38.0/src/obj.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>obj.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" type="text/css" href="../../normalize.css"><link rel="stylesheet" type="text/css" href="../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../ayu.css" disabled><link rel="stylesheet" type="text/css" href="../../dark.css" disabled><link rel="stylesheet" type="text/css" href="../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../storage.js"></script><script src="../../crates.js"></script><script defer src="../../main.js"></script><script defer src="../../source-script.js"></script><script defer src="../../source-files.js"></script>
     <noscript><link rel="stylesheet" href="../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="sidebar-logo" href="../../wasmtime_cranelift/index.html"><div class="logo-container"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></div>
         </a><h2 class="location"></h2>
     </nav>
@@ -473,161 +473,6 @@
 <span id="468">468</span>
 <span id="469">469</span>
 <span id="470">470</span>
-<span id="471">471</span>
-<span id="472">472</span>
-<span id="473">473</span>
-<span id="474">474</span>
-<span id="475">475</span>
-<span id="476">476</span>
-<span id="477">477</span>
-<span id="478">478</span>
-<span id="479">479</span>
-<span id="480">480</span>
-<span id="481">481</span>
-<span id="482">482</span>
-<span id="483">483</span>
-<span id="484">484</span>
-<span id="485">485</span>
-<span id="486">486</span>
-<span id="487">487</span>
-<span id="488">488</span>
-<span id="489">489</span>
-<span id="490">490</span>
-<span id="491">491</span>
-<span id="492">492</span>
-<span id="493">493</span>
-<span id="494">494</span>
-<span id="495">495</span>
-<span id="496">496</span>
-<span id="497">497</span>
-<span id="498">498</span>
-<span id="499">499</span>
-<span id="500">500</span>
-<span id="501">501</span>
-<span id="502">502</span>
-<span id="503">503</span>
-<span id="504">504</span>
-<span id="505">505</span>
-<span id="506">506</span>
-<span id="507">507</span>
-<span id="508">508</span>
-<span id="509">509</span>
-<span id="510">510</span>
-<span id="511">511</span>
-<span id="512">512</span>
-<span id="513">513</span>
-<span id="514">514</span>
-<span id="515">515</span>
-<span id="516">516</span>
-<span id="517">517</span>
-<span id="518">518</span>
-<span id="519">519</span>
-<span id="520">520</span>
-<span id="521">521</span>
-<span id="522">522</span>
-<span id="523">523</span>
-<span id="524">524</span>
-<span id="525">525</span>
-<span id="526">526</span>
-<span id="527">527</span>
-<span id="528">528</span>
-<span id="529">529</span>
-<span id="530">530</span>
-<span id="531">531</span>
-<span id="532">532</span>
-<span id="533">533</span>
-<span id="534">534</span>
-<span id="535">535</span>
-<span id="536">536</span>
-<span id="537">537</span>
-<span id="538">538</span>
-<span id="539">539</span>
-<span id="540">540</span>
-<span id="541">541</span>
-<span id="542">542</span>
-<span id="543">543</span>
-<span id="544">544</span>
-<span id="545">545</span>
-<span id="546">546</span>
-<span id="547">547</span>
-<span id="548">548</span>
-<span id="549">549</span>
-<span id="550">550</span>
-<span id="551">551</span>
-<span id="552">552</span>
-<span id="553">553</span>
-<span id="554">554</span>
-<span id="555">555</span>
-<span id="556">556</span>
-<span id="557">557</span>
-<span id="558">558</span>
-<span id="559">559</span>
-<span id="560">560</span>
-<span id="561">561</span>
-<span id="562">562</span>
-<span id="563">563</span>
-<span id="564">564</span>
-<span id="565">565</span>
-<span id="566">566</span>
-<span id="567">567</span>
-<span id="568">568</span>
-<span id="569">569</span>
-<span id="570">570</span>
-<span id="571">571</span>
-<span id="572">572</span>
-<span id="573">573</span>
-<span id="574">574</span>
-<span id="575">575</span>
-<span id="576">576</span>
-<span id="577">577</span>
-<span id="578">578</span>
-<span id="579">579</span>
-<span id="580">580</span>
-<span id="581">581</span>
-<span id="582">582</span>
-<span id="583">583</span>
-<span id="584">584</span>
-<span id="585">585</span>
-<span id="586">586</span>
-<span id="587">587</span>
-<span id="588">588</span>
-<span id="589">589</span>
-<span id="590">590</span>
-<span id="591">591</span>
-<span id="592">592</span>
-<span id="593">593</span>
-<span id="594">594</span>
-<span id="595">595</span>
-<span id="596">596</span>
-<span id="597">597</span>
-<span id="598">598</span>
-<span id="599">599</span>
-<span id="600">600</span>
-<span id="601">601</span>
-<span id="602">602</span>
-<span id="603">603</span>
-<span id="604">604</span>
-<span id="605">605</span>
-<span id="606">606</span>
-<span id="607">607</span>
-<span id="608">608</span>
-<span id="609">609</span>
-<span id="610">610</span>
-<span id="611">611</span>
-<span id="612">612</span>
-<span id="613">613</span>
-<span id="614">614</span>
-<span id="615">615</span>
-<span id="616">616</span>
-<span id="617">617</span>
-<span id="618">618</span>
-<span id="619">619</span>
-<span id="620">620</span>
-<span id="621">621</span>
-<span id="622">622</span>
-<span id="623">623</span>
-<span id="624">624</span>
-<span id="625">625</span>
 </pre><pre class="rust"><code><span class="doccomment">//! Object file builder.</span>
 <span class="doccomment">//!</span>
 <span class="doccomment">//! Creates ELF image based on `Compilation` information. The ELF contains</span>
@@ -643,11 +488,8 @@
 <span class="doccomment">//! function body, the imported wasm function do not. The trampolines symbol</span>
 <span class="doccomment">//! names have format &quot;_trampoline_N&quot;, where N is `SignatureIndex`.</span>
 
-<span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::debug</span>::{<span class="ident">DwarfSection</span>, <span class="ident">DwarfSectionRelocTarget</span>};
-<span class="kw">use</span> <span class="kw">crate</span>::{<span class="ident">CompiledFunction</span>, <span class="ident">Relocation</span>, <span class="ident">RelocationTarget</span>};
+<span class="kw">use</span> <span class="kw">crate</span>::{<span class="ident">CompiledFunction</span>, <span class="ident">RelocationTarget</span>};
 <span class="kw">use</span> <span class="ident">anyhow::Result</span>;
-<span class="kw">use</span> <span class="ident">cranelift_codegen::binemit::Reloc</span>;
-<span class="kw">use</span> <span class="ident">cranelift_codegen::ir::LibCall</span>;
 <span class="kw">use</span> <span class="ident">cranelift_codegen::isa</span>::{
     <span class="ident">unwind</span>::{<span class="ident">systemv</span>, <span class="ident">UnwindInfo</span>},
     <span class="ident">TargetIsa</span>,
@@ -655,73 +497,14 @@
 <span class="kw">use</span> <span class="ident">cranelift_codegen::TextSectionBuilder</span>;
 <span class="kw">use</span> <span class="ident">gimli::write</span>::{<span class="ident">Address</span>, <span class="ident">EhFrame</span>, <span class="ident">EndianVec</span>, <span class="ident">FrameTable</span>, <span class="ident">Writer</span>};
 <span class="kw">use</span> <span class="ident">gimli::RunTimeEndian</span>;
-<span class="kw">use</span> <span class="ident">object::write</span>::{
-    <span class="ident">Object</span>, <span class="ident">Relocation</span> <span class="kw">as</span> <span class="ident">ObjectRelocation</span>, <span class="ident">SectionId</span>, <span class="ident">StandardSegment</span>, <span class="ident">Symbol</span>, <span class="ident">SymbolId</span>,
-    <span class="ident">SymbolSection</span>,
-};
-<span class="kw">use</span> <span class="ident">object</span>::{
-    <span class="ident">Architecture</span>, <span class="ident">RelocationEncoding</span>, <span class="ident">RelocationKind</span>, <span class="ident">SectionKind</span>, <span class="ident">SymbolFlags</span>, <span class="ident">SymbolKind</span>,
-    <span class="ident">SymbolScope</span>,
-};
-<span class="kw">use</span> <span class="ident">std::collections::HashMap</span>;
+<span class="kw">use</span> <span class="ident">object::write</span>::{<span class="ident">Object</span>, <span class="ident">SectionId</span>, <span class="ident">StandardSegment</span>, <span class="ident">Symbol</span>, <span class="ident">SymbolId</span>, <span class="ident">SymbolSection</span>};
+<span class="kw">use</span> <span class="ident">object</span>::{<span class="ident">Architecture</span>, <span class="ident">SectionKind</span>, <span class="ident">SymbolFlags</span>, <span class="ident">SymbolKind</span>, <span class="ident">SymbolScope</span>};
 <span class="kw">use</span> <span class="ident">std::convert::TryFrom</span>;
-<span class="kw">use</span> <span class="ident">std::mem</span>;
 <span class="kw">use</span> <span class="ident">std::ops::Range</span>;
 <span class="kw">use</span> <span class="ident">wasmtime_environ::obj</span>;
-<span class="kw">use</span> <span class="ident">wasmtime_environ</span>::{
-    <span class="ident">DefinedFuncIndex</span>, <span class="ident">EntityRef</span>, <span class="ident">FuncIndex</span>, <span class="ident">Module</span>, <span class="ident">PrimaryMap</span>, <span class="ident">SignatureIndex</span>, <span class="ident">Trampoline</span>,
-};
+<span class="kw">use</span> <span class="ident">wasmtime_environ</span>::{<span class="ident">DefinedFuncIndex</span>, <span class="ident">Module</span>, <span class="ident">PrimaryMap</span>, <span class="ident">SignatureIndex</span>, <span class="ident">Trampoline</span>};
 
 <span class="kw">const</span> <span class="ident">TEXT_SECTION_NAME</span>: <span class="kw-2">&amp;</span>[<span class="ident">u8</span>] <span class="op">=</span> <span class="string">b&quot;.text&quot;</span>;
-
-<span class="doccomment">/// Iterates through all `LibCall` members and all runtime exported functions.</span>
-<span class="attribute">#[<span class="ident">macro_export</span>]</span>
-<span class="macro">macro_rules!</span> <span class="ident">for_each_libcall</span> {
-    (<span class="macro-nonterminal">$</span><span class="macro-nonterminal">op</span>:<span class="ident">ident</span>) =&gt; {
-        <span class="macro-nonterminal">$</span><span class="macro">op!</span>[
-            (<span class="macro-nonterminal">UdivI64</span>, <span class="ident">wasmtime_i64_udiv</span>),
-            (<span class="ident">UdivI64</span>, <span class="ident">wasmtime_i64_udiv</span>),
-            (<span class="ident">SdivI64</span>, <span class="ident">wasmtime_i64_sdiv</span>),
-            (<span class="ident">UremI64</span>, <span class="ident">wasmtime_i64_urem</span>),
-            (<span class="ident">SremI64</span>, <span class="ident">wasmtime_i64_srem</span>),
-            (<span class="ident">IshlI64</span>, <span class="ident">wasmtime_i64_ishl</span>),
-            (<span class="ident">UshrI64</span>, <span class="ident">wasmtime_i64_ushr</span>),
-            (<span class="ident">SshrI64</span>, <span class="ident">wasmtime_i64_sshr</span>),
-            (<span class="ident">CeilF32</span>, <span class="ident">wasmtime_f32_ceil</span>),
-            (<span class="ident">FloorF32</span>, <span class="ident">wasmtime_f32_floor</span>),
-            (<span class="ident">TruncF32</span>, <span class="ident">wasmtime_f32_trunc</span>),
-            (<span class="ident">NearestF32</span>, <span class="ident">wasmtime_f32_nearest</span>),
-            (<span class="ident">CeilF64</span>, <span class="ident">wasmtime_f64_ceil</span>),
-            (<span class="ident">FloorF64</span>, <span class="ident">wasmtime_f64_floor</span>),
-            (<span class="ident">TruncF64</span>, <span class="ident">wasmtime_f64_trunc</span>),
-            (<span class="ident">NearestF64</span>, <span class="ident">wasmtime_f64_nearest</span>)
-        ];
-    };
-}
-
-<span class="kw">fn</span> <span class="ident">write_libcall_symbols</span>(<span class="ident">obj</span>: <span class="kw-2">&amp;mut</span> <span class="ident">Object</span>) -&gt; <span class="ident">HashMap</span><span class="op">&lt;</span><span class="ident">LibCall</span>, <span class="ident">SymbolId</span><span class="op">&gt;</span> {
-    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">libcalls</span> <span class="op">=</span> <span class="ident">HashMap::new</span>();
-    <span class="macro">macro_rules!</span> <span class="ident">add_libcall_symbol</span> {
-        [$((<span class="macro-nonterminal">$</span><span class="macro-nonterminal">libcall</span>:<span class="ident">ident</span>, <span class="macro-nonterminal">$</span><span class="macro-nonterminal">export</span>:<span class="ident">ident</span>)),<span class="kw-2">*</span>] =&gt; {{
-            $(
-                <span class="kw">let</span> <span class="ident">symbol_id</span> <span class="op">=</span> <span class="ident">obj</span>.<span class="ident">add_symbol</span>(<span class="ident">Symbol</span> {
-                    <span class="ident">name</span>: <span class="macro">stringify!</span>(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">export</span>).<span class="ident">as_bytes</span>().<span class="ident">to_vec</span>(),
-                    <span class="ident">value</span>: <span class="number">0</span>,
-                    <span class="ident">size</span>: <span class="number">0</span>,
-                    <span class="ident">kind</span>: <span class="ident">SymbolKind::Text</span>,
-                    <span class="ident">scope</span>: <span class="ident">SymbolScope::Linkage</span>,
-                    <span class="ident">weak</span>: <span class="bool-val">true</span>,
-                    <span class="ident">section</span>: <span class="ident">SymbolSection::Undefined</span>,
-                    <span class="ident">flags</span>: <span class="ident">SymbolFlags::None</span>,
-                });
-                <span class="ident">libcalls</span>.<span class="ident">insert</span>(<span class="ident">LibCall</span>::<span class="macro-nonterminal">$</span><span class="macro-nonterminal">libcall</span>, <span class="ident">symbol_id</span>);
-            )<span class="op">+</span>
-        }};
-    }
-    <span class="macro">for_each_libcall!</span>(<span class="ident">add_libcall_symbol</span>);
-
-    <span class="ident">libcalls</span>
-}
 
 <span class="doccomment">/// A helper structure used to assemble the final text section of an exectuable,</span>
 <span class="doccomment">/// plus unwinding information and other related details.</span>
@@ -729,7 +512,7 @@
 <span class="doccomment">/// This builder relies on Cranelift-specific internals but assembles into a</span>
 <span class="doccomment">/// generic `Object` which will get further appended to in a compiler-agnostic</span>
 <span class="doccomment">/// fashion later.</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">ObjectBuilder</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span> {
+<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">ModuleTextBuilder</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span> {
     <span class="doccomment">/// The target that we&#39;re compiling for, used to query target-specific</span>
     <span class="doccomment">/// information as necessary.</span>
     <span class="ident">isa</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="kw">dyn</span> <span class="ident">TargetIsa</span>,
@@ -740,59 +523,21 @@
     <span class="doccomment">/// The WebAssembly module we&#39;re generating code for.</span>
     <span class="ident">module</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="ident">Module</span>,
 
-    <span class="doccomment">/// Map of injected symbols for all possible libcalls, used whenever there&#39;s</span>
-    <span class="doccomment">/// a relocation against a libcall.</span>
-    <span class="ident">libcalls</span>: <span class="ident">HashMap</span><span class="op">&lt;</span><span class="ident">LibCall</span>, <span class="ident">SymbolId</span><span class="op">&gt;</span>,
+    <span class="ident">text_section</span>: <span class="ident">SectionId</span>,
 
-    <span class="ident">windows_unwind_info_id</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">SectionId</span><span class="op">&gt;</span>,
-
-    <span class="doccomment">/// Packed form of windows unwind tables which, if present, will get emitted</span>
-    <span class="doccomment">/// to a windows-specific unwind info section.</span>
-    <span class="ident">windows_unwind_info</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">RUNTIME_FUNCTION</span><span class="op">&gt;</span>,
-
-    <span class="ident">systemv_unwind_info_id</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">SectionId</span><span class="op">&gt;</span>,
-
-    <span class="doccomment">/// Pending unwinding information for DWARF-based platforms. This is used to</span>
-    <span class="doccomment">/// build a `.eh_frame` lookalike at the very end of object building.</span>
-    <span class="ident">systemv_unwind_info</span>: <span class="ident">Vec</span><span class="op">&lt;</span>(<span class="ident">u64</span>, <span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="ident">systemv::UnwindInfo</span>)<span class="op">&gt;</span>,
+    <span class="ident">unwind_info</span>: <span class="ident">UnwindInfoBuilder</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span>,
 
     <span class="doccomment">/// The corresponding symbol for each function, inserted as they&#39;re defined.</span>
     <span class="doccomment">///</span>
     <span class="doccomment">/// If an index isn&#39;t here yet then it hasn&#39;t been defined yet.</span>
-    <span class="ident">func_symbols</span>: <span class="ident">PrimaryMap</span><span class="op">&lt;</span><span class="ident">FuncIndex</span>, <span class="ident">SymbolId</span><span class="op">&gt;</span>,
-
-    <span class="doccomment">/// `object`-crate identifier for the text section.</span>
-    <span class="ident">text_section</span>: <span class="ident">SectionId</span>,
-
-    <span class="doccomment">/// Relocations to be added once we&#39;ve got all function symbols available to</span>
-    <span class="doccomment">/// us. The first entry is the relocation that we&#39;re applying, relative</span>
-    <span class="doccomment">/// within a function, and the second entry here is the offset of the</span>
-    <span class="doccomment">/// function that contains this relocation.</span>
-    <span class="ident">relocations</span>: <span class="ident">Vec</span><span class="op">&lt;</span>(<span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="ident">Relocation</span>, <span class="ident">u64</span>)<span class="op">&gt;</span>,
+    <span class="ident">func_symbols</span>: <span class="ident">PrimaryMap</span><span class="op">&lt;</span><span class="ident">DefinedFuncIndex</span>, <span class="ident">SymbolId</span><span class="op">&gt;</span>,
 
     <span class="doccomment">/// In-progress text section that we&#39;re using cranelift&#39;s `MachBuffer` to</span>
     <span class="doccomment">/// build to resolve relocations (calls) between functions.</span>
-    <span class="kw">pub</span> <span class="ident">text</span>: <span class="ident">Box</span><span class="op">&lt;</span><span class="kw">dyn</span> <span class="ident">TextSectionBuilder</span><span class="op">&gt;</span>,
-
-    <span class="doccomment">/// The unwind info _must_ come directly after the text section. Our FDE&#39;s</span>
-    <span class="doccomment">/// instructions are encoded to rely on this placement. We use this `bool`</span>
-    <span class="doccomment">/// for debug assertions to ensure that we get the ordering correct.</span>
-    <span class="ident">added_unwind_info</span>: <span class="ident">bool</span>,
+    <span class="ident">text</span>: <span class="ident">Box</span><span class="op">&lt;</span><span class="kw">dyn</span> <span class="ident">TextSectionBuilder</span><span class="op">&gt;</span>,
 }
 
-<span class="comment">// This is a mirror of `RUNTIME_FUNCTION` in the Windows API, but defined here</span>
-<span class="comment">// to ensure everything is always `u32` and to have it available on all</span>
-<span class="comment">// platforms. Note that all of these specifiers here are relative to a &quot;base</span>
-<span class="comment">// address&quot; which we define as the base of where the text section is eventually</span>
-<span class="comment">// loaded.</span>
-<span class="attribute">#[<span class="ident">allow</span>(<span class="ident">non_camel_case_types</span>)]</span>
-<span class="kw">struct</span> <span class="ident">RUNTIME_FUNCTION</span> {
-    <span class="ident">begin</span>: <span class="ident">u32</span>,
-    <span class="ident">end</span>: <span class="ident">u32</span>,
-    <span class="ident">unwind_address</span>: <span class="ident">u32</span>,
-}
-
-<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span> <span class="ident">ObjectBuilder</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span> {
+<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span> <span class="ident">ModuleTextBuilder</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span> {
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new</span>(<span class="ident">obj</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="kw-2">mut</span> <span class="ident">Object</span><span class="op">&lt;</span><span class="lifetime">&#39;static</span><span class="op">&gt;</span>, <span class="ident">module</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="ident">Module</span>, <span class="ident">isa</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="kw">dyn</span> <span class="ident">TargetIsa</span>) -&gt; <span class="self">Self</span> {
         <span class="comment">// Entire code (functions and trampolines) will be placed</span>
         <span class="comment">// in the &quot;.text&quot; section.</span>
@@ -802,41 +547,15 @@
             <span class="ident">SectionKind::Text</span>,
         );
 
-        <span class="comment">// Create symbols for imports -- needed during linking.</span>
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">func_symbols</span> <span class="op">=</span> <span class="ident">PrimaryMap::with_capacity</span>(<span class="ident">module</span>.<span class="ident">functions</span>.<span class="ident">len</span>());
-        <span class="kw">for</span> <span class="ident">index</span> <span class="kw">in</span> <span class="number">0</span>..<span class="ident">module</span>.<span class="ident">num_imported_funcs</span> {
-            <span class="kw">let</span> <span class="ident">symbol_id</span> <span class="op">=</span> <span class="ident">obj</span>.<span class="ident">add_symbol</span>(<span class="ident">Symbol</span> {
-                <span class="ident">name</span>: <span class="ident">obj::func_symbol_name</span>(<span class="ident">FuncIndex::new</span>(<span class="ident">index</span>))
-                    .<span class="ident">as_bytes</span>()
-                    .<span class="ident">to_vec</span>(),
-                <span class="ident">value</span>: <span class="number">0</span>,
-                <span class="ident">size</span>: <span class="number">0</span>,
-                <span class="ident">kind</span>: <span class="ident">SymbolKind::Text</span>,
-                <span class="ident">scope</span>: <span class="ident">SymbolScope::Linkage</span>,
-                <span class="ident">weak</span>: <span class="bool-val">false</span>,
-                <span class="ident">section</span>: <span class="ident">SymbolSection::Undefined</span>,
-                <span class="ident">flags</span>: <span class="ident">SymbolFlags::None</span>,
-            });
-            <span class="ident">func_symbols</span>.<span class="ident">push</span>(<span class="ident">symbol_id</span>);
-        }
-
-        <span class="kw">let</span> <span class="ident">libcalls</span> <span class="op">=</span> <span class="ident">write_libcall_symbols</span>(<span class="ident">obj</span>);
-
+        <span class="kw">let</span> <span class="ident">num_defined</span> <span class="op">=</span> <span class="ident">module</span>.<span class="ident">functions</span>.<span class="ident">len</span>() <span class="op">-</span> <span class="ident">module</span>.<span class="ident">num_imported_funcs</span>;
         <span class="self">Self</span> {
             <span class="ident">isa</span>,
             <span class="ident">obj</span>,
             <span class="ident">module</span>,
             <span class="ident">text_section</span>,
-            <span class="ident">func_symbols</span>,
-            <span class="ident">libcalls</span>,
-            <span class="ident">windows_unwind_info_id</span>: <span class="prelude-val">None</span>,
-            <span class="ident">windows_unwind_info</span>: <span class="ident">Vec::new</span>(),
-            <span class="ident">systemv_unwind_info_id</span>: <span class="prelude-val">None</span>,
-            <span class="ident">systemv_unwind_info</span>: <span class="ident">Vec::new</span>(),
-            <span class="ident">relocations</span>: <span class="ident">Vec::new</span>(),
-            <span class="ident">text</span>: <span class="ident">isa</span>
-                .<span class="ident">text_section_builder</span>((<span class="ident">module</span>.<span class="ident">functions</span>.<span class="ident">len</span>() <span class="op">-</span> <span class="ident">module</span>.<span class="ident">num_imported_funcs</span>) <span class="kw">as</span> <span class="ident">u32</span>),
-            <span class="ident">added_unwind_info</span>: <span class="bool-val">false</span>,
+            <span class="ident">func_symbols</span>: <span class="ident">PrimaryMap::with_capacity</span>(<span class="ident">num_defined</span>),
+            <span class="ident">unwind_info</span>: <span class="ident">Default::default</span>(),
+            <span class="ident">text</span>: <span class="ident">isa</span>.<span class="ident">text_section_builder</span>(<span class="ident">num_defined</span> <span class="kw">as</span> <span class="ident">u32</span>),
         }
     }
 
@@ -844,14 +563,14 @@
     <span class="doccomment">///</span>
     <span class="doccomment">/// Returns the symbol associated with the function as well as the range</span>
     <span class="doccomment">/// that the function resides within the text section.</span>
-    <span class="kw">fn</span> <span class="ident">append_func</span>(
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">append_func</span>(
         <span class="kw-2">&amp;mut</span> <span class="self">self</span>,
-        <span class="ident">wat</span>: <span class="ident">bool</span>,
+        <span class="ident">labeled</span>: <span class="ident">bool</span>,
         <span class="ident">name</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">u8</span><span class="op">&gt;</span>,
         <span class="ident">func</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="ident">CompiledFunction</span>,
     ) -&gt; (<span class="ident">SymbolId</span>, <span class="ident">Range</span><span class="op">&lt;</span><span class="ident">u64</span><span class="op">&gt;</span>) {
         <span class="kw">let</span> <span class="ident">body_len</span> <span class="op">=</span> <span class="ident">func</span>.<span class="ident">body</span>.<span class="ident">len</span>() <span class="kw">as</span> <span class="ident">u64</span>;
-        <span class="kw">let</span> <span class="ident">off</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">text</span>.<span class="ident">append</span>(<span class="ident">wat</span>, <span class="kw-2">&amp;</span><span class="ident">func</span>.<span class="ident">body</span>, <span class="number">1</span>);
+        <span class="kw">let</span> <span class="ident">off</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">text</span>.<span class="ident">append</span>(<span class="ident">labeled</span>, <span class="kw-2">&amp;</span><span class="ident">func</span>.<span class="ident">body</span>, <span class="prelude-val">None</span>);
 
         <span class="kw">let</span> <span class="ident">symbol_id</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">obj</span>.<span class="ident">add_symbol</span>(<span class="ident">Symbol</span> {
             <span class="ident">name</span>,
@@ -864,39 +583,14 @@
             <span class="ident">flags</span>: <span class="ident">SymbolFlags::None</span>,
         });
 
-        <span class="kw">match</span> <span class="kw-2">&amp;</span><span class="ident">func</span>.<span class="ident">unwind_info</span> {
-            <span class="comment">// Windows unwind information is preferred to come after the code</span>
-            <span class="comment">// itself. The information is appended here just after the function,</span>
-            <span class="comment">// aligned to 4-bytes as required by Windows.</span>
-            <span class="comment">//</span>
-            <span class="comment">// The location of the unwind info, and the function it describes,</span>
-            <span class="comment">// is then recorded in an unwind info table to get embedded into the</span>
-            <span class="comment">// object at the end of compilation.</span>
-            <span class="prelude-val">Some</span>(<span class="ident">UnwindInfo::WindowsX64</span>(<span class="ident">info</span>)) =&gt; {
-                <span class="comment">// Windows prefers Unwind info after the code -- writing it here.</span>
-                <span class="kw">let</span> <span class="ident">unwind_size</span> <span class="op">=</span> <span class="ident">info</span>.<span class="ident">emit_size</span>();
-                <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">unwind_info</span> <span class="op">=</span> <span class="macro">vec!</span>[<span class="number">0</span>; <span class="ident">unwind_size</span>];
-                <span class="ident">info</span>.<span class="ident">emit</span>(<span class="kw-2">&amp;mut</span> <span class="ident">unwind_info</span>);
-                <span class="kw">let</span> <span class="ident">unwind_off</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">text</span>.<span class="ident">append</span>(<span class="bool-val">false</span>, <span class="kw-2">&amp;</span><span class="ident">unwind_info</span>, <span class="number">4</span>);
-                <span class="self">self</span>.<span class="ident">windows_unwind_info</span>.<span class="ident">push</span>(<span class="ident">RUNTIME_FUNCTION</span> {
-                    <span class="ident">begin</span>: <span class="ident">u32::try_from</span>(<span class="ident">off</span>).<span class="ident">unwrap</span>(),
-                    <span class="ident">end</span>: <span class="ident">u32::try_from</span>(<span class="ident">off</span> <span class="op">+</span> <span class="ident">body_len</span>).<span class="ident">unwrap</span>(),
-                    <span class="ident">unwind_address</span>: <span class="ident">u32::try_from</span>(<span class="ident">unwind_off</span>).<span class="ident">unwrap</span>(),
-                });
-            }
-
-            <span class="comment">// System-V is different enough that we just record the unwinding</span>
-            <span class="comment">// information to get processed at a later time.</span>
-            <span class="prelude-val">Some</span>(<span class="ident">UnwindInfo::SystemV</span>(<span class="ident">info</span>)) =&gt; {
-                <span class="self">self</span>.<span class="ident">systemv_unwind_info</span>.<span class="ident">push</span>((<span class="ident">off</span>, <span class="ident">info</span>));
-            }
-
-            <span class="prelude-val">Some</span>(<span class="kw">_</span>) =&gt; <span class="macro">panic!</span>(<span class="string">&quot;some unwind info isn&#39;t handled here&quot;</span>),
-            <span class="prelude-val">None</span> =&gt; {}
+        <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">info</span>) <span class="op">=</span> <span class="kw-2">&amp;</span><span class="ident">func</span>.<span class="ident">unwind_info</span> {
+            <span class="self">self</span>.<span class="ident">unwind_info</span>.<span class="ident">push</span>(<span class="ident">off</span>, <span class="ident">body_len</span>, <span class="ident">info</span>, <span class="op">|</span><span class="ident">data</span>, <span class="ident">align</span><span class="op">|</span> {
+                <span class="self">self</span>.<span class="ident">text</span>.<span class="ident">append</span>(<span class="bool-val">false</span>, <span class="ident">data</span>, <span class="prelude-val">Some</span>(<span class="ident">align</span>))
+            });
         }
 
         <span class="kw">for</span> <span class="ident">r</span> <span class="kw">in</span> <span class="ident">func</span>.<span class="ident">relocations</span>.<span class="ident">iter</span>() {
-            <span class="kw">let</span> (<span class="ident">symbol</span>, <span class="ident">symbol_offset</span>) <span class="op">=</span> <span class="kw">match</span> <span class="ident">r</span>.<span class="ident">reloc_target</span> {
+            <span class="kw">match</span> <span class="ident">r</span>.<span class="ident">reloc_target</span> {
                 <span class="comment">// Relocations against user-defined functions means that this is</span>
                 <span class="comment">// a relocation against a module-local function, typically a</span>
                 <span class="comment">// call between functions. The `text` field is given priority to</span>
@@ -914,43 +608,27 @@
                         <span class="kw">continue</span>;
                     }
 
-                    <span class="comment">// FIXME(#3009) once the old backend is removed all</span>
-                    <span class="comment">// inter-function relocations should be handled by</span>
-                    <span class="comment">// `self.text`. This can become `unreachable!()` in that</span>
-                    <span class="comment">// case.</span>
-                    <span class="self">self</span>.<span class="ident">relocations</span>.<span class="ident">push</span>((<span class="ident">r</span>, <span class="ident">off</span>));
-                    <span class="kw">continue</span>;
+                    <span class="comment">// At this time it&#39;s expected that all relocations are</span>
+                    <span class="comment">// handled by `text.resolve_reloc`, and anything that isn&#39;t</span>
+                    <span class="comment">// handled is a bug in `text.resolve_reloc` or something</span>
+                    <span class="comment">// transitively there. If truly necessary, though, then this</span>
+                    <span class="comment">// loop could also be updated to forward the relocation to</span>
+                    <span class="comment">// the final object file as well.</span>
+                    <span class="macro">panic!</span>(
+                        <span class="string">&quot;unresolved relocation could not be procesed against \
+                         {index:?}: {r:?}&quot;</span>
+                    );
                 }
 
-                <span class="comment">// These relocations, unlike against user funcs above, typically</span>
-                <span class="comment">// involve absolute addresses and need to get resolved at load</span>
-                <span class="comment">// time. These are persisted immediately into the object file.</span>
-                <span class="comment">//</span>
-                <span class="comment">// FIXME: these, like user-defined-functions, should probably</span>
-                <span class="comment">// use relative jumps and avoid absolute relocations. They don&#39;t</span>
-                <span class="comment">// seem too common though so aren&#39;t necessarily that important</span>
-                <span class="comment">// to optimize.</span>
-                <span class="ident">RelocationTarget::LibCall</span>(<span class="ident">call</span>) =&gt; (<span class="self">self</span>.<span class="ident">libcalls</span>[<span class="kw-2">&amp;</span><span class="ident">call</span>], <span class="number">0</span>),
+                <span class="comment">// At this time it&#39;s not expected that any libcall relocations</span>
+                <span class="comment">// are generated. Ideally we don&#39;t want relocations against</span>
+                <span class="comment">// libcalls anyway as libcalls should go through indirect</span>
+                <span class="comment">// `VMContext` tables to avoid needing to apply relocations at</span>
+                <span class="comment">// module-load time as well.</span>
+                <span class="ident">RelocationTarget::LibCall</span>(<span class="ident">call</span>) =&gt; {
+                    <span class="macro">unimplemented!</span>(<span class="string">&quot;cannot generate relocation against libcall {call:?}&quot;</span>);
+                }
             };
-            <span class="kw">let</span> (<span class="ident">kind</span>, <span class="ident">encoding</span>, <span class="ident">size</span>) <span class="op">=</span> <span class="kw">match</span> <span class="ident">r</span>.<span class="ident">reloc</span> {
-                <span class="ident">Reloc::Abs4</span> =&gt; (<span class="ident">RelocationKind::Absolute</span>, <span class="ident">RelocationEncoding::Generic</span>, <span class="number">32</span>),
-                <span class="ident">Reloc::Abs8</span> =&gt; (<span class="ident">RelocationKind::Absolute</span>, <span class="ident">RelocationEncoding::Generic</span>, <span class="number">64</span>),
-
-                <span class="ident">other</span> =&gt; <span class="macro">unimplemented!</span>(<span class="string">&quot;Unimplemented relocation {:?}&quot;</span>, <span class="ident">other</span>),
-            };
-            <span class="self">self</span>.<span class="ident">obj</span>
-                .<span class="ident">add_relocation</span>(
-                    <span class="self">self</span>.<span class="ident">text_section</span>,
-                    <span class="ident">ObjectRelocation</span> {
-                        <span class="ident">offset</span>: <span class="ident">off</span> <span class="op">+</span> <span class="ident">r</span>.<span class="ident">offset</span> <span class="kw">as</span> <span class="ident">u64</span>,
-                        <span class="ident">size</span>,
-                        <span class="ident">kind</span>,
-                        <span class="ident">encoding</span>,
-                        <span class="ident">symbol</span>,
-                        <span class="ident">addend</span>: <span class="ident">r</span>.<span class="ident">addend</span>.<span class="ident">wrapping_add</span>(<span class="ident">symbol_offset</span> <span class="kw">as</span> <span class="ident">i64</span>),
-                    },
-                )
-                .<span class="ident">unwrap</span>();
         }
         (<span class="ident">symbol_id</span>, <span class="ident">off</span>..<span class="ident">off</span> <span class="op">+</span> <span class="ident">body_len</span>)
     }
@@ -959,16 +637,13 @@
     <span class="doccomment">///</span>
     <span class="doccomment">/// This is expected to be called in-order for ascending `index` values.</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">func</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="ident">index</span>: <span class="ident">DefinedFuncIndex</span>, <span class="ident">func</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="ident">CompiledFunction</span>) -&gt; <span class="ident">Range</span><span class="op">&lt;</span><span class="ident">u64</span><span class="op">&gt;</span> {
-        <span class="macro">assert!</span>(<span class="op">!</span><span class="self">self</span>.<span class="ident">added_unwind_info</span>);
-        <span class="kw">let</span> <span class="ident">index</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">module</span>.<span class="ident">func_index</span>(<span class="ident">index</span>);
-        <span class="kw">let</span> <span class="ident">name</span> <span class="op">=</span> <span class="ident">obj::func_symbol_name</span>(<span class="ident">index</span>);
+        <span class="kw">let</span> <span class="ident">name</span> <span class="op">=</span> <span class="ident">obj::func_symbol_name</span>(<span class="self">self</span>.<span class="ident">module</span>.<span class="ident">func_index</span>(<span class="ident">index</span>));
         <span class="kw">let</span> (<span class="ident">symbol_id</span>, <span class="ident">range</span>) <span class="op">=</span> <span class="self">self</span>.<span class="ident">append_func</span>(<span class="bool-val">true</span>, <span class="ident">name</span>.<span class="ident">into_bytes</span>(), <span class="ident">func</span>);
         <span class="macro">assert_eq!</span>(<span class="self">self</span>.<span class="ident">func_symbols</span>.<span class="ident">push</span>(<span class="ident">symbol_id</span>), <span class="ident">index</span>);
         <span class="ident">range</span>
     }
 
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">trampoline</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="ident">sig</span>: <span class="ident">SignatureIndex</span>, <span class="ident">func</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="ident">CompiledFunction</span>) -&gt; <span class="ident">Trampoline</span> {
-        <span class="macro">assert!</span>(<span class="op">!</span><span class="self">self</span>.<span class="ident">added_unwind_info</span>);
         <span class="kw">let</span> <span class="ident">name</span> <span class="op">=</span> <span class="ident">obj::trampoline_symbol_name</span>(<span class="ident">sig</span>);
         <span class="kw">let</span> (<span class="kw">_</span>, <span class="ident">range</span>) <span class="op">=</span> <span class="self">self</span>.<span class="ident">append_func</span>(<span class="bool-val">false</span>, <span class="ident">name</span>.<span class="ident">into_bytes</span>(), <span class="ident">func</span>);
         <span class="ident">Trampoline</span> {
@@ -978,146 +653,164 @@
         }
     }
 
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">dwarf_sections</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="ident">sections</span>: <span class="kw-2">&amp;</span>[<span class="ident">DwarfSection</span>]) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span>()<span class="op">&gt;</span> {
-        <span class="macro">assert!</span>(
-            <span class="self">self</span>.<span class="ident">added_unwind_info</span>,
-            <span class="string">&quot;can&#39;t add dwarf yet; unwind info must directly follow the text section&quot;</span>
-        );
-
-        <span class="comment">// If we have DWARF data, write it in the object file.</span>
-        <span class="kw">let</span> (<span class="ident">debug_bodies</span>, <span class="ident">debug_relocs</span>): (<span class="ident">Vec</span><span class="op">&lt;</span><span class="kw">_</span><span class="op">&gt;</span>, <span class="ident">Vec</span><span class="op">&lt;</span><span class="kw">_</span><span class="op">&gt;</span>) <span class="op">=</span> <span class="ident">sections</span>
-            .<span class="ident">iter</span>()
-            .<span class="ident">map</span>(<span class="op">|</span><span class="ident">s</span><span class="op">|</span> ((<span class="ident">s</span>.<span class="ident">name</span>, <span class="kw-2">&amp;</span><span class="ident">s</span>.<span class="ident">body</span>), (<span class="ident">s</span>.<span class="ident">name</span>, <span class="kw-2">&amp;</span><span class="ident">s</span>.<span class="ident">relocs</span>)))
-            .<span class="ident">unzip</span>();
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">dwarf_sections_ids</span> <span class="op">=</span> <span class="ident">HashMap::new</span>();
-        <span class="kw">for</span> (<span class="ident">name</span>, <span class="ident">body</span>) <span class="kw">in</span> <span class="ident">debug_bodies</span> {
-            <span class="kw">let</span> <span class="ident">segment</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">obj</span>.<span class="ident">segment_name</span>(<span class="ident">StandardSegment::Debug</span>).<span class="ident">to_vec</span>();
-            <span class="kw">let</span> <span class="ident">section_id</span> <span class="op">=</span>
-                <span class="self">self</span>.<span class="ident">obj</span>
-                    .<span class="ident">add_section</span>(<span class="ident">segment</span>, <span class="ident">name</span>.<span class="ident">as_bytes</span>().<span class="ident">to_vec</span>(), <span class="ident">SectionKind::Debug</span>);
-            <span class="ident">dwarf_sections_ids</span>.<span class="ident">insert</span>(<span class="ident">name</span>, <span class="ident">section_id</span>);
-            <span class="self">self</span>.<span class="ident">obj</span>.<span class="ident">append_section_data</span>(<span class="ident">section_id</span>, <span class="kw-2">&amp;</span><span class="ident">body</span>, <span class="number">1</span>);
-        }
-
-        <span class="comment">// Write all debug data relocations.</span>
-        <span class="kw">for</span> (<span class="ident">name</span>, <span class="ident">relocs</span>) <span class="kw">in</span> <span class="ident">debug_relocs</span> {
-            <span class="kw">let</span> <span class="ident">section_id</span> <span class="op">=</span> <span class="kw-2">*</span><span class="ident">dwarf_sections_ids</span>.<span class="ident">get</span>(<span class="ident">name</span>).<span class="ident">unwrap</span>();
-            <span class="kw">for</span> <span class="ident">reloc</span> <span class="kw">in</span> <span class="ident">relocs</span> {
-                <span class="kw">let</span> <span class="ident">target_symbol</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">reloc</span>.<span class="ident">target</span> {
-                    <span class="ident">DwarfSectionRelocTarget::Func</span>(<span class="ident">index</span>) =&gt; {
-                        <span class="self">self</span>.<span class="ident">func_symbols</span>[<span class="self">self</span>.<span class="ident">module</span>.<span class="ident">func_index</span>(<span class="ident">DefinedFuncIndex::new</span>(<span class="ident">index</span>))]
-                    }
-                    <span class="ident">DwarfSectionRelocTarget::Section</span>(<span class="ident">name</span>) =&gt; {
-                        <span class="self">self</span>.<span class="ident">obj</span>.<span class="ident">section_symbol</span>(<span class="ident">dwarf_sections_ids</span>[<span class="ident">name</span>])
-                    }
-                };
-                <span class="self">self</span>.<span class="ident">obj</span>.<span class="ident">add_relocation</span>(
-                    <span class="ident">section_id</span>,
-                    <span class="ident">ObjectRelocation</span> {
-                        <span class="ident">offset</span>: <span class="ident">u64::from</span>(<span class="ident">reloc</span>.<span class="ident">offset</span>),
-                        <span class="ident">size</span>: <span class="ident">reloc</span>.<span class="ident">size</span> <span class="op">&lt;</span><span class="op">&lt;</span> <span class="number">3</span>,
-                        <span class="ident">kind</span>: <span class="ident">RelocationKind::Absolute</span>,
-                        <span class="ident">encoding</span>: <span class="ident">RelocationEncoding::Generic</span>,
-                        <span class="ident">symbol</span>: <span class="ident">target_symbol</span>,
-                        <span class="ident">addend</span>: <span class="ident">i64::from</span>(<span class="ident">reloc</span>.<span class="ident">addend</span>),
-                    },
-                )<span class="question-mark">?</span>;
-            }
-        }
-
-        <span class="prelude-val">Ok</span>(())
+    <span class="doccomment">/// Forces &quot;veneers&quot; to be used for inter-function calls in the text</span>
+    <span class="doccomment">/// section which means that in-bounds optimized addresses are never used.</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// This is only useful for debugging cranelift itself and typically this</span>
+    <span class="doccomment">/// option is disabled.</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">force_veneers</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>) {
+        <span class="self">self</span>.<span class="ident">text</span>.<span class="ident">force_veneers</span>();
     }
 
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">unwind_info</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>) {
-        <span class="macro">assert!</span>(<span class="op">!</span><span class="self">self</span>.<span class="ident">added_unwind_info</span>);
-
-        <span class="kw">if</span> <span class="self">self</span>.<span class="ident">windows_unwind_info</span>.<span class="ident">len</span>() <span class="op">&gt;</span> <span class="number">0</span> {
-            <span class="kw">let</span> <span class="ident">segment</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">obj</span>.<span class="ident">segment_name</span>(<span class="ident">StandardSegment::Data</span>).<span class="ident">to_vec</span>();
-            <span class="self">self</span>.<span class="ident">windows_unwind_info_id</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="self">self</span>.<span class="ident">obj</span>.<span class="ident">add_section</span>(
-                <span class="ident">segment</span>,
-                <span class="string">b&quot;_wasmtime_winx64_unwind&quot;</span>.<span class="ident">to_vec</span>(),
-                <span class="ident">SectionKind::ReadOnlyData</span>,
-            ));
+    <span class="doccomment">/// Appends the specified amount of bytes of padding into the text section.</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// This is only useful when fuzzing and/or debugging cranelift itself and</span>
+    <span class="doccomment">/// for production scenarios `padding` is 0 and this function does nothing.</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">append_padding</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="ident">padding</span>: <span class="ident">usize</span>) {
+        <span class="kw">if</span> <span class="ident">padding</span> <span class="op">==</span> <span class="number">0</span> {
+            <span class="kw">return</span>;
         }
-        <span class="kw">if</span> <span class="self">self</span>.<span class="ident">systemv_unwind_info</span>.<span class="ident">len</span>() <span class="op">&gt;</span> <span class="number">0</span> {
-            <span class="kw">let</span> <span class="ident">segment</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">obj</span>.<span class="ident">segment_name</span>(<span class="ident">StandardSegment::Data</span>).<span class="ident">to_vec</span>();
-            <span class="self">self</span>.<span class="ident">systemv_unwind_info_id</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="self">self</span>.<span class="ident">obj</span>.<span class="ident">add_section</span>(
-                <span class="ident">segment</span>,
-                <span class="string">b&quot;.eh_frame&quot;</span>.<span class="ident">to_vec</span>(),
-                <span class="ident">SectionKind::ReadOnlyData</span>,
-            ));
-        }
-
-        <span class="self">self</span>.<span class="ident">added_unwind_info</span> <span class="op">=</span> <span class="bool-val">true</span>;
+        <span class="self">self</span>.<span class="ident">text</span>.<span class="ident">append</span>(<span class="bool-val">false</span>, <span class="kw-2">&amp;</span><span class="macro">vec!</span>[<span class="number">0</span>; <span class="ident">padding</span>], <span class="prelude-val">Some</span>(<span class="number">1</span>));
     }
 
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">finish</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span>()<span class="op">&gt;</span> {
-        <span class="comment">// Now that all function symbols are available register all final</span>
-        <span class="comment">// relocations between functions.</span>
-        <span class="comment">//</span>
-        <span class="comment">// FIXME(#3009) once the old backend is removed this loop should be</span>
-        <span class="comment">// deleted since there won&#39;t be any relocations here.</span>
-        <span class="kw">for</span> (<span class="ident">r</span>, <span class="ident">off</span>) <span class="kw">in</span> <span class="ident">mem::take</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>.<span class="ident">relocations</span>) {
-            <span class="kw">let</span> <span class="ident">symbol</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">r</span>.<span class="ident">reloc_target</span> {
-                <span class="ident">RelocationTarget::UserFunc</span>(<span class="ident">index</span>) =&gt; <span class="self">self</span>.<span class="ident">func_symbols</span>[<span class="ident">index</span>],
-                <span class="kw">_</span> =&gt; <span class="macro">unreachable!</span>(<span class="string">&quot;should be handled in `append_func`&quot;</span>),
-            };
-            <span class="kw">let</span> (<span class="ident">kind</span>, <span class="ident">encoding</span>, <span class="ident">size</span>) <span class="op">=</span> <span class="kw">match</span> <span class="ident">r</span>.<span class="ident">reloc</span> {
-                <span class="ident">Reloc::X86CallPCRel4</span> =&gt; {
-                    (<span class="ident">RelocationKind::Relative</span>, <span class="ident">RelocationEncoding::X86Branch</span>, <span class="number">32</span>)
-                }
-                <span class="ident">other</span> =&gt; <span class="macro">unimplemented!</span>(<span class="string">&quot;Unimplemented relocation {:?}&quot;</span>, <span class="ident">other</span>),
-            };
-            <span class="self">self</span>.<span class="ident">obj</span>.<span class="ident">add_relocation</span>(
-                <span class="self">self</span>.<span class="ident">text_section</span>,
-                <span class="ident">ObjectRelocation</span> {
-                    <span class="ident">offset</span>: <span class="ident">off</span> <span class="op">+</span> <span class="ident">u64::from</span>(<span class="ident">r</span>.<span class="ident">offset</span>),
-                    <span class="ident">size</span>,
-                    <span class="ident">kind</span>,
-                    <span class="ident">encoding</span>,
-                    <span class="ident">symbol</span>,
-                    <span class="ident">addend</span>: <span class="ident">r</span>.<span class="ident">addend</span>,
-                },
-            )<span class="question-mark">?</span>;
-        }
-
+    <span class="doccomment">/// Indicates that the text section has been written completely and this</span>
+    <span class="doccomment">/// will finish appending it to the original object.</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// Note that this will also write out the unwind information sections if</span>
+    <span class="doccomment">/// necessary.</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">finish</span>(<span class="kw-2">mut</span> <span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">PrimaryMap</span><span class="op">&lt;</span><span class="ident">DefinedFuncIndex</span>, <span class="ident">SymbolId</span><span class="op">&gt;</span><span class="op">&gt;</span> {
         <span class="comment">// Finish up the text section now that we&#39;re done adding functions.</span>
         <span class="kw">let</span> <span class="ident">text</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">text</span>.<span class="ident">finish</span>();
         <span class="self">self</span>.<span class="ident">obj</span>
             .<span class="ident">section_mut</span>(<span class="self">self</span>.<span class="ident">text_section</span>)
             .<span class="ident">set_data</span>(<span class="ident">text</span>, <span class="self">self</span>.<span class="ident">isa</span>.<span class="ident">code_section_alignment</span>());
 
-        <span class="comment">// With all functions added we can also emit the fully-formed unwinding</span>
-        <span class="comment">// information sections.</span>
-        <span class="kw">if</span> <span class="self">self</span>.<span class="ident">windows_unwind_info</span>.<span class="ident">len</span>() <span class="op">&gt;</span> <span class="number">0</span> {
-            <span class="self">self</span>.<span class="ident">append_windows_unwind_info</span>();
+        <span class="comment">// Append the unwind information for all our functions, if necessary.</span>
+        <span class="self">self</span>.<span class="ident">unwind_info</span>
+            .<span class="ident">append_section</span>(<span class="self">self</span>.<span class="ident">isa</span>, <span class="self">self</span>.<span class="ident">obj</span>, <span class="self">self</span>.<span class="ident">text_section</span>);
+
+        <span class="prelude-val">Ok</span>(<span class="self">self</span>.<span class="ident">func_symbols</span>)
+    }
+}
+
+<span class="doccomment">/// Builder used to create unwind information for a set of functions added to a</span>
+<span class="doccomment">/// text section.</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Default</span>)]</span>
+<span class="kw">struct</span> <span class="ident">UnwindInfoBuilder</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span> {
+    <span class="ident">windows_unwind_info</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">RUNTIME_FUNCTION</span><span class="op">&gt;</span>,
+    <span class="ident">systemv_unwind_info</span>: <span class="ident">Vec</span><span class="op">&lt;</span>(<span class="ident">u64</span>, <span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="ident">systemv::UnwindInfo</span>)<span class="op">&gt;</span>,
+}
+
+<span class="comment">// This is a mirror of `RUNTIME_FUNCTION` in the Windows API, but defined here</span>
+<span class="comment">// to ensure everything is always `u32` and to have it available on all</span>
+<span class="comment">// platforms. Note that all of these specifiers here are relative to a &quot;base</span>
+<span class="comment">// address&quot; which we define as the base of where the text section is eventually</span>
+<span class="comment">// loaded.</span>
+<span class="attribute">#[<span class="ident">allow</span>(<span class="ident">non_camel_case_types</span>)]</span>
+<span class="kw">struct</span> <span class="ident">RUNTIME_FUNCTION</span> {
+    <span class="ident">begin</span>: <span class="ident">u32</span>,
+    <span class="ident">end</span>: <span class="ident">u32</span>,
+    <span class="ident">unwind_address</span>: <span class="ident">u32</span>,
+}
+
+<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span> <span class="ident">UnwindInfoBuilder</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span> {
+    <span class="doccomment">/// Pushes the unwind information for a function into this builder.</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// The function being described must be located at `function_offset` within</span>
+    <span class="doccomment">/// the text section itself, and the function&#39;s size is specified by</span>
+    <span class="doccomment">/// `function_len`.</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// The `info` should come from Cranelift itself and this function may</span>
+    <span class="doccomment">/// append more data to the text section in which case the `append_data`</span>
+    <span class="doccomment">/// callback will be invoked. The `append_data` callback receives the data</span>
+    <span class="doccomment">/// to append to the text section as well as the alignment it needs to be</span>
+    <span class="doccomment">/// written at. The return value of `append_data` should be the offset</span>
+    <span class="doccomment">/// within the text section for where the data was written.</span>
+    <span class="kw">fn</span> <span class="ident">push</span>(
+        <span class="kw-2">&amp;mut</span> <span class="self">self</span>,
+        <span class="ident">function_offset</span>: <span class="ident">u64</span>,
+        <span class="ident">function_len</span>: <span class="ident">u64</span>,
+        <span class="ident">info</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="ident">UnwindInfo</span>,
+        <span class="ident">append_data</span>: <span class="kw">impl</span> <span class="ident">FnOnce</span>(<span class="kw-2">&amp;</span>[<span class="ident">u8</span>], <span class="ident">u32</span>) -&gt; <span class="ident">u64</span>,
+    ) {
+        <span class="kw">match</span> <span class="ident">info</span> {
+            <span class="comment">// Windows unwind information is preferred to come after the code</span>
+            <span class="comment">// itself. The information is appended here just after the function,</span>
+            <span class="comment">// aligned to 4-bytes as required by Windows.</span>
+            <span class="comment">//</span>
+            <span class="comment">// The location of the unwind info, and the function it describes,</span>
+            <span class="comment">// is then recorded in an unwind info table to get embedded into the</span>
+            <span class="comment">// object at the end of compilation.</span>
+            <span class="ident">UnwindInfo::WindowsX64</span>(<span class="ident">info</span>) =&gt; {
+                <span class="comment">// Windows prefers Unwind info after the code -- writing it here.</span>
+                <span class="kw">let</span> <span class="ident">unwind_size</span> <span class="op">=</span> <span class="ident">info</span>.<span class="ident">emit_size</span>();
+                <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">unwind_info</span> <span class="op">=</span> <span class="macro">vec!</span>[<span class="number">0</span>; <span class="ident">unwind_size</span>];
+                <span class="ident">info</span>.<span class="ident">emit</span>(<span class="kw-2">&amp;mut</span> <span class="ident">unwind_info</span>);
+                <span class="kw">let</span> <span class="ident">unwind_off</span> <span class="op">=</span> <span class="ident">append_data</span>(<span class="kw-2">&amp;</span><span class="ident">unwind_info</span>, <span class="number">4</span>);
+                <span class="self">self</span>.<span class="ident">windows_unwind_info</span>.<span class="ident">push</span>(<span class="ident">RUNTIME_FUNCTION</span> {
+                    <span class="ident">begin</span>: <span class="ident">u32::try_from</span>(<span class="ident">function_offset</span>).<span class="ident">unwrap</span>(),
+                    <span class="ident">end</span>: <span class="ident">u32::try_from</span>(<span class="ident">function_offset</span> <span class="op">+</span> <span class="ident">function_len</span>).<span class="ident">unwrap</span>(),
+                    <span class="ident">unwind_address</span>: <span class="ident">u32::try_from</span>(<span class="ident">unwind_off</span>).<span class="ident">unwrap</span>(),
+                });
+            }
+
+            <span class="comment">// System-V is different enough that we just record the unwinding</span>
+            <span class="comment">// information to get processed at a later time.</span>
+            <span class="ident">UnwindInfo::SystemV</span>(<span class="ident">info</span>) =&gt; {
+                <span class="self">self</span>.<span class="ident">systemv_unwind_info</span>.<span class="ident">push</span>((<span class="ident">function_offset</span>, <span class="ident">info</span>));
+            }
+
+            <span class="kw">_</span> =&gt; <span class="macro">panic!</span>(<span class="string">&quot;some unwind info isn&#39;t handled here&quot;</span>),
         }
-        <span class="kw">if</span> <span class="self">self</span>.<span class="ident">systemv_unwind_info</span>.<span class="ident">len</span>() <span class="op">&gt;</span> <span class="number">0</span> {
-            <span class="self">self</span>.<span class="ident">append_systemv_unwind_info</span>();
+    }
+
+    <span class="doccomment">/// Appends the unwind information section, if any, to the `obj` specified.</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// This function must be called immediately after the text section was</span>
+    <span class="doccomment">/// added to a builder. The unwind information section must trail the text</span>
+    <span class="doccomment">/// section immediately.</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// The `text_section`&#39;s section identifier is passed into this function.</span>
+    <span class="kw">fn</span> <span class="ident">append_section</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">isa</span>: <span class="kw-2">&amp;</span><span class="kw">dyn</span> <span class="ident">TargetIsa</span>, <span class="ident">obj</span>: <span class="kw-2">&amp;mut</span> <span class="ident">Object</span><span class="op">&lt;</span><span class="lifetime">&#39;_</span><span class="op">&gt;</span>, <span class="ident">text_section</span>: <span class="ident">SectionId</span>) {
+        <span class="comment">// This write will align the text section to a page boundary and then</span>
+        <span class="comment">// return the offset at that point. This gives us the full size of the</span>
+        <span class="comment">// text section at that point, after alignment.</span>
+        <span class="kw">let</span> <span class="ident">text_section_size</span> <span class="op">=</span>
+            <span class="ident">obj</span>.<span class="ident">append_section_data</span>(<span class="ident">text_section</span>, <span class="kw-2">&amp;</span>[], <span class="ident">isa</span>.<span class="ident">code_section_alignment</span>());
+
+        <span class="kw">if</span> <span class="self">self</span>.<span class="ident">windows_unwind_info</span>.<span class="ident">len</span>() <span class="op">&gt;</span> <span class="number">0</span> {
+            <span class="macro">assert!</span>(<span class="self">self</span>.<span class="ident">systemv_unwind_info</span>.<span class="ident">len</span>() <span class="op">==</span> <span class="number">0</span>);
+            <span class="kw">let</span> <span class="ident">segment</span> <span class="op">=</span> <span class="ident">obj</span>.<span class="ident">segment_name</span>(<span class="ident">StandardSegment::Data</span>).<span class="ident">to_vec</span>();
+            <span class="kw">let</span> <span class="ident">section_id</span> <span class="op">=</span> <span class="ident">obj</span>.<span class="ident">add_section</span>(
+                <span class="ident">segment</span>,
+                <span class="string">b&quot;_wasmtime_winx64_unwind&quot;</span>.<span class="ident">to_vec</span>(),
+                <span class="ident">SectionKind::ReadOnlyData</span>,
+            );
+            <span class="self">self</span>.<span class="ident">write_windows_unwind_info</span>(<span class="ident">obj</span>, <span class="ident">section_id</span>);
         }
 
-        <span class="prelude-val">Ok</span>(())
+        <span class="kw">if</span> <span class="self">self</span>.<span class="ident">systemv_unwind_info</span>.<span class="ident">len</span>() <span class="op">&gt;</span> <span class="number">0</span> {
+            <span class="kw">let</span> <span class="ident">segment</span> <span class="op">=</span> <span class="ident">obj</span>.<span class="ident">segment_name</span>(<span class="ident">StandardSegment::Data</span>).<span class="ident">to_vec</span>();
+            <span class="kw">let</span> <span class="ident">section_id</span> <span class="op">=</span>
+                <span class="ident">obj</span>.<span class="ident">add_section</span>(<span class="ident">segment</span>, <span class="string">b&quot;.eh_frame&quot;</span>.<span class="ident">to_vec</span>(), <span class="ident">SectionKind::ReadOnlyData</span>);
+            <span class="self">self</span>.<span class="ident">write_systemv_unwind_info</span>(<span class="ident">isa</span>, <span class="ident">obj</span>, <span class="ident">section_id</span>, <span class="ident">text_section_size</span>)
+        }
     }
 
     <span class="doccomment">/// This function appends a nonstandard section to the object which is only</span>
-    <span class="doccomment">/// used during `CodeMemory::allocate_for_object`.</span>
+    <span class="doccomment">/// used during `CodeMemory::publish`.</span>
     <span class="doccomment">///</span>
     <span class="doccomment">/// This custom section effectively stores a `[RUNTIME_FUNCTION; N]` into</span>
     <span class="doccomment">/// the object file itself. This way registration of unwind info can simply</span>
     <span class="doccomment">/// pass this slice to the OS itself and there&#39;s no need to recalculate</span>
     <span class="doccomment">/// anything on the other end of loading a module from a precompiled object.</span>
-    <span class="kw">fn</span> <span class="ident">append_windows_unwind_info</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>) {
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// Support for reading this is in `crates/jit/src/unwind/winx64.rs`.</span>
+    <span class="kw">fn</span> <span class="ident">write_windows_unwind_info</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">obj</span>: <span class="kw-2">&amp;mut</span> <span class="ident">Object</span><span class="op">&lt;</span><span class="lifetime">&#39;_</span><span class="op">&gt;</span>, <span class="ident">section_id</span>: <span class="ident">SectionId</span>) {
         <span class="comment">// Currently the binary format supported here only supports</span>
         <span class="comment">// little-endian for x86_64, or at least that&#39;s all where it&#39;s tested.</span>
         <span class="comment">// This may need updates for other platforms.</span>
-        <span class="macro">assert_eq!</span>(<span class="self">self</span>.<span class="ident">obj</span>.<span class="ident">architecture</span>(), <span class="ident">Architecture::X86_64</span>);
-
-        <span class="kw">let</span> <span class="ident">section_id</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">windows_unwind_info_id</span>.<span class="ident">unwrap</span>();
-
-        <span class="comment">// Page-align the text section so the unwind info can reside on a</span>
-        <span class="comment">// separate page that doesn&#39;t need executable permissions.</span>
-        <span class="self">self</span>.<span class="ident">obj</span>
-            .<span class="ident">append_section_data</span>(<span class="self">self</span>.<span class="ident">text_section</span>, <span class="kw-2">&amp;</span>[], <span class="self">self</span>.<span class="ident">isa</span>.<span class="ident">code_section_alignment</span>());
+        <span class="macro">assert_eq!</span>(<span class="ident">obj</span>.<span class="ident">architecture</span>(), <span class="ident">Architecture::X86_64</span>);
 
         <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">unwind_info</span> <span class="op">=</span> <span class="ident">Vec::with_capacity</span>(<span class="self">self</span>.<span class="ident">windows_unwind_info</span>.<span class="ident">len</span>() <span class="op">*</span> <span class="number">3</span> <span class="op">*</span> <span class="number">4</span>);
         <span class="kw">for</span> <span class="ident">info</span> <span class="kw">in</span> <span class="self">self</span>.<span class="ident">windows_unwind_info</span>.<span class="ident">iter</span>() {
@@ -1125,11 +818,11 @@
             <span class="ident">unwind_info</span>.<span class="ident">extend_from_slice</span>(<span class="kw-2">&amp;</span><span class="ident">info</span>.<span class="ident">end</span>.<span class="ident">to_le_bytes</span>());
             <span class="ident">unwind_info</span>.<span class="ident">extend_from_slice</span>(<span class="kw-2">&amp;</span><span class="ident">info</span>.<span class="ident">unwind_address</span>.<span class="ident">to_le_bytes</span>());
         }
-        <span class="self">self</span>.<span class="ident">obj</span>.<span class="ident">append_section_data</span>(<span class="ident">section_id</span>, <span class="kw-2">&amp;</span><span class="ident">unwind_info</span>, <span class="number">4</span>);
+        <span class="ident">obj</span>.<span class="ident">append_section_data</span>(<span class="ident">section_id</span>, <span class="kw-2">&amp;</span><span class="ident">unwind_info</span>, <span class="number">4</span>);
     }
 
     <span class="doccomment">/// This function appends a nonstandard section to the object which is only</span>
-    <span class="doccomment">/// used during `CodeMemory::allocate_for_object`.</span>
+    <span class="doccomment">/// used during `CodeMemory::publish`.</span>
     <span class="doccomment">///</span>
     <span class="doccomment">/// This will generate a `.eh_frame` section, but not one that can be</span>
     <span class="doccomment">/// naively loaded. The goal of this section is that we can create the</span>
@@ -1166,22 +859,20 @@
     <span class="doccomment">/// This allows `.eh_frame` to have different virtual memory permissions,</span>
     <span class="doccomment">/// such as being purely read-only instead of read/execute like the code</span>
     <span class="doccomment">/// bits.</span>
-    <span class="kw">fn</span> <span class="ident">append_systemv_unwind_info</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>) {
-        <span class="kw">let</span> <span class="ident">section_id</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">systemv_unwind_info_id</span>.<span class="ident">unwrap</span>();
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">cie</span> <span class="op">=</span> <span class="self">self</span>
-            .<span class="ident">isa</span>
+    <span class="kw">fn</span> <span class="ident">write_systemv_unwind_info</span>(
+        <span class="kw-2">&amp;</span><span class="self">self</span>,
+        <span class="ident">isa</span>: <span class="kw-2">&amp;</span><span class="kw">dyn</span> <span class="ident">TargetIsa</span>,
+        <span class="ident">obj</span>: <span class="kw-2">&amp;mut</span> <span class="ident">Object</span><span class="op">&lt;</span><span class="lifetime">&#39;_</span><span class="op">&gt;</span>,
+        <span class="ident">section_id</span>: <span class="ident">SectionId</span>,
+        <span class="ident">text_section_size</span>: <span class="ident">u64</span>,
+    ) {
+        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">cie</span> <span class="op">=</span> <span class="ident">isa</span>
             .<span class="ident">create_systemv_cie</span>()
             .<span class="ident">expect</span>(<span class="string">&quot;must be able to create a CIE for system-v unwind info&quot;</span>);
         <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">table</span> <span class="op">=</span> <span class="ident">FrameTable::default</span>();
         <span class="ident">cie</span>.<span class="ident">fde_address_encoding</span> <span class="op">=</span> <span class="ident">gimli::constants::DW_EH_PE_pcrel</span>;
         <span class="kw">let</span> <span class="ident">cie_id</span> <span class="op">=</span> <span class="ident">table</span>.<span class="ident">add_cie</span>(<span class="ident">cie</span>);
 
-        <span class="comment">// This write will align the text section to a page boundary</span>
-        <span class="comment">// and then return the offset at that point. This gives us the full size</span>
-        <span class="comment">// of the text section at that point, after alignment.</span>
-        <span class="kw">let</span> <span class="ident">text_section_size</span> <span class="op">=</span>
-            <span class="self">self</span>.<span class="ident">obj</span>
-                .<span class="ident">append_section_data</span>(<span class="self">self</span>.<span class="ident">text_section</span>, <span class="kw-2">&amp;</span>[], <span class="self">self</span>.<span class="ident">isa</span>.<span class="ident">code_section_alignment</span>());
         <span class="kw">for</span> (<span class="ident">text_section_off</span>, <span class="ident">unwind_info</span>) <span class="kw">in</span> <span class="self">self</span>.<span class="ident">systemv_unwind_info</span>.<span class="ident">iter</span>() {
             <span class="kw">let</span> <span class="ident">backwards_off</span> <span class="op">=</span> <span class="ident">text_section_size</span> <span class="op">-</span> <span class="ident">text_section_off</span>;
             <span class="kw">let</span> <span class="ident">actual_offset</span> <span class="op">=</span> <span class="op">-</span><span class="ident">i64::try_from</span>(<span class="ident">backwards_off</span>).<span class="ident">unwrap</span>();
@@ -1192,7 +883,7 @@
             <span class="kw">let</span> <span class="ident">fde</span> <span class="op">=</span> <span class="ident">unwind_info</span>.<span class="ident">to_fde</span>(<span class="ident">Address::Constant</span>(<span class="ident">actual_offset</span> <span class="kw">as</span> <span class="ident">u64</span>));
             <span class="ident">table</span>.<span class="ident">add_fde</span>(<span class="ident">cie_id</span>, <span class="ident">fde</span>);
         }
-        <span class="kw">let</span> <span class="ident">endian</span> <span class="op">=</span> <span class="kw">match</span> <span class="self">self</span>.<span class="ident">isa</span>.<span class="ident">triple</span>().<span class="ident">endianness</span>().<span class="ident">unwrap</span>() {
+        <span class="kw">let</span> <span class="ident">endian</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">isa</span>.<span class="ident">triple</span>().<span class="ident">endianness</span>().<span class="ident">unwrap</span>() {
             <span class="ident">target_lexicon::Endianness::Little</span> =&gt; <span class="ident">RunTimeEndian::Little</span>,
             <span class="ident">target_lexicon::Endianness::Big</span> =&gt; <span class="ident">RunTimeEndian::Big</span>,
         };
@@ -1203,8 +894,7 @@
         <span class="comment">// a 0 is written at the end of the table for those implementations.</span>
         <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">endian_vec</span> <span class="op">=</span> (<span class="ident">eh_frame</span>.<span class="number">0</span>).<span class="number">0</span>;
         <span class="ident">endian_vec</span>.<span class="ident">write_u32</span>(<span class="number">0</span>).<span class="ident">unwrap</span>();
-        <span class="self">self</span>.<span class="ident">obj</span>
-            .<span class="ident">append_section_data</span>(<span class="ident">section_id</span>, <span class="ident">endian_vec</span>.<span class="ident">slice</span>(), <span class="number">1</span>);
+        <span class="ident">obj</span>.<span class="ident">append_section_data</span>(<span class="ident">section_id</span>, <span class="ident">endian_vec</span>.<span class="ident">slice</span>(), <span class="number">1</span>);
 
         <span class="kw">use</span> <span class="ident">gimli::constants</span>;
         <span class="kw">use</span> <span class="ident">gimli::write::Error</span>;

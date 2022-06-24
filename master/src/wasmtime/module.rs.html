@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/cargo_home/registry/src/github.com-1ecc6299db9ec823/wasmtime-0.35.3/src/module.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>module.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" type="text/css" href="../../normalize.css"><link rel="stylesheet" type="text/css" href="../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../ayu.css" disabled><link rel="stylesheet" type="text/css" href="../../dark.css" disabled><link rel="stylesheet" type="text/css" href="../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../storage.js"></script><script src="../../crates.js"></script><script defer src="../../main.js"></script><script defer src="../../source-script.js"></script><script defer src="../../source-files.js"></script>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/cargo_home/registry/src/github.com-1ecc6299db9ec823/wasmtime-0.38.0/src/module.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>module.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" type="text/css" href="../../normalize.css"><link rel="stylesheet" type="text/css" href="../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../ayu.css" disabled><link rel="stylesheet" type="text/css" href="../../dark.css" disabled><link rel="stylesheet" type="text/css" href="../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../storage.js"></script><script src="../../crates.js"></script><script defer src="../../main.js"></script><script defer src="../../source-script.js"></script><script defer src="../../source-files.js"></script>
     <noscript><link rel="stylesheet" href="../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="sidebar-logo" href="../../wasmtime/index.html"><div class="logo-container"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></div>
         </a><h2 class="location"></h2>
     </nav>
@@ -1113,73 +1113,26 @@
 <span id="1108">1108</span>
 <span id="1109">1109</span>
 <span id="1110">1110</span>
-<span id="1111">1111</span>
-<span id="1112">1112</span>
-<span id="1113">1113</span>
-<span id="1114">1114</span>
-<span id="1115">1115</span>
-<span id="1116">1116</span>
-<span id="1117">1117</span>
-<span id="1118">1118</span>
-<span id="1119">1119</span>
-<span id="1120">1120</span>
-<span id="1121">1121</span>
-<span id="1122">1122</span>
-<span id="1123">1123</span>
-<span id="1124">1124</span>
-<span id="1125">1125</span>
-<span id="1126">1126</span>
-<span id="1127">1127</span>
-<span id="1128">1128</span>
-<span id="1129">1129</span>
-<span id="1130">1130</span>
-<span id="1131">1131</span>
-<span id="1132">1132</span>
-<span id="1133">1133</span>
-<span id="1134">1134</span>
-<span id="1135">1135</span>
-<span id="1136">1136</span>
-<span id="1137">1137</span>
-<span id="1138">1138</span>
-<span id="1139">1139</span>
-<span id="1140">1140</span>
-<span id="1141">1141</span>
-<span id="1142">1142</span>
-<span id="1143">1143</span>
-<span id="1144">1144</span>
-<span id="1145">1145</span>
-<span id="1146">1146</span>
-<span id="1147">1147</span>
-<span id="1148">1148</span>
-<span id="1149">1149</span>
-<span id="1150">1150</span>
-<span id="1151">1151</span>
-<span id="1152">1152</span>
-<span id="1153">1153</span>
-<span id="1154">1154</span>
-<span id="1155">1155</span>
-<span id="1156">1156</span>
-<span id="1157">1157</span>
-<span id="1158">1158</span>
-<span id="1159">1159</span>
-<span id="1160">1160</span>
-</pre><pre class="rust"><code><span class="kw">use</span> <span class="kw">crate</span>::{
+</pre><pre class="rust"><code><span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::Engine</span>;
+<span class="kw">use</span> <span class="kw">crate</span>::{
     <span class="ident">signatures::SignatureCollection</span>,
     <span class="ident">types</span>::{<span class="ident">ExportType</span>, <span class="ident">ExternType</span>, <span class="ident">ImportType</span>},
 };
-<span class="kw">use</span> <span class="kw">crate</span>::{<span class="ident">Engine</span>, <span class="ident">ModuleType</span>};
 <span class="kw">use</span> <span class="ident">anyhow</span>::{<span class="ident">bail</span>, <span class="ident">Context</span>, <span class="prelude-ty">Result</span>};
 <span class="kw">use</span> <span class="ident">once_cell::sync::OnceCell</span>;
 <span class="kw">use</span> <span class="ident">std::fs</span>;
 <span class="kw">use</span> <span class="ident">std::mem</span>;
+<span class="kw">use</span> <span class="ident">std::ops::Range</span>;
 <span class="kw">use</span> <span class="ident">std::path::Path</span>;
 <span class="kw">use</span> <span class="ident">std::sync::Arc</span>;
 <span class="kw">use</span> <span class="ident">wasmparser</span>::{<span class="ident">Parser</span>, <span class="ident">ValidPayload</span>, <span class="ident">Validator</span>};
+<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;component-model&quot;</span>)]</span>
+<span class="kw">use</span> <span class="ident">wasmtime_environ::component::ComponentTypes</span>;
 <span class="kw">use</span> <span class="ident">wasmtime_environ</span>::{
-    <span class="ident">DefinedFuncIndex</span>, <span class="ident">DefinedMemoryIndex</span>, <span class="ident">FunctionInfo</span>, <span class="ident">ModuleEnvironment</span>, <span class="ident">ModuleIndex</span>, <span class="ident">PrimaryMap</span>,
-    <span class="ident">SignatureIndex</span>,
+    <span class="ident">DefinedFuncIndex</span>, <span class="ident">DefinedMemoryIndex</span>, <span class="ident">FunctionInfo</span>, <span class="ident">ModuleEnvironment</span>, <span class="ident">ModuleTranslation</span>,
+    <span class="ident">ModuleTypes</span>, <span class="ident">PrimaryMap</span>, <span class="ident">SignatureIndex</span>,
 };
-<span class="kw">use</span> <span class="ident">wasmtime_jit</span>::{<span class="ident">CompiledModule</span>, <span class="ident">CompiledModuleInfo</span>, <span class="ident">TypeTables</span>};
+<span class="kw">use</span> <span class="ident">wasmtime_jit</span>::{<span class="ident">CompiledModule</span>, <span class="ident">CompiledModuleInfo</span>};
 <span class="kw">use</span> <span class="ident">wasmtime_runtime</span>::{
     <span class="ident">CompiledModuleId</span>, <span class="ident">MemoryImage</span>, <span class="ident">MmapVec</span>, <span class="ident">ModuleMemoryImages</span>, <span class="ident">VMSharedSignatureIndex</span>,
 };
@@ -1268,20 +1221,17 @@
     <span class="doccomment">/// The compiled artifacts for this module that will be instantiated and</span>
     <span class="doccomment">/// executed.</span>
     <span class="ident">module</span>: <span class="ident">Arc</span><span class="op">&lt;</span><span class="ident">CompiledModule</span><span class="op">&gt;</span>,
-    <span class="doccomment">/// Closed-over compilation artifacts used to create submodules when this</span>
-    <span class="doccomment">/// module is instantiated.</span>
-    <span class="ident">artifact_upvars</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">Arc</span><span class="op">&lt;</span><span class="ident">CompiledModule</span><span class="op">&gt;</span><span class="op">&gt;</span>,
-    <span class="doccomment">/// Closed-over module values which are used when this module is</span>
-    <span class="doccomment">/// instantiated.</span>
-    <span class="ident">module_upvars</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">Module</span><span class="op">&gt;</span>,
-    <span class="doccomment">/// Type information of this module and all `artifact_upvars` compiled</span>
-    <span class="doccomment">/// modules.</span>
-    <span class="ident">types</span>: <span class="ident">Arc</span><span class="op">&lt;</span><span class="ident">TypeTables</span><span class="op">&gt;</span>,
+    <span class="doccomment">/// Type information of this module.</span>
+    <span class="ident">types</span>: <span class="ident">Types</span>,
     <span class="doccomment">/// Registered shared signature for the module.</span>
-    <span class="ident">signatures</span>: <span class="ident">Arc</span><span class="op">&lt;</span><span class="ident">SignatureCollection</span><span class="op">&gt;</span>,
-    <span class="doccomment">/// A set of initialization images for memories, if any. Note that module</span>
-    <span class="doccomment">/// instantiation (hence the need for lazy init) may happen for the same</span>
-    <span class="doccomment">/// module concurrently in multiple Stores, so we use a OnceCell.</span>
+    <span class="ident">signatures</span>: <span class="ident">SignatureCollection</span>,
+    <span class="doccomment">/// A set of initialization images for memories, if any.</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// Note that this is behind a `OnceCell` to lazily create this image. On</span>
+    <span class="doccomment">/// Linux where `memfd_create` may be used to create the backing memory</span>
+    <span class="doccomment">/// image this is a pretty expensive operation, so by deferring it this</span>
+    <span class="doccomment">/// improves memory usage for modules that are created but may not ever be</span>
+    <span class="doccomment">/// instantiated.</span>
     <span class="ident">memory_images</span>: <span class="ident">OnceCell</span><span class="op">&lt;</span><span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">ModuleMemoryImages</span><span class="op">&gt;</span><span class="op">&gt;</span>,
 }
 
@@ -1358,22 +1308,6 @@
         <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;wat&quot;</span>)]</span>
         <span class="kw">let</span> <span class="ident">bytes</span> <span class="op">=</span> <span class="ident">wat::parse_bytes</span>(<span class="ident">bytes</span>)<span class="question-mark">?</span>;
         <span class="ident"><span class="self">Self</span>::from_binary</span>(<span class="ident">engine</span>, <span class="kw-2">&amp;</span><span class="ident">bytes</span>)
-    }
-
-    <span class="doccomment">/// Creates a new WebAssembly `Module` from the given in-memory `binary`</span>
-    <span class="doccomment">/// data. The provided `name` will be used in traps/backtrace details.</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// See [`Module::new`] for other details.</span>
-    <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">compiler</span>)]</span>
-    <span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">nightlydoc</span>, <span class="ident">doc</span>(<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;cranelift&quot;</span>)))]</span> <span class="comment">// see build.rs</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new_with_name</span>(<span class="ident">engine</span>: <span class="kw-2">&amp;</span><span class="ident">Engine</span>, <span class="ident">bytes</span>: <span class="kw">impl</span> <span class="ident">AsRef</span><span class="op">&lt;</span>[<span class="ident">u8</span>]<span class="op">&gt;</span>, <span class="ident">name</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">Module</span><span class="op">&gt;</span> {
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">module</span> <span class="op">=</span> <span class="ident"><span class="self">Self</span>::new</span>(<span class="ident">engine</span>, <span class="ident">bytes</span>.<span class="ident">as_ref</span>())<span class="question-mark">?</span>;
-        <span class="ident">Arc::get_mut</span>(<span class="kw-2">&amp;mut</span> <span class="ident">Arc::get_mut</span>(<span class="kw-2">&amp;mut</span> <span class="ident">module</span>.<span class="ident">inner</span>).<span class="ident">unwrap</span>().<span class="ident">module</span>)
-            .<span class="ident">unwrap</span>()
-            .<span class="ident">module_mut</span>()
-            .<span class="ident">expect</span>(<span class="string">&quot;mutable module&quot;</span>)
-            .<span class="ident">name</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">name</span>.<span class="ident">to_string</span>());
-        <span class="prelude-val">Ok</span>(<span class="ident">module</span>)
     }
 
     <span class="doccomment">/// Creates a new WebAssembly `Module` from the contents of the given</span>
@@ -1460,23 +1394,14 @@
     <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">compiler</span>)]</span>
     <span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">nightlydoc</span>, <span class="ident">doc</span>(<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;cranelift&quot;</span>)))]</span> <span class="comment">// see build.rs</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">from_binary</span>(<span class="ident">engine</span>: <span class="kw-2">&amp;</span><span class="ident">Engine</span>, <span class="ident">binary</span>: <span class="kw-2">&amp;</span>[<span class="ident">u8</span>]) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">Module</span><span class="op">&gt;</span> {
-        <span class="comment">// Check to see that the config&#39;s target matches the host</span>
-        <span class="kw">let</span> <span class="ident">target</span> <span class="op">=</span> <span class="ident">engine</span>.<span class="ident">compiler</span>().<span class="ident">triple</span>();
-        <span class="kw">if</span> <span class="kw-2">*</span><span class="ident">target</span> <span class="op">!</span><span class="op">=</span> <span class="ident">target_lexicon::Triple::host</span>() {
-            <span class="macro">bail!</span>(
-                <span class="string">&quot;target &#39;{}&#39; specified in the configuration does not match the host&quot;</span>,
-                <span class="ident">target</span>
-            );
-        }
-
-        <span class="comment">// FIXME: we may want to validate that the ISA flags in the config match those that</span>
-        <span class="comment">// would be inferred for the host, otherwise the JIT might produce unrunnable code</span>
-        <span class="comment">// for the features the host&#39;s CPU actually has.</span>
+        <span class="ident">engine</span>
+            .<span class="ident">check_compatible_with_native_host</span>()
+            .<span class="ident">context</span>(<span class="string">&quot;compilation settings are not compatible with the native host&quot;</span>)<span class="question-mark">?</span>;
 
         <span class="macro">cfg_if::cfg_if!</span> {
             <span class="kw">if</span> <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;cache&quot;</span>)]</span> {
                 <span class="kw">let</span> <span class="ident">state</span> <span class="op">=</span> (<span class="ident">HashedEngineCompileEnv</span>(<span class="ident">engine</span>), <span class="ident">binary</span>);
-                <span class="kw">let</span> (<span class="ident">main_module</span>, <span class="ident">artifacts</span>, <span class="ident">types</span>) <span class="op">=</span> <span class="ident">wasmtime_cache::ModuleCacheEntry::new</span>(
+                <span class="kw">let</span> (<span class="ident">mmap</span>, <span class="ident">info</span>, <span class="ident">types</span>) <span class="op">=</span> <span class="ident">wasmtime_cache::ModuleCacheEntry::new</span>(
                     <span class="string">&quot;wasmtime&quot;</span>,
                     <span class="ident">engine</span>.<span class="ident">cache_config</span>(),
                 )
@@ -1487,40 +1412,28 @@
                     <span class="op">|</span>(<span class="ident">engine</span>, <span class="ident">wasm</span>)<span class="op">|</span> <span class="ident">Module::build_artifacts</span>(<span class="ident">engine</span>.<span class="number">0</span>, <span class="ident">wasm</span>),
 
                     <span class="comment">// Implementation of how to serialize artifacts</span>
-                    <span class="op">|</span>(<span class="ident">engine</span>, <span class="ident">_wasm</span>), (<span class="kw">_</span>, <span class="ident">artifacts</span>, <span class="ident">types</span>)<span class="op">|</span> {
+                    <span class="op">|</span>(<span class="ident">engine</span>, <span class="ident">_wasm</span>), (<span class="ident">mmap</span>, <span class="ident">_info</span>, <span class="ident">types</span>)<span class="op">|</span> {
                         <span class="ident">SerializedModule::from_artifacts</span>(
                             <span class="ident">engine</span>.<span class="number">0</span>,
-                            <span class="ident">artifacts</span>.<span class="ident">iter</span>().<span class="ident">map</span>(<span class="op">|</span><span class="ident">p</span><span class="op">|</span> <span class="kw-2">&amp;</span><span class="ident">p</span>.<span class="number">0</span>),
+                            <span class="ident">mmap</span>,
                             <span class="ident">types</span>,
                         ).<span class="ident">to_bytes</span>(<span class="kw-2">&amp;</span><span class="ident">engine</span>.<span class="number">0</span>.<span class="ident">config</span>().<span class="ident">module_version</span>).<span class="ident">ok</span>()
                     },
 
                     <span class="comment">// Cache hit, deserialize the provided artifacts</span>
                     <span class="op">|</span>(<span class="ident">engine</span>, <span class="ident">_wasm</span>), <span class="ident">serialized_bytes</span><span class="op">|</span> {
-                        <span class="kw">let</span> (<span class="ident">i</span>, <span class="ident">m</span>, <span class="ident">t</span>, <span class="ident">upvars</span>) <span class="op">=</span> <span class="ident">SerializedModule::from_bytes</span>(<span class="kw-2">&amp;</span><span class="ident">serialized_bytes</span>, <span class="kw-2">&amp;</span><span class="ident">engine</span>.<span class="number">0</span>.<span class="ident">config</span>().<span class="ident">module_version</span>)
+                        <span class="ident">SerializedModule::from_bytes</span>(<span class="kw-2">&amp;</span><span class="ident">serialized_bytes</span>, <span class="kw-2">&amp;</span><span class="ident">engine</span>.<span class="number">0</span>.<span class="ident">config</span>().<span class="ident">module_version</span>)
                             .<span class="ident">ok</span>()<span class="question-mark">?</span>
                             .<span class="ident">into_parts</span>(<span class="ident">engine</span>.<span class="number">0</span>)
-                            .<span class="ident">ok</span>()<span class="question-mark">?</span>;
-                        <span class="comment">// This upvars list is always empty for top-level modules</span>
-                        <span class="macro">assert!</span>(<span class="ident">upvars</span>.<span class="ident">is_empty</span>());
-                        <span class="prelude-val">Some</span>((<span class="ident">i</span>, <span class="ident">m</span>, <span class="ident">t</span>))
+                            .<span class="ident">ok</span>()
                     },
                 )<span class="question-mark">?</span>;
             } <span class="kw">else</span> {
-                <span class="kw">let</span> (<span class="ident">main_module</span>, <span class="ident">artifacts</span>, <span class="ident">types</span>) <span class="op">=</span> <span class="ident">Module::build_artifacts</span>(<span class="ident">engine</span>, <span class="ident">binary</span>)<span class="question-mark">?</span>;
+                <span class="kw">let</span> (<span class="ident">mmap</span>, <span class="ident">info</span>, <span class="ident">types</span>) <span class="op">=</span> <span class="ident">Module::build_artifacts</span>(<span class="ident">engine</span>, <span class="ident">binary</span>)<span class="question-mark">?</span>;
             }
         };
 
-        <span class="kw">let</span> <span class="ident">modules</span> <span class="op">=</span> <span class="ident">engine</span>.<span class="ident">run_maybe_parallel</span>(<span class="ident">artifacts</span>, <span class="op">|</span>(<span class="ident">a</span>, <span class="ident">b</span>)<span class="op">|</span> {
-            <span class="ident">CompiledModule::from_artifacts</span>(
-                <span class="ident">a</span>,
-                <span class="ident">b</span>,
-                <span class="kw-2">&amp;</span><span class="kw-2">*</span><span class="ident">engine</span>.<span class="ident">config</span>().<span class="ident">profiler</span>,
-                <span class="ident">engine</span>.<span class="ident">unique_id_allocator</span>(),
-            )
-        })<span class="question-mark">?</span>;
-
-        <span class="ident"><span class="self">Self</span>::from_parts</span>(<span class="ident">engine</span>, <span class="ident">modules</span>, <span class="ident">main_module</span>, <span class="ident">Arc::new</span>(<span class="ident">types</span>), <span class="kw-2">&amp;</span>[])
+        <span class="ident"><span class="self">Self</span>::from_parts</span>(<span class="ident">engine</span>, <span class="ident">mmap</span>, <span class="ident">info</span>, <span class="ident">types</span>)
     }
 
     <span class="doccomment">/// Converts an input binary-encoded WebAssembly module to compilation</span>
@@ -1544,81 +1457,71 @@
     <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">build_artifacts</span>(
         <span class="ident">engine</span>: <span class="kw-2">&amp;</span><span class="ident">Engine</span>,
         <span class="ident">wasm</span>: <span class="kw-2">&amp;</span>[<span class="ident">u8</span>],
-    ) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span>(
-        <span class="ident">usize</span>,
-        <span class="ident">Vec</span><span class="op">&lt;</span>(<span class="ident">MmapVec</span>, <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">CompiledModuleInfo</span><span class="op">&gt;</span>)<span class="op">&gt;</span>,
-        <span class="ident">TypeTables</span>,
-    )<span class="op">&gt;</span> {
+    ) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span>(<span class="ident">MmapVec</span>, <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">CompiledModuleInfo</span><span class="op">&gt;</span>, <span class="ident">ModuleTypes</span>)<span class="op">&gt;</span> {
         <span class="kw">let</span> <span class="ident">tunables</span> <span class="op">=</span> <span class="kw-2">&amp;</span><span class="ident">engine</span>.<span class="ident">config</span>().<span class="ident">tunables</span>;
 
         <span class="comment">// First a `ModuleEnvironment` is created which records type information</span>
         <span class="comment">// about the wasm module. This is where the WebAssembly is parsed and</span>
         <span class="comment">// validated. Afterwards `types` will have all the type information for</span>
         <span class="comment">// this module.</span>
-        <span class="kw">let</span> (<span class="ident">main_module</span>, <span class="ident">translations</span>, <span class="ident">types</span>) <span class="op">=</span>
-            <span class="ident">ModuleEnvironment::new</span>(<span class="ident">tunables</span>, <span class="kw-2">&amp;</span><span class="ident">engine</span>.<span class="ident">config</span>().<span class="ident">features</span>)
-                .<span class="ident">translate</span>(<span class="ident">wasm</span>)
-                .<span class="ident">context</span>(<span class="string">&quot;failed to parse WebAssembly module&quot;</span>)<span class="question-mark">?</span>;
+        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">validator</span> <span class="op">=</span>
+            <span class="ident">wasmparser::Validator::new_with_features</span>(<span class="ident">engine</span>.<span class="ident">config</span>().<span class="ident">features</span>.<span class="ident">clone</span>());
+        <span class="kw">let</span> <span class="ident">parser</span> <span class="op">=</span> <span class="ident">wasmparser::Parser::new</span>(<span class="number">0</span>);
+        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">types</span> <span class="op">=</span> <span class="ident">Default::default</span>();
+        <span class="kw">let</span> <span class="ident">translation</span> <span class="op">=</span> <span class="ident">ModuleEnvironment::new</span>(<span class="ident">tunables</span>, <span class="kw-2">&amp;mut</span> <span class="ident">validator</span>, <span class="kw-2">&amp;mut</span> <span class="ident">types</span>)
+            .<span class="ident">translate</span>(<span class="ident">parser</span>, <span class="ident">wasm</span>)
+            .<span class="ident">context</span>(<span class="string">&quot;failed to parse WebAssembly module&quot;</span>)<span class="question-mark">?</span>;
+        <span class="kw">let</span> <span class="ident">types</span> <span class="op">=</span> <span class="ident">types</span>.<span class="ident">finish</span>();
+        <span class="kw">let</span> (<span class="ident">mmap</span>, <span class="ident">info</span>) <span class="op">=</span> <span class="ident">Module::compile_functions</span>(<span class="ident">engine</span>, <span class="ident">translation</span>, <span class="kw-2">&amp;</span><span class="ident">types</span>)<span class="question-mark">?</span>;
+        <span class="prelude-val">Ok</span>((<span class="ident">mmap</span>, <span class="ident">info</span>, <span class="ident">types</span>))
+    }
 
-        <span class="comment">// Perform a two-level map/reduce here to get the final list of</span>
-        <span class="comment">// compilation artifacts. The first level of map/reduce maps over all</span>
-        <span class="comment">// modules found and reduces to collection into a vector. The second</span>
-        <span class="comment">// level of map/reduce here maps over all functions within each wasm</span>
-        <span class="comment">// module found and collects into an ELF image via `emit_obj`.</span>
-        <span class="kw">let</span> <span class="ident">list</span> <span class="op">=</span> <span class="ident">engine</span>.<span class="ident">run_maybe_parallel</span>(<span class="ident">translations</span>, <span class="op">|</span><span class="kw-2">mut</span> <span class="ident">translation</span><span class="op">|</span> -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="kw">_</span><span class="op">&gt;</span> {
-            <span class="kw">let</span> <span class="ident">functions</span> <span class="op">=</span> <span class="ident">mem::take</span>(<span class="kw-2">&amp;mut</span> <span class="ident">translation</span>.<span class="ident">function_body_inputs</span>);
-            <span class="kw">let</span> <span class="ident">functions</span> <span class="op">=</span> <span class="ident">functions</span>.<span class="ident">into_iter</span>().<span class="ident">collect</span>::<span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="kw">_</span><span class="op">&gt;</span><span class="op">&gt;</span>();
-
-            <span class="kw">let</span> <span class="ident">funcs</span> <span class="op">=</span> <span class="ident">engine</span>
-                .<span class="ident">run_maybe_parallel</span>(<span class="ident">functions</span>, <span class="op">|</span>(<span class="ident">index</span>, <span class="ident">func</span>)<span class="op">|</span> {
-                    <span class="ident">engine</span>
-                        .<span class="ident">compiler</span>()
-                        .<span class="ident">compile_function</span>(<span class="kw-2">&amp;</span><span class="ident">translation</span>, <span class="ident">index</span>, <span class="ident">func</span>, <span class="ident">tunables</span>, <span class="kw-2">&amp;</span><span class="ident">types</span>)
-                })<span class="question-mark">?</span>
-                .<span class="ident">into_iter</span>()
-                .<span class="ident">collect</span>();
-
-            <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">obj</span> <span class="op">=</span> <span class="ident">engine</span>.<span class="ident">compiler</span>().<span class="ident">object</span>()<span class="question-mark">?</span>;
-            <span class="kw">let</span> (<span class="ident">funcs</span>, <span class="ident">trampolines</span>) <span class="op">=</span>
+    <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">compiler</span>)]</span>
+    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">compile_functions</span>(
+        <span class="ident">engine</span>: <span class="kw-2">&amp;</span><span class="ident">Engine</span>,
+        <span class="kw-2">mut</span> <span class="ident">translation</span>: <span class="ident">ModuleTranslation</span><span class="op">&lt;</span><span class="lifetime">&#39;_</span><span class="op">&gt;</span>,
+        <span class="ident">types</span>: <span class="kw-2">&amp;</span><span class="ident">ModuleTypes</span>,
+    ) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span>(<span class="ident">MmapVec</span>, <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">CompiledModuleInfo</span><span class="op">&gt;</span>)<span class="op">&gt;</span> {
+        <span class="comment">// Compile all functions in parallel using rayon. This will also perform</span>
+        <span class="comment">// validation of function bodies.</span>
+        <span class="kw">let</span> <span class="ident">tunables</span> <span class="op">=</span> <span class="kw-2">&amp;</span><span class="ident">engine</span>.<span class="ident">config</span>().<span class="ident">tunables</span>;
+        <span class="kw">let</span> <span class="ident">functions</span> <span class="op">=</span> <span class="ident">mem::take</span>(<span class="kw-2">&amp;mut</span> <span class="ident">translation</span>.<span class="ident">function_body_inputs</span>);
+        <span class="kw">let</span> <span class="ident">functions</span> <span class="op">=</span> <span class="ident">functions</span>.<span class="ident">into_iter</span>().<span class="ident">collect</span>::<span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="kw">_</span><span class="op">&gt;</span><span class="op">&gt;</span>();
+        <span class="kw">let</span> <span class="ident">funcs</span> <span class="op">=</span> <span class="ident">engine</span>
+            .<span class="ident">run_maybe_parallel</span>(<span class="ident">functions</span>, <span class="op">|</span>(<span class="ident">index</span>, <span class="ident">func</span>)<span class="op">|</span> {
                 <span class="ident">engine</span>
                     .<span class="ident">compiler</span>()
-                    .<span class="ident">emit_obj</span>(<span class="kw-2">&amp;</span><span class="ident">translation</span>, <span class="kw-2">&amp;</span><span class="ident">types</span>, <span class="ident">funcs</span>, <span class="ident">tunables</span>, <span class="kw-2">&amp;mut</span> <span class="ident">obj</span>)<span class="question-mark">?</span>;
+                    .<span class="ident">compile_function</span>(<span class="kw-2">&amp;</span><span class="ident">translation</span>, <span class="ident">index</span>, <span class="ident">func</span>, <span class="ident">tunables</span>, <span class="ident">types</span>)
+            })<span class="question-mark">?</span>
+            .<span class="ident">into_iter</span>()
+            .<span class="ident">collect</span>();
 
-            <span class="comment">// If configured, attempt to use paged memory initialization</span>
-            <span class="comment">// instead of the default mode of memory initialization</span>
-            <span class="kw">if</span> <span class="ident">engine</span>.<span class="ident">config</span>().<span class="ident">paged_memory_initialization</span> {
-                <span class="ident">translation</span>.<span class="ident">try_paged_init</span>();
-            }
+        <span class="comment">// Collect all the function results into a final ELF object.</span>
+        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">obj</span> <span class="op">=</span> <span class="ident">engine</span>.<span class="ident">compiler</span>().<span class="ident">object</span>()<span class="question-mark">?</span>;
+        <span class="kw">let</span> (<span class="ident">funcs</span>, <span class="ident">trampolines</span>) <span class="op">=</span>
+            <span class="ident">engine</span>
+                .<span class="ident">compiler</span>()
+                .<span class="ident">emit_obj</span>(<span class="kw-2">&amp;</span><span class="ident">translation</span>, <span class="ident">types</span>, <span class="ident">funcs</span>, <span class="ident">tunables</span>, <span class="kw-2">&amp;mut</span> <span class="ident">obj</span>)<span class="question-mark">?</span>;
 
-            <span class="comment">// If configured attempt to use static memory initialization which</span>
-            <span class="comment">// can either at runtime be implemented as a single memcpy to</span>
-            <span class="comment">// initialize memory or otherwise enabling virtual-memory-tricks</span>
-            <span class="comment">// such as mmap&#39;ing from a file to get copy-on-write.</span>
-            <span class="kw">if</span> <span class="ident">engine</span>.<span class="ident">config</span>().<span class="ident">memory_init_cow</span> {
-                <span class="kw">let</span> <span class="ident">align</span> <span class="op">=</span> <span class="ident">engine</span>.<span class="ident">compiler</span>().<span class="ident">page_size_align</span>();
-                <span class="kw">let</span> <span class="ident">max_always_allowed</span> <span class="op">=</span> <span class="ident">engine</span>.<span class="ident">config</span>().<span class="ident">memory_guaranteed_dense_image_size</span>;
-                <span class="ident">translation</span>.<span class="ident">try_static_init</span>(<span class="ident">align</span>, <span class="ident">max_always_allowed</span>);
-            }
+        <span class="comment">// If configured attempt to use static memory initialization which</span>
+        <span class="comment">// can either at runtime be implemented as a single memcpy to</span>
+        <span class="comment">// initialize memory or otherwise enabling virtual-memory-tricks</span>
+        <span class="comment">// such as mmap&#39;ing from a file to get copy-on-write.</span>
+        <span class="kw">if</span> <span class="ident">engine</span>.<span class="ident">config</span>().<span class="ident">memory_init_cow</span> {
+            <span class="kw">let</span> <span class="ident">align</span> <span class="op">=</span> <span class="ident">engine</span>.<span class="ident">compiler</span>().<span class="ident">page_size_align</span>();
+            <span class="kw">let</span> <span class="ident">max_always_allowed</span> <span class="op">=</span> <span class="ident">engine</span>.<span class="ident">config</span>().<span class="ident">memory_guaranteed_dense_image_size</span>;
+            <span class="ident">translation</span>.<span class="ident">try_static_init</span>(<span class="ident">align</span>, <span class="ident">max_always_allowed</span>);
+        }
 
-            <span class="comment">// Attempt to convert table initializer segments to</span>
-            <span class="comment">// FuncTable representation where possible, to enable</span>
-            <span class="comment">// table lazy init.</span>
-            <span class="ident">translation</span>.<span class="ident">try_func_table_init</span>();
+        <span class="comment">// Attempt to convert table initializer segments to</span>
+        <span class="comment">// FuncTable representation where possible, to enable</span>
+        <span class="comment">// table lazy init.</span>
+        <span class="ident">translation</span>.<span class="ident">try_func_table_init</span>();
 
-            <span class="kw">let</span> (<span class="ident">mmap</span>, <span class="ident">info</span>) <span class="op">=</span>
-                <span class="ident">wasmtime_jit::finish_compile</span>(<span class="ident">translation</span>, <span class="ident">obj</span>, <span class="ident">funcs</span>, <span class="ident">trampolines</span>, <span class="ident">tunables</span>)<span class="question-mark">?</span>;
-            <span class="prelude-val">Ok</span>((<span class="ident">mmap</span>, <span class="prelude-val">Some</span>(<span class="ident">info</span>)))
-        })<span class="question-mark">?</span>;
+        <span class="kw">let</span> (<span class="ident">mmap</span>, <span class="ident">info</span>) <span class="op">=</span>
+            <span class="ident">wasmtime_jit::finish_compile</span>(<span class="ident">translation</span>, <span class="ident">obj</span>, <span class="ident">funcs</span>, <span class="ident">trampolines</span>, <span class="ident">tunables</span>)<span class="question-mark">?</span>;
 
-        <span class="prelude-val">Ok</span>((
-            <span class="ident">main_module</span>,
-            <span class="ident">list</span>,
-            <span class="ident">TypeTables</span> {
-                <span class="ident">wasm_signatures</span>: <span class="ident">types</span>.<span class="ident">wasm_signatures</span>,
-                <span class="ident">module_signatures</span>: <span class="ident">types</span>.<span class="ident">module_signatures</span>,
-                <span class="ident">instance_signatures</span>: <span class="ident">types</span>.<span class="ident">instance_signatures</span>,
-            },
-        ))
+        <span class="prelude-val">Ok</span>((<span class="ident">mmap</span>, <span class="prelude-val">Some</span>(<span class="ident">info</span>)))
     }
 
     <span class="doccomment">/// Deserializes an in-memory compiled module previously created with</span>
@@ -1696,93 +1599,44 @@
         <span class="ident">module</span>.<span class="ident">into_module</span>(<span class="ident">engine</span>)
     }
 
-    <span class="kw">fn</span> <span class="ident">from_parts</span>(
+    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">from_parts</span>(
         <span class="ident">engine</span>: <span class="kw-2">&amp;</span><span class="ident">Engine</span>,
-        <span class="kw-2">mut</span> <span class="ident">modules</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">Arc</span><span class="op">&lt;</span><span class="ident">CompiledModule</span><span class="op">&gt;</span><span class="op">&gt;</span>,
-        <span class="ident">main_module</span>: <span class="ident">usize</span>,
-        <span class="ident">types</span>: <span class="ident">Arc</span><span class="op">&lt;</span><span class="ident">TypeTables</span><span class="op">&gt;</span>,
-        <span class="ident">module_upvars</span>: <span class="kw-2">&amp;</span>[<span class="ident">serialization::SerializedModuleUpvar</span>],
+        <span class="ident">mmap</span>: <span class="ident">MmapVec</span>,
+        <span class="ident">info</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">CompiledModuleInfo</span><span class="op">&gt;</span>,
+        <span class="ident">types</span>: <span class="kw">impl</span> <span class="ident">Into</span><span class="op">&lt;</span><span class="ident">Types</span><span class="op">&gt;</span>,
     ) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="self">Self</span><span class="op">&gt;</span> {
-        <span class="comment">// Validate all modules can be used with the current allocator</span>
-        <span class="kw">for</span> <span class="ident">module</span> <span class="kw">in</span> <span class="ident">modules</span>.<span class="ident">iter</span>() {
-            <span class="ident">engine</span>.<span class="ident">allocator</span>().<span class="ident">validate</span>(<span class="ident">module</span>.<span class="ident">module</span>())<span class="question-mark">?</span>;
-        }
+        <span class="kw">let</span> <span class="ident">module</span> <span class="op">=</span> <span class="ident">Arc::new</span>(<span class="ident">CompiledModule::from_artifacts</span>(
+            <span class="ident">mmap</span>,
+            <span class="ident">info</span>,
+            <span class="kw-2">&amp;</span><span class="kw-2">*</span><span class="ident">engine</span>.<span class="ident">config</span>().<span class="ident">profiler</span>,
+            <span class="ident">engine</span>.<span class="ident">unique_id_allocator</span>(),
+        )<span class="question-mark">?</span>);
 
-        <span class="kw">let</span> <span class="ident">signatures</span> <span class="op">=</span> <span class="ident">Arc::new</span>(<span class="ident">SignatureCollection::new_for_module</span>(
+        <span class="comment">// Validate the module can be used with the current allocator</span>
+        <span class="ident">engine</span>.<span class="ident">allocator</span>().<span class="ident">validate</span>(<span class="ident">module</span>.<span class="ident">module</span>())<span class="question-mark">?</span>;
+
+        <span class="kw">let</span> <span class="ident">types</span> <span class="op">=</span> <span class="ident">types</span>.<span class="ident">into</span>();
+        <span class="kw">let</span> <span class="ident">signatures</span> <span class="op">=</span> <span class="ident">SignatureCollection::new_for_module</span>(
             <span class="ident">engine</span>.<span class="ident">signatures</span>(),
-            <span class="kw-2">&amp;</span><span class="ident">types</span>.<span class="ident">wasm_signatures</span>,
-            <span class="ident">modules</span>
-                .<span class="ident">iter</span>()
-                .<span class="ident">flat_map</span>(<span class="op">|</span><span class="ident">m</span><span class="op">|</span> <span class="ident">m</span>.<span class="ident">trampolines</span>().<span class="ident">map</span>(<span class="op">|</span>(<span class="ident">idx</span>, <span class="ident">f</span>, <span class="kw">_</span>)<span class="op">|</span> (<span class="ident">idx</span>, <span class="ident">f</span>))),
-        ));
+            <span class="ident">types</span>.<span class="ident">module_types</span>(),
+            <span class="ident">module</span>.<span class="ident">trampolines</span>().<span class="ident">map</span>(<span class="op">|</span>(<span class="ident">idx</span>, <span class="ident">f</span>, <span class="kw">_</span>)<span class="op">|</span> (<span class="ident">idx</span>, <span class="ident">f</span>)),
+        );
 
-        <span class="kw">let</span> <span class="ident">module</span> <span class="op">=</span> <span class="ident">modules</span>.<span class="ident">remove</span>(<span class="ident">main_module</span>);
+        <span class="comment">// We&#39;re about to create a `Module` for real now so enter this module</span>
+        <span class="comment">// into the global registry of modules so we can resolve traps</span>
+        <span class="comment">// appropriately. Note that the corresponding `unregister` happens below</span>
+        <span class="comment">// in `Drop for ModuleInner`.</span>
+        <span class="ident">registry::register</span>(<span class="ident">engine</span>, <span class="kw-2">&amp;</span><span class="ident">module</span>);
 
-        <span class="kw">let</span> <span class="ident">module_upvars</span> <span class="op">=</span> <span class="ident">module_upvars</span>
-            .<span class="ident">iter</span>()
-            .<span class="ident">map</span>(<span class="op">|</span><span class="ident">m</span><span class="op">|</span> {
-                <span class="ident">mk</span>(
-                    <span class="ident">engine</span>,
-                    <span class="kw-2">&amp;</span><span class="ident">modules</span>,
-                    <span class="kw-2">&amp;</span><span class="ident">types</span>,
-                    <span class="ident">m</span>.<span class="ident">index</span>,
-                    <span class="kw-2">&amp;</span><span class="ident">m</span>.<span class="ident">artifact_upvars</span>,
-                    <span class="kw-2">&amp;</span><span class="ident">m</span>.<span class="ident">module_upvars</span>,
-                    <span class="kw-2">&amp;</span><span class="ident">signatures</span>,
-                )
-            })
-            .<span class="ident">collect</span>();
-
-        <span class="kw">return</span> <span class="prelude-val">Ok</span>(<span class="self">Self</span> {
+        <span class="prelude-val">Ok</span>(<span class="self">Self</span> {
             <span class="ident">inner</span>: <span class="ident">Arc::new</span>(<span class="ident">ModuleInner</span> {
                 <span class="ident">engine</span>: <span class="ident">engine</span>.<span class="ident">clone</span>(),
                 <span class="ident">types</span>,
-                <span class="ident">module</span>,
-                <span class="ident">artifact_upvars</span>: <span class="ident">modules</span>,
-                <span class="ident">module_upvars</span>,
                 <span class="ident">signatures</span>,
                 <span class="ident">memory_images</span>: <span class="ident">OnceCell::new</span>(),
+                <span class="ident">module</span>,
             }),
-        });
-
-        <span class="kw">fn</span> <span class="ident">mk</span>(
-            <span class="ident">engine</span>: <span class="kw-2">&amp;</span><span class="ident">Engine</span>,
-            <span class="ident">artifacts</span>: <span class="kw-2">&amp;</span>[<span class="ident">Arc</span><span class="op">&lt;</span><span class="ident">CompiledModule</span><span class="op">&gt;</span>],
-            <span class="ident">types</span>: <span class="kw-2">&amp;</span><span class="ident">Arc</span><span class="op">&lt;</span><span class="ident">TypeTables</span><span class="op">&gt;</span>,
-            <span class="ident">module_index</span>: <span class="ident">usize</span>,
-            <span class="ident">artifact_upvars</span>: <span class="kw-2">&amp;</span>[<span class="ident">usize</span>],
-            <span class="ident">module_upvars</span>: <span class="kw-2">&amp;</span>[<span class="ident">serialization::SerializedModuleUpvar</span>],
-            <span class="ident">signatures</span>: <span class="kw-2">&amp;</span><span class="ident">Arc</span><span class="op">&lt;</span><span class="ident">SignatureCollection</span><span class="op">&gt;</span>,
-        ) -&gt; <span class="ident">Module</span> {
-            <span class="kw">let</span> <span class="ident">module</span> <span class="op">=</span> <span class="ident">artifacts</span>[<span class="ident">module_index</span>].<span class="ident">clone</span>();
-            <span class="ident">Module</span> {
-                <span class="ident">inner</span>: <span class="ident">Arc::new</span>(<span class="ident">ModuleInner</span> {
-                    <span class="ident">engine</span>: <span class="ident">engine</span>.<span class="ident">clone</span>(),
-                    <span class="ident">types</span>: <span class="ident">types</span>.<span class="ident">clone</span>(),
-                    <span class="ident">module</span>,
-                    <span class="ident">memory_images</span>: <span class="ident">OnceCell::new</span>(),
-                    <span class="ident">artifact_upvars</span>: <span class="ident">artifact_upvars</span>
-                        .<span class="ident">iter</span>()
-                        .<span class="ident">map</span>(<span class="op">|</span><span class="ident">i</span><span class="op">|</span> <span class="ident">artifacts</span>[<span class="kw-2">*</span><span class="ident">i</span>].<span class="ident">clone</span>())
-                        .<span class="ident">collect</span>(),
-                    <span class="ident">module_upvars</span>: <span class="ident">module_upvars</span>
-                        .<span class="ident">into_iter</span>()
-                        .<span class="ident">map</span>(<span class="op">|</span><span class="ident">m</span><span class="op">|</span> {
-                            <span class="ident">mk</span>(
-                                <span class="ident">engine</span>,
-                                <span class="ident">artifacts</span>,
-                                <span class="ident">types</span>,
-                                <span class="ident">m</span>.<span class="ident">index</span>,
-                                <span class="kw-2">&amp;</span><span class="ident">m</span>.<span class="ident">artifact_upvars</span>,
-                                <span class="kw-2">&amp;</span><span class="ident">m</span>.<span class="ident">module_upvars</span>,
-                                <span class="ident">signatures</span>,
-                            )
-                        })
-                        .<span class="ident">collect</span>(),
-                    <span class="ident">signatures</span>: <span class="ident">signatures</span>.<span class="ident">clone</span>(),
-                }),
-            }
-        }
+        })
     }
 
     <span class="doccomment">/// Validates `binary` input data as a WebAssembly binary given the</span>
@@ -1805,35 +1659,23 @@
     <span class="doccomment">///</span>
     <span class="doccomment">/// [binary]: https://webassembly.github.io/spec/core/binary/index.html</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">validate</span>(<span class="ident">engine</span>: <span class="kw-2">&amp;</span><span class="ident">Engine</span>, <span class="ident">binary</span>: <span class="kw-2">&amp;</span>[<span class="ident">u8</span>]) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span>()<span class="op">&gt;</span> {
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">validator</span> <span class="op">=</span> <span class="ident">Validator::new</span>();
-        <span class="ident">validator</span>.<span class="ident">wasm_features</span>(<span class="ident">engine</span>.<span class="ident">config</span>().<span class="ident">features</span>);
+        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">validator</span> <span class="op">=</span> <span class="ident">Validator::new_with_features</span>(<span class="ident">engine</span>.<span class="ident">config</span>().<span class="ident">features</span>);
 
         <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">functions</span> <span class="op">=</span> <span class="ident">Vec::new</span>();
         <span class="kw">for</span> <span class="ident">payload</span> <span class="kw">in</span> <span class="ident">Parser::new</span>(<span class="number">0</span>).<span class="ident">parse_all</span>(<span class="ident">binary</span>) {
-            <span class="kw">if</span> <span class="kw">let</span> <span class="ident">ValidPayload::Func</span>(<span class="ident">a</span>, <span class="ident">b</span>) <span class="op">=</span> <span class="ident">validator</span>.<span class="ident">payload</span>(<span class="kw-2">&amp;</span><span class="ident">payload</span><span class="question-mark">?</span>)<span class="question-mark">?</span> {
+            <span class="kw">let</span> <span class="ident">payload</span> <span class="op">=</span> <span class="ident">payload</span><span class="question-mark">?</span>;
+            <span class="kw">if</span> <span class="kw">let</span> <span class="ident">ValidPayload::Func</span>(<span class="ident">a</span>, <span class="ident">b</span>) <span class="op">=</span> <span class="ident">validator</span>.<span class="ident">payload</span>(<span class="kw-2">&amp;</span><span class="ident">payload</span>)<span class="question-mark">?</span> {
                 <span class="ident">functions</span>.<span class="ident">push</span>((<span class="ident">a</span>, <span class="ident">b</span>));
+            }
+            <span class="kw">if</span> <span class="kw">let</span> <span class="ident">wasmparser::Payload::Version</span> { <span class="ident">encoding</span>, .. } <span class="op">=</span> <span class="kw-2">&amp;</span><span class="ident">payload</span> {
+                <span class="kw">if</span> <span class="kw">let</span> <span class="ident">wasmparser::Encoding::Component</span> <span class="op">=</span> <span class="ident">encoding</span> {
+                    <span class="macro">bail!</span>(<span class="string">&quot;component passed to module validation&quot;</span>);
+                }
             }
         }
 
         <span class="ident">engine</span>.<span class="ident">run_maybe_parallel</span>(<span class="ident">functions</span>, <span class="op">|</span>(<span class="kw-2">mut</span> <span class="ident">validator</span>, <span class="ident">body</span>)<span class="op">|</span> <span class="ident">validator</span>.<span class="ident">validate</span>(<span class="kw-2">&amp;</span><span class="ident">body</span>))<span class="question-mark">?</span>;
         <span class="prelude-val">Ok</span>(())
-    }
-
-    <span class="doccomment">/// Returns the type signature of this module.</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">ty</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">ModuleType</span> {
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">sig</span> <span class="op">=</span> <span class="ident">ModuleType::new</span>();
-        <span class="kw">let</span> <span class="ident">env_module</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">compiled_module</span>().<span class="ident">module</span>();
-        <span class="kw">let</span> <span class="ident">types</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">types</span>();
-        <span class="kw">for</span> (<span class="ident">module</span>, <span class="ident">field</span>, <span class="ident">ty</span>) <span class="kw">in</span> <span class="ident">env_module</span>.<span class="ident">imports</span>() {
-            <span class="ident">sig</span>.<span class="ident">add_named_import</span>(<span class="ident">module</span>, <span class="ident">field</span>, <span class="ident">ExternType::from_wasmtime</span>(<span class="ident">types</span>, <span class="kw-2">&amp;</span><span class="ident">ty</span>));
-        }
-        <span class="kw">for</span> (<span class="ident">name</span>, <span class="ident">index</span>) <span class="kw">in</span> <span class="ident">env_module</span>.<span class="ident">exports</span>.<span class="ident">iter</span>() {
-            <span class="ident">sig</span>.<span class="ident">add_named_export</span>(
-                <span class="ident">name</span>,
-                <span class="ident">ExternType::from_wasmtime</span>(<span class="ident">types</span>, <span class="kw-2">&amp;</span><span class="ident">env_module</span>.<span class="ident">type_of</span>(<span class="kw-2">*</span><span class="ident">index</span>)),
-            );
-        }
-        <span class="ident">sig</span>
     }
 
     <span class="doccomment">/// Serializes this module to a vector of bytes.</span>
@@ -1851,61 +1693,7 @@
         <span class="ident">SerializedModule::new</span>(<span class="self">self</span>).<span class="ident">to_bytes</span>(<span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">inner</span>.<span class="ident">engine</span>.<span class="ident">config</span>().<span class="ident">module_version</span>)
     }
 
-    <span class="doccomment">/// Creates a submodule `Module` value from the specified parameters.</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// This is used for creating submodules as part of module instantiation.</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// * `artifact_index` - the index in `artifact_upvars` that we&#39;re creating</span>
-    <span class="doccomment">///   a module for</span>
-    <span class="doccomment">/// * `artifact_upvars` - the mapping of indices of what artifact upvars are</span>
-    <span class="doccomment">///   needed for the submodule. The length of this array is the length of</span>
-    <span class="doccomment">///   the upvars array in the submodule to be created, and each element of</span>
-    <span class="doccomment">///   this array is an index into this module&#39;s upvar array.</span>
-    <span class="doccomment">/// * `module_upvars` - similar to `artifact_upvars` this is a mapping of</span>
-    <span class="doccomment">///   how to create the `module_upvars` of the submodule being created.</span>
-    <span class="doccomment">///   Each entry in this array is either an index into this module&#39;s own</span>
-    <span class="doccomment">///   module upvars array or it&#39;s an index into `modules`, the list of</span>
-    <span class="doccomment">///   modules so far for the instance where this submodule is being</span>
-    <span class="doccomment">///   created.</span>
-    <span class="doccomment">/// * `modules` - array indexed by `module_upvars`.</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// Note that the real meat of this happens in `ModuleEnvironment`</span>
-    <span class="doccomment">/// translation inside of `wasmtime_environ`. This just does the easy thing</span>
-    <span class="doccomment">/// of handling all the indices, over there is where the indices are</span>
-    <span class="doccomment">/// actually calculated and such.</span>
-    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">create_submodule</span>(
-        <span class="kw-2">&amp;</span><span class="self">self</span>,
-        <span class="ident">artifact_index</span>: <span class="ident">usize</span>,
-        <span class="ident">artifact_upvars</span>: <span class="kw-2">&amp;</span>[<span class="ident">usize</span>],
-        <span class="ident">module_upvars</span>: <span class="kw-2">&amp;</span>[<span class="ident">wasmtime_environ::ModuleUpvar</span>],
-        <span class="ident">modules</span>: <span class="kw-2">&amp;</span><span class="ident">PrimaryMap</span><span class="op">&lt;</span><span class="ident">ModuleIndex</span>, <span class="ident">Module</span><span class="op">&gt;</span>,
-    ) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">Module</span><span class="op">&gt;</span> {
-        <span class="kw">let</span> <span class="ident">module</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">inner</span>.<span class="ident">artifact_upvars</span>[<span class="ident">artifact_index</span>].<span class="ident">clone</span>();
-        <span class="prelude-val">Ok</span>(<span class="ident">Module</span> {
-            <span class="ident">inner</span>: <span class="ident">Arc::new</span>(<span class="ident">ModuleInner</span> {
-                <span class="ident">types</span>: <span class="self">self</span>.<span class="ident">inner</span>.<span class="ident">types</span>.<span class="ident">clone</span>(),
-                <span class="ident">engine</span>: <span class="self">self</span>.<span class="ident">inner</span>.<span class="ident">engine</span>.<span class="ident">clone</span>(),
-                <span class="ident">module</span>,
-                <span class="ident">memory_images</span>: <span class="ident">OnceCell::new</span>(),
-                <span class="ident">artifact_upvars</span>: <span class="ident">artifact_upvars</span>
-                    .<span class="ident">iter</span>()
-                    .<span class="ident">map</span>(<span class="op">|</span><span class="ident">i</span><span class="op">|</span> <span class="self">self</span>.<span class="ident">inner</span>.<span class="ident">artifact_upvars</span>[<span class="kw-2">*</span><span class="ident">i</span>].<span class="ident">clone</span>())
-                    .<span class="ident">collect</span>(),
-                <span class="ident">module_upvars</span>: <span class="ident">module_upvars</span>
-                    .<span class="ident">iter</span>()
-                    .<span class="ident">map</span>(<span class="op">|</span><span class="ident">i</span><span class="op">|</span> <span class="kw">match</span> <span class="kw-2">*</span><span class="ident">i</span> {
-                        <span class="ident">wasmtime_environ::ModuleUpvar::Inherit</span>(<span class="ident">i</span>) =&gt; {
-                            <span class="self">self</span>.<span class="ident">inner</span>.<span class="ident">module_upvars</span>[<span class="ident">i</span>].<span class="ident">clone</span>()
-                        }
-                        <span class="ident">wasmtime_environ::ModuleUpvar::Local</span>(<span class="ident">i</span>) =&gt; <span class="ident">modules</span>[<span class="ident">i</span>].<span class="ident">clone</span>(),
-                    })
-                    .<span class="ident">collect</span>(),
-                <span class="ident">signatures</span>: <span class="self">self</span>.<span class="ident">inner</span>.<span class="ident">signatures</span>.<span class="ident">clone</span>(),
-            }),
-        })
-    }
-
-    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">compiled_module</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;</span><span class="ident">Arc</span><span class="op">&lt;</span><span class="ident">CompiledModule</span><span class="op">&gt;</span> {
+    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">compiled_module</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;</span><span class="ident">CompiledModule</span> {
         <span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">inner</span>.<span class="ident">module</span>
     }
 
@@ -1913,20 +1701,12 @@
         <span class="self">self</span>.<span class="ident">compiled_module</span>().<span class="ident">module</span>()
     }
 
-    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">types</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;</span><span class="ident">Arc</span><span class="op">&lt;</span><span class="ident">TypeTables</span><span class="op">&gt;</span> {
-        <span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">inner</span>.<span class="ident">types</span>
+    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">types</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;</span><span class="ident">ModuleTypes</span> {
+        <span class="self">self</span>.<span class="ident">inner</span>.<span class="ident">types</span>.<span class="ident">module_types</span>()
     }
 
-    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">signatures</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;</span><span class="ident">Arc</span><span class="op">&lt;</span><span class="ident">SignatureCollection</span><span class="op">&gt;</span> {
+    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">signatures</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;</span><span class="ident">SignatureCollection</span> {
         <span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">inner</span>.<span class="ident">signatures</span>
-    }
-
-    <span class="doccomment">/// Looks up the module upvar value at the `index` specified.</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// Note that this panics if `index` is out of bounds since this should</span>
-    <span class="doccomment">/// only be called for valid indices as part of instantiation.</span>
-    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">module_upvar</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">index</span>: <span class="ident">usize</span>) -&gt; <span class="kw-2">&amp;</span><span class="ident">Module</span> {
-        <span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">inner</span>.<span class="ident">module_upvars</span>[<span class="ident">index</span>]
     }
 
     <span class="doccomment">/// Returns identifier/name that this [`Module`] has. This name</span>
@@ -1948,8 +1728,6 @@
     <span class="doccomment">/// let module = Module::new(&amp;engine, &quot;(module)&quot;)?;</span>
     <span class="doccomment">/// assert_eq!(module.name(), None);</span>
     <span class="doccomment">///</span>
-    <span class="doccomment">/// let module = Module::new_with_name(&amp;engine, &quot;(module)&quot;, &quot;bar&quot;)?;</span>
-    <span class="doccomment">/// assert_eq!(module.name(), Some(&quot;bar&quot;));</span>
     <span class="doccomment">/// # Ok(())</span>
     <span class="doccomment">/// # }</span>
     <span class="doccomment">/// ```</span>
@@ -1998,7 +1776,7 @@
     <span class="doccomment">/// assert_eq!(module.imports().len(), 1);</span>
     <span class="doccomment">/// let import = module.imports().next().unwrap();</span>
     <span class="doccomment">/// assert_eq!(import.module(), &quot;host&quot;);</span>
-    <span class="doccomment">/// assert_eq!(import.name(), Some(&quot;foo&quot;));</span>
+    <span class="doccomment">/// assert_eq!(import.name(), &quot;foo&quot;);</span>
     <span class="doccomment">/// match import.ty() {</span>
     <span class="doccomment">///     ExternType::Func(_) =&gt; { /* ... */ }</span>
     <span class="doccomment">///     _ =&gt; panic!(&quot;unexpected import type!&quot;),</span>
@@ -2146,6 +1924,60 @@
         <span class="comment">// statically cast the &amp;Arc&lt;ModuleInner&gt; to &amp;Arc&lt;dyn Trait...&gt;.</span>
         <span class="self">self</span>.<span class="ident">inner</span>.<span class="ident">clone</span>()
     }
+
+    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">module_info</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;</span><span class="kw">dyn</span> <span class="ident">wasmtime_runtime::ModuleInfo</span> {
+        <span class="kw-2">&amp;</span><span class="kw-2">*</span><span class="self">self</span>.<span class="ident">inner</span>
+    }
+
+    <span class="doccomment">/// Returns the range of bytes in memory where this module&#39;s compilation</span>
+    <span class="doccomment">/// image resides.</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// The compilation image for a module contains executable code, data, debug</span>
+    <span class="doccomment">/// information, etc. This is roughly the same as the `Module::serialize`</span>
+    <span class="doccomment">/// but not the exact same.</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// The range of memory reported here is exposed to allow low-level</span>
+    <span class="doccomment">/// manipulation of the memory in platform-specific manners such as using</span>
+    <span class="doccomment">/// `mlock` to force the contents to be paged in immediately or keep them</span>
+    <span class="doccomment">/// paged in after they&#39;re loaded.</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// It is not safe to modify the memory in this range, nor is it safe to</span>
+    <span class="doccomment">/// modify the protections of memory in this range.</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">image_range</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">Range</span><span class="op">&lt;</span><span class="ident">usize</span><span class="op">&gt;</span> {
+        <span class="self">self</span>.<span class="ident">compiled_module</span>().<span class="ident">image_range</span>()
+    }
+
+    <span class="doccomment">/// Force initialization of copy-on-write images to happen here-and-now</span>
+    <span class="doccomment">/// instead of when they&#39;re requested during first instantiation.</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// When [copy-on-write memory</span>
+    <span class="doccomment">/// initialization](crate::Config::memory_init_cow) is enabled then Wasmtime</span>
+    <span class="doccomment">/// will lazily create the initialization image for a module. This method</span>
+    <span class="doccomment">/// can be used to explicitly dictate when this initialization happens.</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// Note that this largely only matters on Linux when memfd is used.</span>
+    <span class="doccomment">/// Otherwise the copy-on-write image typically comes from disk and in that</span>
+    <span class="doccomment">/// situation the creation of the image is trivial as the image is always</span>
+    <span class="doccomment">/// sourced from disk. On Linux, though, when memfd is used a memfd is</span>
+    <span class="doccomment">/// created and the initialization image is written to it.</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// Also note that this method is not required to be called, it&#39;s available</span>
+    <span class="doccomment">/// as a performance optimization if required but is otherwise handled</span>
+    <span class="doccomment">/// automatically.</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">initialize_copy_on_write_image</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span>()<span class="op">&gt;</span> {
+        <span class="self">self</span>.<span class="ident">inner</span>.<span class="ident">memory_images</span>()<span class="question-mark">?</span>;
+        <span class="prelude-val">Ok</span>(())
+    }
+}
+
+<span class="kw">impl</span> <span class="ident">ModuleInner</span> {
+    <span class="kw">fn</span> <span class="ident">memory_images</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="ident">ModuleMemoryImages</span><span class="op">&gt;</span><span class="op">&gt;</span> {
+        <span class="kw">let</span> <span class="ident">images</span> <span class="op">=</span> <span class="self">self</span>
+            .<span class="ident">memory_images</span>
+            .<span class="ident">get_or_try_init</span>(<span class="op">|</span><span class="op">|</span> <span class="ident">memory_images</span>(<span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">engine</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">module</span>))<span class="question-mark">?</span>
+            .<span class="ident">as_ref</span>();
+        <span class="prelude-val">Ok</span>(<span class="ident">images</span>)
+    }
 }
 
 <span class="kw">fn</span> <span class="ident">_assert_send_sync</span>() {
@@ -2199,20 +2031,8 @@
     }
 
     <span class="kw">fn</span> <span class="ident">memory_image</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">memory</span>: <span class="ident">DefinedMemoryIndex</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="ident">Arc</span><span class="op">&lt;</span><span class="ident">MemoryImage</span><span class="op">&gt;</span><span class="op">&gt;</span><span class="op">&gt;</span> {
-        <span class="kw">if</span> <span class="op">!</span><span class="self">self</span>.<span class="ident">engine</span>.<span class="ident">config</span>().<span class="ident">memory_init_cow</span> {
-            <span class="kw">return</span> <span class="prelude-val">Ok</span>(<span class="prelude-val">None</span>);
-        }
-
-        <span class="kw">let</span> <span class="ident">images</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">memory_images</span>.<span class="ident">get_or_try_init</span>(<span class="op">|</span><span class="op">|</span> {
-            <span class="ident">ModuleMemoryImages::new</span>(
-                <span class="self">self</span>.<span class="ident">module</span>.<span class="ident">module</span>(),
-                <span class="self">self</span>.<span class="ident">module</span>.<span class="ident">wasm_data</span>(),
-                <span class="prelude-val">Some</span>(<span class="self">self</span>.<span class="ident">module</span>.<span class="ident">mmap</span>()),
-            )
-        })<span class="question-mark">?</span>;
-        <span class="prelude-val">Ok</span>(<span class="ident">images</span>
-            .<span class="ident">as_ref</span>()
-            .<span class="ident">and_then</span>(<span class="op">|</span><span class="ident">images</span><span class="op">|</span> <span class="ident">images</span>.<span class="ident">get_memory_image</span>(<span class="ident">memory</span>)))
+        <span class="kw">let</span> <span class="ident">images</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">memory_images</span>()<span class="question-mark">?</span>;
+        <span class="prelude-val">Ok</span>(<span class="ident">images</span>.<span class="ident">and_then</span>(<span class="op">|</span><span class="ident">images</span><span class="op">|</span> <span class="ident">images</span>.<span class="ident">get_memory_image</span>(<span class="ident">memory</span>)))
     }
 
     <span class="kw">fn</span> <span class="ident">unique_id</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">CompiledModuleId</span><span class="op">&gt;</span> {
@@ -2225,6 +2045,38 @@
 
     <span class="kw">fn</span> <span class="ident">signature_ids</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;</span>[<span class="ident">VMSharedSignatureIndex</span>] {
         <span class="self">self</span>.<span class="ident">signatures</span>.<span class="ident">as_module_map</span>().<span class="ident">values</span>().<span class="ident">as_slice</span>()
+    }
+}
+
+<span class="kw">impl</span> <span class="ident">wasmtime_runtime::ModuleInfo</span> <span class="kw">for</span> <span class="ident">ModuleInner</span> {
+    <span class="kw">fn</span> <span class="ident">lookup_stack_map</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">pc</span>: <span class="ident">usize</span>) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="ident">wasmtime_environ::StackMap</span><span class="op">&gt;</span> {
+        <span class="kw">let</span> <span class="ident">text_offset</span> <span class="op">=</span> <span class="ident">pc</span> <span class="op">-</span> <span class="self">self</span>.<span class="ident">module</span>.<span class="ident">code</span>().<span class="ident">as_ptr</span>() <span class="kw">as</span> <span class="ident">usize</span>;
+        <span class="kw">let</span> (<span class="ident">index</span>, <span class="ident">func_offset</span>) <span class="op">=</span> <span class="self">self</span>.<span class="ident">module</span>.<span class="ident">func_by_text_offset</span>(<span class="ident">text_offset</span>)<span class="question-mark">?</span>;
+        <span class="kw">let</span> <span class="ident">info</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">module</span>.<span class="ident">func_info</span>(<span class="ident">index</span>);
+
+        <span class="comment">// Do a binary search to find the stack map for the given offset.</span>
+        <span class="kw">let</span> <span class="ident">index</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">info</span>
+            .<span class="ident">stack_maps</span>
+            .<span class="ident">binary_search_by_key</span>(<span class="kw-2">&amp;</span><span class="ident">func_offset</span>, <span class="op">|</span><span class="ident">i</span><span class="op">|</span> <span class="ident">i</span>.<span class="ident">code_offset</span>)
+        {
+            <span class="comment">// Found it.</span>
+            <span class="prelude-val">Ok</span>(<span class="ident">i</span>) =&gt; <span class="ident">i</span>,
+
+            <span class="comment">// No stack map associated with this PC.</span>
+            <span class="comment">//</span>
+            <span class="comment">// Because we know we are in Wasm code, and we must be at some kind</span>
+            <span class="comment">// of call/safepoint, then the Cranelift backend must have avoided</span>
+            <span class="comment">// emitting a stack map for this location because no refs were live.</span>
+            <span class="prelude-val">Err</span>(<span class="kw">_</span>) =&gt; <span class="kw">return</span> <span class="prelude-val">None</span>,
+        };
+
+        <span class="prelude-val">Some</span>(<span class="kw-2">&amp;</span><span class="ident">info</span>.<span class="ident">stack_maps</span>[<span class="ident">index</span>].<span class="ident">stack_map</span>)
+    }
+}
+
+<span class="kw">impl</span> <span class="ident">Drop</span> <span class="kw">for</span> <span class="ident">ModuleInner</span> {
+    <span class="kw">fn</span> <span class="ident">drop</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>) {
+        <span class="ident">registry::unregister</span>(<span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">module</span>);
     }
 }
 
@@ -2322,6 +2174,54 @@
             <span class="prelude-val">None</span> =&gt; <span class="kw-2">&amp;</span>[],
         }
     }
+}
+
+<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">enum</span> <span class="ident">Types</span> {
+    <span class="ident">Module</span>(<span class="ident">ModuleTypes</span>),
+    <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;component-model&quot;</span>)]</span>
+    <span class="ident">Component</span>(<span class="ident">Arc</span><span class="op">&lt;</span><span class="ident">ComponentTypes</span><span class="op">&gt;</span>),
+}
+
+<span class="kw">impl</span> <span class="ident">Types</span> {
+    <span class="kw">fn</span> <span class="ident">module_types</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;</span><span class="ident">ModuleTypes</span> {
+        <span class="kw">match</span> <span class="self">self</span> {
+            <span class="ident">Types::Module</span>(<span class="ident">m</span>) =&gt; <span class="ident">m</span>,
+            <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;component-model&quot;</span>)]</span>
+            <span class="ident">Types::Component</span>(<span class="ident">c</span>) =&gt; <span class="ident">c</span>.<span class="ident">module_types</span>(),
+        }
+    }
+}
+
+<span class="kw">impl</span> <span class="ident">From</span><span class="op">&lt;</span><span class="ident">ModuleTypes</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">Types</span> {
+    <span class="kw">fn</span> <span class="ident">from</span>(<span class="ident">types</span>: <span class="ident">ModuleTypes</span>) -&gt; <span class="ident">Types</span> {
+        <span class="ident">Types::Module</span>(<span class="ident">types</span>)
+    }
+}
+
+<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;component-model&quot;</span>)]</span>
+<span class="kw">impl</span> <span class="ident">From</span><span class="op">&lt;</span><span class="ident">Arc</span><span class="op">&lt;</span><span class="ident">ComponentTypes</span><span class="op">&gt;</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">Types</span> {
+    <span class="kw">fn</span> <span class="ident">from</span>(<span class="ident">types</span>: <span class="ident">Arc</span><span class="op">&lt;</span><span class="ident">ComponentTypes</span><span class="op">&gt;</span>) -&gt; <span class="ident">Types</span> {
+        <span class="ident">Types::Component</span>(<span class="ident">types</span>)
+    }
+}
+
+<span class="doccomment">/// Helper method to construct a `ModuleMemoryImages` for an associated</span>
+<span class="doccomment">/// `CompiledModule`.</span>
+<span class="kw">fn</span> <span class="ident">memory_images</span>(<span class="ident">engine</span>: <span class="kw-2">&amp;</span><span class="ident">Engine</span>, <span class="ident">module</span>: <span class="kw-2">&amp;</span><span class="ident">CompiledModule</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">ModuleMemoryImages</span><span class="op">&gt;</span><span class="op">&gt;</span> {
+    <span class="comment">// If initialization via copy-on-write is explicitly disabled in</span>
+    <span class="comment">// configuration then this path is skipped entirely.</span>
+    <span class="kw">if</span> <span class="op">!</span><span class="ident">engine</span>.<span class="ident">config</span>().<span class="ident">memory_init_cow</span> {
+        <span class="kw">return</span> <span class="prelude-val">Ok</span>(<span class="prelude-val">None</span>);
+    }
+
+    <span class="comment">// ... otherwise logic is delegated to the `ModuleMemoryImages::new`</span>
+    <span class="comment">// constructor.</span>
+    <span class="kw">let</span> <span class="ident">mmap</span> <span class="op">=</span> <span class="kw">if</span> <span class="ident">engine</span>.<span class="ident">config</span>().<span class="ident">force_memory_init_memfd</span> {
+        <span class="prelude-val">None</span>
+    } <span class="kw">else</span> {
+        <span class="prelude-val">Some</span>(<span class="ident">module</span>.<span class="ident">mmap</span>())
+    };
+    <span class="ident">ModuleMemoryImages::new</span>(<span class="ident">module</span>.<span class="ident">module</span>(), <span class="ident">module</span>.<span class="ident">wasm_data</span>(), <span class="ident">mmap</span>)
 }
 </code></pre></div>
 </section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="wasmtime" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.62.0-nightly (6dd68402c 2022-05-11)" ></div>

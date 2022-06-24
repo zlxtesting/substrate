@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/cargo_home/registry/src/github.com-1ecc6299db9ec823/cranelift-codegen-0.82.3/src/isa/x64/inst/args.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>args.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" type="text/css" href="../../../../../normalize.css"><link rel="stylesheet" type="text/css" href="../../../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../../../../ayu.css" disabled><link rel="stylesheet" type="text/css" href="../../../../../dark.css" disabled><link rel="stylesheet" type="text/css" href="../../../../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../../../../storage.js"></script><script src="../../../../../crates.js"></script><script defer src="../../../../../main.js"></script><script defer src="../../../../../source-script.js"></script><script defer src="../../../../../source-files.js"></script>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/cargo_home/registry/src/github.com-1ecc6299db9ec823/cranelift-codegen-0.85.0/src/isa/x64/inst/args.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>args.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" type="text/css" href="../../../../../normalize.css"><link rel="stylesheet" type="text/css" href="../../../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../../../../ayu.css" disabled><link rel="stylesheet" type="text/css" href="../../../../../dark.css" disabled><link rel="stylesheet" type="text/css" href="../../../../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../../../../storage.js"></script><script src="../../../../../crates.js"></script><script defer src="../../../../../main.js"></script><script defer src="../../../../../source-script.js"></script><script defer src="../../../../../source-files.js"></script>
     <noscript><link rel="stylesheet" href="../../../../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../../../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../../../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../../../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="sidebar-logo" href="../../../../../cranelift_codegen/index.html"><div class="logo-container"><img class="rust-logo" src="../../../../../rust-logo.svg" alt="logo"></div>
         </a><h2 class="location"></h2>
     </nav>
@@ -1804,78 +1804,16 @@
 <span id="1799">1799</span>
 <span id="1800">1800</span>
 <span id="1801">1801</span>
-<span id="1802">1802</span>
-<span id="1803">1803</span>
-<span id="1804">1804</span>
-<span id="1805">1805</span>
-<span id="1806">1806</span>
-<span id="1807">1807</span>
-<span id="1808">1808</span>
-<span id="1809">1809</span>
-<span id="1810">1810</span>
-<span id="1811">1811</span>
-<span id="1812">1812</span>
-<span id="1813">1813</span>
-<span id="1814">1814</span>
-<span id="1815">1815</span>
-<span id="1816">1816</span>
-<span id="1817">1817</span>
-<span id="1818">1818</span>
-<span id="1819">1819</span>
-<span id="1820">1820</span>
-<span id="1821">1821</span>
-<span id="1822">1822</span>
-<span id="1823">1823</span>
-<span id="1824">1824</span>
-<span id="1825">1825</span>
-<span id="1826">1826</span>
-<span id="1827">1827</span>
-<span id="1828">1828</span>
-<span id="1829">1829</span>
-<span id="1830">1830</span>
-<span id="1831">1831</span>
-<span id="1832">1832</span>
-<span id="1833">1833</span>
-<span id="1834">1834</span>
-<span id="1835">1835</span>
-<span id="1836">1836</span>
-<span id="1837">1837</span>
-<span id="1838">1838</span>
-<span id="1839">1839</span>
-<span id="1840">1840</span>
-<span id="1841">1841</span>
-<span id="1842">1842</span>
-<span id="1843">1843</span>
-<span id="1844">1844</span>
-<span id="1845">1845</span>
-<span id="1846">1846</span>
-<span id="1847">1847</span>
-<span id="1848">1848</span>
-<span id="1849">1849</span>
-<span id="1850">1850</span>
-<span id="1851">1851</span>
-<span id="1852">1852</span>
-<span id="1853">1853</span>
-<span id="1854">1854</span>
-<span id="1855">1855</span>
-<span id="1856">1856</span>
-<span id="1857">1857</span>
-<span id="1858">1858</span>
-<span id="1859">1859</span>
-<span id="1860">1860</span>
-<span id="1861">1861</span>
-<span id="1862">1862</span>
 </pre><pre class="rust"><code><span class="doccomment">//! Instruction operand sub-components (aka &quot;parts&quot;): definitions and printing.</span>
 
-<span class="kw">use</span> <span class="ident"><span class="kw">super</span>::regs</span>::{<span class="self">self</span>, <span class="ident">show_ireg_sized</span>};
+<span class="kw">use</span> <span class="ident"><span class="kw">super</span>::regs</span>::{<span class="self">self</span>};
 <span class="kw">use</span> <span class="ident"><span class="kw">super</span>::EmitState</span>;
 <span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::ir::condcodes</span>::{<span class="ident">FloatCC</span>, <span class="ident">IntCC</span>};
 <span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::ir</span>::{<span class="ident">MemFlags</span>, <span class="ident">Type</span>};
+<span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::isa::x64::inst::regs::pretty_print_reg</span>;
 <span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::isa::x64::inst::Inst</span>;
 <span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::machinst</span>::<span class="kw-2">*</span>;
-<span class="kw">use</span> <span class="ident">regalloc</span>::{
-    <span class="ident">PrettyPrint</span>, <span class="ident">PrettyPrintSized</span>, <span class="ident">RealRegUniverse</span>, <span class="ident">Reg</span>, <span class="ident">RegClass</span>, <span class="ident">RegUsageCollector</span>, <span class="ident">Writable</span>,
-};
+<span class="kw">use</span> <span class="ident">regalloc2::VReg</span>;
 <span class="kw">use</span> <span class="ident">smallvec</span>::{<span class="ident">smallvec</span>, <span class="ident">SmallVec</span>};
 <span class="kw">use</span> <span class="ident">std::fmt</span>;
 <span class="kw">use</span> <span class="ident">std::string::String</span>;
@@ -1888,25 +1826,6 @@
 <span class="doccomment">/// An extension trait for converting `Writable&lt;Reg&gt;` to `Writable{Xmm,Gpr}`.</span>
 <span class="kw">pub</span> <span class="kw">trait</span> <span class="ident">FromWritableReg</span>: <span class="ident">Sized</span> {
     <span class="kw">fn</span> <span class="ident">from_writable_reg</span>(<span class="ident">w</span>: <span class="ident">Writable</span><span class="op">&lt;</span><span class="ident">Reg</span><span class="op">&gt;</span>) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="self">Self</span><span class="op">&gt;</span>;
-}
-
-<span class="doccomment">/// An extension trait for mapping register uses on `{Xmm,Gpr}`.</span>
-<span class="kw">pub</span> <span class="kw">trait</span> <span class="ident">MapUseExt</span> {
-    <span class="kw">fn</span> <span class="ident">map_use</span><span class="op">&lt;</span><span class="ident">RM</span><span class="op">&gt;</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="ident">mapper</span>: <span class="kw-2">&amp;</span><span class="ident">RM</span>)
-    <span class="kw">where</span>
-        <span class="ident">RM</span>: <span class="ident">RegMapper</span>;
-}
-
-<span class="doccomment">/// An extension trait for mapping register mods and defs on</span>
-<span class="doccomment">/// `Writable{Xmm,Gpr}`.</span>
-<span class="kw">pub</span> <span class="kw">trait</span> <span class="ident">MapDefModExt</span> {
-    <span class="kw">fn</span> <span class="ident">map_def</span><span class="op">&lt;</span><span class="ident">RM</span><span class="op">&gt;</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="ident">mapper</span>: <span class="kw-2">&amp;</span><span class="ident">RM</span>)
-    <span class="kw">where</span>
-        <span class="ident">RM</span>: <span class="ident">RegMapper</span>;
-
-    <span class="kw">fn</span> <span class="ident">map_mod</span><span class="op">&lt;</span><span class="ident">RM</span><span class="op">&gt;</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="ident">mapper</span>: <span class="kw-2">&amp;</span><span class="ident">RM</span>)
-    <span class="kw">where</span>
-        <span class="ident">RM</span>: <span class="ident">RegMapper</span>;
 }
 
 <span class="doccomment">/// A macro for defining a newtype of `Reg` that enforces some invariant about</span>
@@ -1922,7 +1841,7 @@
         <span class="op">|</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">check_reg</span>:<span class="ident">ident</span><span class="op">|</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">check</span>:<span class="ident">expr</span>
     ) =&gt; {
         <span class="doccomment">/// A newtype wrapper around `Reg`.</span>
-        <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Copy</span>, <span class="ident">Debug</span>, <span class="ident">PartialEq</span>, <span class="ident">Eq</span>, <span class="ident">Hash</span>, <span class="ident">PartialOrd</span>, <span class="ident">Ord</span>)]</span>
+        <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Copy</span>, <span class="ident">Debug</span>, <span class="ident">PartialEq</span>, <span class="ident">Eq</span>, <span class="ident">PartialOrd</span>, <span class="ident">Ord</span>, <span class="ident">Hash</span>)]</span>
         <span class="kw">pub</span> <span class="kw">struct</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">newtype_reg</span>(<span class="ident">Reg</span>);
 
         <span class="kw">impl</span> <span class="ident">PartialEq</span><span class="op">&lt;</span><span class="ident">Reg</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">newtype_reg</span> {
@@ -1934,12 +1853,6 @@
         <span class="kw">impl</span> <span class="ident">From</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">newtype_reg</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">Reg</span> {
             <span class="kw">fn</span> <span class="ident">from</span>(<span class="ident">r</span>: <span class="macro-nonterminal">$</span><span class="macro-nonterminal">newtype_reg</span>) -&gt; <span class="self">Self</span> {
                 <span class="ident">r</span>.<span class="number">0</span>
-            }
-        }
-
-        <span class="kw">impl</span> <span class="ident">PrettyPrint</span> <span class="kw">for</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">newtype_reg</span> {
-            <span class="kw">fn</span> <span class="ident">show_rru</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">mb_rru</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="ident">RealRegUniverse</span><span class="op">&gt;</span>) -&gt; <span class="ident">String</span> {
-                <span class="self">self</span>.<span class="number">0</span>.<span class="ident">show_rru</span>(<span class="ident">mb_rru</span>)
             }
         }
 
@@ -1974,21 +1887,6 @@
             }
         }
 
-        <span class="kw">impl</span> <span class="ident">MapUseExt</span> <span class="kw">for</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">newtype_reg</span> {
-            <span class="kw">fn</span> <span class="ident">map_use</span><span class="op">&lt;</span><span class="ident">RM</span><span class="op">&gt;</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="ident">mapper</span>: <span class="kw-2">&amp;</span><span class="ident">RM</span>)
-            <span class="kw">where</span>
-                <span class="ident">RM</span>: <span class="ident">RegMapper</span>,
-            {
-                <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">reg</span> <span class="op">=</span> <span class="self">self</span>.<span class="number">0</span>;
-                <span class="ident">mapper</span>.<span class="ident">map_use</span>(<span class="kw-2">&amp;mut</span> <span class="ident">reg</span>);
-                <span class="macro">debug_assert!</span>({
-                    <span class="kw">let</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">check_reg</span> <span class="op">=</span> <span class="ident">reg</span>;
-                    <span class="macro-nonterminal">$</span><span class="macro-nonterminal">check</span>
-                });
-                <span class="kw-2">*</span><span class="self">self</span> <span class="op">=</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">newtype_reg</span>(<span class="ident">reg</span>);
-            }
-        }
-
         <span class="kw">pub</span> <span class="kw">type</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">newtype_writable_reg</span> <span class="op">=</span> <span class="ident">Writable</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">newtype_reg</span><span class="op">&gt;</span>;
 
         <span class="attribute">#[<span class="ident">allow</span>(<span class="ident">dead_code</span>)]</span> <span class="comment">// Used by some newtypes and not others.</span>
@@ -2003,34 +1901,6 @@
         <span class="kw">impl</span> <span class="ident">FromWritableReg</span> <span class="kw">for</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">newtype_writable_reg</span> {
             <span class="kw">fn</span> <span class="ident">from_writable_reg</span>(<span class="ident">w</span>: <span class="ident">Writable</span><span class="op">&lt;</span><span class="ident">Reg</span><span class="op">&gt;</span>) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="self">Self</span><span class="op">&gt;</span> {
                 <span class="prelude-val">Some</span>(<span class="ident">Writable::from_reg</span>(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">newtype_reg::new</span>(<span class="ident">w</span>.<span class="ident">to_reg</span>())<span class="question-mark">?</span>))
-            }
-        }
-
-        <span class="kw">impl</span> <span class="ident">MapDefModExt</span> <span class="kw">for</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">newtype_writable_reg</span> {
-            <span class="kw">fn</span> <span class="ident">map_def</span><span class="op">&lt;</span><span class="ident">RM</span><span class="op">&gt;</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="ident">mapper</span>: <span class="kw-2">&amp;</span><span class="ident">RM</span>)
-            <span class="kw">where</span>
-                <span class="ident">RM</span>: <span class="ident">RegMapper</span>,
-            {
-                <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">reg</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">to_writable_reg</span>();
-                <span class="ident">mapper</span>.<span class="ident">map_def</span>(<span class="kw-2">&amp;mut</span> <span class="ident">reg</span>);
-                <span class="macro">debug_assert!</span>({
-                    <span class="kw">let</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">check_reg</span> <span class="op">=</span> <span class="ident">reg</span>.<span class="ident">to_reg</span>();
-                    <span class="macro-nonterminal">$</span><span class="macro-nonterminal">check</span>
-                });
-                <span class="kw-2">*</span><span class="self">self</span> <span class="op">=</span> <span class="ident">Writable::from_reg</span>(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">newtype_reg</span>(<span class="ident">reg</span>.<span class="ident">to_reg</span>()));
-            }
-
-            <span class="kw">fn</span> <span class="ident">map_mod</span><span class="op">&lt;</span><span class="ident">RM</span><span class="op">&gt;</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="ident">mapper</span>: <span class="kw-2">&amp;</span><span class="ident">RM</span>)
-            <span class="kw">where</span>
-                <span class="ident">RM</span>: <span class="ident">RegMapper</span>,
-            {
-                <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">reg</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">to_writable_reg</span>();
-                <span class="ident">mapper</span>.<span class="ident">map_mod</span>(<span class="kw-2">&amp;mut</span> <span class="ident">reg</span>);
-                <span class="macro">debug_assert!</span>({
-                    <span class="kw">let</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">check_reg</span> <span class="op">=</span> <span class="ident">reg</span>.<span class="ident">to_reg</span>();
-                    <span class="macro-nonterminal">$</span><span class="macro-nonterminal">check</span>
-                });
-                <span class="kw-2">*</span><span class="self">self</span> <span class="op">=</span> <span class="ident">Writable::from_reg</span>(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">newtype_reg</span>(<span class="ident">reg</span>.<span class="ident">to_reg</span>()));
             }
         }
 
@@ -2068,44 +1938,16 @@
             }
 
             <span class="attribute">#[<span class="ident">allow</span>(<span class="ident">dead_code</span>)]</span> <span class="comment">// Used by some newtypes and not others.</span>
-            <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">map_uses</span><span class="op">&lt;</span><span class="ident">RM</span><span class="op">&gt;</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="ident">mapper</span>: <span class="kw-2">&amp;</span><span class="ident">RM</span>)
-            <span class="kw">where</span>
-                <span class="ident">RM</span>: <span class="ident">RegMapper</span>,
-            {
-                <span class="self">self</span>.<span class="number">0</span>.<span class="ident">map_uses</span>(<span class="ident">mapper</span>);
-                <span class="macro">debug_assert!</span>(<span class="kw">match</span> <span class="self">self</span>.<span class="number">0</span> {
-                    <span class="ident">RegMem::Reg</span> { <span class="ident">reg</span>: <span class="macro-nonterminal">$</span><span class="macro-nonterminal">check_reg</span> } =&gt; <span class="macro-nonterminal">$</span><span class="macro-nonterminal">check</span>,
-                    <span class="kw">_</span> =&gt; <span class="bool-val">true</span>,
-                });
-            }
-
-            <span class="attribute">#[<span class="ident">allow</span>(<span class="ident">dead_code</span>)]</span> <span class="comment">// Used by some newtypes and not others.</span>
-            <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">map_as_def</span><span class="op">&lt;</span><span class="ident">RM</span><span class="op">&gt;</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="ident">mapper</span>: <span class="kw-2">&amp;</span><span class="ident">RM</span>)
-            <span class="kw">where</span>
-                <span class="ident">RM</span>: <span class="ident">RegMapper</span>,
-            {
-                <span class="self">self</span>.<span class="number">0</span>.<span class="ident">map_as_def</span>(<span class="ident">mapper</span>);
-                <span class="macro">debug_assert!</span>(<span class="kw">match</span> <span class="self">self</span>.<span class="number">0</span> {
-                    <span class="ident">RegMem::Reg</span> { <span class="ident">reg</span>: <span class="macro-nonterminal">$</span><span class="macro-nonterminal">check_reg</span> } =&gt; <span class="macro-nonterminal">$</span><span class="macro-nonterminal">check</span>,
-                    <span class="kw">_</span> =&gt; <span class="bool-val">true</span>,
-                });
-            }
-
-            <span class="attribute">#[<span class="ident">allow</span>(<span class="ident">dead_code</span>)]</span> <span class="comment">// Used by some newtypes and not others.</span>
-            <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">get_regs_as_uses</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">collector</span>: <span class="kw-2">&amp;mut</span> <span class="ident">RegUsageCollector</span>) {
-                <span class="self">self</span>.<span class="number">0</span>.<span class="ident">get_regs_as_uses</span>(<span class="ident">collector</span>);
+            <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">get_operands</span><span class="op">&lt;</span><span class="ident">F</span>: <span class="ident">Fn</span>(<span class="ident">VReg</span>) -&gt; <span class="ident">VReg</span><span class="op">&gt;</span>(
+                <span class="kw-2">&amp;</span><span class="self">self</span>,
+                <span class="ident">collector</span>: <span class="kw-2">&amp;mut</span> <span class="ident">OperandCollector</span><span class="op">&lt;</span><span class="lifetime">&#39;_</span>, <span class="ident">F</span><span class="op">&gt;</span>,
+            ) {
+                <span class="self">self</span>.<span class="number">0</span>.<span class="ident">get_operands</span>(<span class="ident">collector</span>);
             }
         }
-
         <span class="kw">impl</span> <span class="ident">PrettyPrint</span> <span class="kw">for</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">newtype_reg_mem</span> {
-            <span class="kw">fn</span> <span class="ident">show_rru</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">mb_rru</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="ident">RealRegUniverse</span><span class="op">&gt;</span>) -&gt; <span class="ident">String</span> {
-                <span class="self">self</span>.<span class="number">0</span>.<span class="ident">show_rru</span>(<span class="ident">mb_rru</span>)
-            }
-        }
-
-        <span class="kw">impl</span> <span class="ident">PrettyPrintSized</span> <span class="kw">for</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">newtype_reg_mem</span> {
-            <span class="kw">fn</span> <span class="ident">show_rru_sized</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">mb_rru</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="ident">RealRegUniverse</span><span class="op">&gt;</span>, <span class="ident">size</span>: <span class="ident">u8</span>) -&gt; <span class="ident">String</span> {
-                <span class="self">self</span>.<span class="number">0</span>.<span class="ident">show_rru_sized</span>(<span class="ident">mb_rru</span>, <span class="ident">size</span>)
+            <span class="kw">fn</span> <span class="ident">pretty_print</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">size</span>: <span class="ident">u8</span>, <span class="ident">allocs</span>: <span class="kw-2">&amp;mut</span> <span class="ident">AllocationConsumer</span><span class="op">&lt;</span><span class="lifetime">&#39;_</span><span class="op">&gt;</span>) -&gt; <span class="ident">String</span> {
+                <span class="self">self</span>.<span class="number">0</span>.<span class="ident">pretty_print</span>(<span class="ident">size</span>, <span class="ident">allocs</span>)
             }
         }
 
@@ -2145,44 +1987,17 @@
             }
 
             <span class="attribute">#[<span class="ident">allow</span>(<span class="ident">dead_code</span>)]</span> <span class="comment">// Used by some newtypes and not others.</span>
-            <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">map_uses</span><span class="op">&lt;</span><span class="ident">RM</span><span class="op">&gt;</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="ident">mapper</span>: <span class="kw-2">&amp;</span><span class="ident">RM</span>)
-            <span class="kw">where</span>
-                <span class="ident">RM</span>: <span class="ident">RegMapper</span>,
-            {
-                <span class="self">self</span>.<span class="number">0</span>.<span class="ident">map_uses</span>(<span class="ident">mapper</span>);
-                <span class="macro">debug_assert!</span>(<span class="kw">match</span> <span class="self">self</span>.<span class="number">0</span> {
-                    <span class="ident">RegMemImm::Reg</span> { <span class="ident">reg</span>: <span class="macro-nonterminal">$</span><span class="macro-nonterminal">check_reg</span> } =&gt; <span class="macro-nonterminal">$</span><span class="macro-nonterminal">check</span>,
-                    <span class="kw">_</span> =&gt; <span class="bool-val">true</span>,
-                });
-            }
-
-            <span class="attribute">#[<span class="ident">allow</span>(<span class="ident">dead_code</span>)]</span> <span class="comment">// Used by some newtypes and not others.</span>
-            <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">map_as_def</span><span class="op">&lt;</span><span class="ident">RM</span><span class="op">&gt;</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="ident">mapper</span>: <span class="kw-2">&amp;</span><span class="ident">RM</span>)
-            <span class="kw">where</span>
-                <span class="ident">RM</span>: <span class="ident">RegMapper</span>,
-            {
-                <span class="self">self</span>.<span class="number">0</span>.<span class="ident">map_as_def</span>(<span class="ident">mapper</span>);
-                <span class="macro">debug_assert!</span>(<span class="kw">match</span> <span class="self">self</span>.<span class="number">0</span> {
-                    <span class="ident">RegMemImm::Reg</span> { <span class="ident">reg</span>: <span class="macro-nonterminal">$</span><span class="macro-nonterminal">check_reg</span> } =&gt; <span class="macro-nonterminal">$</span><span class="macro-nonterminal">check</span>,
-                    <span class="kw">_</span> =&gt; <span class="bool-val">true</span>,
-                });
-            }
-
-            <span class="attribute">#[<span class="ident">allow</span>(<span class="ident">dead_code</span>)]</span> <span class="comment">// Used by some newtypes and not others.</span>
-            <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">get_regs_as_uses</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">collector</span>: <span class="kw-2">&amp;mut</span> <span class="ident">RegUsageCollector</span>) {
-                <span class="self">self</span>.<span class="number">0</span>.<span class="ident">get_regs_as_uses</span>(<span class="ident">collector</span>);
+            <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">get_operands</span><span class="op">&lt;</span><span class="ident">F</span>: <span class="ident">Fn</span>(<span class="ident">VReg</span>) -&gt; <span class="ident">VReg</span><span class="op">&gt;</span>(
+                <span class="kw-2">&amp;</span><span class="self">self</span>,
+                <span class="ident">collector</span>: <span class="kw-2">&amp;mut</span> <span class="ident">OperandCollector</span><span class="op">&lt;</span><span class="lifetime">&#39;_</span>, <span class="ident">F</span><span class="op">&gt;</span>,
+            ) {
+                <span class="self">self</span>.<span class="number">0</span>.<span class="ident">get_operands</span>(<span class="ident">collector</span>);
             }
         }
 
         <span class="kw">impl</span> <span class="ident">PrettyPrint</span> <span class="kw">for</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">newtype_reg_mem_imm</span> {
-            <span class="kw">fn</span> <span class="ident">show_rru</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">mb_rru</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="ident">RealRegUniverse</span><span class="op">&gt;</span>) -&gt; <span class="ident">String</span> {
-                <span class="self">self</span>.<span class="number">0</span>.<span class="ident">show_rru</span>(<span class="ident">mb_rru</span>)
-            }
-        }
-
-        <span class="kw">impl</span> <span class="ident">PrettyPrintSized</span> <span class="kw">for</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">newtype_reg_mem_imm</span> {
-            <span class="kw">fn</span> <span class="ident">show_rru_sized</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">mb_rru</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="ident">RealRegUniverse</span><span class="op">&gt;</span>, <span class="ident">size</span>: <span class="ident">u8</span>) -&gt; <span class="ident">String</span> {
-                <span class="self">self</span>.<span class="number">0</span>.<span class="ident">show_rru_sized</span>(<span class="ident">mb_rru</span>, <span class="ident">size</span>)
+            <span class="kw">fn</span> <span class="ident">pretty_print</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">size</span>: <span class="ident">u8</span>, <span class="ident">allocs</span>: <span class="kw-2">&amp;mut</span> <span class="ident">AllocationConsumer</span><span class="op">&lt;</span><span class="lifetime">&#39;_</span><span class="op">&gt;</span>) -&gt; <span class="ident">String</span> {
+                <span class="self">self</span>.<span class="number">0</span>.<span class="ident">pretty_print</span>(<span class="ident">size</span>, <span class="ident">allocs</span>)
             }
         }
 
@@ -2226,7 +2041,7 @@
     <span class="ident">GprMem</span>,
     <span class="ident">GprMemImm</span>,
     <span class="ident">Imm8Gpr</span>,
-    <span class="op">|</span><span class="ident">reg</span><span class="op">|</span> <span class="ident">reg</span>.<span class="ident">get_class</span>() <span class="op">==</span> <span class="ident">RegClass::I64</span>
+    <span class="op">|</span><span class="ident">reg</span><span class="op">|</span> <span class="ident">reg</span>.<span class="ident">class</span>() <span class="op">==</span> <span class="ident">RegClass::Int</span>
 );
 
 <span class="comment">// Define a newtype of `Reg` for XMM registers.</span>
@@ -2237,37 +2052,18 @@
     <span class="ident">XmmMem</span>,
     <span class="ident">XmmMemImm</span>,
     <span class="ident">Imm8Xmm</span>,
-    <span class="op">|</span><span class="ident">reg</span><span class="op">|</span> <span class="ident">reg</span>.<span class="ident">get_class</span>() <span class="op">==</span> <span class="ident">RegClass::V128</span>
+    <span class="op">|</span><span class="ident">reg</span><span class="op">|</span> <span class="ident">reg</span>.<span class="ident">class</span>() <span class="op">==</span> <span class="ident">RegClass::Float</span>
 );
 
-<span class="doccomment">/// A possible addressing mode (amode) that can be used in instructions.</span>
-<span class="doccomment">/// These denote a 64-bit value only.</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Debug</span>)]</span>
-<span class="kw">pub</span> <span class="kw">enum</span> <span class="ident">Amode</span> {
-    <span class="doccomment">/// Immediate sign-extended and a Register.</span>
-    <span class="ident">ImmReg</span> {
-        <span class="ident">simm32</span>: <span class="ident">u32</span>,
-        <span class="ident">base</span>: <span class="ident">Reg</span>,
-        <span class="ident">flags</span>: <span class="ident">MemFlags</span>,
-    },
+<span class="comment">// N.B.: `Amode` is defined in `inst.isle`. We add some convenience</span>
+<span class="comment">// constructors here.</span>
 
-    <span class="doccomment">/// sign-extend-32-to-64(Immediate) + Register1 + (Register2 &lt;&lt; Shift)</span>
-    <span class="ident">ImmRegRegShift</span> {
-        <span class="ident">simm32</span>: <span class="ident">u32</span>,
-        <span class="ident">base</span>: <span class="ident">Gpr</span>,
-        <span class="ident">index</span>: <span class="ident">Gpr</span>,
-        <span class="ident">shift</span>: <span class="ident">u8</span>, <span class="comment">/* 0 .. 3 only */</span>
-        <span class="ident">flags</span>: <span class="ident">MemFlags</span>,
-    },
-
-    <span class="doccomment">/// sign-extend-32-to-64(Immediate) + RIP (instruction pointer).</span>
-    <span class="doccomment">/// To wit: not supported in 32-bits mode.</span>
-    <span class="ident">RipRelative</span> { <span class="ident">target</span>: <span class="ident">MachLabel</span> },
-}
+<span class="comment">// Re-export the type from the ISLE generated code.</span>
+<span class="kw">pub</span> <span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::isa::x64::lower::isle::generated_code::Amode</span>;
 
 <span class="kw">impl</span> <span class="ident">Amode</span> {
     <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">imm_reg</span>(<span class="ident">simm32</span>: <span class="ident">u32</span>, <span class="ident">base</span>: <span class="ident">Reg</span>) -&gt; <span class="self">Self</span> {
-        <span class="macro">debug_assert!</span>(<span class="ident">base</span>.<span class="ident">get_class</span>() <span class="op">==</span> <span class="ident">RegClass::I64</span>);
+        <span class="macro">debug_assert!</span>(<span class="ident">base</span>.<span class="ident">class</span>() <span class="op">==</span> <span class="ident">RegClass::Int</span>);
         <span class="ident"><span class="self">Self</span>::ImmReg</span> {
             <span class="ident">simm32</span>,
             <span class="ident">base</span>,
@@ -2276,8 +2072,8 @@
     }
 
     <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">imm_reg_reg_shift</span>(<span class="ident">simm32</span>: <span class="ident">u32</span>, <span class="ident">base</span>: <span class="ident">Gpr</span>, <span class="ident">index</span>: <span class="ident">Gpr</span>, <span class="ident">shift</span>: <span class="ident">u8</span>) -&gt; <span class="self">Self</span> {
-        <span class="macro">debug_assert!</span>(<span class="ident">base</span>.<span class="ident">get_class</span>() <span class="op">==</span> <span class="ident">RegClass::I64</span>);
-        <span class="macro">debug_assert!</span>(<span class="ident">index</span>.<span class="ident">get_class</span>() <span class="op">==</span> <span class="ident">RegClass::I64</span>);
+        <span class="macro">debug_assert!</span>(<span class="ident">base</span>.<span class="ident">class</span>() <span class="op">==</span> <span class="ident">RegClass::Int</span>);
+        <span class="macro">debug_assert!</span>(<span class="ident">index</span>.<span class="ident">class</span>() <span class="op">==</span> <span class="ident">RegClass::Int</span>);
         <span class="macro">debug_assert!</span>(<span class="ident">shift</span> <span class="op">&lt;</span><span class="op">=</span> <span class="number">3</span>);
         <span class="ident"><span class="self">Self</span>::ImmRegRegShift</span> {
             <span class="ident">simm32</span>,
@@ -2317,14 +2113,17 @@
     }
 
     <span class="doccomment">/// Add the regs mentioned by `self` to `collector`.</span>
-    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">get_regs_as_uses</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">collector</span>: <span class="kw-2">&amp;mut</span> <span class="ident">RegUsageCollector</span>) {
+    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">get_operands</span><span class="op">&lt;</span><span class="ident">F</span>: <span class="ident">Fn</span>(<span class="ident">VReg</span>) -&gt; <span class="ident">VReg</span><span class="op">&gt;</span>(
+        <span class="kw-2">&amp;</span><span class="self">self</span>,
+        <span class="ident">collector</span>: <span class="kw-2">&amp;mut</span> <span class="ident">OperandCollector</span><span class="op">&lt;</span><span class="lifetime">&#39;_</span>, <span class="ident">F</span><span class="op">&gt;</span>,
+    ) {
         <span class="kw">match</span> <span class="self">self</span> {
             <span class="ident">Amode::ImmReg</span> { <span class="ident">base</span>, .. } =&gt; {
-                <span class="ident">collector</span>.<span class="ident">add_use</span>(<span class="kw-2">*</span><span class="ident">base</span>);
+                <span class="ident">collector</span>.<span class="ident">reg_use</span>(<span class="kw-2">*</span><span class="ident">base</span>);
             }
             <span class="ident">Amode::ImmRegRegShift</span> { <span class="ident">base</span>, <span class="ident">index</span>, .. } =&gt; {
-                <span class="ident">collector</span>.<span class="ident">add_use</span>(<span class="ident">base</span>.<span class="ident">to_reg</span>());
-                <span class="ident">collector</span>.<span class="ident">add_use</span>(<span class="ident">index</span>.<span class="ident">to_reg</span>());
+                <span class="ident">collector</span>.<span class="ident">reg_use</span>(<span class="ident">base</span>.<span class="ident">to_reg</span>());
+                <span class="ident">collector</span>.<span class="ident">reg_use</span>(<span class="ident">index</span>.<span class="ident">to_reg</span>());
             }
             <span class="ident">Amode::RipRelative</span> { .. } =&gt; {
                 <span class="comment">// RIP isn&#39;t involved in regalloc.</span>
@@ -2343,13 +2142,56 @@
     <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">can_trap</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">bool</span> {
         <span class="op">!</span><span class="self">self</span>.<span class="ident">get_flags</span>().<span class="ident">notrap</span>()
     }
+
+    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">with_allocs</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">allocs</span>: <span class="kw-2">&amp;mut</span> <span class="ident">AllocationConsumer</span><span class="op">&lt;</span><span class="lifetime">&#39;_</span><span class="op">&gt;</span>) -&gt; <span class="self">Self</span> {
+        <span class="comment">// The order in which we consume allocs here must match the</span>
+        <span class="comment">// order in which we produce operands in get_operands() above.</span>
+        <span class="kw">match</span> <span class="self">self</span> {
+            <span class="kw-2">&amp;</span><span class="ident">Amode::ImmReg</span> {
+                <span class="ident">simm32</span>,
+                <span class="ident">base</span>,
+                <span class="ident">flags</span>,
+            } =&gt; <span class="ident">Amode::ImmReg</span> {
+                <span class="ident">simm32</span>,
+                <span class="ident">flags</span>,
+                <span class="ident">base</span>: <span class="ident">allocs</span>.<span class="ident">next</span>(<span class="ident">base</span>),
+            },
+            <span class="kw-2">&amp;</span><span class="ident">Amode::ImmRegRegShift</span> {
+                <span class="ident">simm32</span>,
+                <span class="ident">base</span>,
+                <span class="ident">index</span>,
+                <span class="ident">shift</span>,
+                <span class="ident">flags</span>,
+            } =&gt; <span class="ident">Amode::ImmRegRegShift</span> {
+                <span class="ident">simm32</span>,
+                <span class="ident">shift</span>,
+                <span class="ident">flags</span>,
+                <span class="ident">base</span>: <span class="ident">Gpr::new</span>(<span class="ident">allocs</span>.<span class="ident">next</span>(<span class="kw-2">*</span><span class="ident">base</span>)).<span class="ident">unwrap</span>(),
+                <span class="ident">index</span>: <span class="ident">Gpr::new</span>(<span class="ident">allocs</span>.<span class="ident">next</span>(<span class="kw-2">*</span><span class="ident">index</span>)).<span class="ident">unwrap</span>(),
+            },
+            <span class="kw-2">&amp;</span><span class="ident">Amode::RipRelative</span> { <span class="ident">target</span> } =&gt; <span class="ident">Amode::RipRelative</span> { <span class="ident">target</span> },
+        }
+    }
+
+    <span class="doccomment">/// Offset the amode by a fixed offset.</span>
+    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">offset</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">offset</span>: <span class="ident">u32</span>) -&gt; <span class="self">Self</span> {
+        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">ret</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">clone</span>();
+        <span class="kw">match</span> <span class="kw-2">&amp;mut</span> <span class="ident">ret</span> {
+            <span class="kw-2">&amp;mut</span> <span class="ident">Amode::ImmReg</span> { <span class="kw-2">ref</span> <span class="kw-2">mut</span> <span class="ident">simm32</span>, .. } =&gt; <span class="kw-2">*</span><span class="ident">simm32</span> <span class="op">+</span><span class="op">=</span> <span class="ident">offset</span>,
+            <span class="kw-2">&amp;mut</span> <span class="ident">Amode::ImmRegRegShift</span> { <span class="kw-2">ref</span> <span class="kw-2">mut</span> <span class="ident">simm32</span>, .. } =&gt; <span class="kw-2">*</span><span class="ident">simm32</span> <span class="op">+</span><span class="op">=</span> <span class="ident">offset</span>,
+            <span class="kw">_</span> =&gt; <span class="macro">panic!</span>(<span class="string">&quot;Cannot offset amode: {:?}&quot;</span>, <span class="self">self</span>),
+        }
+        <span class="ident">ret</span>
+    }
 }
 
 <span class="kw">impl</span> <span class="ident">PrettyPrint</span> <span class="kw">for</span> <span class="ident">Amode</span> {
-    <span class="kw">fn</span> <span class="ident">show_rru</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">mb_rru</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="ident">RealRegUniverse</span><span class="op">&gt;</span>) -&gt; <span class="ident">String</span> {
+    <span class="kw">fn</span> <span class="ident">pretty_print</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">_size</span>: <span class="ident">u8</span>, <span class="ident">allocs</span>: <span class="kw-2">&amp;mut</span> <span class="ident">AllocationConsumer</span><span class="op">&lt;</span><span class="lifetime">&#39;_</span><span class="op">&gt;</span>) -&gt; <span class="ident">String</span> {
         <span class="kw">match</span> <span class="self">self</span> {
             <span class="ident">Amode::ImmReg</span> { <span class="ident">simm32</span>, <span class="ident">base</span>, .. } =&gt; {
-                <span class="macro">format!</span>(<span class="string">&quot;{}({})&quot;</span>, <span class="kw-2">*</span><span class="ident">simm32</span> <span class="kw">as</span> <span class="ident">i32</span>, <span class="ident">base</span>.<span class="ident">show_rru</span>(<span class="ident">mb_rru</span>))
+                <span class="comment">// Note: size is always 8; the address is 64 bits,</span>
+                <span class="comment">// even if the addressed operand is smaller.</span>
+                <span class="macro">format!</span>(<span class="string">&quot;{}({})&quot;</span>, <span class="kw-2">*</span><span class="ident">simm32</span> <span class="kw">as</span> <span class="ident">i32</span>, <span class="ident">pretty_print_reg</span>(<span class="kw-2">*</span><span class="ident">base</span>, <span class="number">8</span>, <span class="ident">allocs</span>))
             }
             <span class="ident">Amode::ImmRegRegShift</span> {
                 <span class="ident">simm32</span>,
@@ -2360,8 +2202,8 @@
             } =&gt; <span class="macro">format!</span>(
                 <span class="string">&quot;{}({},{},{})&quot;</span>,
                 <span class="kw-2">*</span><span class="ident">simm32</span> <span class="kw">as</span> <span class="ident">i32</span>,
-                <span class="ident">base</span>.<span class="ident">show_rru</span>(<span class="ident">mb_rru</span>),
-                <span class="ident">index</span>.<span class="ident">show_rru</span>(<span class="ident">mb_rru</span>),
+                <span class="ident">pretty_print_reg</span>(<span class="ident">base</span>.<span class="ident">to_reg</span>(), <span class="number">8</span>, <span class="ident">allocs</span>),
+                <span class="ident">pretty_print_reg</span>(<span class="ident">index</span>.<span class="ident">to_reg</span>(), <span class="number">8</span>, <span class="ident">allocs</span>),
                 <span class="number">1</span> <span class="op">&lt;</span><span class="op">&lt;</span> <span class="ident">shift</span>
             ),
             <span class="ident">Amode::RipRelative</span> { <span class="kw-2">ref</span> <span class="ident">target</span> } =&gt; <span class="macro">format!</span>(<span class="string">&quot;label{}(%rip)&quot;</span>, <span class="ident">target</span>.<span class="ident">get</span>()),
@@ -2391,21 +2233,14 @@
     }
 
     <span class="doccomment">/// Add the regs mentioned by `self` to `collector`.</span>
-    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">get_regs_as_uses</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">collector</span>: <span class="kw-2">&amp;mut</span> <span class="ident">RegUsageCollector</span>) {
+    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">get_operands</span><span class="op">&lt;</span><span class="ident">F</span>: <span class="ident">Fn</span>(<span class="ident">VReg</span>) -&gt; <span class="ident">VReg</span><span class="op">&gt;</span>(
+        <span class="kw-2">&amp;</span><span class="self">self</span>,
+        <span class="ident">collector</span>: <span class="kw-2">&amp;mut</span> <span class="ident">OperandCollector</span><span class="op">&lt;</span><span class="lifetime">&#39;_</span>, <span class="ident">F</span><span class="op">&gt;</span>,
+    ) {
         <span class="kw">match</span> <span class="self">self</span> {
-            <span class="ident">SyntheticAmode::Real</span>(<span class="ident">addr</span>) =&gt; <span class="ident">addr</span>.<span class="ident">get_regs_as_uses</span>(<span class="ident">collector</span>),
+            <span class="ident">SyntheticAmode::Real</span>(<span class="ident">addr</span>) =&gt; <span class="ident">addr</span>.<span class="ident">get_operands</span>(<span class="ident">collector</span>),
             <span class="ident">SyntheticAmode::NominalSPOffset</span> { .. } =&gt; {
                 <span class="comment">// Nothing to do; the base is SP and isn&#39;t involved in regalloc.</span>
-            }
-            <span class="ident">SyntheticAmode::ConstantOffset</span>(<span class="kw">_</span>) =&gt; {}
-        }
-    }
-
-    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">map_uses</span><span class="op">&lt;</span><span class="ident">RM</span>: <span class="ident">RegMapper</span><span class="op">&gt;</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="ident">map</span>: <span class="kw-2">&amp;</span><span class="ident">RM</span>) {
-        <span class="kw">match</span> <span class="self">self</span> {
-            <span class="ident">SyntheticAmode::Real</span>(<span class="ident">addr</span>) =&gt; <span class="ident">addr</span>.<span class="ident">map_uses</span>(<span class="ident">map</span>),
-            <span class="ident">SyntheticAmode::NominalSPOffset</span> { .. } =&gt; {
-                <span class="comment">// Nothing to do.</span>
             }
             <span class="ident">SyntheticAmode::ConstantOffset</span>(<span class="kw">_</span>) =&gt; {}
         }
@@ -2428,6 +2263,15 @@
             }
         }
     }
+
+    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">with_allocs</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">allocs</span>: <span class="kw-2">&amp;mut</span> <span class="ident">AllocationConsumer</span><span class="op">&lt;</span><span class="lifetime">&#39;_</span><span class="op">&gt;</span>) -&gt; <span class="self">Self</span> {
+        <span class="kw">match</span> <span class="self">self</span> {
+            <span class="ident">SyntheticAmode::Real</span>(<span class="ident">addr</span>) =&gt; <span class="ident">SyntheticAmode::Real</span>(<span class="ident">addr</span>.<span class="ident">with_allocs</span>(<span class="ident">allocs</span>)),
+            <span class="kw-2">&amp;</span><span class="ident">SyntheticAmode::NominalSPOffset</span> { .. } <span class="op">|</span> <span class="kw-2">&amp;</span><span class="ident">SyntheticAmode::ConstantOffset</span> { .. } =&gt; {
+                <span class="self">self</span>.<span class="ident">clone</span>()
+            }
+        }
+    }
 }
 
 <span class="kw">impl</span> <span class="ident">Into</span><span class="op">&lt;</span><span class="ident">SyntheticAmode</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">Amode</span> {
@@ -2437,9 +2281,10 @@
 }
 
 <span class="kw">impl</span> <span class="ident">PrettyPrint</span> <span class="kw">for</span> <span class="ident">SyntheticAmode</span> {
-    <span class="kw">fn</span> <span class="ident">show_rru</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">mb_rru</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="ident">RealRegUniverse</span><span class="op">&gt;</span>) -&gt; <span class="ident">String</span> {
+    <span class="kw">fn</span> <span class="ident">pretty_print</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">_size</span>: <span class="ident">u8</span>, <span class="ident">allocs</span>: <span class="kw-2">&amp;mut</span> <span class="ident">AllocationConsumer</span><span class="op">&lt;</span><span class="lifetime">&#39;_</span><span class="op">&gt;</span>) -&gt; <span class="ident">String</span> {
         <span class="kw">match</span> <span class="self">self</span> {
-            <span class="ident">SyntheticAmode::Real</span>(<span class="ident">addr</span>) =&gt; <span class="ident">addr</span>.<span class="ident">show_rru</span>(<span class="ident">mb_rru</span>),
+            <span class="comment">// See note in `Amode` regarding constant size of `8`.</span>
+            <span class="ident">SyntheticAmode::Real</span>(<span class="ident">addr</span>) =&gt; <span class="ident">addr</span>.<span class="ident">pretty_print</span>(<span class="number">8</span>, <span class="ident">allocs</span>),
             <span class="ident">SyntheticAmode::NominalSPOffset</span> { <span class="ident">simm32</span> } =&gt; {
                 <span class="macro">format!</span>(<span class="string">&quot;rsp({} + virtual offset)&quot;</span>, <span class="kw-2">*</span><span class="ident">simm32</span> <span class="kw">as</span> <span class="ident">i32</span>)
             }
@@ -2461,7 +2306,7 @@
 
 <span class="kw">impl</span> <span class="ident">RegMemImm</span> {
     <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">reg</span>(<span class="ident">reg</span>: <span class="ident">Reg</span>) -&gt; <span class="self">Self</span> {
-        <span class="macro">debug_assert!</span>(<span class="ident">reg</span>.<span class="ident">get_class</span>() <span class="op">==</span> <span class="ident">RegClass::I64</span> <span class="op">|</span><span class="op">|</span> <span class="ident">reg</span>.<span class="ident">get_class</span>() <span class="op">==</span> <span class="ident">RegClass::V128</span>);
+        <span class="macro">debug_assert!</span>(<span class="ident">reg</span>.<span class="ident">class</span>() <span class="op">==</span> <span class="ident">RegClass::Int</span> <span class="op">|</span><span class="op">|</span> <span class="ident">reg</span>.<span class="ident">class</span>() <span class="op">==</span> <span class="ident">RegClass::Float</span>);
         <span class="ident"><span class="self">Self</span>::Reg</span> { <span class="ident">reg</span> }
     }
     <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">mem</span>(<span class="ident">addr</span>: <span class="kw">impl</span> <span class="ident">Into</span><span class="op">&lt;</span><span class="ident">SyntheticAmode</span><span class="op">&gt;</span>) -&gt; <span class="self">Self</span> {
@@ -2474,15 +2319,18 @@
     <span class="doccomment">/// Asserts that in register mode, the reg class is the one that&#39;s expected.</span>
     <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">assert_regclass_is</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">expected_reg_class</span>: <span class="ident">RegClass</span>) {
         <span class="kw">if</span> <span class="kw">let</span> <span class="ident"><span class="self">Self</span>::Reg</span> { <span class="ident">reg</span> } <span class="op">=</span> <span class="self">self</span> {
-            <span class="macro">debug_assert_eq!</span>(<span class="ident">reg</span>.<span class="ident">get_class</span>(), <span class="ident">expected_reg_class</span>);
+            <span class="macro">debug_assert_eq!</span>(<span class="ident">reg</span>.<span class="ident">class</span>(), <span class="ident">expected_reg_class</span>);
         }
     }
 
     <span class="doccomment">/// Add the regs mentioned by `self` to `collector`.</span>
-    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">get_regs_as_uses</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">collector</span>: <span class="kw-2">&amp;mut</span> <span class="ident">RegUsageCollector</span>) {
+    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">get_operands</span><span class="op">&lt;</span><span class="ident">F</span>: <span class="ident">Fn</span>(<span class="ident">VReg</span>) -&gt; <span class="ident">VReg</span><span class="op">&gt;</span>(
+        <span class="kw-2">&amp;</span><span class="self">self</span>,
+        <span class="ident">collector</span>: <span class="kw-2">&amp;mut</span> <span class="ident">OperandCollector</span><span class="op">&lt;</span><span class="lifetime">&#39;_</span>, <span class="ident">F</span><span class="op">&gt;</span>,
+    ) {
         <span class="kw">match</span> <span class="self">self</span> {
-            <span class="ident"><span class="self">Self</span>::Reg</span> { <span class="ident">reg</span> } =&gt; <span class="ident">collector</span>.<span class="ident">add_use</span>(<span class="kw-2">*</span><span class="ident">reg</span>),
-            <span class="ident"><span class="self">Self</span>::Mem</span> { <span class="ident">addr</span> } =&gt; <span class="ident">addr</span>.<span class="ident">get_regs_as_uses</span>(<span class="ident">collector</span>),
+            <span class="ident"><span class="self">Self</span>::Reg</span> { <span class="ident">reg</span> } =&gt; <span class="ident">collector</span>.<span class="ident">reg_use</span>(<span class="kw-2">*</span><span class="ident">reg</span>),
+            <span class="ident"><span class="self">Self</span>::Mem</span> { <span class="ident">addr</span> } =&gt; <span class="ident">addr</span>.<span class="ident">get_operands</span>(<span class="ident">collector</span>),
             <span class="ident"><span class="self">Self</span>::Imm</span> { .. } =&gt; {}
         }
     }
@@ -2493,19 +2341,25 @@
             <span class="kw">_</span> =&gt; <span class="prelude-val">None</span>,
         }
     }
-}
 
-<span class="kw">impl</span> <span class="ident">PrettyPrint</span> <span class="kw">for</span> <span class="ident">RegMemImm</span> {
-    <span class="kw">fn</span> <span class="ident">show_rru</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">mb_rru</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="ident">RealRegUniverse</span><span class="op">&gt;</span>) -&gt; <span class="ident">String</span> {
-        <span class="self">self</span>.<span class="ident">show_rru_sized</span>(<span class="ident">mb_rru</span>, <span class="number">8</span>)
+    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">with_allocs</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">allocs</span>: <span class="kw-2">&amp;mut</span> <span class="ident">AllocationConsumer</span><span class="op">&lt;</span><span class="lifetime">&#39;_</span><span class="op">&gt;</span>) -&gt; <span class="self">Self</span> {
+        <span class="kw">match</span> <span class="self">self</span> {
+            <span class="ident"><span class="self">Self</span>::Reg</span> { <span class="ident">reg</span> } =&gt; <span class="ident"><span class="self">Self</span>::Reg</span> {
+                <span class="ident">reg</span>: <span class="ident">allocs</span>.<span class="ident">next</span>(<span class="kw-2">*</span><span class="ident">reg</span>),
+            },
+            <span class="ident"><span class="self">Self</span>::Mem</span> { <span class="ident">addr</span> } =&gt; <span class="ident"><span class="self">Self</span>::Mem</span> {
+                <span class="ident">addr</span>: <span class="ident">addr</span>.<span class="ident">with_allocs</span>(<span class="ident">allocs</span>),
+            },
+            <span class="ident"><span class="self">Self</span>::Imm</span> { .. } =&gt; <span class="self">self</span>.<span class="ident">clone</span>(),
+        }
     }
 }
 
-<span class="kw">impl</span> <span class="ident">PrettyPrintSized</span> <span class="kw">for</span> <span class="ident">RegMemImm</span> {
-    <span class="kw">fn</span> <span class="ident">show_rru_sized</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">mb_rru</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="ident">RealRegUniverse</span><span class="op">&gt;</span>, <span class="ident">size</span>: <span class="ident">u8</span>) -&gt; <span class="ident">String</span> {
+<span class="kw">impl</span> <span class="ident">PrettyPrint</span> <span class="kw">for</span> <span class="ident">RegMemImm</span> {
+    <span class="kw">fn</span> <span class="ident">pretty_print</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">size</span>: <span class="ident">u8</span>, <span class="ident">allocs</span>: <span class="kw-2">&amp;mut</span> <span class="ident">AllocationConsumer</span><span class="op">&lt;</span><span class="lifetime">&#39;_</span><span class="op">&gt;</span>) -&gt; <span class="ident">String</span> {
         <span class="kw">match</span> <span class="self">self</span> {
-            <span class="ident"><span class="self">Self</span>::Reg</span> { <span class="ident">reg</span> } =&gt; <span class="ident">show_ireg_sized</span>(<span class="kw-2">*</span><span class="ident">reg</span>, <span class="ident">mb_rru</span>, <span class="ident">size</span>),
-            <span class="ident"><span class="self">Self</span>::Mem</span> { <span class="ident">addr</span> } =&gt; <span class="ident">addr</span>.<span class="ident">show_rru</span>(<span class="ident">mb_rru</span>),
+            <span class="ident"><span class="self">Self</span>::Reg</span> { <span class="ident">reg</span> } =&gt; <span class="ident">pretty_print_reg</span>(<span class="kw-2">*</span><span class="ident">reg</span>, <span class="ident">size</span>, <span class="ident">allocs</span>),
+            <span class="ident"><span class="self">Self</span>::Mem</span> { <span class="ident">addr</span> } =&gt; <span class="ident">addr</span>.<span class="ident">pretty_print</span>(<span class="ident">size</span>, <span class="ident">allocs</span>),
             <span class="ident"><span class="self">Self</span>::Imm</span> { <span class="ident">simm32</span> } =&gt; <span class="macro">format!</span>(<span class="string">&quot;${}&quot;</span>, <span class="kw-2">*</span><span class="ident">simm32</span> <span class="kw">as</span> <span class="ident">i32</span>),
         }
     }
@@ -2540,7 +2394,7 @@
 
 <span class="kw">impl</span> <span class="ident">RegMem</span> {
     <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">reg</span>(<span class="ident">reg</span>: <span class="ident">Reg</span>) -&gt; <span class="self">Self</span> {
-        <span class="macro">debug_assert!</span>(<span class="ident">reg</span>.<span class="ident">get_class</span>() <span class="op">==</span> <span class="ident">RegClass::I64</span> <span class="op">|</span><span class="op">|</span> <span class="ident">reg</span>.<span class="ident">get_class</span>() <span class="op">==</span> <span class="ident">RegClass::V128</span>);
+        <span class="macro">debug_assert!</span>(<span class="ident">reg</span>.<span class="ident">class</span>() <span class="op">==</span> <span class="ident">RegClass::Int</span> <span class="op">|</span><span class="op">|</span> <span class="ident">reg</span>.<span class="ident">class</span>() <span class="op">==</span> <span class="ident">RegClass::Float</span>);
         <span class="ident"><span class="self">Self</span>::Reg</span> { <span class="ident">reg</span> }
     }
     <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">mem</span>(<span class="ident">addr</span>: <span class="kw">impl</span> <span class="ident">Into</span><span class="op">&lt;</span><span class="ident">SyntheticAmode</span><span class="op">&gt;</span>) -&gt; <span class="self">Self</span> {
@@ -2549,20 +2403,34 @@
     <span class="doccomment">/// Asserts that in register mode, the reg class is the one that&#39;s expected.</span>
     <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">assert_regclass_is</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">expected_reg_class</span>: <span class="ident">RegClass</span>) {
         <span class="kw">if</span> <span class="kw">let</span> <span class="ident"><span class="self">Self</span>::Reg</span> { <span class="ident">reg</span> } <span class="op">=</span> <span class="self">self</span> {
-            <span class="macro">debug_assert_eq!</span>(<span class="ident">reg</span>.<span class="ident">get_class</span>(), <span class="ident">expected_reg_class</span>);
+            <span class="macro">debug_assert_eq!</span>(<span class="ident">reg</span>.<span class="ident">class</span>(), <span class="ident">expected_reg_class</span>);
         }
     }
     <span class="doccomment">/// Add the regs mentioned by `self` to `collector`.</span>
-    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">get_regs_as_uses</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">collector</span>: <span class="kw-2">&amp;mut</span> <span class="ident">RegUsageCollector</span>) {
+    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">get_operands</span><span class="op">&lt;</span><span class="ident">F</span>: <span class="ident">Fn</span>(<span class="ident">VReg</span>) -&gt; <span class="ident">VReg</span><span class="op">&gt;</span>(
+        <span class="kw-2">&amp;</span><span class="self">self</span>,
+        <span class="ident">collector</span>: <span class="kw-2">&amp;mut</span> <span class="ident">OperandCollector</span><span class="op">&lt;</span><span class="lifetime">&#39;_</span>, <span class="ident">F</span><span class="op">&gt;</span>,
+    ) {
         <span class="kw">match</span> <span class="self">self</span> {
-            <span class="ident">RegMem::Reg</span> { <span class="ident">reg</span> } =&gt; <span class="ident">collector</span>.<span class="ident">add_use</span>(<span class="kw-2">*</span><span class="ident">reg</span>),
-            <span class="ident">RegMem::Mem</span> { <span class="ident">addr</span>, .. } =&gt; <span class="ident">addr</span>.<span class="ident">get_regs_as_uses</span>(<span class="ident">collector</span>),
+            <span class="ident">RegMem::Reg</span> { <span class="ident">reg</span> } =&gt; <span class="ident">collector</span>.<span class="ident">reg_use</span>(<span class="kw-2">*</span><span class="ident">reg</span>),
+            <span class="ident">RegMem::Mem</span> { <span class="ident">addr</span>, .. } =&gt; <span class="ident">addr</span>.<span class="ident">get_operands</span>(<span class="ident">collector</span>),
         }
     }
     <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">to_reg</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Reg</span><span class="op">&gt;</span> {
         <span class="kw">match</span> <span class="self">self</span> {
             <span class="ident">RegMem::Reg</span> { <span class="ident">reg</span> } =&gt; <span class="prelude-val">Some</span>(<span class="kw-2">*</span><span class="ident">reg</span>),
             <span class="kw">_</span> =&gt; <span class="prelude-val">None</span>,
+        }
+    }
+
+    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">with_allocs</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">allocs</span>: <span class="kw-2">&amp;mut</span> <span class="ident">AllocationConsumer</span><span class="op">&lt;</span><span class="lifetime">&#39;_</span><span class="op">&gt;</span>) -&gt; <span class="self">Self</span> {
+        <span class="kw">match</span> <span class="self">self</span> {
+            <span class="ident">RegMem::Reg</span> { <span class="ident">reg</span> } =&gt; <span class="ident">RegMem::Reg</span> {
+                <span class="ident">reg</span>: <span class="ident">allocs</span>.<span class="ident">next</span>(<span class="kw-2">*</span><span class="ident">reg</span>),
+            },
+            <span class="ident">RegMem::Mem</span> { <span class="ident">addr</span> } =&gt; <span class="ident">RegMem::Mem</span> {
+                <span class="ident">addr</span>: <span class="ident">addr</span>.<span class="ident">with_allocs</span>(<span class="ident">allocs</span>),
+            },
         }
     }
 }
@@ -2574,16 +2442,10 @@
 }
 
 <span class="kw">impl</span> <span class="ident">PrettyPrint</span> <span class="kw">for</span> <span class="ident">RegMem</span> {
-    <span class="kw">fn</span> <span class="ident">show_rru</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">mb_rru</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="ident">RealRegUniverse</span><span class="op">&gt;</span>) -&gt; <span class="ident">String</span> {
-        <span class="self">self</span>.<span class="ident">show_rru_sized</span>(<span class="ident">mb_rru</span>, <span class="number">8</span>)
-    }
-}
-
-<span class="kw">impl</span> <span class="ident">PrettyPrintSized</span> <span class="kw">for</span> <span class="ident">RegMem</span> {
-    <span class="kw">fn</span> <span class="ident">show_rru_sized</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">mb_rru</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="ident">RealRegUniverse</span><span class="op">&gt;</span>, <span class="ident">size</span>: <span class="ident">u8</span>) -&gt; <span class="ident">String</span> {
+    <span class="kw">fn</span> <span class="ident">pretty_print</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">size</span>: <span class="ident">u8</span>, <span class="ident">allocs</span>: <span class="kw-2">&amp;mut</span> <span class="ident">AllocationConsumer</span><span class="op">&lt;</span><span class="lifetime">&#39;_</span><span class="op">&gt;</span>) -&gt; <span class="ident">String</span> {
         <span class="kw">match</span> <span class="self">self</span> {
-            <span class="ident">RegMem::Reg</span> { <span class="ident">reg</span> } =&gt; <span class="ident">show_ireg_sized</span>(<span class="kw-2">*</span><span class="ident">reg</span>, <span class="ident">mb_rru</span>, <span class="ident">size</span>),
-            <span class="ident">RegMem::Mem</span> { <span class="ident">addr</span>, .. } =&gt; <span class="ident">addr</span>.<span class="ident">show_rru</span>(<span class="ident">mb_rru</span>),
+            <span class="ident">RegMem::Reg</span> { <span class="ident">reg</span> } =&gt; <span class="ident">pretty_print_reg</span>(<span class="kw-2">*</span><span class="ident">reg</span>, <span class="ident">size</span>, <span class="ident">allocs</span>),
+            <span class="ident">RegMem::Mem</span> { <span class="ident">addr</span>, .. } =&gt; <span class="ident">addr</span>.<span class="ident">pretty_print</span>(<span class="ident">size</span>, <span class="ident">allocs</span>),
         }
     }
 }
@@ -3087,6 +2949,22 @@
         <span class="kw">match</span> <span class="self">self</span> {
             <span class="ident">SseOpcode::Movd</span> =&gt; <span class="number">4</span>,
             <span class="kw">_</span> =&gt; <span class="number">8</span>,
+        }
+    }
+
+    <span class="doccomment">/// Does an XmmRmmRImm with this opcode use src1? FIXME: split</span>
+    <span class="doccomment">/// into separate instructions.</span>
+    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">uses_src1</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">bool</span> {
+        <span class="kw">match</span> <span class="self">self</span> {
+            <span class="ident">SseOpcode::Pextrb</span> =&gt; <span class="bool-val">false</span>,
+            <span class="ident">SseOpcode::Pextrw</span> =&gt; <span class="bool-val">false</span>,
+            <span class="ident">SseOpcode::Pextrd</span> =&gt; <span class="bool-val">false</span>,
+            <span class="ident">SseOpcode::Pshufd</span> =&gt; <span class="bool-val">false</span>,
+            <span class="ident">SseOpcode::Roundss</span> =&gt; <span class="bool-val">false</span>,
+            <span class="ident">SseOpcode::Roundsd</span> =&gt; <span class="bool-val">false</span>,
+            <span class="ident">SseOpcode::Roundps</span> =&gt; <span class="bool-val">false</span>,
+            <span class="ident">SseOpcode::Roundpd</span> =&gt; <span class="bool-val">false</span>,
+            <span class="kw">_</span> =&gt; <span class="bool-val">true</span>,
         }
     }
 }

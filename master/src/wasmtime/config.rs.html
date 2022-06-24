@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/cargo_home/registry/src/github.com-1ecc6299db9ec823/wasmtime-0.35.3/src/config.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>config.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" type="text/css" href="../../normalize.css"><link rel="stylesheet" type="text/css" href="../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../ayu.css" disabled><link rel="stylesheet" type="text/css" href="../../dark.css" disabled><link rel="stylesheet" type="text/css" href="../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../storage.js"></script><script src="../../crates.js"></script><script defer src="../../main.js"></script><script defer src="../../source-script.js"></script><script defer src="../../source-files.js"></script>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/cargo_home/registry/src/github.com-1ecc6299db9ec823/wasmtime-0.38.0/src/config.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>config.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" type="text/css" href="../../normalize.css"><link rel="stylesheet" type="text/css" href="../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../ayu.css" disabled><link rel="stylesheet" type="text/css" href="../../dark.css" disabled><link rel="stylesheet" type="text/css" href="../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../storage.js"></script><script src="../../crates.js"></script><script defer src="../../main.js"></script><script defer src="../../source-script.js"></script><script defer src="../../source-files.js"></script>
     <noscript><link rel="stylesheet" href="../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="sidebar-logo" href="../../wasmtime/index.html"><div class="logo-container"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></div>
         </a><h2 class="location"></h2>
     </nav>
@@ -1448,6 +1448,32 @@
 <span id="1443">1443</span>
 <span id="1444">1444</span>
 <span id="1445">1445</span>
+<span id="1446">1446</span>
+<span id="1447">1447</span>
+<span id="1448">1448</span>
+<span id="1449">1449</span>
+<span id="1450">1450</span>
+<span id="1451">1451</span>
+<span id="1452">1452</span>
+<span id="1453">1453</span>
+<span id="1454">1454</span>
+<span id="1455">1455</span>
+<span id="1456">1456</span>
+<span id="1457">1457</span>
+<span id="1458">1458</span>
+<span id="1459">1459</span>
+<span id="1460">1460</span>
+<span id="1461">1461</span>
+<span id="1462">1462</span>
+<span id="1463">1463</span>
+<span id="1464">1464</span>
+<span id="1465">1465</span>
+<span id="1466">1466</span>
+<span id="1467">1467</span>
+<span id="1468">1468</span>
+<span id="1469">1469</span>
+<span id="1470">1470</span>
+<span id="1471">1471</span>
 </pre><pre class="rust"><code><span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::memory::MemoryCreator</span>;
 <span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::trampoline::MemoryCreatorProxy</span>;
 <span class="kw">use</span> <span class="ident">anyhow</span>::{<span class="ident">bail</span>, <span class="prelude-ty">Result</span>};
@@ -1541,15 +1567,16 @@
     <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="ident">allocation_strategy</span>: <span class="ident">InstanceAllocationStrategy</span>,
     <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="ident">max_wasm_stack</span>: <span class="ident">usize</span>,
     <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="ident">features</span>: <span class="ident">WasmFeatures</span>,
+    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="ident">wasm_backtrace</span>: <span class="ident">bool</span>,
     <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="ident">wasm_backtrace_details_env_used</span>: <span class="ident">bool</span>,
     <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;async&quot;</span>)]</span>
     <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="ident">async_stack_size</span>: <span class="ident">usize</span>,
     <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="ident">async_support</span>: <span class="ident">bool</span>,
     <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="ident">module_version</span>: <span class="ident">ModuleVersionStrategy</span>,
     <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="ident">parallel_compilation</span>: <span class="ident">bool</span>,
-    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="ident">paged_memory_initialization</span>: <span class="ident">bool</span>,
     <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="ident">memory_init_cow</span>: <span class="ident">bool</span>,
     <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="ident">memory_guaranteed_dense_image_size</span>: <span class="ident">u64</span>,
+    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="ident">force_memory_init_memfd</span>: <span class="ident">bool</span>,
 }
 
 <span class="kw">impl</span> <span class="ident">Config</span> {
@@ -1574,6 +1601,7 @@
             <span class="comment">// 1` forces this), or at least it passed when this change was</span>
             <span class="comment">// committed.</span>
             <span class="ident">max_wasm_stack</span>: <span class="number">512</span> <span class="op">*</span> <span class="number">1024</span>,
+            <span class="ident">wasm_backtrace</span>: <span class="bool-val">true</span>,
             <span class="ident">wasm_backtrace_details_env_used</span>: <span class="bool-val">false</span>,
             <span class="ident">features</span>: <span class="ident">WasmFeatures::default</span>(),
             <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;async&quot;</span>)]</span>
@@ -1581,10 +1609,9 @@
             <span class="ident">async_support</span>: <span class="bool-val">false</span>,
             <span class="ident">module_version</span>: <span class="ident">ModuleVersionStrategy::default</span>(),
             <span class="ident">parallel_compilation</span>: <span class="bool-val">true</span>,
-            <span class="comment">// Default to paged memory initialization when using uffd on linux</span>
-            <span class="ident">paged_memory_initialization</span>: <span class="macro">cfg!</span>(<span class="ident">all</span>(<span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;linux&quot;</span>, <span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;uffd&quot;</span>)),
             <span class="ident">memory_init_cow</span>: <span class="bool-val">true</span>,
             <span class="ident">memory_guaranteed_dense_image_size</span>: <span class="number">16</span> <span class="op">&lt;</span><span class="op">&lt;</span> <span class="number">20</span>,
+            <span class="ident">force_memory_init_memfd</span>: <span class="bool-val">false</span>,
         };
         <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">compiler</span>)]</span>
         {
@@ -1707,16 +1734,6 @@
     <span class="doccomment">///   and the periodic yields with epochs should ensure that when the</span>
     <span class="doccomment">///   timeout is reached it&#39;s appropriately recognized.</span>
     <span class="doccomment">///</span>
-    <span class="doccomment">/// * Finally you can spawn futures into a thread pool. By doing this in a</span>
-    <span class="doccomment">///   thread pool you are relaxing the requirement that `Future::poll` must</span>
-    <span class="doccomment">///   be fast because your future is executing on a separate thread. This</span>
-    <span class="doccomment">///   strategy, however, would likely still require some form of</span>
-    <span class="doccomment">///   cancellation via [`Config::epoch_interruption`] or</span>
-    <span class="doccomment">///   [`crate::Store::interrupt_handle`] to ensure wasm doesn&#39;t take *too*</span>
-    <span class="doccomment">///   long to execute. This solution is generally not recommended for its</span>
-    <span class="doccomment">///   complexity and instead one of the previous solutions should likely be</span>
-    <span class="doccomment">///   used.</span>
-    <span class="doccomment">///</span>
     <span class="doccomment">/// In all cases special care needs to be taken when integrating</span>
     <span class="doccomment">/// asynchronous wasm into your application. You should carefully plan where</span>
     <span class="doccomment">/// WebAssembly will execute and what compute resources will be allotted to</span>
@@ -1735,6 +1752,34 @@
     <span class="doccomment">/// By default this option is `false`.</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">debug_info</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="ident">enable</span>: <span class="ident">bool</span>) -&gt; <span class="kw-2">&amp;mut</span> <span class="self">Self</span> {
         <span class="self">self</span>.<span class="ident">tunables</span>.<span class="ident">generate_native_debuginfo</span> <span class="op">=</span> <span class="ident">enable</span>;
+        <span class="self">self</span>
+    }
+
+    <span class="doccomment">/// Configures whether backtraces exist in a `Trap`.</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// Enabled by default, this feature builds in support to</span>
+    <span class="doccomment">/// generate backtraces at runtime for WebAssembly modules. This means that</span>
+    <span class="doccomment">/// unwinding information is compiled into wasm modules and necessary runtime</span>
+    <span class="doccomment">/// dependencies are enabled as well.</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// When disabled, wasm backtrace details are ignored, and [`crate::Trap::trace()`]</span>
+    <span class="doccomment">/// will always return `None`.</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">wasm_backtrace</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="ident">enable</span>: <span class="ident">bool</span>) -&gt; <span class="kw-2">&amp;mut</span> <span class="self">Self</span> {
+        <span class="self">self</span>.<span class="ident">wasm_backtrace</span> <span class="op">=</span> <span class="ident">enable</span>;
+        <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">compiler</span>)]</span>
+        {
+            <span class="comment">// unwind_info must be enabled when either backtraces or reference types are enabled:</span>
+            <span class="self">self</span>.<span class="ident">compiler</span>
+                .<span class="ident">set</span>(
+                    <span class="string">&quot;unwind_info&quot;</span>,
+                    <span class="kw">if</span> <span class="ident">enable</span> <span class="op">|</span><span class="op">|</span> <span class="self">self</span>.<span class="ident">features</span>.<span class="ident">reference_types</span> {
+                        <span class="string">&quot;true&quot;</span>
+                    } <span class="kw">else</span> {
+                        <span class="string">&quot;false&quot;</span>
+                    },
+                )
+                .<span class="ident">unwrap</span>();
+        }
         <span class="self">self</span>
     }
 
@@ -1764,27 +1809,13 @@
         <span class="self">self</span>
     }
 
-    <span class="doccomment">/// Configures whether functions and loops will be interruptable via the</span>
-    <span class="doccomment">/// [`Store::interrupt_handle`](crate::Store::interrupt_handle) method.</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// For more information see the documentation on</span>
-    <span class="doccomment">/// [`Store::interrupt_handle`](crate::Store::interrupt_handle).</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// By default this option is `false`.</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">interruptable</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="ident">enable</span>: <span class="ident">bool</span>) -&gt; <span class="kw-2">&amp;mut</span> <span class="self">Self</span> {
-        <span class="self">self</span>.<span class="ident">tunables</span>.<span class="ident">interruptable</span> <span class="op">=</span> <span class="ident">enable</span>;
-        <span class="self">self</span>
-    }
-
     <span class="doccomment">/// Configures whether execution of WebAssembly will &quot;consume fuel&quot; to</span>
     <span class="doccomment">/// either halt or yield execution as desired.</span>
     <span class="doccomment">///</span>
-    <span class="doccomment">/// This option is similar in purpose to [`Config::interruptable`] where</span>
-    <span class="doccomment">/// you can prevent infinitely-executing WebAssembly code. The difference</span>
-    <span class="doccomment">/// is that this option allows deterministic execution of WebAssembly code</span>
-    <span class="doccomment">/// by instrumenting generated code consume fuel as it executes. When fuel</span>
-    <span class="doccomment">/// runs out the behavior is defined by configuration within a [`Store`],</span>
-    <span class="doccomment">/// and by default a trap is raised.</span>
+    <span class="doccomment">/// This can be used to deterministically prevent infinitely-executing</span>
+    <span class="doccomment">/// WebAssembly code by instrumenting generated code to consume fuel as it</span>
+    <span class="doccomment">/// executes. When fuel runs out the behavior is defined by configuration</span>
+    <span class="doccomment">/// within a [`Store`], and by default a trap is raised.</span>
     <span class="doccomment">///</span>
     <span class="doccomment">/// Note that a [`Store`] starts with no fuel, so if you enable this option</span>
     <span class="doccomment">/// you&#39;ll have to be sure to pour some fuel into [`Store`] before</span>
@@ -1833,23 +1864,27 @@
     <span class="doccomment">///</span>
     <span class="doccomment">/// The [`Store`](crate::Store) tracks the deadline, and controls</span>
     <span class="doccomment">/// what happens when the deadline is reached during</span>
-    <span class="doccomment">/// execution. Two behaviors are possible:</span>
+    <span class="doccomment">/// execution. Several behaviors are possible:</span>
     <span class="doccomment">///</span>
     <span class="doccomment">/// - Trap if code is executing when the epoch deadline is</span>
     <span class="doccomment">///   met. See</span>
     <span class="doccomment">///   [`Store::epoch_deadline_trap`](crate::Store::epoch_deadline_trap).</span>
     <span class="doccomment">///</span>
+    <span class="doccomment">/// - Call an arbitrary function. This function may chose to trap or</span>
+    <span class="doccomment">///   increment the epoch. See</span>
+    <span class="doccomment">///   [`Store::epoch_deadline_callback`](crate::Store::epoch_deadline_callback).</span>
+    <span class="doccomment">///</span>
     <span class="doccomment">/// - Yield to the executor loop, then resume when the future is</span>
     <span class="doccomment">///   next polled. See</span>
     <span class="doccomment">///   [`Store::epoch_deadline_async_yield_and_update`](crate::Store::epoch_deadline_async_yield_and_update).</span>
     <span class="doccomment">///</span>
-    <span class="doccomment">/// The first is the default; set the second for the timeslicing</span>
-    <span class="doccomment">/// behavior described above.</span>
+    <span class="doccomment">/// Trapping is the default. The yielding behaviour may be used for</span>
+    <span class="doccomment">/// the timeslicing behavior described above.</span>
     <span class="doccomment">///</span>
-    <span class="doccomment">/// This feature is available with or without async</span>
-    <span class="doccomment">/// support. However, without async support, only the trapping</span>
-    <span class="doccomment">/// behavior is available. In this mode, epoch-based interruption</span>
-    <span class="doccomment">/// can serve as a simple external-interruption mechanism.</span>
+    <span class="doccomment">/// This feature is available with or without async support.</span>
+    <span class="doccomment">/// However, without async support, the timeslicing behaviour is</span>
+    <span class="doccomment">/// not available. This means epoch-based interruption can only</span>
+    <span class="doccomment">/// serve as a simple external-interruption mechanism.</span>
     <span class="doccomment">///</span>
     <span class="doccomment">/// An initial deadline can be set before executing code by</span>
     <span class="doccomment">/// calling</span>
@@ -1877,6 +1912,7 @@
     <span class="doccomment">/// - [`Engine::increment_epoch`](crate::Engine::increment_epoch)</span>
     <span class="doccomment">/// - [`Store::set_epoch_deadline`](crate::Store::set_epoch_deadline)</span>
     <span class="doccomment">/// - [`Store::epoch_deadline_trap`](crate::Store::epoch_deadline_trap)</span>
+    <span class="doccomment">/// - [`Store::epoch_deadline_callback`](crate::Store::epoch_deadline_callback)</span>
     <span class="doccomment">/// - [`Store::epoch_deadline_async_yield_and_update`](crate::Store::epoch_deadline_async_yield_and_update)</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">epoch_interruption</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="ident">enable</span>: <span class="ident">bool</span>) -&gt; <span class="kw-2">&amp;mut</span> <span class="self">Self</span> {
         <span class="self">self</span>.<span class="ident">tunables</span>.<span class="ident">epoch_interruption</span> <span class="op">=</span> <span class="ident">enable</span>;
@@ -1976,8 +2012,7 @@
     <span class="doccomment">/// Note that enabling the reference types feature will also enable the bulk</span>
     <span class="doccomment">/// memory feature.</span>
     <span class="doccomment">///</span>
-    <span class="doccomment">/// This is `true` by default on x86-64, and `false` by default on other</span>
-    <span class="doccomment">/// architectures.</span>
+    <span class="doccomment">/// This feature is `true` by default.</span>
     <span class="doccomment">///</span>
     <span class="doccomment">/// [proposal]: https://github.com/webassembly/reference-types</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">wasm_reference_types</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="ident">enable</span>: <span class="ident">bool</span>) -&gt; <span class="kw-2">&amp;mut</span> <span class="self">Self</span> {
@@ -1987,6 +2022,17 @@
         {
             <span class="self">self</span>.<span class="ident">compiler</span>
                 .<span class="ident">set</span>(<span class="string">&quot;enable_safepoints&quot;</span>, <span class="kw">if</span> <span class="ident">enable</span> { <span class="string">&quot;true&quot;</span> } <span class="kw">else</span> { <span class="string">&quot;false&quot;</span> })
+                .<span class="ident">unwrap</span>();
+            <span class="comment">// unwind_info must be enabled when either backtraces or reference types are enabled:</span>
+            <span class="self">self</span>.<span class="ident">compiler</span>
+                .<span class="ident">set</span>(
+                    <span class="string">&quot;unwind_info&quot;</span>,
+                    <span class="kw">if</span> <span class="ident">enable</span> <span class="op">|</span><span class="op">|</span> <span class="self">self</span>.<span class="ident">wasm_backtrace</span> {
+                        <span class="string">&quot;true&quot;</span>
+                    } <span class="kw">else</span> {
+                        <span class="string">&quot;false&quot;</span>
+                    },
+                )
                 .<span class="ident">unwrap</span>();
         }
 
@@ -2068,20 +2114,6 @@
         <span class="self">self</span>
     }
 
-    <span class="doccomment">/// Configures whether the WebAssembly module linking [proposal] will</span>
-    <span class="doccomment">/// be enabled for compilation.</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// Note that development of this feature is still underway, so enabling</span>
-    <span class="doccomment">/// this is likely to be full of bugs.</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// This is `false` by default.</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// [proposal]: https://github.com/webassembly/module-linking</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">wasm_module_linking</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="ident">enable</span>: <span class="ident">bool</span>) -&gt; <span class="kw-2">&amp;mut</span> <span class="self">Self</span> {
-        <span class="self">self</span>.<span class="ident">features</span>.<span class="ident">module_linking</span> <span class="op">=</span> <span class="ident">enable</span>;
-        <span class="self">self</span>
-    }
-
     <span class="doccomment">/// Configures whether the WebAssembly memory64 [proposal] will</span>
     <span class="doccomment">/// be enabled for compilation.</span>
     <span class="doccomment">///</span>
@@ -2094,6 +2126,20 @@
     <span class="doccomment">/// [proposal]: https://github.com/webassembly/memory64</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">wasm_memory64</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="ident">enable</span>: <span class="ident">bool</span>) -&gt; <span class="kw-2">&amp;mut</span> <span class="self">Self</span> {
         <span class="self">self</span>.<span class="ident">features</span>.<span class="ident">memory64</span> <span class="op">=</span> <span class="ident">enable</span>;
+        <span class="self">self</span>
+    }
+
+    <span class="doccomment">/// Configures whether the WebAssembly component-model [proposal] will</span>
+    <span class="doccomment">/// be enabled for compilation.</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// Note that this feature is a work-in-progress and is incomplete.</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// This is `false` by default.</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// [proposal]: https://github.com/webassembly/component-model</span>
+    <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;component-model&quot;</span>)]</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">wasm_component_model</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="ident">enable</span>: <span class="ident">bool</span>) -&gt; <span class="kw-2">&amp;mut</span> <span class="self">Self</span> {
+        <span class="self">self</span>.<span class="ident">features</span>.<span class="ident">component_model</span> <span class="op">=</span> <span class="ident">enable</span>;
         <span class="self">self</span>
     }
 
@@ -2299,27 +2345,6 @@
     <span class="doccomment">/// the virtual memory allocations of linear memories.</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">allocation_strategy</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="ident">strategy</span>: <span class="ident">InstanceAllocationStrategy</span>) -&gt; <span class="kw-2">&amp;mut</span> <span class="self">Self</span> {
         <span class="self">self</span>.<span class="ident">allocation_strategy</span> <span class="op">=</span> <span class="ident">strategy</span>;
-        <span class="self">self</span>
-    }
-
-    <span class="doccomment">/// Sets whether or not an attempt is made to initialize linear memories by page.</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// This setting is `false` by default and Wasmtime initializes linear memories</span>
-    <span class="doccomment">/// by copying individual data segments from the compiled module.</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// Setting this to `true` will cause compilation to attempt to organize the</span>
-    <span class="doccomment">/// data segments into WebAssembly pages and linear memories are initialized by</span>
-    <span class="doccomment">/// copying each page rather than individual data segments.</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// Modules that import a memory or have data segments that use a global base</span>
-    <span class="doccomment">/// will continue to be initialized by copying each data segment individually.</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// When combined with the `uffd` feature on Linux, this will allow Wasmtime</span>
-    <span class="doccomment">/// to delay initialization of a linear memory page until it is accessed</span>
-    <span class="doccomment">/// for the first time during WebAssembly execution; this may improve</span>
-    <span class="doccomment">/// instantiation performance as a result.</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">paged_memory_initialization</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="ident">value</span>: <span class="ident">bool</span>) -&gt; <span class="kw-2">&amp;mut</span> <span class="self">Self</span> {
-        <span class="self">self</span>.<span class="ident">paged_memory_initialization</span> <span class="op">=</span> <span class="ident">value</span>;
         <span class="self">self</span>
     }
 
@@ -2676,6 +2701,33 @@
         <span class="self">self</span>
     }
 
+    <span class="doccomment">/// A configuration option to force the usage of `memfd_create` on Linux to</span>
+    <span class="doccomment">/// be used as the backing source for a module&#39;s initial memory image.</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// When [`Config::memory_init_cow`] is enabled, which is enabled by</span>
+    <span class="doccomment">/// default, module memory initialization images are taken from a module&#39;s</span>
+    <span class="doccomment">/// original mmap if possible. If a precompiled module was loaded from disk</span>
+    <span class="doccomment">/// this means that the disk&#39;s file is used as an mmap source for the</span>
+    <span class="doccomment">/// initial linear memory contents. This option can be used to force, on</span>
+    <span class="doccomment">/// Linux, that instead of using the original file on disk a new in-memory</span>
+    <span class="doccomment">/// file is created with `memfd_create` to hold the contents of the initial</span>
+    <span class="doccomment">/// image.</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// This option can be used to avoid possibly loading the contents of memory</span>
+    <span class="doccomment">/// from disk through a page fault. Instead with `memfd_create` the contents</span>
+    <span class="doccomment">/// of memory are always in RAM, meaning that even page faults which</span>
+    <span class="doccomment">/// initially populate a wasm linear memory will only work with RAM instead</span>
+    <span class="doccomment">/// of ever hitting the disk that the original precompiled module is stored</span>
+    <span class="doccomment">/// on.</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// This option is disabled by default.</span>
+    <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;memory-init-cow&quot;</span>)]</span>
+    <span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">nightlydoc</span>, <span class="ident">doc</span>(<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;memory-init-cow&quot;</span>)))]</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">force_memory_init_memfd</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="ident">enable</span>: <span class="ident">bool</span>) -&gt; <span class="kw-2">&amp;mut</span> <span class="self">Self</span> {
+        <span class="self">self</span>.<span class="ident">force_memory_init_memfd</span> <span class="op">=</span> <span class="ident">enable</span>;
+        <span class="self">self</span>
+    }
+
     <span class="doccomment">/// Configures the &quot;guaranteed dense image size&quot; for copy-on-write</span>
     <span class="doccomment">/// initialized memories.</span>
     <span class="doccomment">///</span>
@@ -2778,15 +2830,16 @@
             <span class="ident">mem_creator</span>: <span class="self">self</span>.<span class="ident">mem_creator</span>.<span class="ident">clone</span>(),
             <span class="ident">allocation_strategy</span>: <span class="self">self</span>.<span class="ident">allocation_strategy</span>.<span class="ident">clone</span>(),
             <span class="ident">max_wasm_stack</span>: <span class="self">self</span>.<span class="ident">max_wasm_stack</span>,
+            <span class="ident">wasm_backtrace</span>: <span class="self">self</span>.<span class="ident">wasm_backtrace</span>,
             <span class="ident">wasm_backtrace_details_env_used</span>: <span class="self">self</span>.<span class="ident">wasm_backtrace_details_env_used</span>,
             <span class="ident">async_support</span>: <span class="self">self</span>.<span class="ident">async_support</span>,
             <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;async&quot;</span>)]</span>
             <span class="ident">async_stack_size</span>: <span class="self">self</span>.<span class="ident">async_stack_size</span>,
             <span class="ident">module_version</span>: <span class="self">self</span>.<span class="ident">module_version</span>.<span class="ident">clone</span>(),
             <span class="ident">parallel_compilation</span>: <span class="self">self</span>.<span class="ident">parallel_compilation</span>,
-            <span class="ident">paged_memory_initialization</span>: <span class="self">self</span>.<span class="ident">paged_memory_initialization</span>,
             <span class="ident">memory_init_cow</span>: <span class="self">self</span>.<span class="ident">memory_init_cow</span>,
             <span class="ident">memory_guaranteed_dense_image_size</span>: <span class="self">self</span>.<span class="ident">memory_guaranteed_dense_image_size</span>,
+            <span class="ident">force_memory_init_memfd</span>: <span class="self">self</span>.<span class="ident">force_memory_init_memfd</span>,
         }
     }
 }
@@ -2801,7 +2854,6 @@
             .<span class="ident">field</span>(<span class="string">&quot;wasm_bulk_memory&quot;</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">features</span>.<span class="ident">bulk_memory</span>)
             .<span class="ident">field</span>(<span class="string">&quot;wasm_simd&quot;</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">features</span>.<span class="ident">simd</span>)
             .<span class="ident">field</span>(<span class="string">&quot;wasm_multi_value&quot;</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">features</span>.<span class="ident">multi_value</span>)
-            .<span class="ident">field</span>(<span class="string">&quot;wasm_module_linking&quot;</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">features</span>.<span class="ident">module_linking</span>)
             .<span class="ident">field</span>(
                 <span class="string">&quot;static_memory_maximum_size&quot;</span>,
                 <span class="kw-2">&amp;</span>(<span class="ident">u64::from</span>(<span class="self">self</span>.<span class="ident">tunables</span>.<span class="ident">static_memory_bound</span>)

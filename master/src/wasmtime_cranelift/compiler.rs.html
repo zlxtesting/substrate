@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/cargo_home/registry/src/github.com-1ecc6299db9ec823/wasmtime-cranelift-0.35.3/src/compiler.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>compiler.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" type="text/css" href="../../normalize.css"><link rel="stylesheet" type="text/css" href="../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../ayu.css" disabled><link rel="stylesheet" type="text/css" href="../../dark.css" disabled><link rel="stylesheet" type="text/css" href="../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../storage.js"></script><script src="../../crates.js"></script><script defer src="../../main.js"></script><script defer src="../../source-script.js"></script><script defer src="../../source-files.js"></script>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/cargo_home/registry/src/github.com-1ecc6299db9ec823/wasmtime-cranelift-0.38.0/src/compiler.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>compiler.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" type="text/css" href="../../normalize.css"><link rel="stylesheet" type="text/css" href="../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../ayu.css" disabled><link rel="stylesheet" type="text/css" href="../../dark.css" disabled><link rel="stylesheet" type="text/css" href="../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../storage.js"></script><script src="../../crates.js"></script><script defer src="../../main.js"></script><script defer src="../../source-script.js"></script><script defer src="../../source-files.js"></script>
     <noscript><link rel="stylesheet" href="../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="sidebar-logo" href="../../wasmtime_cranelift/index.html"><div class="logo-container"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></div>
         </a><h2 class="location"></h2>
     </nav>
@@ -737,16 +737,179 @@
 <span id="732">732</span>
 <span id="733">733</span>
 <span id="734">734</span>
+<span id="735">735</span>
+<span id="736">736</span>
+<span id="737">737</span>
+<span id="738">738</span>
+<span id="739">739</span>
+<span id="740">740</span>
+<span id="741">741</span>
+<span id="742">742</span>
+<span id="743">743</span>
+<span id="744">744</span>
+<span id="745">745</span>
+<span id="746">746</span>
+<span id="747">747</span>
+<span id="748">748</span>
+<span id="749">749</span>
+<span id="750">750</span>
+<span id="751">751</span>
+<span id="752">752</span>
+<span id="753">753</span>
+<span id="754">754</span>
+<span id="755">755</span>
+<span id="756">756</span>
+<span id="757">757</span>
+<span id="758">758</span>
+<span id="759">759</span>
+<span id="760">760</span>
+<span id="761">761</span>
+<span id="762">762</span>
+<span id="763">763</span>
+<span id="764">764</span>
+<span id="765">765</span>
+<span id="766">766</span>
+<span id="767">767</span>
+<span id="768">768</span>
+<span id="769">769</span>
+<span id="770">770</span>
+<span id="771">771</span>
+<span id="772">772</span>
+<span id="773">773</span>
+<span id="774">774</span>
+<span id="775">775</span>
+<span id="776">776</span>
+<span id="777">777</span>
+<span id="778">778</span>
+<span id="779">779</span>
+<span id="780">780</span>
+<span id="781">781</span>
+<span id="782">782</span>
+<span id="783">783</span>
+<span id="784">784</span>
+<span id="785">785</span>
+<span id="786">786</span>
+<span id="787">787</span>
+<span id="788">788</span>
+<span id="789">789</span>
+<span id="790">790</span>
+<span id="791">791</span>
+<span id="792">792</span>
+<span id="793">793</span>
+<span id="794">794</span>
+<span id="795">795</span>
+<span id="796">796</span>
+<span id="797">797</span>
+<span id="798">798</span>
+<span id="799">799</span>
+<span id="800">800</span>
+<span id="801">801</span>
+<span id="802">802</span>
+<span id="803">803</span>
+<span id="804">804</span>
+<span id="805">805</span>
+<span id="806">806</span>
+<span id="807">807</span>
+<span id="808">808</span>
+<span id="809">809</span>
+<span id="810">810</span>
+<span id="811">811</span>
+<span id="812">812</span>
+<span id="813">813</span>
+<span id="814">814</span>
+<span id="815">815</span>
+<span id="816">816</span>
+<span id="817">817</span>
+<span id="818">818</span>
+<span id="819">819</span>
+<span id="820">820</span>
+<span id="821">821</span>
+<span id="822">822</span>
+<span id="823">823</span>
+<span id="824">824</span>
+<span id="825">825</span>
+<span id="826">826</span>
+<span id="827">827</span>
+<span id="828">828</span>
+<span id="829">829</span>
+<span id="830">830</span>
+<span id="831">831</span>
+<span id="832">832</span>
+<span id="833">833</span>
+<span id="834">834</span>
+<span id="835">835</span>
+<span id="836">836</span>
+<span id="837">837</span>
+<span id="838">838</span>
+<span id="839">839</span>
+<span id="840">840</span>
+<span id="841">841</span>
+<span id="842">842</span>
+<span id="843">843</span>
+<span id="844">844</span>
+<span id="845">845</span>
+<span id="846">846</span>
+<span id="847">847</span>
+<span id="848">848</span>
+<span id="849">849</span>
+<span id="850">850</span>
+<span id="851">851</span>
+<span id="852">852</span>
+<span id="853">853</span>
+<span id="854">854</span>
+<span id="855">855</span>
+<span id="856">856</span>
+<span id="857">857</span>
+<span id="858">858</span>
+<span id="859">859</span>
+<span id="860">860</span>
+<span id="861">861</span>
+<span id="862">862</span>
+<span id="863">863</span>
+<span id="864">864</span>
+<span id="865">865</span>
+<span id="866">866</span>
+<span id="867">867</span>
+<span id="868">868</span>
+<span id="869">869</span>
+<span id="870">870</span>
+<span id="871">871</span>
+<span id="872">872</span>
+<span id="873">873</span>
+<span id="874">874</span>
+<span id="875">875</span>
+<span id="876">876</span>
+<span id="877">877</span>
+<span id="878">878</span>
+<span id="879">879</span>
+<span id="880">880</span>
+<span id="881">881</span>
+<span id="882">882</span>
+<span id="883">883</span>
+<span id="884">884</span>
+<span id="885">885</span>
+<span id="886">886</span>
+<span id="887">887</span>
+<span id="888">888</span>
+<span id="889">889</span>
+<span id="890">890</span>
+<span id="891">891</span>
+<span id="892">892</span>
+<span id="893">893</span>
+<span id="894">894</span>
+<span id="895">895</span>
+<span id="896">896</span>
+<span id="897">897</span>
 </pre><pre class="rust"><code><span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::builder::LinkOptions</span>;
-<span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::debug::ModuleMemoryOffset</span>;
+<span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::debug</span>::{<span class="ident">DwarfSectionRelocTarget</span>, <span class="ident">ModuleMemoryOffset</span>};
 <span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::func_environ</span>::{<span class="ident">get_func_name</span>, <span class="ident">FuncEnvironment</span>};
-<span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::obj::ObjectBuilder</span>;
+<span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::obj::ModuleTextBuilder</span>;
 <span class="kw">use</span> <span class="kw">crate</span>::{
     <span class="ident">blank_sig</span>, <span class="ident">func_signature</span>, <span class="ident">indirect_signature</span>, <span class="ident">value_type</span>, <span class="ident">wasmtime_call_conv</span>,
-    <span class="ident">CompiledFunction</span>, <span class="ident">FunctionAddressMap</span>, <span class="ident">Relocation</span>, <span class="ident">RelocationTarget</span>,
+    <span class="ident">CompiledFunction</span>, <span class="ident">CompiledFunctions</span>, <span class="ident">FunctionAddressMap</span>, <span class="ident">Relocation</span>, <span class="ident">RelocationTarget</span>,
 };
 <span class="kw">use</span> <span class="ident">anyhow</span>::{<span class="ident">Context</span> <span class="kw">as</span> <span class="kw">_</span>, <span class="prelude-ty">Result</span>};
-<span class="kw">use</span> <span class="ident">cranelift_codegen::ir</span>::{<span class="self">self</span>, <span class="ident">ExternalName</span>, <span class="ident">InstBuilder</span>, <span class="ident">MemFlags</span>};
+<span class="kw">use</span> <span class="ident">cranelift_codegen::ir</span>::{<span class="self">self</span>, <span class="ident">ExternalName</span>, <span class="ident">InstBuilder</span>, <span class="ident">MemFlags</span>, <span class="ident">Value</span>};
 <span class="kw">use</span> <span class="ident">cranelift_codegen::isa::TargetIsa</span>;
 <span class="kw">use</span> <span class="ident">cranelift_codegen::print_errors::pretty_error</span>;
 <span class="kw">use</span> <span class="ident">cranelift_codegen::Context</span>;
@@ -758,23 +921,42 @@
     <span class="ident">DefinedFuncIndex</span>, <span class="ident">DefinedMemoryIndex</span>, <span class="ident">FuncIndex</span>, <span class="ident">FuncTranslator</span>, <span class="ident">MemoryIndex</span>, <span class="ident">SignatureIndex</span>,
     <span class="ident">WasmFuncType</span>,
 };
-<span class="kw">use</span> <span class="ident">object::write::Object</span>;
+<span class="kw">use</span> <span class="ident">object::write</span>::{<span class="ident">Object</span>, <span class="ident">StandardSegment</span>, <span class="ident">SymbolId</span>};
+<span class="kw">use</span> <span class="ident">object</span>::{<span class="ident">RelocationEncoding</span>, <span class="ident">RelocationKind</span>, <span class="ident">SectionKind</span>};
 <span class="kw">use</span> <span class="ident">std::any::Any</span>;
 <span class="kw">use</span> <span class="ident">std::cmp</span>;
 <span class="kw">use</span> <span class="ident">std::collections::BTreeMap</span>;
+<span class="kw">use</span> <span class="ident">std::collections::HashMap</span>;
 <span class="kw">use</span> <span class="ident">std::convert::TryFrom</span>;
 <span class="kw">use</span> <span class="ident">std::mem</span>;
 <span class="kw">use</span> <span class="ident">std::sync::Mutex</span>;
 <span class="kw">use</span> <span class="ident">wasmtime_environ</span>::{
     <span class="ident">AddressMapSection</span>, <span class="ident">CompileError</span>, <span class="ident">FilePos</span>, <span class="ident">FlagValue</span>, <span class="ident">FunctionBodyData</span>, <span class="ident">FunctionInfo</span>,
-    <span class="ident">InstructionAddressMap</span>, <span class="ident">Module</span>, <span class="ident">ModuleTranslation</span>, <span class="ident">StackMapInformation</span>, <span class="ident">Trampoline</span>, <span class="ident">TrapCode</span>,
-    <span class="ident">TrapEncodingBuilder</span>, <span class="ident">TrapInformation</span>, <span class="ident">Tunables</span>, <span class="ident">TypeTables</span>, <span class="ident">VMOffsets</span>,
+    <span class="ident">InstructionAddressMap</span>, <span class="ident">Module</span>, <span class="ident">ModuleTranslation</span>, <span class="ident">ModuleTypes</span>, <span class="ident">StackMapInformation</span>, <span class="ident">Trampoline</span>,
+    <span class="ident">TrapCode</span>, <span class="ident">TrapEncodingBuilder</span>, <span class="ident">TrapInformation</span>, <span class="ident">Tunables</span>, <span class="ident">VMOffsets</span>,
 };
+
+<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;component-model&quot;</span>)]</span>
+<span class="kw">mod</span> <span class="ident">component</span>;
+
+<span class="kw">struct</span> <span class="ident">CompilerContext</span> {
+    <span class="ident">func_translator</span>: <span class="ident">FuncTranslator</span>,
+    <span class="ident">codegen_context</span>: <span class="ident">Context</span>,
+}
+
+<span class="kw">impl</span> <span class="ident">Default</span> <span class="kw">for</span> <span class="ident">CompilerContext</span> {
+    <span class="kw">fn</span> <span class="ident">default</span>() -&gt; <span class="self">Self</span> {
+        <span class="self">Self</span> {
+            <span class="ident">func_translator</span>: <span class="ident">FuncTranslator::new</span>(),
+            <span class="ident">codegen_context</span>: <span class="ident">Context::new</span>(),
+        }
+    }
+}
 
 <span class="doccomment">/// A compiler that compiles a WebAssembly module with Compiler, translating</span>
 <span class="doccomment">/// the Wasm to Compiler IR, optimizing it and then translating to assembly.</span>
 <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">struct</span> <span class="ident">Compiler</span> {
-    <span class="ident">translators</span>: <span class="ident">Mutex</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">FuncTranslator</span><span class="op">&gt;</span><span class="op">&gt;</span>,
+    <span class="ident">contexts</span>: <span class="ident">Mutex</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">CompilerContext</span><span class="op">&gt;</span><span class="op">&gt;</span>,
     <span class="ident">isa</span>: <span class="ident">Box</span><span class="op">&lt;</span><span class="kw">dyn</span> <span class="ident">TargetIsa</span><span class="op">&gt;</span>,
     <span class="ident">linkopts</span>: <span class="ident">LinkOptions</span>,
 }
@@ -782,19 +964,24 @@
 <span class="kw">impl</span> <span class="ident">Compiler</span> {
     <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">new</span>(<span class="ident">isa</span>: <span class="ident">Box</span><span class="op">&lt;</span><span class="kw">dyn</span> <span class="ident">TargetIsa</span><span class="op">&gt;</span>, <span class="ident">linkopts</span>: <span class="ident">LinkOptions</span>) -&gt; <span class="ident">Compiler</span> {
         <span class="ident">Compiler</span> {
-            <span class="ident">translators</span>: <span class="ident">Default::default</span>(),
+            <span class="ident">contexts</span>: <span class="ident">Default::default</span>(),
             <span class="ident">isa</span>,
             <span class="ident">linkopts</span>,
         }
     }
 
-    <span class="kw">fn</span> <span class="ident">take_translator</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">FuncTranslator</span> {
-        <span class="kw">let</span> <span class="ident">candidate</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">translators</span>.<span class="ident">lock</span>().<span class="ident">unwrap</span>().<span class="ident">pop</span>();
-        <span class="ident">candidate</span>.<span class="ident">unwrap_or_else</span>(<span class="ident">FuncTranslator::new</span>)
+    <span class="kw">fn</span> <span class="ident">take_context</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">CompilerContext</span> {
+        <span class="kw">let</span> <span class="ident">candidate</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">contexts</span>.<span class="ident">lock</span>().<span class="ident">unwrap</span>().<span class="ident">pop</span>();
+        <span class="ident">candidate</span>
+            .<span class="ident">map</span>(<span class="op">|</span><span class="kw-2">mut</span> <span class="ident">ctx</span><span class="op">|</span> {
+                <span class="ident">ctx</span>.<span class="ident">codegen_context</span>.<span class="ident">clear</span>();
+                <span class="ident">ctx</span>
+            })
+            .<span class="ident">unwrap_or_else</span>(<span class="ident">Default::default</span>)
     }
 
-    <span class="kw">fn</span> <span class="ident">save_translator</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">translator</span>: <span class="ident">FuncTranslator</span>) {
-        <span class="self">self</span>.<span class="ident">translators</span>.<span class="ident">lock</span>().<span class="ident">unwrap</span>().<span class="ident">push</span>(<span class="ident">translator</span>);
+    <span class="kw">fn</span> <span class="ident">save_context</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">ctx</span>: <span class="ident">CompilerContext</span>) {
+        <span class="self">self</span>.<span class="ident">contexts</span>.<span class="ident">lock</span>().<span class="ident">unwrap</span>().<span class="ident">push</span>(<span class="ident">ctx</span>);
     }
 
     <span class="kw">fn</span> <span class="ident">get_function_address_map</span>(
@@ -848,12 +1035,17 @@
         <span class="ident">func_index</span>: <span class="ident">DefinedFuncIndex</span>,
         <span class="kw-2">mut</span> <span class="ident">input</span>: <span class="ident">FunctionBodyData</span><span class="op">&lt;</span><span class="lifetime">&#39;_</span><span class="op">&gt;</span>,
         <span class="ident">tunables</span>: <span class="kw-2">&amp;</span><span class="ident">Tunables</span>,
-        <span class="ident">types</span>: <span class="kw-2">&amp;</span><span class="ident">TypeTables</span>,
+        <span class="ident">types</span>: <span class="kw-2">&amp;</span><span class="ident">ModuleTypes</span>,
     ) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">Box</span><span class="op">&lt;</span><span class="kw">dyn</span> <span class="ident">Any</span> <span class="op">+</span> <span class="ident">Send</span><span class="op">&gt;</span>, <span class="ident">CompileError</span><span class="op">&gt;</span> {
         <span class="kw">let</span> <span class="ident">isa</span> <span class="op">=</span> <span class="kw-2">&amp;</span><span class="kw-2">*</span><span class="self">self</span>.<span class="ident">isa</span>;
         <span class="kw">let</span> <span class="ident">module</span> <span class="op">=</span> <span class="kw-2">&amp;</span><span class="ident">translation</span>.<span class="ident">module</span>;
         <span class="kw">let</span> <span class="ident">func_index</span> <span class="op">=</span> <span class="ident">module</span>.<span class="ident">func_index</span>(<span class="ident">func_index</span>);
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">context</span> <span class="op">=</span> <span class="ident">Context::new</span>();
+
+        <span class="kw">let</span> <span class="ident">CompilerContext</span> {
+            <span class="kw-2">mut</span> <span class="ident">func_translator</span>,
+            <span class="ident">codegen_context</span>: <span class="kw-2">mut</span> <span class="ident">context</span>,
+        } <span class="op">=</span> <span class="self">self</span>.<span class="ident">take_context</span>();
+
         <span class="ident">context</span>.<span class="ident">func</span>.<span class="ident">name</span> <span class="op">=</span> <span class="ident">get_func_name</span>(<span class="ident">func_index</span>);
         <span class="ident">context</span>.<span class="ident">func</span>.<span class="ident">signature</span> <span class="op">=</span> <span class="ident">func_signature</span>(<span class="ident">isa</span>, <span class="ident">translation</span>, <span class="ident">types</span>, <span class="ident">func_index</span>);
         <span class="kw">if</span> <span class="ident">tunables</span>.<span class="ident">generate_native_debuginfo</span> {
@@ -868,7 +1060,7 @@
         <span class="comment">// needed by `ir::Function`.</span>
         <span class="comment">//</span>
         <span class="comment">// Otherwise our stack limit is specially calculated from the vmctx</span>
-        <span class="comment">// argument, where we need to load the `*const VMInterrupts`</span>
+        <span class="comment">// argument, where we need to load the `*const VMRuntimeLimits`</span>
         <span class="comment">// pointer, and then from that pointer we need to load the stack</span>
         <span class="comment">// limit itself. Note that manual register allocation is needed here</span>
         <span class="comment">// too due to how late in the process this codegen happens.</span>
@@ -880,7 +1072,7 @@
             .<span class="ident">create_global_value</span>(<span class="ident">ir::GlobalValueData::VMContext</span>);
         <span class="kw">let</span> <span class="ident">interrupts_ptr</span> <span class="op">=</span> <span class="ident">context</span>.<span class="ident">func</span>.<span class="ident">create_global_value</span>(<span class="ident">ir::GlobalValueData::Load</span> {
             <span class="ident">base</span>: <span class="ident">vmctx</span>,
-            <span class="ident">offset</span>: <span class="ident">i32::try_from</span>(<span class="ident">func_env</span>.<span class="ident">offsets</span>.<span class="ident">vmctx_interrupts</span>())
+            <span class="ident">offset</span>: <span class="ident">i32::try_from</span>(<span class="ident">func_env</span>.<span class="ident">offsets</span>.<span class="ident">vmctx_runtime_limits</span>())
                 .<span class="ident">unwrap</span>()
                 .<span class="ident">into</span>(),
             <span class="ident">global_type</span>: <span class="ident">isa</span>.<span class="ident">pointer_type</span>(),
@@ -888,21 +1080,19 @@
         });
         <span class="kw">let</span> <span class="ident">stack_limit</span> <span class="op">=</span> <span class="ident">context</span>.<span class="ident">func</span>.<span class="ident">create_global_value</span>(<span class="ident">ir::GlobalValueData::Load</span> {
             <span class="ident">base</span>: <span class="ident">interrupts_ptr</span>,
-            <span class="ident">offset</span>: <span class="ident">i32::try_from</span>(<span class="ident">func_env</span>.<span class="ident">offsets</span>.<span class="ident">vminterrupts_stack_limit</span>())
+            <span class="ident">offset</span>: <span class="ident">i32::try_from</span>(<span class="ident">func_env</span>.<span class="ident">offsets</span>.<span class="ident">vmruntime_limits_stack_limit</span>())
                 .<span class="ident">unwrap</span>()
                 .<span class="ident">into</span>(),
             <span class="ident">global_type</span>: <span class="ident">isa</span>.<span class="ident">pointer_type</span>(),
             <span class="ident">readonly</span>: <span class="bool-val">false</span>,
         });
         <span class="ident">context</span>.<span class="ident">func</span>.<span class="ident">stack_limit</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">stack_limit</span>);
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">func_translator</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">take_translator</span>();
         <span class="ident">func_translator</span>.<span class="ident">translate_body</span>(
             <span class="kw-2">&amp;mut</span> <span class="ident">input</span>.<span class="ident">validator</span>,
             <span class="ident">input</span>.<span class="ident">body</span>.<span class="ident">clone</span>(),
             <span class="kw-2">&amp;mut</span> <span class="ident">context</span>.<span class="ident">func</span>,
             <span class="kw-2">&amp;mut</span> <span class="ident">func_env</span>,
         )<span class="question-mark">?</span>;
-        <span class="self">self</span>.<span class="ident">save_translator</span>(<span class="ident">func_translator</span>);
 
         <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">code_buf</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">u8</span><span class="op">&gt;</span> <span class="op">=</span> <span class="ident">Vec::new</span>();
         <span class="ident">context</span>
@@ -927,9 +1117,13 @@
 
         <span class="kw">let</span> <span class="ident">stack_maps</span> <span class="op">=</span> <span class="ident">mach_stack_maps_to_stack_maps</span>(<span class="ident">result</span>.<span class="ident">buffer</span>.<span class="ident">stack_maps</span>());
 
-        <span class="kw">let</span> <span class="ident">unwind_info</span> <span class="op">=</span> <span class="ident">context</span>
-            .<span class="ident">create_unwind_info</span>(<span class="ident">isa</span>)
-            .<span class="ident">map_err</span>(<span class="op">|</span><span class="ident">error</span><span class="op">|</span> <span class="ident">CompileError::Codegen</span>(<span class="ident">pretty_error</span>(<span class="kw-2">&amp;</span><span class="ident">context</span>.<span class="ident">func</span>, <span class="ident">error</span>)))<span class="question-mark">?</span>;
+        <span class="kw">let</span> <span class="ident">unwind_info</span> <span class="op">=</span> <span class="kw">if</span> <span class="ident">isa</span>.<span class="ident">flags</span>().<span class="ident">unwind_info</span>() {
+            <span class="ident">context</span>
+                .<span class="ident">create_unwind_info</span>(<span class="ident">isa</span>)
+                .<span class="ident">map_err</span>(<span class="op">|</span><span class="ident">error</span><span class="op">|</span> <span class="ident">CompileError::Codegen</span>(<span class="ident">pretty_error</span>(<span class="kw-2">&amp;</span><span class="ident">context</span>.<span class="ident">func</span>, <span class="ident">error</span>)))<span class="question-mark">?</span>
+        } <span class="kw">else</span> {
+            <span class="prelude-val">None</span>
+        };
 
         <span class="kw">let</span> <span class="ident">address_transform</span> <span class="op">=</span>
             <span class="self">self</span>.<span class="ident">get_function_address_map</span>(<span class="kw-2">&amp;</span><span class="ident">context</span>, <span class="kw-2">&amp;</span><span class="ident">input</span>, <span class="ident">code_buf</span>.<span class="ident">len</span>() <span class="kw">as</span> <span class="ident">u32</span>, <span class="ident">tunables</span>);
@@ -952,11 +1146,19 @@
         <span class="macro">log::trace!</span>(<span class="string">&quot;{:?} timing info\n{}&quot;</span>, <span class="ident">func_index</span>, <span class="ident">timing</span>);
 
         <span class="kw">let</span> <span class="ident">length</span> <span class="op">=</span> <span class="ident">u32::try_from</span>(<span class="ident">code_buf</span>.<span class="ident">len</span>()).<span class="ident">unwrap</span>();
+
+        <span class="kw">let</span> <span class="ident">stack_slots</span> <span class="op">=</span> <span class="ident">std::mem::take</span>(<span class="kw-2">&amp;mut</span> <span class="ident">context</span>.<span class="ident">func</span>.<span class="ident">stack_slots</span>);
+
+        <span class="self">self</span>.<span class="ident">save_context</span>(<span class="ident">CompilerContext</span> {
+            <span class="ident">func_translator</span>,
+            <span class="ident">codegen_context</span>: <span class="ident">context</span>,
+        });
+
         <span class="prelude-val">Ok</span>(<span class="ident">Box::new</span>(<span class="ident">CompiledFunction</span> {
             <span class="ident">body</span>: <span class="ident">code_buf</span>,
             <span class="ident">relocations</span>: <span class="ident">func_relocs</span>,
             <span class="ident">value_labels_ranges</span>: <span class="ident">ranges</span>.<span class="ident">unwrap_or</span>(<span class="ident">Default::default</span>()),
-            <span class="ident">stack_slots</span>: <span class="ident">context</span>.<span class="ident">func</span>.<span class="ident">stack_slots</span>,
+            <span class="ident">stack_slots</span>,
             <span class="ident">unwind_info</span>,
             <span class="ident">traps</span>,
             <span class="ident">info</span>: <span class="ident">FunctionInfo</span> {
@@ -972,26 +1174,26 @@
     <span class="kw">fn</span> <span class="ident">emit_obj</span>(
         <span class="kw-2">&amp;</span><span class="self">self</span>,
         <span class="ident">translation</span>: <span class="kw-2">&amp;</span><span class="ident">ModuleTranslation</span>,
-        <span class="ident">types</span>: <span class="kw-2">&amp;</span><span class="ident">TypeTables</span>,
+        <span class="ident">types</span>: <span class="kw-2">&amp;</span><span class="ident">ModuleTypes</span>,
         <span class="ident">funcs</span>: <span class="ident">PrimaryMap</span><span class="op">&lt;</span><span class="ident">DefinedFuncIndex</span>, <span class="ident">Box</span><span class="op">&lt;</span><span class="kw">dyn</span> <span class="ident">Any</span> <span class="op">+</span> <span class="ident">Send</span><span class="op">&gt;</span><span class="op">&gt;</span>,
         <span class="ident">tunables</span>: <span class="kw-2">&amp;</span><span class="ident">Tunables</span>,
         <span class="ident">obj</span>: <span class="kw-2">&amp;mut</span> <span class="ident">Object</span><span class="op">&lt;</span><span class="lifetime">&#39;static</span><span class="op">&gt;</span>,
     ) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span>(<span class="ident">PrimaryMap</span><span class="op">&lt;</span><span class="ident">DefinedFuncIndex</span>, <span class="ident">FunctionInfo</span><span class="op">&gt;</span>, <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">Trampoline</span><span class="op">&gt;</span>)<span class="op">&gt;</span> {
-        <span class="kw">let</span> <span class="ident">funcs</span>: <span class="ident"><span class="kw">crate</span>::CompiledFunctions</span> <span class="op">=</span> <span class="ident">funcs</span>
+        <span class="kw">let</span> <span class="ident">funcs</span>: <span class="ident">CompiledFunctions</span> <span class="op">=</span> <span class="ident">funcs</span>
             .<span class="ident">into_iter</span>()
             .<span class="ident">map</span>(<span class="op">|</span>(<span class="ident">_i</span>, <span class="ident">f</span>)<span class="op">|</span> <span class="kw-2">*</span><span class="ident">f</span>.<span class="ident">downcast</span>().<span class="ident">unwrap</span>())
             .<span class="ident">collect</span>();
 
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">builder</span> <span class="op">=</span> <span class="ident">ObjectBuilder::new</span>(<span class="ident">obj</span>, <span class="kw-2">&amp;</span><span class="ident">translation</span>.<span class="ident">module</span>, <span class="kw-2">&amp;</span><span class="kw-2">*</span><span class="self">self</span>.<span class="ident">isa</span>);
+        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">builder</span> <span class="op">=</span> <span class="ident">ModuleTextBuilder::new</span>(<span class="ident">obj</span>, <span class="kw-2">&amp;</span><span class="ident">translation</span>.<span class="ident">module</span>, <span class="kw-2">&amp;</span><span class="kw-2">*</span><span class="self">self</span>.<span class="ident">isa</span>);
         <span class="kw">if</span> <span class="self">self</span>.<span class="ident">linkopts</span>.<span class="ident">force_jump_veneers</span> {
-            <span class="ident">builder</span>.<span class="ident">text</span>.<span class="ident">force_veneers</span>();
+            <span class="ident">builder</span>.<span class="ident">force_veneers</span>();
         }
         <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">addrs</span> <span class="op">=</span> <span class="ident">AddressMapSection::default</span>();
         <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">traps</span> <span class="op">=</span> <span class="ident">TrapEncodingBuilder::default</span>();
         <span class="kw">let</span> <span class="ident">compiled_trampolines</span> <span class="op">=</span> <span class="ident">translation</span>
             .<span class="ident">exported_signatures</span>
             .<span class="ident">iter</span>()
-            .<span class="ident">map</span>(<span class="op">|</span><span class="ident">i</span><span class="op">|</span> <span class="self">self</span>.<span class="ident">host_to_wasm_trampoline</span>(<span class="kw-2">&amp;</span><span class="ident">types</span>.<span class="ident">wasm_signatures</span>[<span class="kw-2">*</span><span class="ident">i</span>]))
+            .<span class="ident">map</span>(<span class="op">|</span><span class="ident">i</span><span class="op">|</span> <span class="self">self</span>.<span class="ident">host_to_wasm_trampoline</span>(<span class="kw-2">&amp;</span><span class="ident">types</span>[<span class="kw-2">*</span><span class="ident">i</span>]))
             .<span class="ident">collect</span>::<span class="op">&lt;</span><span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="kw">_</span><span class="op">&gt;</span>, <span class="kw">_</span><span class="op">&gt;</span><span class="op">&gt;</span>()<span class="question-mark">?</span>;
 
         <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">func_starts</span> <span class="op">=</span> <span class="ident">Vec::with_capacity</span>(<span class="ident">funcs</span>.<span class="ident">len</span>());
@@ -1002,11 +1204,7 @@
             }
             <span class="ident">traps</span>.<span class="ident">push</span>(<span class="ident">range</span>.<span class="ident">clone</span>(), <span class="kw-2">&amp;</span><span class="ident">func</span>.<span class="ident">traps</span>);
             <span class="ident">func_starts</span>.<span class="ident">push</span>(<span class="ident">range</span>.<span class="ident">start</span>);
-            <span class="kw">if</span> <span class="self">self</span>.<span class="ident">linkopts</span>.<span class="ident">padding_between_functions</span> <span class="op">&gt;</span> <span class="number">0</span> {
-                <span class="ident">builder</span>
-                    .<span class="ident">text</span>
-                    .<span class="ident">append</span>(<span class="bool-val">false</span>, <span class="kw-2">&amp;</span><span class="macro">vec!</span>[<span class="number">0</span>; <span class="self">self</span>.<span class="ident">linkopts</span>.<span class="ident">padding_between_functions</span>], <span class="number">1</span>);
-            }
+            <span class="ident">builder</span>.<span class="ident">append_padding</span>(<span class="self">self</span>.<span class="ident">linkopts</span>.<span class="ident">padding_between_functions</span>);
         }
 
         <span class="comment">// Build trampolines for every signature that can be used by this module.</span>
@@ -1019,40 +1217,9 @@
             <span class="ident">trampolines</span>.<span class="ident">push</span>(<span class="ident">builder</span>.<span class="ident">trampoline</span>(<span class="kw-2">*</span><span class="ident">i</span>, <span class="kw-2">&amp;</span><span class="ident">func</span>));
         }
 
-        <span class="ident">builder</span>.<span class="ident">unwind_info</span>();
+        <span class="kw">let</span> <span class="ident">symbols</span> <span class="op">=</span> <span class="ident">builder</span>.<span class="ident">finish</span>()<span class="question-mark">?</span>;
 
-        <span class="kw">if</span> <span class="ident">tunables</span>.<span class="ident">generate_native_debuginfo</span> <span class="op">&amp;&amp;</span> <span class="ident">funcs</span>.<span class="ident">len</span>() <span class="op">&gt;</span> <span class="number">0</span> {
-            <span class="kw">let</span> <span class="ident">ofs</span> <span class="op">=</span> <span class="ident">VMOffsets::new</span>(
-                <span class="self">self</span>.<span class="ident">isa</span>
-                    .<span class="ident">triple</span>()
-                    .<span class="ident">architecture</span>
-                    .<span class="ident">pointer_width</span>()
-                    .<span class="ident">unwrap</span>()
-                    .<span class="ident">bytes</span>(),
-                <span class="kw-2">&amp;</span><span class="ident">translation</span>.<span class="ident">module</span>,
-            );
-
-            <span class="kw">let</span> <span class="ident">memory_offset</span> <span class="op">=</span> <span class="kw">if</span> <span class="ident">ofs</span>.<span class="ident">num_imported_memories</span> <span class="op">&gt;</span> <span class="number">0</span> {
-                <span class="ident">ModuleMemoryOffset::Imported</span>(<span class="ident">ofs</span>.<span class="ident">vmctx_vmmemory_import</span>(<span class="ident">MemoryIndex::new</span>(<span class="number">0</span>)))
-            } <span class="kw">else</span> <span class="kw">if</span> <span class="ident">ofs</span>.<span class="ident">num_defined_memories</span> <span class="op">&gt;</span> <span class="number">0</span> {
-                <span class="ident">ModuleMemoryOffset::Defined</span>(
-                    <span class="ident">ofs</span>.<span class="ident">vmctx_vmmemory_definition_base</span>(<span class="ident">DefinedMemoryIndex::new</span>(<span class="number">0</span>)),
-                )
-            } <span class="kw">else</span> {
-                <span class="ident">ModuleMemoryOffset::None</span>
-            };
-            <span class="kw">let</span> <span class="ident">dwarf_sections</span> <span class="op">=</span> <span class="ident"><span class="kw">crate</span>::debug::emit_dwarf</span>(
-                <span class="kw-2">&amp;</span><span class="kw-2">*</span><span class="self">self</span>.<span class="ident">isa</span>,
-                <span class="kw-2">&amp;</span><span class="ident">translation</span>.<span class="ident">debuginfo</span>,
-                <span class="kw-2">&amp;</span><span class="ident">funcs</span>,
-                <span class="kw-2">&amp;</span><span class="ident">memory_offset</span>,
-            )
-            .<span class="ident">with_context</span>(<span class="op">|</span><span class="op">|</span> <span class="string">&quot;failed to emit DWARF debug information&quot;</span>)<span class="question-mark">?</span>;
-            <span class="ident">builder</span>.<span class="ident">dwarf_sections</span>(<span class="kw-2">&amp;</span><span class="ident">dwarf_sections</span>)<span class="question-mark">?</span>;
-        }
-
-        <span class="ident">builder</span>.<span class="ident">finish</span>()<span class="question-mark">?</span>;
-
+        <span class="self">self</span>.<span class="ident">append_dwarf</span>(<span class="ident">obj</span>, <span class="ident">translation</span>, <span class="kw-2">&amp;</span><span class="ident">funcs</span>, <span class="ident">tunables</span>, <span class="kw-2">&amp;</span><span class="ident">symbols</span>)<span class="question-mark">?</span>;
         <span class="kw">if</span> <span class="ident">tunables</span>.<span class="ident">generate_address_map</span> {
             <span class="ident">addrs</span>.<span class="ident">append_to</span>(<span class="ident">obj</span>);
         }
@@ -1080,10 +1247,9 @@
         <span class="kw">let</span> <span class="ident">host_to_wasm</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">host_to_wasm_trampoline</span>(<span class="ident">ty</span>)<span class="question-mark">?</span>;
         <span class="kw">let</span> <span class="ident">wasm_to_host</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">wasm_to_host_trampoline</span>(<span class="ident">ty</span>, <span class="ident">host_fn</span>)<span class="question-mark">?</span>;
         <span class="kw">let</span> <span class="ident">module</span> <span class="op">=</span> <span class="ident">Module::new</span>();
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">builder</span> <span class="op">=</span> <span class="ident">ObjectBuilder::new</span>(<span class="ident">obj</span>, <span class="kw-2">&amp;</span><span class="ident">module</span>, <span class="kw-2">&amp;</span><span class="kw-2">*</span><span class="self">self</span>.<span class="ident">isa</span>);
+        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">builder</span> <span class="op">=</span> <span class="ident">ModuleTextBuilder::new</span>(<span class="ident">obj</span>, <span class="kw-2">&amp;</span><span class="ident">module</span>, <span class="kw-2">&amp;</span><span class="kw-2">*</span><span class="self">self</span>.<span class="ident">isa</span>);
         <span class="kw">let</span> <span class="ident">a</span> <span class="op">=</span> <span class="ident">builder</span>.<span class="ident">trampoline</span>(<span class="ident">SignatureIndex::new</span>(<span class="number">0</span>), <span class="kw-2">&amp;</span><span class="ident">host_to_wasm</span>);
         <span class="kw">let</span> <span class="ident">b</span> <span class="op">=</span> <span class="ident">builder</span>.<span class="ident">trampoline</span>(<span class="ident">SignatureIndex::new</span>(<span class="number">1</span>), <span class="kw-2">&amp;</span><span class="ident">wasm_to_host</span>);
-        <span class="ident">builder</span>.<span class="ident">unwind_info</span>();
         <span class="ident">builder</span>.<span class="ident">finish</span>()<span class="question-mark">?</span>;
         <span class="prelude-val">Ok</span>((<span class="ident">a</span>, <span class="ident">b</span>))
     }
@@ -1110,6 +1276,11 @@
             .<span class="ident">iter</span>()
             .<span class="ident">map</span>(<span class="op">|</span><span class="ident">val</span><span class="op">|</span> (<span class="ident">val</span>.<span class="ident">name</span>.<span class="ident">to_string</span>(), <span class="ident">to_flag_value</span>(<span class="ident">val</span>)))
             .<span class="ident">collect</span>()
+    }
+
+    <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;component-model&quot;</span>)]</span>
+    <span class="kw">fn</span> <span class="ident">component_compiler</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;</span><span class="kw">dyn</span> <span class="ident">wasmtime_environ::component::ComponentCompiler</span> {
+        <span class="self">self</span>
     }
 }
 
@@ -1138,8 +1309,11 @@
         <span class="ident">host_signature</span>.<span class="ident">params</span>.<span class="ident">push</span>(<span class="ident">ir::AbiParam::new</span>(<span class="ident">pointer_type</span>));
         <span class="ident">host_signature</span>.<span class="ident">params</span>.<span class="ident">push</span>(<span class="ident">ir::AbiParam::new</span>(<span class="ident">pointer_type</span>));
 
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">func_translator</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">take_translator</span>();
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">context</span> <span class="op">=</span> <span class="ident">Context::new</span>();
+        <span class="kw">let</span> <span class="ident">CompilerContext</span> {
+            <span class="kw-2">mut</span> <span class="ident">func_translator</span>,
+            <span class="ident">codegen_context</span>: <span class="kw-2">mut</span> <span class="ident">context</span>,
+        } <span class="op">=</span> <span class="self">self</span>.<span class="ident">take_context</span>();
+
         <span class="ident">context</span>.<span class="ident">func</span> <span class="op">=</span> <span class="ident">ir::Function::with_name_signature</span>(<span class="ident">ExternalName::user</span>(<span class="number">0</span>, <span class="number">0</span>), <span class="ident">host_signature</span>);
 
         <span class="comment">// This trampoline will load all the parameters from the `values_vec`</span>
@@ -1160,7 +1334,8 @@
         };
 
         <span class="comment">// Load the argument values out of `values_vec`.</span>
-        <span class="kw">let</span> <span class="ident">mflags</span> <span class="op">=</span> <span class="ident">ir::MemFlags::trusted</span>();
+        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">mflags</span> <span class="op">=</span> <span class="ident">ir::MemFlags::trusted</span>();
+        <span class="ident">mflags</span>.<span class="ident">set_endianness</span>(<span class="ident">ir::Endianness::Little</span>);
         <span class="kw">let</span> <span class="ident">callee_args</span> <span class="op">=</span> <span class="ident">wasm_signature</span>
             .<span class="ident">params</span>
             .<span class="ident">iter</span>()
@@ -1191,7 +1366,6 @@
         <span class="kw">let</span> <span class="ident">results</span> <span class="op">=</span> <span class="ident">builder</span>.<span class="ident">func</span>.<span class="ident">dfg</span>.<span class="ident">inst_results</span>(<span class="ident">call</span>).<span class="ident">to_vec</span>();
 
         <span class="comment">// Store the return values into `values_vec`.</span>
-        <span class="kw">let</span> <span class="ident">mflags</span> <span class="op">=</span> <span class="ident">ir::MemFlags::trusted</span>();
         <span class="kw">for</span> (<span class="ident">i</span>, <span class="ident">r</span>) <span class="kw">in</span> <span class="ident">results</span>.<span class="ident">iter</span>().<span class="ident">enumerate</span>() {
             <span class="ident">builder</span>
                 .<span class="ident">ins</span>()
@@ -1200,11 +1374,36 @@
         <span class="ident">builder</span>.<span class="ident">ins</span>().<span class="ident">return_</span>(<span class="kw-2">&amp;</span>[]);
         <span class="ident">builder</span>.<span class="ident">finalize</span>();
 
-        <span class="kw">let</span> <span class="ident">func</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">finish_trampoline</span>(<span class="ident">context</span>, <span class="ident">isa</span>)<span class="question-mark">?</span>;
-        <span class="self">self</span>.<span class="ident">save_translator</span>(<span class="ident">func_translator</span>);
+        <span class="kw">let</span> <span class="ident">func</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">finish_trampoline</span>(<span class="kw-2">&amp;mut</span> <span class="ident">context</span>, <span class="ident">isa</span>)<span class="question-mark">?</span>;
+        <span class="self">self</span>.<span class="ident">save_context</span>(<span class="ident">CompilerContext</span> {
+            <span class="ident">func_translator</span>,
+            <span class="ident">codegen_context</span>: <span class="ident">context</span>,
+        });
         <span class="prelude-val">Ok</span>(<span class="ident">func</span>)
     }
 
+    <span class="doccomment">/// Creates a trampoline for WebAssembly calling into the host where all the</span>
+    <span class="doccomment">/// arguments are spilled to the stack and results are loaded from the</span>
+    <span class="doccomment">/// stack.</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// This style of trampoline is currently only used with the</span>
+    <span class="doccomment">/// `Func::new`-style created functions in the Wasmtime embedding API. The</span>
+    <span class="doccomment">/// generated trampoline has a function signature appropriate to the `ty`</span>
+    <span class="doccomment">/// specified (e.g. a System-V ABI) and will call a `host_fn` that has a</span>
+    <span class="doccomment">/// type signature of:</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// ```ignore</span>
+    <span class="doccomment">/// extern &quot;C&quot; fn(*mut VMContext, *mut VMContext, *mut ValRaw, usize)</span>
+    <span class="doccomment">/// ```</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// where the first two arguments are forwarded from the trampoline</span>
+    <span class="doccomment">/// generated here itself, and the second two arguments are a pointer/length</span>
+    <span class="doccomment">/// into stack-space of this trampoline with storage for both the arguments</span>
+    <span class="doccomment">/// to the function and the results.</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// Note that `host_fn` is an immediate which is an actual function pointer</span>
+    <span class="doccomment">/// in this process. As such this compiled trampoline is not suitable for</span>
+    <span class="doccomment">/// serialization.</span>
     <span class="kw">fn</span> <span class="ident">wasm_to_host_trampoline</span>(
         <span class="kw-2">&amp;</span><span class="self">self</span>,
         <span class="ident">ty</span>: <span class="kw-2">&amp;</span><span class="ident">WasmFuncType</span>,
@@ -1213,55 +1412,126 @@
         <span class="kw">let</span> <span class="ident">isa</span> <span class="op">=</span> <span class="kw-2">&amp;</span><span class="kw-2">*</span><span class="self">self</span>.<span class="ident">isa</span>;
         <span class="kw">let</span> <span class="ident">pointer_type</span> <span class="op">=</span> <span class="ident">isa</span>.<span class="ident">pointer_type</span>();
         <span class="kw">let</span> <span class="ident">wasm_signature</span> <span class="op">=</span> <span class="ident">indirect_signature</span>(<span class="ident">isa</span>, <span class="ident">ty</span>);
-        <span class="comment">// The host signature has an added parameter for the `values_vec` input</span>
-        <span class="comment">// and output.</span>
         <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">host_signature</span> <span class="op">=</span> <span class="ident">blank_sig</span>(<span class="ident">isa</span>, <span class="ident">wasmtime_call_conv</span>(<span class="ident">isa</span>));
+        <span class="comment">// The host signature has an added parameter for the `values_vec`</span>
+        <span class="comment">// input/output buffer in addition to the size of the buffer, in units</span>
+        <span class="comment">// of `ValRaw`.</span>
+        <span class="ident">host_signature</span>.<span class="ident">params</span>.<span class="ident">push</span>(<span class="ident">ir::AbiParam::new</span>(<span class="ident">pointer_type</span>));
         <span class="ident">host_signature</span>.<span class="ident">params</span>.<span class="ident">push</span>(<span class="ident">ir::AbiParam::new</span>(<span class="ident">pointer_type</span>));
 
-        <span class="comment">// Compute the size of the values vector. The vmctx and caller vmctx are passed separately.</span>
-        <span class="kw">let</span> <span class="ident">value_size</span> <span class="op">=</span> <span class="ident">mem::size_of</span>::<span class="op">&lt;</span><span class="ident">u128</span><span class="op">&gt;</span>();
-        <span class="kw">let</span> <span class="ident">values_vec_len</span> <span class="op">=</span> (<span class="ident">value_size</span> <span class="op">*</span> <span class="ident">cmp::max</span>(<span class="ident">ty</span>.<span class="ident">params</span>().<span class="ident">len</span>(), <span class="ident">ty</span>.<span class="ident">returns</span>().<span class="ident">len</span>())) <span class="kw">as</span> <span class="ident">u32</span>;
+        <span class="kw">let</span> <span class="ident">CompilerContext</span> {
+            <span class="kw-2">mut</span> <span class="ident">func_translator</span>,
+            <span class="ident">codegen_context</span>: <span class="kw-2">mut</span> <span class="ident">context</span>,
+        } <span class="op">=</span> <span class="self">self</span>.<span class="ident">take_context</span>();
 
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">context</span> <span class="op">=</span> <span class="ident">Context::new</span>();
         <span class="ident">context</span>.<span class="ident">func</span> <span class="op">=</span>
             <span class="ident">ir::Function::with_name_signature</span>(<span class="ident">ir::ExternalName::user</span>(<span class="number">0</span>, <span class="number">0</span>), <span class="ident">wasm_signature</span>);
 
-        <span class="kw">let</span> <span class="ident">ss</span> <span class="op">=</span> <span class="ident">context</span>.<span class="ident">func</span>.<span class="ident">create_stack_slot</span>(<span class="ident">ir::StackSlotData::new</span>(
-            <span class="ident">ir::StackSlotKind::ExplicitSlot</span>,
-            <span class="ident">values_vec_len</span>,
-        ));
-
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">func_translator</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">take_translator</span>();
         <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">builder</span> <span class="op">=</span> <span class="ident">FunctionBuilder::new</span>(<span class="kw-2">&amp;mut</span> <span class="ident">context</span>.<span class="ident">func</span>, <span class="ident">func_translator</span>.<span class="ident">context</span>());
         <span class="kw">let</span> <span class="ident">block0</span> <span class="op">=</span> <span class="ident">builder</span>.<span class="ident">create_block</span>();
+
+        <span class="kw">let</span> (<span class="ident">values_vec_ptr_val</span>, <span class="ident">values_vec_len</span>) <span class="op">=</span>
+            <span class="self">self</span>.<span class="ident">wasm_to_host_spill_args</span>(<span class="ident">ty</span>, <span class="kw-2">&amp;mut</span> <span class="ident">builder</span>, <span class="ident">block0</span>);
+
+        <span class="kw">let</span> <span class="ident">block_params</span> <span class="op">=</span> <span class="ident">builder</span>.<span class="ident">func</span>.<span class="ident">dfg</span>.<span class="ident">block_params</span>(<span class="ident">block0</span>);
+        <span class="kw">let</span> <span class="ident">callee_args</span> <span class="op">=</span> [
+            <span class="ident">block_params</span>[<span class="number">0</span>],
+            <span class="ident">block_params</span>[<span class="number">1</span>],
+            <span class="ident">values_vec_ptr_val</span>,
+            <span class="ident">builder</span>
+                .<span class="ident">ins</span>()
+                .<span class="ident">iconst</span>(<span class="ident">pointer_type</span>, <span class="ident">i64::from</span>(<span class="ident">values_vec_len</span>)),
+        ];
+
+        <span class="kw">let</span> <span class="ident">new_sig</span> <span class="op">=</span> <span class="ident">builder</span>.<span class="ident">import_signature</span>(<span class="ident">host_signature</span>);
+        <span class="kw">let</span> <span class="ident">callee_value</span> <span class="op">=</span> <span class="ident">builder</span>.<span class="ident">ins</span>().<span class="ident">iconst</span>(<span class="ident">pointer_type</span>, <span class="ident">host_fn</span> <span class="kw">as</span> <span class="ident">i64</span>);
+        <span class="ident">builder</span>
+            .<span class="ident">ins</span>()
+            .<span class="ident">call_indirect</span>(<span class="ident">new_sig</span>, <span class="ident">callee_value</span>, <span class="kw-2">&amp;</span><span class="ident">callee_args</span>);
+
+        <span class="self">self</span>.<span class="ident">wasm_to_host_load_results</span>(<span class="ident">ty</span>, <span class="kw-2">&amp;mut</span> <span class="ident">builder</span>, <span class="ident">values_vec_ptr_val</span>);
+
+        <span class="kw">let</span> <span class="ident">func</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">finish_trampoline</span>(<span class="kw-2">&amp;mut</span> <span class="ident">context</span>, <span class="ident">isa</span>)<span class="question-mark">?</span>;
+        <span class="self">self</span>.<span class="ident">save_context</span>(<span class="ident">CompilerContext</span> {
+            <span class="ident">func_translator</span>,
+            <span class="ident">codegen_context</span>: <span class="ident">context</span>,
+        });
+        <span class="prelude-val">Ok</span>(<span class="ident">func</span>)
+    }
+
+    <span class="doccomment">/// Used for spilling arguments in wasm-to-host trampolines into the stack</span>
+    <span class="doccomment">/// of the function of `builder` specified.</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// The `block0` is the entry block of the function and `ty` is the wasm</span>
+    <span class="doccomment">/// signature of the trampoline generated. This function will allocate a</span>
+    <span class="doccomment">/// stack slot suitable for storing both the arguments and return values of</span>
+    <span class="doccomment">/// the function, and then the arguments will all be stored in this block.</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// The stack slot pointer is returned in addition to the size, in units of</span>
+    <span class="doccomment">/// `ValRaw`, of the stack slot.</span>
+    <span class="kw">fn</span> <span class="ident">wasm_to_host_spill_args</span>(
+        <span class="kw-2">&amp;</span><span class="self">self</span>,
+        <span class="ident">ty</span>: <span class="kw-2">&amp;</span><span class="ident">WasmFuncType</span>,
+        <span class="ident">builder</span>: <span class="kw-2">&amp;mut</span> <span class="ident">FunctionBuilder</span>,
+        <span class="ident">block0</span>: <span class="ident">ir::Block</span>,
+    ) -&gt; (<span class="ident">Value</span>, <span class="ident">u32</span>) {
+        <span class="kw">let</span> <span class="ident">isa</span> <span class="op">=</span> <span class="kw-2">&amp;</span><span class="kw-2">*</span><span class="self">self</span>.<span class="ident">isa</span>;
+        <span class="kw">let</span> <span class="ident">pointer_type</span> <span class="op">=</span> <span class="ident">isa</span>.<span class="ident">pointer_type</span>();
+
+        <span class="comment">// Compute the size of the values vector.</span>
+        <span class="kw">let</span> <span class="ident">value_size</span> <span class="op">=</span> <span class="ident">mem::size_of</span>::<span class="op">&lt;</span><span class="ident">u128</span><span class="op">&gt;</span>();
+        <span class="kw">let</span> <span class="ident">values_vec_len</span> <span class="op">=</span> <span class="ident">cmp::max</span>(<span class="ident">ty</span>.<span class="ident">params</span>().<span class="ident">len</span>(), <span class="ident">ty</span>.<span class="ident">returns</span>().<span class="ident">len</span>());
+        <span class="kw">let</span> <span class="ident">values_vec_byte_size</span> <span class="op">=</span> <span class="ident">u32::try_from</span>(<span class="ident">value_size</span> <span class="op">*</span> <span class="ident">values_vec_len</span>).<span class="ident">unwrap</span>();
+        <span class="kw">let</span> <span class="ident">values_vec_len</span> <span class="op">=</span> <span class="ident">u32::try_from</span>(<span class="ident">values_vec_len</span>).<span class="ident">unwrap</span>();
+
+        <span class="kw">let</span> <span class="ident">ss</span> <span class="op">=</span> <span class="ident">builder</span>.<span class="ident">func</span>.<span class="ident">create_stack_slot</span>(<span class="ident">ir::StackSlotData::new</span>(
+            <span class="ident">ir::StackSlotKind::ExplicitSlot</span>,
+            <span class="ident">values_vec_byte_size</span>,
+        ));
 
         <span class="ident">builder</span>.<span class="ident">append_block_params_for_function_params</span>(<span class="ident">block0</span>);
         <span class="ident">builder</span>.<span class="ident">switch_to_block</span>(<span class="ident">block0</span>);
         <span class="ident">builder</span>.<span class="ident">seal_block</span>(<span class="ident">block0</span>);
 
+        <span class="comment">// Note that loads and stores are unconditionally done in the</span>
+        <span class="comment">// little-endian format rather than the host&#39;s native-endianness,</span>
+        <span class="comment">// despite this load/store being unrelated to execution in wasm itself.</span>
+        <span class="comment">// For more details on this see the `ValRaw` type in the</span>
+        <span class="comment">// `wasmtime-runtime` crate.</span>
+        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">mflags</span> <span class="op">=</span> <span class="ident">MemFlags::trusted</span>();
+        <span class="ident">mflags</span>.<span class="ident">set_endianness</span>(<span class="ident">ir::Endianness::Little</span>);
+
         <span class="kw">let</span> <span class="ident">values_vec_ptr_val</span> <span class="op">=</span> <span class="ident">builder</span>.<span class="ident">ins</span>().<span class="ident">stack_addr</span>(<span class="ident">pointer_type</span>, <span class="ident">ss</span>, <span class="number">0</span>);
-        <span class="kw">let</span> <span class="ident">mflags</span> <span class="op">=</span> <span class="ident">MemFlags::trusted</span>();
         <span class="kw">for</span> <span class="ident">i</span> <span class="kw">in</span> <span class="number">0</span>..<span class="ident">ty</span>.<span class="ident">params</span>().<span class="ident">len</span>() {
             <span class="kw">let</span> <span class="ident">val</span> <span class="op">=</span> <span class="ident">builder</span>.<span class="ident">func</span>.<span class="ident">dfg</span>.<span class="ident">block_params</span>(<span class="ident">block0</span>)[<span class="ident">i</span> <span class="op">+</span> <span class="number">2</span>];
             <span class="ident">builder</span>
                 .<span class="ident">ins</span>()
                 .<span class="ident">store</span>(<span class="ident">mflags</span>, <span class="ident">val</span>, <span class="ident">values_vec_ptr_val</span>, (<span class="ident">i</span> <span class="op">*</span> <span class="ident">value_size</span>) <span class="kw">as</span> <span class="ident">i32</span>);
         }
+        (<span class="ident">values_vec_ptr_val</span>, <span class="ident">values_vec_len</span>)
+    }
 
-        <span class="kw">let</span> <span class="ident">block_params</span> <span class="op">=</span> <span class="ident">builder</span>.<span class="ident">func</span>.<span class="ident">dfg</span>.<span class="ident">block_params</span>(<span class="ident">block0</span>);
-        <span class="kw">let</span> <span class="ident">vmctx_ptr_val</span> <span class="op">=</span> <span class="ident">block_params</span>[<span class="number">0</span>];
-        <span class="kw">let</span> <span class="ident">caller_vmctx_ptr_val</span> <span class="op">=</span> <span class="ident">block_params</span>[<span class="number">1</span>];
+    <span class="doccomment">/// Use for loading the results of a host call from a trampoline&#39;s stack</span>
+    <span class="doccomment">/// space.</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// This is intended to be used with the stack space allocated by</span>
+    <span class="doccomment">/// `wasm_to_host_spill_args` above. This is called after the function call</span>
+    <span class="doccomment">/// is made which will load results from the stack space and then return</span>
+    <span class="doccomment">/// them with the appropriate ABI (e.g. System-V).</span>
+    <span class="kw">fn</span> <span class="ident">wasm_to_host_load_results</span>(
+        <span class="kw-2">&amp;</span><span class="self">self</span>,
+        <span class="ident">ty</span>: <span class="kw-2">&amp;</span><span class="ident">WasmFuncType</span>,
+        <span class="ident">builder</span>: <span class="kw-2">&amp;mut</span> <span class="ident">FunctionBuilder</span>,
+        <span class="ident">values_vec_ptr_val</span>: <span class="ident">Value</span>,
+    ) {
+        <span class="kw">let</span> <span class="ident">isa</span> <span class="op">=</span> <span class="kw-2">&amp;</span><span class="kw-2">*</span><span class="self">self</span>.<span class="ident">isa</span>;
+        <span class="kw">let</span> <span class="ident">value_size</span> <span class="op">=</span> <span class="ident">mem::size_of</span>::<span class="op">&lt;</span><span class="ident">u128</span><span class="op">&gt;</span>();
 
-        <span class="kw">let</span> <span class="ident">callee_args</span> <span class="op">=</span> <span class="macro">vec!</span>[<span class="ident">vmctx_ptr_val</span>, <span class="ident">caller_vmctx_ptr_val</span>, <span class="ident">values_vec_ptr_val</span>];
+        <span class="comment">// Note that this is little-endian like `wasm_to_host_spill_args` above,</span>
+        <span class="comment">// see notes there for more information.</span>
+        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">mflags</span> <span class="op">=</span> <span class="ident">MemFlags::trusted</span>();
+        <span class="ident">mflags</span>.<span class="ident">set_endianness</span>(<span class="ident">ir::Endianness::Little</span>);
 
-        <span class="kw">let</span> <span class="ident">new_sig</span> <span class="op">=</span> <span class="ident">builder</span>.<span class="ident">import_signature</span>(<span class="ident">host_signature</span>);
-
-        <span class="kw">let</span> <span class="ident">callee_value</span> <span class="op">=</span> <span class="ident">builder</span>.<span class="ident">ins</span>().<span class="ident">iconst</span>(<span class="ident">pointer_type</span>, <span class="ident">host_fn</span> <span class="kw">as</span> <span class="ident">i64</span>);
-        <span class="ident">builder</span>
-            .<span class="ident">ins</span>()
-            .<span class="ident">call_indirect</span>(<span class="ident">new_sig</span>, <span class="ident">callee_value</span>, <span class="kw-2">&amp;</span><span class="ident">callee_args</span>);
-
-        <span class="kw">let</span> <span class="ident">mflags</span> <span class="op">=</span> <span class="ident">MemFlags::trusted</span>();
         <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">results</span> <span class="op">=</span> <span class="ident">Vec::new</span>();
         <span class="kw">for</span> (<span class="ident">i</span>, <span class="ident">r</span>) <span class="kw">in</span> <span class="ident">ty</span>.<span class="ident">returns</span>().<span class="ident">iter</span>().<span class="ident">enumerate</span>() {
             <span class="kw">let</span> <span class="ident">load</span> <span class="op">=</span> <span class="ident">builder</span>.<span class="ident">ins</span>().<span class="ident">load</span>(
@@ -1274,63 +1544,124 @@
         }
         <span class="ident">builder</span>.<span class="ident">ins</span>().<span class="ident">return_</span>(<span class="kw-2">&amp;</span><span class="ident">results</span>);
         <span class="ident">builder</span>.<span class="ident">finalize</span>();
-
-        <span class="kw">let</span> <span class="ident">func</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">finish_trampoline</span>(<span class="ident">context</span>, <span class="ident">isa</span>)<span class="question-mark">?</span>;
-        <span class="self">self</span>.<span class="ident">save_translator</span>(<span class="ident">func_translator</span>);
-        <span class="prelude-val">Ok</span>(<span class="ident">func</span>)
     }
 
     <span class="kw">fn</span> <span class="ident">finish_trampoline</span>(
         <span class="kw-2">&amp;</span><span class="self">self</span>,
-        <span class="kw-2">mut</span> <span class="ident">context</span>: <span class="ident">Context</span>,
+        <span class="ident">context</span>: <span class="kw-2">&amp;mut</span> <span class="ident">Context</span>,
         <span class="ident">isa</span>: <span class="kw-2">&amp;</span><span class="kw">dyn</span> <span class="ident">TargetIsa</span>,
     ) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">CompiledFunction</span>, <span class="ident">CompileError</span><span class="op">&gt;</span> {
         <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">code_buf</span> <span class="op">=</span> <span class="ident">Vec::new</span>();
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">relocs</span> <span class="op">=</span> <span class="ident">Vec::new</span>();
         <span class="ident">context</span>
             .<span class="ident">compile_and_emit</span>(<span class="ident">isa</span>, <span class="kw-2">&amp;mut</span> <span class="ident">code_buf</span>)
             .<span class="ident">map_err</span>(<span class="op">|</span><span class="ident">error</span><span class="op">|</span> <span class="ident">CompileError::Codegen</span>(<span class="ident">pretty_error</span>(<span class="kw-2">&amp;</span><span class="ident">context</span>.<span class="ident">func</span>, <span class="ident">error</span>)))<span class="question-mark">?</span>;
 
-        <span class="kw">for</span> <span class="kw-2">&amp;</span><span class="ident">MachReloc</span> {
-            <span class="ident">offset</span>,
-            <span class="ident">srcloc</span>: <span class="kw">_</span>,
-            <span class="ident">kind</span>,
-            <span class="kw-2">ref</span> <span class="ident">name</span>,
-            <span class="ident">addend</span>,
-        } <span class="kw">in</span> <span class="ident">context</span>
+        <span class="comment">// Processing relocations isn&#39;t the hardest thing in the world here but</span>
+        <span class="comment">// no trampoline should currently generate a relocation, so assert that</span>
+        <span class="comment">// they&#39;re all empty and if this ever trips in the future then handling</span>
+        <span class="comment">// will need to be added here to ensure they make their way into the</span>
+        <span class="comment">// `CompiledFunction` below.</span>
+        <span class="macro">assert!</span>(<span class="ident">context</span>
             .<span class="ident">mach_compile_result</span>
             .<span class="ident">as_ref</span>()
             .<span class="ident">unwrap</span>()
             .<span class="ident">buffer</span>
             .<span class="ident">relocs</span>()
-        {
-            <span class="kw">let</span> <span class="ident">reloc_target</span> <span class="op">=</span> <span class="kw">if</span> <span class="kw">let</span> <span class="ident">ir::ExternalName::LibCall</span>(<span class="ident">libcall</span>) <span class="op">=</span> <span class="kw-2">*</span><span class="ident">name</span> {
-                <span class="ident">RelocationTarget::LibCall</span>(<span class="ident">libcall</span>)
-            } <span class="kw">else</span> {
-                <span class="macro">panic!</span>(<span class="string">&quot;unrecognized external name&quot;</span>)
-            };
-            <span class="ident">relocs</span>.<span class="ident">push</span>(<span class="ident">Relocation</span> {
-                <span class="ident">reloc</span>: <span class="ident">kind</span>,
-                <span class="ident">reloc_target</span>,
-                <span class="ident">offset</span>,
-                <span class="ident">addend</span>,
-            });
-        }
+            .<span class="ident">is_empty</span>());
 
-        <span class="kw">let</span> <span class="ident">unwind_info</span> <span class="op">=</span> <span class="ident">context</span>
-            .<span class="ident">create_unwind_info</span>(<span class="ident">isa</span>)
-            .<span class="ident">map_err</span>(<span class="op">|</span><span class="ident">error</span><span class="op">|</span> <span class="ident">CompileError::Codegen</span>(<span class="ident">pretty_error</span>(<span class="kw-2">&amp;</span><span class="ident">context</span>.<span class="ident">func</span>, <span class="ident">error</span>)))<span class="question-mark">?</span>;
+        <span class="kw">let</span> <span class="ident">unwind_info</span> <span class="op">=</span> <span class="kw">if</span> <span class="ident">isa</span>.<span class="ident">flags</span>().<span class="ident">unwind_info</span>() {
+            <span class="ident">context</span>
+                .<span class="ident">create_unwind_info</span>(<span class="ident">isa</span>)
+                .<span class="ident">map_err</span>(<span class="op">|</span><span class="ident">error</span><span class="op">|</span> <span class="ident">CompileError::Codegen</span>(<span class="ident">pretty_error</span>(<span class="kw-2">&amp;</span><span class="ident">context</span>.<span class="ident">func</span>, <span class="ident">error</span>)))<span class="question-mark">?</span>
+        } <span class="kw">else</span> {
+            <span class="prelude-val">None</span>
+        };
 
         <span class="prelude-val">Ok</span>(<span class="ident">CompiledFunction</span> {
             <span class="ident">body</span>: <span class="ident">code_buf</span>,
             <span class="ident">unwind_info</span>,
-            <span class="ident">relocations</span>: <span class="ident">relocs</span>,
+            <span class="ident">relocations</span>: <span class="ident">Vec::new</span>(),
             <span class="ident">stack_slots</span>: <span class="ident">Default::default</span>(),
             <span class="ident">value_labels_ranges</span>: <span class="ident">Default::default</span>(),
             <span class="ident">info</span>: <span class="ident">Default::default</span>(),
             <span class="ident">address_map</span>: <span class="ident">Default::default</span>(),
             <span class="ident">traps</span>: <span class="ident">Vec::new</span>(),
         })
+    }
+
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">append_dwarf</span>(
+        <span class="kw-2">&amp;</span><span class="self">self</span>,
+        <span class="ident">obj</span>: <span class="kw-2">&amp;mut</span> <span class="ident">Object</span><span class="op">&lt;</span><span class="lifetime">&#39;_</span><span class="op">&gt;</span>,
+        <span class="ident">translation</span>: <span class="kw-2">&amp;</span><span class="ident">ModuleTranslation</span><span class="op">&lt;</span><span class="lifetime">&#39;_</span><span class="op">&gt;</span>,
+        <span class="ident">funcs</span>: <span class="kw-2">&amp;</span><span class="ident">CompiledFunctions</span>,
+        <span class="ident">tunables</span>: <span class="kw-2">&amp;</span><span class="ident">Tunables</span>,
+        <span class="ident">func_symbols</span>: <span class="kw-2">&amp;</span><span class="ident">PrimaryMap</span><span class="op">&lt;</span><span class="ident">DefinedFuncIndex</span>, <span class="ident">SymbolId</span><span class="op">&gt;</span>,
+    ) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span>()<span class="op">&gt;</span> {
+        <span class="kw">if</span> <span class="op">!</span><span class="ident">tunables</span>.<span class="ident">generate_native_debuginfo</span> <span class="op">|</span><span class="op">|</span> <span class="ident">funcs</span>.<span class="ident">len</span>() <span class="op">==</span> <span class="number">0</span> {
+            <span class="kw">return</span> <span class="prelude-val">Ok</span>(());
+        }
+        <span class="kw">let</span> <span class="ident">ofs</span> <span class="op">=</span> <span class="ident">VMOffsets::new</span>(
+            <span class="self">self</span>.<span class="ident">isa</span>
+                .<span class="ident">triple</span>()
+                .<span class="ident">architecture</span>
+                .<span class="ident">pointer_width</span>()
+                .<span class="ident">unwrap</span>()
+                .<span class="ident">bytes</span>(),
+            <span class="kw-2">&amp;</span><span class="ident">translation</span>.<span class="ident">module</span>,
+        );
+
+        <span class="kw">let</span> <span class="ident">memory_offset</span> <span class="op">=</span> <span class="kw">if</span> <span class="ident">ofs</span>.<span class="ident">num_imported_memories</span> <span class="op">&gt;</span> <span class="number">0</span> {
+            <span class="ident">ModuleMemoryOffset::Imported</span>(<span class="ident">ofs</span>.<span class="ident">vmctx_vmmemory_import</span>(<span class="ident">MemoryIndex::new</span>(<span class="number">0</span>)))
+        } <span class="kw">else</span> <span class="kw">if</span> <span class="ident">ofs</span>.<span class="ident">num_defined_memories</span> <span class="op">&gt;</span> <span class="number">0</span> {
+            <span class="ident">ModuleMemoryOffset::Defined</span>(
+                <span class="ident">ofs</span>.<span class="ident">vmctx_vmmemory_definition_base</span>(<span class="ident">DefinedMemoryIndex::new</span>(<span class="number">0</span>)),
+            )
+        } <span class="kw">else</span> {
+            <span class="ident">ModuleMemoryOffset::None</span>
+        };
+        <span class="kw">let</span> <span class="ident">dwarf_sections</span> <span class="op">=</span>
+            <span class="ident"><span class="kw">crate</span>::debug::emit_dwarf</span>(<span class="kw-2">&amp;</span><span class="kw-2">*</span><span class="self">self</span>.<span class="ident">isa</span>, <span class="kw-2">&amp;</span><span class="ident">translation</span>.<span class="ident">debuginfo</span>, <span class="kw-2">&amp;</span><span class="ident">funcs</span>, <span class="kw-2">&amp;</span><span class="ident">memory_offset</span>)
+                .<span class="ident">with_context</span>(<span class="op">|</span><span class="op">|</span> <span class="string">&quot;failed to emit DWARF debug information&quot;</span>)<span class="question-mark">?</span>;
+
+        <span class="kw">let</span> (<span class="ident">debug_bodies</span>, <span class="ident">debug_relocs</span>): (<span class="ident">Vec</span><span class="op">&lt;</span><span class="kw">_</span><span class="op">&gt;</span>, <span class="ident">Vec</span><span class="op">&lt;</span><span class="kw">_</span><span class="op">&gt;</span>) <span class="op">=</span> <span class="ident">dwarf_sections</span>
+            .<span class="ident">iter</span>()
+            .<span class="ident">map</span>(<span class="op">|</span><span class="ident">s</span><span class="op">|</span> ((<span class="ident">s</span>.<span class="ident">name</span>, <span class="kw-2">&amp;</span><span class="ident">s</span>.<span class="ident">body</span>), (<span class="ident">s</span>.<span class="ident">name</span>, <span class="kw-2">&amp;</span><span class="ident">s</span>.<span class="ident">relocs</span>)))
+            .<span class="ident">unzip</span>();
+        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">dwarf_sections_ids</span> <span class="op">=</span> <span class="ident">HashMap::new</span>();
+        <span class="kw">for</span> (<span class="ident">name</span>, <span class="ident">body</span>) <span class="kw">in</span> <span class="ident">debug_bodies</span> {
+            <span class="kw">let</span> <span class="ident">segment</span> <span class="op">=</span> <span class="ident">obj</span>.<span class="ident">segment_name</span>(<span class="ident">StandardSegment::Debug</span>).<span class="ident">to_vec</span>();
+            <span class="kw">let</span> <span class="ident">section_id</span> <span class="op">=</span> <span class="ident">obj</span>.<span class="ident">add_section</span>(<span class="ident">segment</span>, <span class="ident">name</span>.<span class="ident">as_bytes</span>().<span class="ident">to_vec</span>(), <span class="ident">SectionKind::Debug</span>);
+            <span class="ident">dwarf_sections_ids</span>.<span class="ident">insert</span>(<span class="ident">name</span>, <span class="ident">section_id</span>);
+            <span class="ident">obj</span>.<span class="ident">append_section_data</span>(<span class="ident">section_id</span>, <span class="kw-2">&amp;</span><span class="ident">body</span>, <span class="number">1</span>);
+        }
+
+        <span class="comment">// Write all debug data relocations.</span>
+        <span class="kw">for</span> (<span class="ident">name</span>, <span class="ident">relocs</span>) <span class="kw">in</span> <span class="ident">debug_relocs</span> {
+            <span class="kw">let</span> <span class="ident">section_id</span> <span class="op">=</span> <span class="kw-2">*</span><span class="ident">dwarf_sections_ids</span>.<span class="ident">get</span>(<span class="ident">name</span>).<span class="ident">unwrap</span>();
+            <span class="kw">for</span> <span class="ident">reloc</span> <span class="kw">in</span> <span class="ident">relocs</span> {
+                <span class="kw">let</span> <span class="ident">target_symbol</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">reloc</span>.<span class="ident">target</span> {
+                    <span class="ident">DwarfSectionRelocTarget::Func</span>(<span class="ident">index</span>) =&gt; {
+                        <span class="ident">func_symbols</span>[<span class="ident">DefinedFuncIndex::new</span>(<span class="ident">index</span>)]
+                    }
+                    <span class="ident">DwarfSectionRelocTarget::Section</span>(<span class="ident">name</span>) =&gt; {
+                        <span class="ident">obj</span>.<span class="ident">section_symbol</span>(<span class="ident">dwarf_sections_ids</span>[<span class="ident">name</span>])
+                    }
+                };
+                <span class="ident">obj</span>.<span class="ident">add_relocation</span>(
+                    <span class="ident">section_id</span>,
+                    <span class="ident">object::write::Relocation</span> {
+                        <span class="ident">offset</span>: <span class="ident">u64::from</span>(<span class="ident">reloc</span>.<span class="ident">offset</span>),
+                        <span class="ident">size</span>: <span class="ident">reloc</span>.<span class="ident">size</span> <span class="op">&lt;</span><span class="op">&lt;</span> <span class="number">3</span>,
+                        <span class="ident">kind</span>: <span class="ident">RelocationKind::Absolute</span>,
+                        <span class="ident">encoding</span>: <span class="ident">RelocationEncoding::Generic</span>,
+                        <span class="ident">symbol</span>: <span class="ident">target_symbol</span>,
+                        <span class="ident">addend</span>: <span class="ident">i64::from</span>(<span class="ident">reloc</span>.<span class="ident">addend</span>),
+                    },
+                )<span class="question-mark">?</span>;
+            }
+        }
+
+        <span class="prelude-val">Ok</span>(())
     }
 }
 
@@ -1400,7 +1731,6 @@
 <span class="kw">fn</span> <span class="ident">mach_reloc_to_reloc</span>(<span class="ident">reloc</span>: <span class="kw-2">&amp;</span><span class="ident">MachReloc</span>) -&gt; <span class="ident">Relocation</span> {
     <span class="kw">let</span> <span class="kw-2">&amp;</span><span class="ident">MachReloc</span> {
         <span class="ident">offset</span>,
-        <span class="ident">srcloc</span>: <span class="kw">_</span>,
         <span class="ident">kind</span>,
         <span class="kw-2">ref</span> <span class="ident">name</span>,
         <span class="ident">addend</span>,
@@ -1422,11 +1752,7 @@
 }
 
 <span class="kw">fn</span> <span class="ident">mach_trap_to_trap</span>(<span class="ident">trap</span>: <span class="kw-2">&amp;</span><span class="ident">MachTrap</span>) -&gt; <span class="ident">TrapInformation</span> {
-    <span class="kw">let</span> <span class="kw-2">&amp;</span><span class="ident">MachTrap</span> {
-        <span class="ident">offset</span>,
-        <span class="ident">srcloc</span>: <span class="kw">_</span>,
-        <span class="ident">code</span>,
-    } <span class="op">=</span> <span class="ident">trap</span>;
+    <span class="kw">let</span> <span class="kw-2">&amp;</span><span class="ident">MachTrap</span> { <span class="ident">offset</span>, <span class="ident">code</span> } <span class="op">=</span> <span class="ident">trap</span>;
     <span class="ident">TrapInformation</span> {
         <span class="ident">code_offset</span>: <span class="ident">offset</span>,
         <span class="ident">trap_code</span>: <span class="kw">match</span> <span class="ident">code</span> {

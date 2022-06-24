@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/cargo_home/registry/src/github.com-1ecc6299db9ec823/wasmtime-0.35.3/src/lib.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>lib.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" type="text/css" href="../../normalize.css"><link rel="stylesheet" type="text/css" href="../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../ayu.css" disabled><link rel="stylesheet" type="text/css" href="../../dark.css" disabled><link rel="stylesheet" type="text/css" href="../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../storage.js"></script><script src="../../crates.js"></script><script defer src="../../main.js"></script><script defer src="../../source-script.js"></script><script defer src="../../source-files.js"></script>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/cargo_home/registry/src/github.com-1ecc6299db9ec823/wasmtime-0.38.0/src/lib.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>lib.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" type="text/css" href="../../normalize.css"><link rel="stylesheet" type="text/css" href="../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../ayu.css" disabled><link rel="stylesheet" type="text/css" href="../../dark.css" disabled><link rel="stylesheet" type="text/css" href="../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../storage.js"></script><script src="../../crates.js"></script><script defer src="../../main.js"></script><script defer src="../../source-script.js"></script><script defer src="../../source-files.js"></script>
     <noscript><link rel="stylesheet" href="../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="sidebar-logo" href="../../wasmtime/index.html"><div class="logo-container"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></div>
         </a><h2 class="location"></h2>
     </nav>
@@ -471,7 +471,15 @@
 <span id="466">466</span>
 <span id="467">467</span>
 <span id="468">468</span>
+<span id="469">469</span>
+<span id="470">470</span>
 </pre><pre class="rust"><code><span class="doccomment">//! Wasmtime&#39;s embedding API</span>
+<span class="doccomment">//!</span>
+<span class="doccomment">//! Wasmtime is a WebAssembly engine for JIT-complied or ahead-of-time compiled</span>
+<span class="doccomment">//! WebAssembly modules. More information about the Wasmtime project as a whole</span>
+<span class="doccomment">//! can be found [in the documentation book](https://docs.wasmtime.dev) whereas</span>
+<span class="doccomment">//! this documentation mostly focuses on the API reference of the `wasmtime`</span>
+<span class="doccomment">//! crate itself.</span>
 <span class="doccomment">//!</span>
 <span class="doccomment">//! This crate contains an API used to interact with WebAssembly modules. For</span>
 <span class="doccomment">//! example you can compile modules, instantiate them, call them, etc. As an</span>
@@ -738,12 +746,6 @@
 <span class="doccomment">//! * `vtune` - Enabled by default, this feature compiles in support for VTune</span>
 <span class="doccomment">//!   profiling of JIT code.</span>
 <span class="doccomment">//!</span>
-<span class="doccomment">//! * `uffd` - Not enabled by default. This feature enables `userfaultfd` support</span>
-<span class="doccomment">//!   when using the pooling instance allocator. As handling page faults in user space</span>
-<span class="doccomment">//!   comes with a performance penalty, this feature should only be enabled when kernel</span>
-<span class="doccomment">//!   lock contention is hampering multithreading throughput. This feature is only</span>
-<span class="doccomment">//!   supported on Linux and requires a Linux kernel version 4.11 or higher.</span>
-<span class="doccomment">//!</span>
 <span class="doccomment">//! * `all-arch` - Not enabled by default. This feature compiles in support for</span>
 <span class="doccomment">//!   all architectures for both the JIT compiler and the `wasmtime compile` CLI</span>
 <span class="doccomment">//!   command.</span>
@@ -888,12 +890,15 @@
 <span class="kw">pub</span> <span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::memory</span>::<span class="kw-2">*</span>;
 <span class="kw">pub</span> <span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::module</span>::{<span class="ident">FrameInfo</span>, <span class="ident">FrameSymbol</span>, <span class="ident">Module</span>};
 <span class="kw">pub</span> <span class="kw">use</span> <span class="kw">crate</span>::<span class="ident">r#ref</span><span class="ident">::ExternRef</span>;
-<span class="kw">pub</span> <span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::store</span>::{
-    <span class="ident">AsContext</span>, <span class="ident">AsContextMut</span>, <span class="ident">CallHook</span>, <span class="ident">InterruptHandle</span>, <span class="ident">Store</span>, <span class="ident">StoreContext</span>, <span class="ident">StoreContextMut</span>,
-};
+<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;async&quot;</span>)]</span>
+<span class="kw">pub</span> <span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::store::CallHookHandler</span>;
+<span class="kw">pub</span> <span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::store</span>::{<span class="ident">AsContext</span>, <span class="ident">AsContextMut</span>, <span class="ident">CallHook</span>, <span class="ident">Store</span>, <span class="ident">StoreContext</span>, <span class="ident">StoreContextMut</span>};
 <span class="kw">pub</span> <span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::trap</span>::<span class="kw-2">*</span>;
 <span class="kw">pub</span> <span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::types</span>::<span class="kw-2">*</span>;
 <span class="kw">pub</span> <span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::values</span>::<span class="kw-2">*</span>;
+
+<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;component-model&quot;</span>)]</span>
+<span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">component</span>;
 
 <span class="macro">cfg_if::cfg_if!</span> {
     <span class="kw">if</span> <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">all</span>(<span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;macos&quot;</span>, <span class="ident">not</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;posix-signals-on-macos&quot;</span>)))]</span> {
@@ -912,7 +917,6 @@
     <span class="kw">fn</span> <span class="ident">_assert_send</span><span class="op">&lt;</span><span class="ident">T</span>: <span class="ident">Send</span><span class="op">&gt;</span>(<span class="ident">_t</span>: <span class="ident">T</span>) {}
     <span class="ident">_assert</span>::<span class="op">&lt;</span><span class="ident">Engine</span><span class="op">&gt;</span>();
     <span class="ident">_assert</span>::<span class="op">&lt;</span><span class="ident">Config</span><span class="op">&gt;</span>();
-    <span class="ident">_assert</span>::<span class="op">&lt;</span><span class="ident">InterruptHandle</span><span class="op">&gt;</span>();
     <span class="ident">_assert</span>::<span class="op">&lt;</span>(<span class="ident">Func</span>, <span class="ident">TypedFunc</span><span class="op">&lt;</span>(), ()<span class="op">&gt;</span>, <span class="ident">Global</span>, <span class="ident">Table</span>, <span class="ident">Memory</span>)<span class="op">&gt;</span>();
     <span class="ident">_assert</span>::<span class="op">&lt;</span><span class="ident">Instance</span><span class="op">&gt;</span>();
     <span class="ident">_assert</span>::<span class="op">&lt;</span><span class="ident">Module</span><span class="op">&gt;</span>();

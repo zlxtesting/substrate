@@ -1,1 +1,1 @@
-initSidebarItems({"fn":[["builder",""]],"macro":[["for_each_libcall","Iterates through all `LibCall` members and all runtime exported functions."]],"struct":[["CompiledFunction","Compiled function: machine code body, jump table offsets, and unwind information."]]});
+initSidebarItems({"fn":[["builder",""]],"struct":[["CompiledFunction","Compiled function: machine code body, jump table offsets, and unwind information."]]});

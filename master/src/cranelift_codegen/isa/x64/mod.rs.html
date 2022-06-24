@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/cargo_home/registry/src/github.com-1ecc6299db9ec823/cranelift-codegen-0.82.3/src/isa/x64/mod.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>mod.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" type="text/css" href="../../../../normalize.css"><link rel="stylesheet" type="text/css" href="../../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../../../ayu.css" disabled><link rel="stylesheet" type="text/css" href="../../../../dark.css" disabled><link rel="stylesheet" type="text/css" href="../../../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../../../storage.js"></script><script src="../../../../crates.js"></script><script defer src="../../../../main.js"></script><script defer src="../../../../source-script.js"></script><script defer src="../../../../source-files.js"></script>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/cargo_home/registry/src/github.com-1ecc6299db9ec823/cranelift-codegen-0.85.0/src/isa/x64/mod.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>mod.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" type="text/css" href="../../../../normalize.css"><link rel="stylesheet" type="text/css" href="../../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../../../ayu.css" disabled><link rel="stylesheet" type="text/css" href="../../../../dark.css" disabled><link rel="stylesheet" type="text/css" href="../../../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../../../storage.js"></script><script src="../../../../crates.js"></script><script defer src="../../../../main.js"></script><script defer src="../../../../source-script.js"></script><script defer src="../../../../source-files.js"></script>
     <noscript><link rel="stylesheet" href="../../../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="sidebar-logo" href="../../../../cranelift_codegen/index.html"><div class="logo-container"><img class="rust-logo" src="../../../../rust-logo.svg" alt="logo"></div>
         </a><h2 class="location"></h2>
     </nav>
@@ -370,6 +370,99 @@
 <span id="365">365</span>
 <span id="366">366</span>
 <span id="367">367</span>
+<span id="368">368</span>
+<span id="369">369</span>
+<span id="370">370</span>
+<span id="371">371</span>
+<span id="372">372</span>
+<span id="373">373</span>
+<span id="374">374</span>
+<span id="375">375</span>
+<span id="376">376</span>
+<span id="377">377</span>
+<span id="378">378</span>
+<span id="379">379</span>
+<span id="380">380</span>
+<span id="381">381</span>
+<span id="382">382</span>
+<span id="383">383</span>
+<span id="384">384</span>
+<span id="385">385</span>
+<span id="386">386</span>
+<span id="387">387</span>
+<span id="388">388</span>
+<span id="389">389</span>
+<span id="390">390</span>
+<span id="391">391</span>
+<span id="392">392</span>
+<span id="393">393</span>
+<span id="394">394</span>
+<span id="395">395</span>
+<span id="396">396</span>
+<span id="397">397</span>
+<span id="398">398</span>
+<span id="399">399</span>
+<span id="400">400</span>
+<span id="401">401</span>
+<span id="402">402</span>
+<span id="403">403</span>
+<span id="404">404</span>
+<span id="405">405</span>
+<span id="406">406</span>
+<span id="407">407</span>
+<span id="408">408</span>
+<span id="409">409</span>
+<span id="410">410</span>
+<span id="411">411</span>
+<span id="412">412</span>
+<span id="413">413</span>
+<span id="414">414</span>
+<span id="415">415</span>
+<span id="416">416</span>
+<span id="417">417</span>
+<span id="418">418</span>
+<span id="419">419</span>
+<span id="420">420</span>
+<span id="421">421</span>
+<span id="422">422</span>
+<span id="423">423</span>
+<span id="424">424</span>
+<span id="425">425</span>
+<span id="426">426</span>
+<span id="427">427</span>
+<span id="428">428</span>
+<span id="429">429</span>
+<span id="430">430</span>
+<span id="431">431</span>
+<span id="432">432</span>
+<span id="433">433</span>
+<span id="434">434</span>
+<span id="435">435</span>
+<span id="436">436</span>
+<span id="437">437</span>
+<span id="438">438</span>
+<span id="439">439</span>
+<span id="440">440</span>
+<span id="441">441</span>
+<span id="442">442</span>
+<span id="443">443</span>
+<span id="444">444</span>
+<span id="445">445</span>
+<span id="446">446</span>
+<span id="447">447</span>
+<span id="448">448</span>
+<span id="449">449</span>
+<span id="450">450</span>
+<span id="451">451</span>
+<span id="452">452</span>
+<span id="453">453</span>
+<span id="454">454</span>
+<span id="455">455</span>
+<span id="456">456</span>
+<span id="457">457</span>
+<span id="458">458</span>
+<span id="459">459</span>
+<span id="460">460</span>
 </pre><pre class="rust"><code><span class="doccomment">//! X86_64-bit Instruction Set Architecture.</span>
 
 <span class="kw">use</span> <span class="ident"><span class="self">self</span>::inst::EmitInfo</span>;
@@ -378,8 +471,9 @@
 <span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::ir</span>::{<span class="ident">condcodes::IntCC</span>, <span class="ident">Function</span>};
 <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;unwind&quot;</span>)]</span>
 <span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::isa::unwind::systemv</span>;
-<span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::isa::x64</span>::{<span class="ident">inst::regs::create_reg_universe_systemv</span>, <span class="ident">settings</span> <span class="kw">as</span> <span class="ident">x64_settings</span>};
+<span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::isa::x64</span>::{<span class="ident">inst::regs::create_reg_env_systemv</span>, <span class="ident">settings</span> <span class="kw">as</span> <span class="ident">x64_settings</span>};
 <span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::isa::Builder</span> <span class="kw">as</span> <span class="ident">IsaBuilder</span>;
+<span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::machinst::Reg</span>;
 <span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::machinst</span>::{
     <span class="ident">compile</span>, <span class="ident">MachCompileResult</span>, <span class="ident">MachTextSectionBuilder</span>, <span class="ident">TextSectionBuilder</span>, <span class="ident">VCode</span>,
 };
@@ -387,8 +481,7 @@
 <span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::settings</span>::{<span class="self">self</span> <span class="kw">as</span> <span class="ident">shared_settings</span>, <span class="ident">Flags</span>};
 <span class="kw">use</span> <span class="ident">alloc</span>::{<span class="ident">boxed::Box</span>, <span class="ident">vec::Vec</span>};
 <span class="kw">use</span> <span class="ident">core::fmt</span>;
-
-<span class="kw">use</span> <span class="ident">regalloc</span>::{<span class="ident">PrettyPrint</span>, <span class="ident">RealRegUniverse</span>, <span class="ident">Reg</span>};
+<span class="kw">use</span> <span class="ident">regalloc2::MachineEnv</span>;
 <span class="kw">use</span> <span class="ident">target_lexicon::Triple</span>;
 
 <span class="kw">mod</span> <span class="ident">abi</span>;
@@ -402,27 +495,31 @@
     <span class="ident">triple</span>: <span class="ident">Triple</span>,
     <span class="ident">flags</span>: <span class="ident">Flags</span>,
     <span class="ident">x64_flags</span>: <span class="ident">x64_settings::Flags</span>,
-    <span class="ident">reg_universe</span>: <span class="ident">RealRegUniverse</span>,
+    <span class="ident">reg_env</span>: <span class="ident">MachineEnv</span>,
 }
 
 <span class="kw">impl</span> <span class="ident">X64Backend</span> {
     <span class="doccomment">/// Create a new X64 backend with the given (shared) flags.</span>
     <span class="kw">fn</span> <span class="ident">new_with_flags</span>(<span class="ident">triple</span>: <span class="ident">Triple</span>, <span class="ident">flags</span>: <span class="ident">Flags</span>, <span class="ident">x64_flags</span>: <span class="ident">x64_settings::Flags</span>) -&gt; <span class="self">Self</span> {
-        <span class="kw">let</span> <span class="ident">reg_universe</span> <span class="op">=</span> <span class="ident">create_reg_universe_systemv</span>(<span class="kw-2">&amp;</span><span class="ident">flags</span>);
+        <span class="kw">let</span> <span class="ident">reg_env</span> <span class="op">=</span> <span class="ident">create_reg_env_systemv</span>(<span class="kw-2">&amp;</span><span class="ident">flags</span>);
         <span class="self">Self</span> {
             <span class="ident">triple</span>,
             <span class="ident">flags</span>,
             <span class="ident">x64_flags</span>,
-            <span class="ident">reg_universe</span>,
+            <span class="ident">reg_env</span>,
         }
     }
 
-    <span class="kw">fn</span> <span class="ident">compile_vcode</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">func</span>: <span class="kw-2">&amp;</span><span class="ident">Function</span>, <span class="ident">flags</span>: <span class="ident">Flags</span>) -&gt; <span class="ident">CodegenResult</span><span class="op">&lt;</span><span class="ident">VCode</span><span class="op">&lt;</span><span class="ident">inst::Inst</span><span class="op">&gt;</span><span class="op">&gt;</span> {
+    <span class="kw">fn</span> <span class="ident">compile_vcode</span>(
+        <span class="kw-2">&amp;</span><span class="self">self</span>,
+        <span class="ident">func</span>: <span class="kw-2">&amp;</span><span class="ident">Function</span>,
+        <span class="ident">flags</span>: <span class="ident">Flags</span>,
+    ) -&gt; <span class="ident">CodegenResult</span><span class="op">&lt;</span>(<span class="ident">VCode</span><span class="op">&lt;</span><span class="ident">inst::Inst</span><span class="op">&gt;</span>, <span class="ident">regalloc2::Output</span>)<span class="op">&gt;</span> {
         <span class="comment">// This performs lowering to VCode, register-allocates the code, computes</span>
         <span class="comment">// block layout and finalizes branches. The result is ready for binary emission.</span>
         <span class="kw">let</span> <span class="ident">emit_info</span> <span class="op">=</span> <span class="ident">EmitInfo::new</span>(<span class="ident">flags</span>.<span class="ident">clone</span>(), <span class="self">self</span>.<span class="ident">x64_flags</span>.<span class="ident">clone</span>());
         <span class="kw">let</span> <span class="ident">abi</span> <span class="op">=</span> <span class="ident">Box::new</span>(<span class="ident">abi::X64ABICallee::new</span>(<span class="kw-2">&amp;</span><span class="ident">func</span>, <span class="ident">flags</span>, <span class="self">self</span>.<span class="ident">isa_flags</span>())<span class="question-mark">?</span>);
-        <span class="ident">compile::compile</span>::<span class="op">&lt;</span><span class="self">Self</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="ident">func</span>, <span class="self">self</span>, <span class="ident">abi</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">reg_universe</span>, <span class="ident">emit_info</span>)
+        <span class="ident">compile::compile</span>::<span class="op">&lt;</span><span class="self">Self</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="ident">func</span>, <span class="self">self</span>, <span class="ident">abi</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">reg_env</span>, <span class="ident">emit_info</span>)
     }
 }
 
@@ -433,28 +530,27 @@
         <span class="ident">want_disasm</span>: <span class="ident">bool</span>,
     ) -&gt; <span class="ident">CodegenResult</span><span class="op">&lt;</span><span class="ident">MachCompileResult</span><span class="op">&gt;</span> {
         <span class="kw">let</span> <span class="ident">flags</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">flags</span>();
-        <span class="kw">let</span> <span class="ident">vcode</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">compile_vcode</span>(<span class="ident">func</span>, <span class="ident">flags</span>.<span class="ident">clone</span>())<span class="question-mark">?</span>;
+        <span class="kw">let</span> (<span class="ident">vcode</span>, <span class="ident">regalloc_result</span>) <span class="op">=</span> <span class="self">self</span>.<span class="ident">compile_vcode</span>(<span class="ident">func</span>, <span class="ident">flags</span>.<span class="ident">clone</span>())<span class="question-mark">?</span>;
 
-        <span class="kw">let</span> (<span class="ident">buffer</span>, <span class="ident">bb_starts</span>, <span class="ident">bb_edges</span>) <span class="op">=</span> <span class="ident">vcode</span>.<span class="ident">emit</span>();
-        <span class="kw">let</span> <span class="ident">buffer</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">finish</span>();
-        <span class="kw">let</span> <span class="ident">frame_size</span> <span class="op">=</span> <span class="ident">vcode</span>.<span class="ident">frame_size</span>();
-        <span class="kw">let</span> <span class="ident">value_labels_ranges</span> <span class="op">=</span> <span class="ident">vcode</span>.<span class="ident">value_labels_ranges</span>();
-        <span class="kw">let</span> <span class="ident">stackslot_offsets</span> <span class="op">=</span> <span class="ident">vcode</span>.<span class="ident">stackslot_offsets</span>().<span class="ident">clone</span>();
+        <span class="kw">let</span> <span class="ident">want_disasm</span> <span class="op">=</span> <span class="ident">want_disasm</span> <span class="op">|</span><span class="op">|</span> <span class="macro">log::log_enabled!</span>(<span class="ident">log::Level::Debug</span>);
+        <span class="kw">let</span> <span class="ident">emit_result</span> <span class="op">=</span> <span class="ident">vcode</span>.<span class="ident">emit</span>(<span class="kw-2">&amp;</span><span class="ident">regalloc_result</span>, <span class="ident">want_disasm</span>, <span class="ident">flags</span>.<span class="ident">machine_code_cfg_info</span>());
+        <span class="kw">let</span> <span class="ident">frame_size</span> <span class="op">=</span> <span class="ident">emit_result</span>.<span class="ident">frame_size</span>;
+        <span class="kw">let</span> <span class="ident">value_labels_ranges</span> <span class="op">=</span> <span class="ident">emit_result</span>.<span class="ident">value_labels_ranges</span>;
+        <span class="kw">let</span> <span class="ident">buffer</span> <span class="op">=</span> <span class="ident">emit_result</span>.<span class="ident">buffer</span>.<span class="ident">finish</span>();
+        <span class="kw">let</span> <span class="ident">stackslot_offsets</span> <span class="op">=</span> <span class="ident">emit_result</span>.<span class="ident">stackslot_offsets</span>;
 
-        <span class="kw">let</span> <span class="ident">disasm</span> <span class="op">=</span> <span class="kw">if</span> <span class="ident">want_disasm</span> {
-            <span class="prelude-val">Some</span>(<span class="ident">vcode</span>.<span class="ident">show_rru</span>(<span class="prelude-val">Some</span>(<span class="kw-2">&amp;</span><span class="ident">create_reg_universe_systemv</span>(<span class="ident">flags</span>))))
-        } <span class="kw">else</span> {
-            <span class="prelude-val">None</span>
-        };
+        <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">disasm</span>) <span class="op">=</span> <span class="ident">emit_result</span>.<span class="ident">disasm</span>.<span class="ident">as_ref</span>() {
+            <span class="macro">log::debug!</span>(<span class="string">&quot;disassembly:\n{}&quot;</span>, <span class="ident">disasm</span>);
+        }
 
         <span class="prelude-val">Ok</span>(<span class="ident">MachCompileResult</span> {
             <span class="ident">buffer</span>,
             <span class="ident">frame_size</span>,
-            <span class="ident">disasm</span>,
+            <span class="ident">disasm</span>: <span class="ident">emit_result</span>.<span class="ident">disasm</span>,
             <span class="ident">value_labels_ranges</span>,
             <span class="ident">stackslot_offsets</span>,
-            <span class="ident">bb_starts</span>,
-            <span class="ident">bb_edges</span>,
+            <span class="ident">bb_starts</span>: <span class="ident">emit_result</span>.<span class="ident">bb_offsets</span>,
+            <span class="ident">bb_edges</span>: <span class="ident">emit_result</span>.<span class="ident">bb_edges</span>,
         })
     }
 
@@ -572,7 +668,7 @@
     <span class="kw">use</span> <span class="kw">super</span>::<span class="kw-2">*</span>;
     <span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::cursor</span>::{<span class="ident">Cursor</span>, <span class="ident">FuncCursor</span>};
     <span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::ir</span>::{<span class="ident">types</span>::<span class="kw-2">*</span>, <span class="ident">SourceLoc</span>, <span class="ident">ValueLabel</span>, <span class="ident">ValueLabelStart</span>};
-    <span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::ir</span>::{<span class="ident">AbiParam</span>, <span class="ident">ExternalName</span>, <span class="ident">Function</span>, <span class="ident">InstBuilder</span>, <span class="ident">Signature</span>};
+    <span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::ir</span>::{<span class="ident">AbiParam</span>, <span class="ident">ExternalName</span>, <span class="ident">Function</span>, <span class="ident">InstBuilder</span>, <span class="ident">JumpTableData</span>, <span class="ident">Signature</span>};
     <span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::isa::CallConv</span>;
     <span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::settings</span>;
     <span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::settings::Configurable</span>;
@@ -691,30 +787,29 @@
 
         <span class="comment">// 00000000  55                push rbp</span>
         <span class="comment">// 00000001  4889E5            mov rbp,rsp</span>
-        <span class="comment">// 00000004  4889FE            mov rsi,rdi</span>
-        <span class="comment">// 00000007  81C634120000      add esi,0x1234</span>
-        <span class="comment">// 0000000D  85F6              test esi,esi</span>
-        <span class="comment">// 0000000F  0F841B000000      jz near 0x30</span>
-        <span class="comment">// 00000015  4889F7            mov rdi,rsi</span>
-        <span class="comment">// 00000018  4889F0            mov rax,rsi</span>
-        <span class="comment">// 0000001B  81E834120000      sub eax,0x1234</span>
-        <span class="comment">// 00000021  01F8              add eax,edi</span>
-        <span class="comment">// 00000023  85F6              test esi,esi</span>
-        <span class="comment">// 00000025  0F8505000000      jnz near 0x30</span>
-        <span class="comment">// 0000002B  4889EC            mov rsp,rbp</span>
-        <span class="comment">// 0000002E  5D                pop rbp</span>
-        <span class="comment">// 0000002F  C3                ret</span>
-        <span class="comment">// 00000030  4889F7            mov rdi,rsi    &lt;--- cold block</span>
-        <span class="comment">// 00000033  81C734120000      add edi,0x1234</span>
-        <span class="comment">// 00000039  85FF              test edi,edi</span>
-        <span class="comment">// 0000003B  0F85EFFFFFFF      jnz near 0x30</span>
-        <span class="comment">// 00000041  E9D2FFFFFF        jmp 0x18</span>
+        <span class="comment">// 00000004  81C734120000      add edi,0x1234</span>
+        <span class="comment">// 0000000A  85FF              test edi,edi</span>
+        <span class="comment">// 0000000C  0F841C000000      jz near 0x2e</span>
+        <span class="comment">// 00000012  4989F8            mov r8,rdi</span>
+        <span class="comment">// 00000015  4889F8            mov rax,rdi</span>
+        <span class="comment">// 00000018  81E834120000      sub eax,0x1234</span>
+        <span class="comment">// 0000001E  4401C0            add eax,r8d</span>
+        <span class="comment">// 00000021  85FF              test edi,edi</span>
+        <span class="comment">// 00000023  0F8505000000      jnz near 0x2e</span>
+        <span class="comment">// 00000029  4889EC            mov rsp,rbp</span>
+        <span class="comment">// 0000002C  5D                pop rbp</span>
+        <span class="comment">// 0000002D  C3                ret</span>
+        <span class="comment">// 0000002E  4989F8            mov r8,rdi</span>
+        <span class="comment">// 00000031  4181C034120000    add r8d,0x1234</span>
+        <span class="comment">// 00000038  4585C0            test r8d,r8d</span>
+        <span class="comment">// 0000003B  0F85EDFFFFFF      jnz near 0x2e</span>
+        <span class="comment">// 00000041  E9CFFFFFFF        jmp 0x15</span>
 
         <span class="kw">let</span> <span class="ident">golden</span> <span class="op">=</span> <span class="macro">vec!</span>[
-            <span class="number">85</span>, <span class="number">72</span>, <span class="number">137</span>, <span class="number">229</span>, <span class="number">72</span>, <span class="number">137</span>, <span class="number">254</span>, <span class="number">129</span>, <span class="number">198</span>, <span class="number">52</span>, <span class="number">18</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">133</span>, <span class="number">246</span>, <span class="number">15</span>, <span class="number">132</span>, <span class="number">27</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>,
-            <span class="number">72</span>, <span class="number">137</span>, <span class="number">247</span>, <span class="number">72</span>, <span class="number">137</span>, <span class="number">240</span>, <span class="number">129</span>, <span class="number">232</span>, <span class="number">52</span>, <span class="number">18</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">1</span>, <span class="number">248</span>, <span class="number">133</span>, <span class="number">246</span>, <span class="number">15</span>, <span class="number">133</span>, <span class="number">5</span>, <span class="number">0</span>, <span class="number">0</span>,
-            <span class="number">0</span>, <span class="number">72</span>, <span class="number">137</span>, <span class="number">236</span>, <span class="number">93</span>, <span class="number">195</span>, <span class="number">72</span>, <span class="number">137</span>, <span class="number">247</span>, <span class="number">129</span>, <span class="number">199</span>, <span class="number">52</span>, <span class="number">18</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">133</span>, <span class="number">255</span>, <span class="number">15</span>, <span class="number">133</span>, <span class="number">239</span>,
-            <span class="number">255</span>, <span class="number">255</span>, <span class="number">255</span>, <span class="number">233</span>, <span class="number">210</span>, <span class="number">255</span>, <span class="number">255</span>, <span class="number">255</span>,
+            <span class="number">85</span>, <span class="number">72</span>, <span class="number">137</span>, <span class="number">229</span>, <span class="number">129</span>, <span class="number">199</span>, <span class="number">52</span>, <span class="number">18</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">133</span>, <span class="number">255</span>, <span class="number">15</span>, <span class="number">132</span>, <span class="number">28</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">73</span>, <span class="number">137</span>, <span class="number">248</span>,
+            <span class="number">72</span>, <span class="number">137</span>, <span class="number">248</span>, <span class="number">129</span>, <span class="number">232</span>, <span class="number">52</span>, <span class="number">18</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">68</span>, <span class="number">1</span>, <span class="number">192</span>, <span class="number">133</span>, <span class="number">255</span>, <span class="number">15</span>, <span class="number">133</span>, <span class="number">5</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">72</span>,
+            <span class="number">137</span>, <span class="number">236</span>, <span class="number">93</span>, <span class="number">195</span>, <span class="number">73</span>, <span class="number">137</span>, <span class="number">248</span>, <span class="number">65</span>, <span class="number">129</span>, <span class="number">192</span>, <span class="number">52</span>, <span class="number">18</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">69</span>, <span class="number">133</span>, <span class="number">192</span>, <span class="number">15</span>, <span class="number">133</span>,
+            <span class="number">237</span>, <span class="number">255</span>, <span class="number">255</span>, <span class="number">255</span>, <span class="number">233</span>, <span class="number">207</span>, <span class="number">255</span>, <span class="number">255</span>, <span class="number">255</span>,
         ];
 
         <span class="macro">assert_eq!</span>(<span class="ident">code</span>, <span class="kw-2">&amp;</span><span class="ident">golden</span>[..]);
@@ -735,6 +830,97 @@
             <span class="ident">isa_builder</span>.<span class="ident">finish</span>(<span class="ident">shared_flags</span>),
             <span class="prelude-val">Err</span>(<span class="ident">CodegenError::Unsupported</span>(<span class="kw">_</span>)),
         ));
+    }
+
+    <span class="comment">// Check that br_table lowers properly. We can&#39;t test this with an</span>
+    <span class="comment">// ordinary compile-test because the br_table pseudoinstruction</span>
+    <span class="comment">// expands during emission.</span>
+    <span class="attribute">#[<span class="ident">test</span>]</span>
+    <span class="kw">fn</span> <span class="ident">br_table</span>() {
+        <span class="kw">let</span> <span class="ident">name</span> <span class="op">=</span> <span class="ident">ExternalName::testcase</span>(<span class="string">&quot;test0&quot;</span>);
+        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">sig</span> <span class="op">=</span> <span class="ident">Signature::new</span>(<span class="ident">CallConv::SystemV</span>);
+        <span class="ident">sig</span>.<span class="ident">params</span>.<span class="ident">push</span>(<span class="ident">AbiParam::new</span>(<span class="ident">I32</span>));
+        <span class="ident">sig</span>.<span class="ident">returns</span>.<span class="ident">push</span>(<span class="ident">AbiParam::new</span>(<span class="ident">I32</span>));
+        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">func</span> <span class="op">=</span> <span class="ident">Function::with_name_signature</span>(<span class="ident">name</span>, <span class="ident">sig</span>);
+
+        <span class="kw">let</span> <span class="ident">bb0</span> <span class="op">=</span> <span class="ident">func</span>.<span class="ident">dfg</span>.<span class="ident">make_block</span>();
+        <span class="kw">let</span> <span class="ident">arg0</span> <span class="op">=</span> <span class="ident">func</span>.<span class="ident">dfg</span>.<span class="ident">append_block_param</span>(<span class="ident">bb0</span>, <span class="ident">I32</span>);
+        <span class="kw">let</span> <span class="ident">bb1</span> <span class="op">=</span> <span class="ident">func</span>.<span class="ident">dfg</span>.<span class="ident">make_block</span>();
+        <span class="kw">let</span> <span class="ident">bb2</span> <span class="op">=</span> <span class="ident">func</span>.<span class="ident">dfg</span>.<span class="ident">make_block</span>();
+        <span class="kw">let</span> <span class="ident">bb3</span> <span class="op">=</span> <span class="ident">func</span>.<span class="ident">dfg</span>.<span class="ident">make_block</span>();
+
+        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">pos</span> <span class="op">=</span> <span class="ident">FuncCursor::new</span>(<span class="kw-2">&amp;mut</span> <span class="ident">func</span>);
+
+        <span class="ident">pos</span>.<span class="ident">insert_block</span>(<span class="ident">bb0</span>);
+        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">jt_data</span> <span class="op">=</span> <span class="ident">JumpTableData::new</span>();
+        <span class="ident">jt_data</span>.<span class="ident">push_entry</span>(<span class="ident">bb1</span>);
+        <span class="ident">jt_data</span>.<span class="ident">push_entry</span>(<span class="ident">bb2</span>);
+        <span class="kw">let</span> <span class="ident">jt</span> <span class="op">=</span> <span class="ident">pos</span>.<span class="ident">func</span>.<span class="ident">create_jump_table</span>(<span class="ident">jt_data</span>);
+        <span class="ident">pos</span>.<span class="ident">ins</span>().<span class="ident">br_table</span>(<span class="ident">arg0</span>, <span class="ident">bb3</span>, <span class="ident">jt</span>);
+
+        <span class="ident">pos</span>.<span class="ident">insert_block</span>(<span class="ident">bb1</span>);
+        <span class="kw">let</span> <span class="ident">v1</span> <span class="op">=</span> <span class="ident">pos</span>.<span class="ident">ins</span>().<span class="ident">iconst</span>(<span class="ident">I32</span>, <span class="number">1</span>);
+        <span class="ident">pos</span>.<span class="ident">ins</span>().<span class="ident">return_</span>(<span class="kw-2">&amp;</span>[<span class="ident">v1</span>]);
+
+        <span class="ident">pos</span>.<span class="ident">insert_block</span>(<span class="ident">bb2</span>);
+        <span class="kw">let</span> <span class="ident">v2</span> <span class="op">=</span> <span class="ident">pos</span>.<span class="ident">ins</span>().<span class="ident">iconst</span>(<span class="ident">I32</span>, <span class="number">2</span>);
+        <span class="ident">pos</span>.<span class="ident">ins</span>().<span class="ident">return_</span>(<span class="kw-2">&amp;</span>[<span class="ident">v2</span>]);
+
+        <span class="ident">pos</span>.<span class="ident">insert_block</span>(<span class="ident">bb3</span>);
+        <span class="kw">let</span> <span class="ident">v3</span> <span class="op">=</span> <span class="ident">pos</span>.<span class="ident">ins</span>().<span class="ident">iconst</span>(<span class="ident">I32</span>, <span class="number">3</span>);
+        <span class="ident">pos</span>.<span class="ident">ins</span>().<span class="ident">return_</span>(<span class="kw-2">&amp;</span>[<span class="ident">v3</span>]);
+
+        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">shared_flags_builder</span> <span class="op">=</span> <span class="ident">settings::builder</span>();
+        <span class="ident">shared_flags_builder</span>.<span class="ident">set</span>(<span class="string">&quot;opt_level&quot;</span>, <span class="string">&quot;none&quot;</span>).<span class="ident">unwrap</span>();
+        <span class="ident">shared_flags_builder</span>.<span class="ident">set</span>(<span class="string">&quot;enable_verifier&quot;</span>, <span class="string">&quot;true&quot;</span>).<span class="ident">unwrap</span>();
+        <span class="kw">let</span> <span class="ident">shared_flags</span> <span class="op">=</span> <span class="ident">settings::Flags::new</span>(<span class="ident">shared_flags_builder</span>);
+        <span class="kw">let</span> <span class="ident">isa_flags</span> <span class="op">=</span> <span class="ident">x64_settings::Flags::new</span>(<span class="kw-2">&amp;</span><span class="ident">shared_flags</span>, <span class="ident">x64_settings::builder</span>());
+        <span class="kw">let</span> <span class="ident">backend</span> <span class="op">=</span> <span class="ident">X64Backend::new_with_flags</span>(
+            <span class="ident">Triple::from_str</span>(<span class="string">&quot;x86_64&quot;</span>).<span class="ident">unwrap</span>(),
+            <span class="ident">shared_flags</span>,
+            <span class="ident">isa_flags</span>,
+        );
+        <span class="kw">let</span> <span class="ident">result</span> <span class="op">=</span> <span class="ident">backend</span>
+            .<span class="ident">compile_function</span>(<span class="kw-2">&amp;mut</span> <span class="ident">func</span>, <span class="comment">/* want_disasm = */</span> <span class="bool-val">false</span>)
+            .<span class="ident">unwrap</span>();
+        <span class="kw">let</span> <span class="ident">code</span> <span class="op">=</span> <span class="ident">result</span>.<span class="ident">buffer</span>.<span class="ident">data</span>();
+
+        <span class="comment">// 00000000  55                push rbp</span>
+        <span class="comment">// 00000001  4889E5            mov rbp,rsp</span>
+        <span class="comment">// 00000004  41B900000000      mov r9d,0x0</span>
+        <span class="comment">// 0000000A  83FF02            cmp edi,byte +0x2</span>
+        <span class="comment">// 0000000D  0F8320000000      jnc near 0x33</span>
+        <span class="comment">// 00000013  8BF7              mov esi,edi</span>
+        <span class="comment">// 00000015  490F43F1          cmovnc rsi,r9</span>
+        <span class="comment">// 00000019  4C8D0D0B000000    lea r9,[rel 0x2b]</span>
+        <span class="comment">// 00000020  496374B100        movsxd rsi,dword [r9+rsi*4+0x0]</span>
+        <span class="comment">// 00000025  4901F1            add r9,rsi</span>
+        <span class="comment">// 00000028  41FFE1            jmp r9</span>
+        <span class="comment">// 0000002B  1200              adc al,[rax]</span>
+        <span class="comment">// 0000002D  0000              add [rax],al</span>
+        <span class="comment">// 0000002F  1C00              sbb al,0x0</span>
+        <span class="comment">// 00000031  0000              add [rax],al</span>
+        <span class="comment">// 00000033  B803000000        mov eax,0x3</span>
+        <span class="comment">// 00000038  4889EC            mov rsp,rbp</span>
+        <span class="comment">// 0000003B  5D                pop rbp</span>
+        <span class="comment">// 0000003C  C3                ret</span>
+        <span class="comment">// 0000003D  B801000000        mov eax,0x1</span>
+        <span class="comment">// 00000042  4889EC            mov rsp,rbp</span>
+        <span class="comment">// 00000045  5D                pop rbp</span>
+        <span class="comment">// 00000046  C3                ret</span>
+        <span class="comment">// 00000047  B802000000        mov eax,0x2</span>
+        <span class="comment">// 0000004C  4889EC            mov rsp,rbp</span>
+        <span class="comment">// 0000004F  5D                pop rbp</span>
+        <span class="comment">// 00000050  C3                ret</span>
+
+        <span class="kw">let</span> <span class="ident">golden</span> <span class="op">=</span> <span class="macro">vec!</span>[
+            <span class="number">85</span>, <span class="number">72</span>, <span class="number">137</span>, <span class="number">229</span>, <span class="number">65</span>, <span class="number">185</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">131</span>, <span class="number">255</span>, <span class="number">2</span>, <span class="number">15</span>, <span class="number">131</span>, <span class="number">32</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">139</span>, <span class="number">247</span>, <span class="number">73</span>,
+            <span class="number">15</span>, <span class="number">67</span>, <span class="number">241</span>, <span class="number">76</span>, <span class="number">141</span>, <span class="number">13</span>, <span class="number">11</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">73</span>, <span class="number">99</span>, <span class="number">116</span>, <span class="number">177</span>, <span class="number">0</span>, <span class="number">73</span>, <span class="number">1</span>, <span class="number">241</span>, <span class="number">65</span>, <span class="number">255</span>, <span class="number">225</span>,
+            <span class="number">18</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">28</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">184</span>, <span class="number">3</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">72</span>, <span class="number">137</span>, <span class="number">236</span>, <span class="number">93</span>, <span class="number">195</span>, <span class="number">184</span>, <span class="number">1</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">72</span>,
+            <span class="number">137</span>, <span class="number">236</span>, <span class="number">93</span>, <span class="number">195</span>, <span class="number">184</span>, <span class="number">2</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">72</span>, <span class="number">137</span>, <span class="number">236</span>, <span class="number">93</span>, <span class="number">195</span>,
+        ];
+
+        <span class="macro">assert_eq!</span>(<span class="ident">code</span>, <span class="kw-2">&amp;</span><span class="ident">golden</span>[..]);
     }
 }
 </code></pre></div>

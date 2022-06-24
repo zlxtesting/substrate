@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/cargo_home/registry/src/github.com-1ecc6299db9ec823/wasmtime-cranelift-0.35.3/src/func_environ.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>func_environ.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" type="text/css" href="../../normalize.css"><link rel="stylesheet" type="text/css" href="../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../ayu.css" disabled><link rel="stylesheet" type="text/css" href="../../dark.css" disabled><link rel="stylesheet" type="text/css" href="../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../storage.js"></script><script src="../../crates.js"></script><script defer src="../../main.js"></script><script defer src="../../source-script.js"></script><script defer src="../../source-files.js"></script>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/cargo_home/registry/src/github.com-1ecc6299db9ec823/wasmtime-cranelift-0.38.0/src/func_environ.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>func_environ.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" type="text/css" href="../../normalize.css"><link rel="stylesheet" type="text/css" href="../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../ayu.css" disabled><link rel="stylesheet" type="text/css" href="../../dark.css" disabled><link rel="stylesheet" type="text/css" href="../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../storage.js"></script><script src="../../crates.js"></script><script defer src="../../main.js"></script><script defer src="../../source-script.js"></script><script defer src="../../source-files.js"></script>
     <noscript><link rel="stylesheet" href="../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="sidebar-logo" href="../../wasmtime_cranelift/index.html"><div class="logo-container"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></div>
         </a><h2 class="location"></h2>
     </nav>
@@ -2045,45 +2045,6 @@
 <span id="2040">2040</span>
 <span id="2041">2041</span>
 <span id="2042">2042</span>
-<span id="2043">2043</span>
-<span id="2044">2044</span>
-<span id="2045">2045</span>
-<span id="2046">2046</span>
-<span id="2047">2047</span>
-<span id="2048">2048</span>
-<span id="2049">2049</span>
-<span id="2050">2050</span>
-<span id="2051">2051</span>
-<span id="2052">2052</span>
-<span id="2053">2053</span>
-<span id="2054">2054</span>
-<span id="2055">2055</span>
-<span id="2056">2056</span>
-<span id="2057">2057</span>
-<span id="2058">2058</span>
-<span id="2059">2059</span>
-<span id="2060">2060</span>
-<span id="2061">2061</span>
-<span id="2062">2062</span>
-<span id="2063">2063</span>
-<span id="2064">2064</span>
-<span id="2065">2065</span>
-<span id="2066">2066</span>
-<span id="2067">2067</span>
-<span id="2068">2068</span>
-<span id="2069">2069</span>
-<span id="2070">2070</span>
-<span id="2071">2071</span>
-<span id="2072">2072</span>
-<span id="2073">2073</span>
-<span id="2074">2074</span>
-<span id="2075">2075</span>
-<span id="2076">2076</span>
-<span id="2077">2077</span>
-<span id="2078">2078</span>
-<span id="2079">2079</span>
-<span id="2080">2080</span>
-<span id="2081">2081</span>
 </pre><pre class="rust"><code><span class="kw">use</span> <span class="ident">cranelift_codegen::cursor::FuncCursor</span>;
 <span class="kw">use</span> <span class="ident">cranelift_codegen::ir</span>;
 <span class="kw">use</span> <span class="ident">cranelift_codegen::ir::condcodes</span>::<span class="kw-2">*</span>;
@@ -2102,8 +2063,8 @@
 <span class="kw">use</span> <span class="ident">std::mem</span>;
 <span class="kw">use</span> <span class="ident">wasmparser::Operator</span>;
 <span class="kw">use</span> <span class="ident">wasmtime_environ</span>::{
-    <span class="ident">BuiltinFunctionIndex</span>, <span class="ident">MemoryPlan</span>, <span class="ident">MemoryStyle</span>, <span class="ident">Module</span>, <span class="ident">ModuleTranslation</span>, <span class="ident">TableStyle</span>, <span class="ident">Tunables</span>,
-    <span class="ident">TypeTables</span>, <span class="ident">VMOffsets</span>, <span class="ident">INTERRUPTED</span>, <span class="ident">WASM_PAGE_SIZE</span>,
+    <span class="ident">BuiltinFunctionIndex</span>, <span class="ident">MemoryPlan</span>, <span class="ident">MemoryStyle</span>, <span class="ident">Module</span>, <span class="ident">ModuleTranslation</span>, <span class="ident">ModuleTypes</span>, <span class="ident">PtrSize</span>,
+    <span class="ident">TableStyle</span>, <span class="ident">Tunables</span>, <span class="ident">VMOffsets</span>, <span class="ident">WASM_PAGE_SIZE</span>,
 };
 <span class="kw">use</span> <span class="ident">wasmtime_environ</span>::{<span class="ident">FUNCREF_INIT_BIT</span>, <span class="ident">FUNCREF_MASK</span>};
 
@@ -2199,7 +2160,7 @@
     <span class="ident">isa</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;module_environment</span> (<span class="kw">dyn</span> <span class="ident">TargetIsa</span> <span class="op">+</span> <span class="lifetime">&#39;module_environment</span>),
     <span class="ident">module</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;module_environment</span> <span class="ident">Module</span>,
     <span class="ident">translation</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;module_environment</span> <span class="ident">ModuleTranslation</span><span class="op">&lt;</span><span class="lifetime">&#39;module_environment</span><span class="op">&gt;</span>,
-    <span class="ident">types</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;module_environment</span> <span class="ident">TypeTables</span>,
+    <span class="ident">types</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;module_environment</span> <span class="ident">ModuleTypes</span>,
 
     <span class="doccomment">/// The Cranelift global holding the vmctx address.</span>
     <span class="ident">vmctx</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">ir::GlobalValue</span><span class="op">&gt;</span>,
@@ -2215,17 +2176,17 @@
     <span class="doccomment">/// A function-local variable which stores the cached value of the amount of</span>
     <span class="doccomment">/// fuel remaining to execute. If used this is modified frequently so it&#39;s</span>
     <span class="doccomment">/// stored locally as a variable instead of always referenced from the field</span>
-    <span class="doccomment">/// in `*const VMInterrupts`</span>
+    <span class="doccomment">/// in `*const VMRuntimeLimits`</span>
     <span class="ident">fuel_var</span>: <span class="ident">cranelift_frontend::Variable</span>,
 
     <span class="doccomment">/// A function-local variable which caches the value of `*const</span>
-    <span class="doccomment">/// VMInterrupts` for this function&#39;s vmctx argument. This pointer is stored</span>
+    <span class="doccomment">/// VMRuntimeLimits` for this function&#39;s vmctx argument. This pointer is stored</span>
     <span class="doccomment">/// in the vmctx itself, but never changes for the lifetime of the function,</span>
     <span class="doccomment">/// so if we load it up front we can continue to use it throughout.</span>
-    <span class="ident">vminterrupts_ptr</span>: <span class="ident">cranelift_frontend::Variable</span>,
+    <span class="ident">vmruntime_limits_ptr</span>: <span class="ident">cranelift_frontend::Variable</span>,
 
     <span class="doccomment">/// A cached epoch deadline value, when performing epoch-based</span>
-    <span class="doccomment">/// interruption. Loaded from `VMInterrupts` and reloaded after</span>
+    <span class="doccomment">/// interruption. Loaded from `VMRuntimeLimits` and reloaded after</span>
     <span class="doccomment">/// any yield.</span>
     <span class="ident">epoch_deadline_var</span>: <span class="ident">cranelift_frontend::Variable</span>,
 
@@ -2244,7 +2205,7 @@
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new</span>(
         <span class="ident">isa</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;module_environment</span> (<span class="kw">dyn</span> <span class="ident">TargetIsa</span> <span class="op">+</span> <span class="lifetime">&#39;module_environment</span>),
         <span class="ident">translation</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;module_environment</span> <span class="ident">ModuleTranslation</span><span class="op">&lt;</span><span class="lifetime">&#39;module_environment</span><span class="op">&gt;</span>,
-        <span class="ident">types</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;module_environment</span> <span class="ident">TypeTables</span>,
+        <span class="ident">types</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;module_environment</span> <span class="ident">ModuleTypes</span>,
         <span class="ident">tunables</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;module_environment</span> <span class="ident">Tunables</span>,
     ) -&gt; <span class="self">Self</span> {
         <span class="kw">let</span> <span class="ident">builtin_function_signatures</span> <span class="op">=</span> <span class="ident">BuiltinFunctionSignatures::new</span>(
@@ -2268,7 +2229,7 @@
             <span class="ident">fuel_var</span>: <span class="ident">Variable::new</span>(<span class="number">0</span>),
             <span class="ident">epoch_deadline_var</span>: <span class="ident">Variable::new</span>(<span class="number">0</span>),
             <span class="ident">epoch_ptr_var</span>: <span class="ident">Variable::new</span>(<span class="number">0</span>),
-            <span class="ident">vminterrupts_ptr</span>: <span class="ident">Variable::new</span>(<span class="number">0</span>),
+            <span class="ident">vmruntime_limits_ptr</span>: <span class="ident">Variable::new</span>(<span class="number">0</span>),
 
             <span class="comment">// Start with at least one fuel being consumed because even empty</span>
             <span class="comment">// functions should consume at least some fuel.</span>
@@ -2365,8 +2326,7 @@
         <span class="kw">let</span> <span class="ident">vmctx</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">vmctx</span>(<span class="kw-2">&amp;mut</span> <span class="ident">pos</span>.<span class="ident">func</span>);
         <span class="kw">let</span> <span class="ident">base</span> <span class="op">=</span> <span class="ident">pos</span>.<span class="ident">ins</span>().<span class="ident">global_value</span>(<span class="ident">pointer_type</span>, <span class="ident">vmctx</span>);
 
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">mem_flags</span> <span class="op">=</span> <span class="ident">ir::MemFlags::trusted</span>();
-        <span class="ident">mem_flags</span>.<span class="ident">set_readonly</span>();
+        <span class="kw">let</span> <span class="ident">mem_flags</span> <span class="op">=</span> <span class="ident">ir::MemFlags::trusted</span>().<span class="ident">with_readonly</span>();
 
         <span class="comment">// Load the base of the array of builtin functions</span>
         <span class="kw">let</span> <span class="ident">array_offset</span> <span class="op">=</span> <span class="ident">i32::try_from</span>(<span class="self">self</span>.<span class="ident">offsets</span>.<span class="ident">vmctx_builtin_functions</span>()).<span class="ident">unwrap</span>();
@@ -2430,27 +2390,27 @@
         }
     }
 
-    <span class="kw">fn</span> <span class="ident">declare_vminterrupts_ptr</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="ident">builder</span>: <span class="kw-2">&amp;mut</span> <span class="ident">FunctionBuilder</span><span class="op">&lt;</span><span class="lifetime">&#39;_</span><span class="op">&gt;</span>) {
-        <span class="comment">// We load the `*const VMInterrupts` value stored within vmctx at the</span>
+    <span class="kw">fn</span> <span class="ident">declare_vmruntime_limits_ptr</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="ident">builder</span>: <span class="kw-2">&amp;mut</span> <span class="ident">FunctionBuilder</span><span class="op">&lt;</span><span class="lifetime">&#39;_</span><span class="op">&gt;</span>) {
+        <span class="comment">// We load the `*const VMRuntimeLimits` value stored within vmctx at the</span>
         <span class="comment">// head of the function and reuse the same value across the entire</span>
         <span class="comment">// function. This is possible since we know that the pointer never</span>
         <span class="comment">// changes for the lifetime of the function.</span>
         <span class="kw">let</span> <span class="ident">pointer_type</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">pointer_type</span>();
-        <span class="ident">builder</span>.<span class="ident">declare_var</span>(<span class="self">self</span>.<span class="ident">vminterrupts_ptr</span>, <span class="ident">pointer_type</span>);
+        <span class="ident">builder</span>.<span class="ident">declare_var</span>(<span class="self">self</span>.<span class="ident">vmruntime_limits_ptr</span>, <span class="ident">pointer_type</span>);
         <span class="kw">let</span> <span class="ident">vmctx</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">vmctx</span>(<span class="ident">builder</span>.<span class="ident">func</span>);
         <span class="kw">let</span> <span class="ident">base</span> <span class="op">=</span> <span class="ident">builder</span>.<span class="ident">ins</span>().<span class="ident">global_value</span>(<span class="ident">pointer_type</span>, <span class="ident">vmctx</span>);
-        <span class="kw">let</span> <span class="ident">offset</span> <span class="op">=</span> <span class="ident">i32::try_from</span>(<span class="self">self</span>.<span class="ident">offsets</span>.<span class="ident">vmctx_interrupts</span>()).<span class="ident">unwrap</span>();
+        <span class="kw">let</span> <span class="ident">offset</span> <span class="op">=</span> <span class="ident">i32::try_from</span>(<span class="self">self</span>.<span class="ident">offsets</span>.<span class="ident">vmctx_runtime_limits</span>()).<span class="ident">unwrap</span>();
         <span class="kw">let</span> <span class="ident">interrupt_ptr</span> <span class="op">=</span> <span class="ident">builder</span>
             .<span class="ident">ins</span>()
             .<span class="ident">load</span>(<span class="ident">pointer_type</span>, <span class="ident">ir::MemFlags::trusted</span>(), <span class="ident">base</span>, <span class="ident">offset</span>);
-        <span class="ident">builder</span>.<span class="ident">def_var</span>(<span class="self">self</span>.<span class="ident">vminterrupts_ptr</span>, <span class="ident">interrupt_ptr</span>);
+        <span class="ident">builder</span>.<span class="ident">def_var</span>(<span class="self">self</span>.<span class="ident">vmruntime_limits_ptr</span>, <span class="ident">interrupt_ptr</span>);
     }
 
     <span class="kw">fn</span> <span class="ident">fuel_function_entry</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="ident">builder</span>: <span class="kw-2">&amp;mut</span> <span class="ident">FunctionBuilder</span><span class="op">&lt;</span><span class="lifetime">&#39;_</span><span class="op">&gt;</span>) {
         <span class="comment">// On function entry we load the amount of fuel into a function-local</span>
         <span class="comment">// `self.fuel_var` to make fuel modifications fast locally. This cache</span>
         <span class="comment">// is then periodically flushed to the Store-defined location in</span>
-        <span class="comment">// `VMInterrupts` later.</span>
+        <span class="comment">// `VMRuntimeLimits` later.</span>
         <span class="ident">builder</span>.<span class="ident">declare_var</span>(<span class="self">self</span>.<span class="ident">fuel_var</span>, <span class="ident">ir::types::I64</span>);
         <span class="self">self</span>.<span class="ident">fuel_load_into_var</span>(<span class="ident">builder</span>);
         <span class="self">self</span>.<span class="ident">fuel_check</span>(<span class="ident">builder</span>);
@@ -2498,13 +2458,13 @@
         <span class="kw">match</span> <span class="ident">op</span> {
             <span class="comment">// Exiting a function (via a return or unreachable) or otherwise</span>
             <span class="comment">// entering a different function (via a call) means that we need to</span>
-            <span class="comment">// update the fuel consumption in `VMInterrupts` because we&#39;re</span>
+            <span class="comment">// update the fuel consumption in `VMRuntimeLimits` because we&#39;re</span>
             <span class="comment">// about to move control out of this function itself and the fuel</span>
             <span class="comment">// may need to be read.</span>
             <span class="comment">//</span>
             <span class="comment">// Before this we need to update the fuel counter from our own cost</span>
             <span class="comment">// leading up to this function call, and then we can store</span>
-            <span class="comment">// `self.fuel_var` into `VMInterrupts`.</span>
+            <span class="comment">// `self.fuel_var` into `VMRuntimeLimits`.</span>
             <span class="ident">Operator::Unreachable</span>
             <span class="op">|</span> <span class="ident">Operator::Return</span>
             <span class="op">|</span> <span class="ident">Operator::CallIndirect</span> { .. }
@@ -2588,7 +2548,7 @@
         <span class="ident">builder</span>.<span class="ident">def_var</span>(<span class="self">self</span>.<span class="ident">fuel_var</span>, <span class="ident">fuel</span>);
     }
 
-    <span class="doccomment">/// Loads the fuel consumption value from `VMInterrupts` into `self.fuel_var`</span>
+    <span class="doccomment">/// Loads the fuel consumption value from `VMRuntimeLimits` into `self.fuel_var`</span>
     <span class="kw">fn</span> <span class="ident">fuel_load_into_var</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="ident">builder</span>: <span class="kw-2">&amp;mut</span> <span class="ident">FunctionBuilder</span><span class="op">&lt;</span><span class="lifetime">&#39;_</span><span class="op">&gt;</span>) {
         <span class="kw">let</span> (<span class="ident">addr</span>, <span class="ident">offset</span>) <span class="op">=</span> <span class="self">self</span>.<span class="ident">fuel_addr_offset</span>(<span class="ident">builder</span>);
         <span class="kw">let</span> <span class="ident">fuel</span> <span class="op">=</span> <span class="ident">builder</span>
@@ -2598,7 +2558,7 @@
     }
 
     <span class="doccomment">/// Stores the fuel consumption value from `self.fuel_var` into</span>
-    <span class="doccomment">/// `VMInterrupts`.</span>
+    <span class="doccomment">/// `VMRuntimeLimits`.</span>
     <span class="kw">fn</span> <span class="ident">fuel_save_from_var</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="ident">builder</span>: <span class="kw-2">&amp;mut</span> <span class="ident">FunctionBuilder</span><span class="op">&lt;</span><span class="lifetime">&#39;_</span><span class="op">&gt;</span>) {
         <span class="kw">let</span> (<span class="ident">addr</span>, <span class="ident">offset</span>) <span class="op">=</span> <span class="self">self</span>.<span class="ident">fuel_addr_offset</span>(<span class="ident">builder</span>);
         <span class="kw">let</span> <span class="ident">fuel_consumed</span> <span class="op">=</span> <span class="ident">builder</span>.<span class="ident">use_var</span>(<span class="self">self</span>.<span class="ident">fuel_var</span>);
@@ -2608,14 +2568,14 @@
     }
 
     <span class="doccomment">/// Returns the `(address, offset)` of the fuel consumption within</span>
-    <span class="doccomment">/// `VMInterrupts`, used to perform loads/stores later.</span>
+    <span class="doccomment">/// `VMRuntimeLimits`, used to perform loads/stores later.</span>
     <span class="kw">fn</span> <span class="ident">fuel_addr_offset</span>(
         <span class="kw-2">&amp;mut</span> <span class="self">self</span>,
         <span class="ident">builder</span>: <span class="kw-2">&amp;mut</span> <span class="ident">FunctionBuilder</span><span class="op">&lt;</span><span class="lifetime">&#39;_</span><span class="op">&gt;</span>,
     ) -&gt; (<span class="ident">ir::Value</span>, <span class="ident">ir::immediates::Offset32</span>) {
         (
-            <span class="ident">builder</span>.<span class="ident">use_var</span>(<span class="self">self</span>.<span class="ident">vminterrupts_ptr</span>),
-            <span class="ident">i32::from</span>(<span class="self">self</span>.<span class="ident">offsets</span>.<span class="ident">vminterrupts_fuel_consumed</span>()).<span class="ident">into</span>(),
+            <span class="ident">builder</span>.<span class="ident">use_var</span>(<span class="self">self</span>.<span class="ident">vmruntime_limits_ptr</span>),
+            <span class="ident">i32::from</span>(<span class="self">self</span>.<span class="ident">offsets</span>.<span class="ident">vmruntime_limits_fuel_consumed</span>()).<span class="ident">into</span>(),
         )
     }
 
@@ -2679,7 +2639,7 @@
         <span class="comment">// The reason is that one can construct a &quot;zip-bomb-like&quot;</span>
         <span class="comment">// program with exponential-in-program-size runtime, with no</span>
         <span class="comment">// backedges (loops), by building a tree of function calls: f0</span>
-        <span class="comment">// calls f1 ten tims, f1 calls f2 ten times, etc. E.g., nine</span>
+        <span class="comment">// calls f1 ten times, f1 calls f2 ten times, etc. E.g., nine</span>
         <span class="comment">// levels of this yields a billion function calls with no</span>
         <span class="comment">// backedges. So we can&#39;t do checks only at backedges.</span>
         <span class="comment">//</span>
@@ -2714,12 +2674,12 @@
     }
 
     <span class="kw">fn</span> <span class="ident">epoch_load_deadline_into_var</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="ident">builder</span>: <span class="kw-2">&amp;mut</span> <span class="ident">FunctionBuilder</span><span class="op">&lt;</span><span class="lifetime">&#39;_</span><span class="op">&gt;</span>) {
-        <span class="kw">let</span> <span class="ident">interrupts</span> <span class="op">=</span> <span class="ident">builder</span>.<span class="ident">use_var</span>(<span class="self">self</span>.<span class="ident">vminterrupts_ptr</span>);
+        <span class="kw">let</span> <span class="ident">interrupts</span> <span class="op">=</span> <span class="ident">builder</span>.<span class="ident">use_var</span>(<span class="self">self</span>.<span class="ident">vmruntime_limits_ptr</span>);
         <span class="kw">let</span> <span class="ident">deadline</span> <span class="op">=</span> <span class="ident">builder</span>.<span class="ident">ins</span>().<span class="ident">load</span>(
             <span class="ident">ir::types::I64</span>,
             <span class="ident">ir::MemFlags::trusted</span>(),
             <span class="ident">interrupts</span>,
-            <span class="ident">ir::immediates::Offset32::new</span>(<span class="self">self</span>.<span class="ident">offsets</span>.<span class="ident">vminterupts_epoch_deadline</span>() <span class="kw">as</span> <span class="ident">i32</span>),
+            <span class="ident">ir::immediates::Offset32::new</span>(<span class="self">self</span>.<span class="ident">offsets</span>.<span class="ident">vmruntime_limits_epoch_deadline</span>() <span class="kw">as</span> <span class="ident">i32</span>),
         );
         <span class="ident">builder</span>.<span class="ident">def_var</span>(<span class="self">self</span>.<span class="ident">epoch_deadline_var</span>, <span class="ident">deadline</span>);
     }
@@ -2852,9 +2812,8 @@
         <span class="comment">// if null, we take a slow-path that invokes a</span>
         <span class="comment">// libcall.</span>
         <span class="kw">let</span> <span class="ident">table_entry_addr</span> <span class="op">=</span> <span class="ident">builder</span>.<span class="ident">ins</span>().<span class="ident">table_addr</span>(<span class="ident">pointer_type</span>, <span class="ident">table</span>, <span class="ident">index</span>, <span class="number">0</span>);
-        <span class="kw">let</span> <span class="ident">value</span> <span class="op">=</span> <span class="ident">builder</span>
-            .<span class="ident">ins</span>()
-            .<span class="ident">load</span>(<span class="ident">pointer_type</span>, <span class="ident">ir::MemFlags::trusted</span>(), <span class="ident">table_entry_addr</span>, <span class="number">0</span>);
+        <span class="kw">let</span> <span class="ident">flags</span> <span class="op">=</span> <span class="ident">ir::MemFlags::trusted</span>().<span class="ident">with_table</span>();
+        <span class="kw">let</span> <span class="ident">value</span> <span class="op">=</span> <span class="ident">builder</span>.<span class="ident">ins</span>().<span class="ident">load</span>(<span class="ident">pointer_type</span>, <span class="ident">flags</span>, <span class="ident">table_entry_addr</span>, <span class="number">0</span>);
         <span class="comment">// Mask off the &quot;initialized bit&quot;. See documentation on</span>
         <span class="comment">// FUNCREF_INIT_BIT in crates/environ/src/ref_bits.rs for more</span>
         <span class="comment">// details.</span>
@@ -2910,7 +2869,7 @@
     }
 
     <span class="kw">fn</span> <span class="ident">after_locals</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="ident">num_locals</span>: <span class="ident">usize</span>) {
-        <span class="self">self</span>.<span class="ident">vminterrupts_ptr</span> <span class="op">=</span> <span class="ident">Variable::new</span>(<span class="ident">num_locals</span>);
+        <span class="self">self</span>.<span class="ident">vmruntime_limits_ptr</span> <span class="op">=</span> <span class="ident">Variable::new</span>(<span class="ident">num_locals</span>);
         <span class="self">self</span>.<span class="ident">fuel_var</span> <span class="op">=</span> <span class="ident">Variable::new</span>(<span class="ident">num_locals</span> <span class="op">+</span> <span class="number">1</span>);
         <span class="self">self</span>.<span class="ident">epoch_deadline_var</span> <span class="op">=</span> <span class="ident">Variable::new</span>(<span class="ident">num_locals</span> <span class="op">+</span> <span class="number">2</span>);
         <span class="self">self</span>.<span class="ident">epoch_ptr_var</span> <span class="op">=</span> <span class="ident">Variable::new</span>(<span class="ident">num_locals</span> <span class="op">+</span> <span class="number">3</span>);
@@ -3065,10 +3024,8 @@
 
                 <span class="comment">// Load the table element.</span>
                 <span class="kw">let</span> <span class="ident">elem_addr</span> <span class="op">=</span> <span class="ident">builder</span>.<span class="ident">ins</span>().<span class="ident">table_addr</span>(<span class="ident">pointer_type</span>, <span class="ident">table</span>, <span class="ident">index</span>, <span class="number">0</span>);
-                <span class="kw">let</span> <span class="ident">elem</span> <span class="op">=</span>
-                    <span class="ident">builder</span>
-                        .<span class="ident">ins</span>()
-                        .<span class="ident">load</span>(<span class="ident">reference_type</span>, <span class="ident">ir::MemFlags::trusted</span>(), <span class="ident">elem_addr</span>, <span class="number">0</span>);
+                <span class="kw">let</span> <span class="ident">flags</span> <span class="op">=</span> <span class="ident">ir::MemFlags::trusted</span>().<span class="ident">with_table</span>();
+                <span class="kw">let</span> <span class="ident">elem</span> <span class="op">=</span> <span class="ident">builder</span>.<span class="ident">ins</span>().<span class="ident">load</span>(<span class="ident">reference_type</span>, <span class="ident">flags</span>, <span class="ident">elem_addr</span>, <span class="number">0</span>);
 
                 <span class="kw">let</span> <span class="ident">elem_is_null</span> <span class="op">=</span> <span class="ident">builder</span>.<span class="ident">ins</span>().<span class="ident">is_null</span>(<span class="ident">elem</span>);
                 <span class="ident">builder</span>.<span class="ident">ins</span>().<span class="ident">brnz</span>(<span class="ident">elem_is_null</span>, <span class="ident">continue_block</span>, <span class="kw-2">&amp;</span>[]);
@@ -3173,12 +3130,10 @@
                     <span class="kw">let</span> <span class="ident">value_with_init_bit</span> <span class="op">=</span> <span class="ident">builder</span>
                         .<span class="ident">ins</span>()
                         .<span class="ident">bor_imm</span>(<span class="ident">value</span>, <span class="ident">Imm64::from</span>(<span class="ident">FUNCREF_INIT_BIT</span> <span class="kw">as</span> <span class="ident">i64</span>));
-                    <span class="ident">builder</span>.<span class="ident">ins</span>().<span class="ident">store</span>(
-                        <span class="ident">ir::MemFlags::trusted</span>(),
-                        <span class="ident">value_with_init_bit</span>,
-                        <span class="ident">table_entry_addr</span>,
-                        <span class="number">0</span>,
-                    );
+                    <span class="kw">let</span> <span class="ident">flags</span> <span class="op">=</span> <span class="ident">ir::MemFlags::trusted</span>().<span class="ident">with_table</span>();
+                    <span class="ident">builder</span>
+                        .<span class="ident">ins</span>()
+                        .<span class="ident">store</span>(<span class="ident">flags</span>, <span class="ident">value_with_init_bit</span>, <span class="ident">table_entry_addr</span>, <span class="number">0</span>);
                     <span class="prelude-val">Ok</span>(())
                 }
             },
@@ -3258,13 +3213,9 @@
                 <span class="comment">// saving a reference to a deallocated object, and then using it</span>
                 <span class="comment">// after its been freed).</span>
                 <span class="ident">builder</span>.<span class="ident">switch_to_block</span>(<span class="ident">check_current_elem_block</span>);
-                <span class="kw">let</span> <span class="ident">current_elem</span> <span class="op">=</span>
-                    <span class="ident">builder</span>
-                        .<span class="ident">ins</span>()
-                        .<span class="ident">load</span>(<span class="ident">pointer_type</span>, <span class="ident">ir::MemFlags::trusted</span>(), <span class="ident">table_entry_addr</span>, <span class="number">0</span>);
-                <span class="ident">builder</span>
-                    .<span class="ident">ins</span>()
-                    .<span class="ident">store</span>(<span class="ident">ir::MemFlags::trusted</span>(), <span class="ident">value</span>, <span class="ident">table_entry_addr</span>, <span class="number">0</span>);
+                <span class="kw">let</span> <span class="ident">flags</span> <span class="op">=</span> <span class="ident">ir::MemFlags::trusted</span>().<span class="ident">with_table</span>();
+                <span class="kw">let</span> <span class="ident">current_elem</span> <span class="op">=</span> <span class="ident">builder</span>.<span class="ident">ins</span>().<span class="ident">load</span>(<span class="ident">pointer_type</span>, <span class="ident">flags</span>, <span class="ident">table_entry_addr</span>, <span class="number">0</span>);
+                <span class="ident">builder</span>.<span class="ident">ins</span>().<span class="ident">store</span>(<span class="ident">flags</span>, <span class="ident">value</span>, <span class="ident">table_entry_addr</span>, <span class="number">0</span>);
 
                 <span class="comment">// If the current element is non-null, decrement its reference</span>
                 <span class="comment">// count. And if its reference count has reached zero, then make</span>
@@ -3572,7 +3523,7 @@
         <span class="ident">index</span>: <span class="ident">TypeIndex</span>,
     ) -&gt; <span class="ident">WasmResult</span><span class="op">&lt;</span><span class="ident">ir::SigRef</span><span class="op">&gt;</span> {
         <span class="kw">let</span> <span class="ident">index</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">module</span>.<span class="ident">types</span>[<span class="ident">index</span>].<span class="ident">unwrap_function</span>();
-        <span class="kw">let</span> <span class="ident">sig</span> <span class="op">=</span> <span class="ident"><span class="kw">crate</span>::indirect_signature</span>(<span class="self">self</span>.<span class="ident">isa</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">types</span>.<span class="ident">wasm_signatures</span>[<span class="ident">index</span>]);
+        <span class="kw">let</span> <span class="ident">sig</span> <span class="op">=</span> <span class="ident"><span class="kw">crate</span>::indirect_signature</span>(<span class="self">self</span>.<span class="ident">isa</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">types</span>[<span class="ident">index</span>]);
         <span class="prelude-val">Ok</span>(<span class="ident">func</span>.<span class="ident">import_signature</span>(<span class="ident">sig</span>))
     }
 
@@ -3632,7 +3583,7 @@
             <span class="ident">pointer_type</span>,
             <span class="ident">mem_flags</span>,
             <span class="ident">anyfunc_ptr</span>,
-            <span class="ident">i32::from</span>(<span class="self">self</span>.<span class="ident">offsets</span>.<span class="ident">vmcaller_checked_anyfunc_func_ptr</span>()),
+            <span class="ident">i32::from</span>(<span class="self">self</span>.<span class="ident">offsets</span>.<span class="ident">ptr</span>.<span class="ident">vmcaller_checked_anyfunc_func_ptr</span>()),
         );
 
         <span class="comment">// If necessary, check the signature.</span>
@@ -3647,8 +3598,7 @@
                 <span class="comment">// `*mut VMCallerCheckedAnyfunc` base pointer from `VMContext`</span>
                 <span class="comment">// and then loading, based on `SignatureIndex`, the</span>
                 <span class="comment">// corresponding entry.</span>
-                <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">mem_flags</span> <span class="op">=</span> <span class="ident">ir::MemFlags::trusted</span>();
-                <span class="ident">mem_flags</span>.<span class="ident">set_readonly</span>();
+                <span class="kw">let</span> <span class="ident">mem_flags</span> <span class="op">=</span> <span class="ident">ir::MemFlags::trusted</span>().<span class="ident">with_readonly</span>();
                 <span class="kw">let</span> <span class="ident">signatures</span> <span class="op">=</span> <span class="ident">builder</span>.<span class="ident">ins</span>().<span class="ident">load</span>(
                     <span class="ident">pointer_type</span>,
                     <span class="ident">mem_flags</span>,
@@ -3669,7 +3619,7 @@
                     <span class="ident">sig_id_type</span>,
                     <span class="ident">mem_flags</span>,
                     <span class="ident">anyfunc_ptr</span>,
-                    <span class="ident">i32::from</span>(<span class="self">self</span>.<span class="ident">offsets</span>.<span class="ident">vmcaller_checked_anyfunc_type_index</span>()),
+                    <span class="ident">i32::from</span>(<span class="self">self</span>.<span class="ident">offsets</span>.<span class="ident">ptr</span>.<span class="ident">vmcaller_checked_anyfunc_type_index</span>()),
                 );
 
                 <span class="comment">// Check that they match.</span>
@@ -3691,7 +3641,7 @@
             <span class="ident">pointer_type</span>,
             <span class="ident">mem_flags</span>,
             <span class="ident">anyfunc_ptr</span>,
-            <span class="ident">i32::from</span>(<span class="self">self</span>.<span class="ident">offsets</span>.<span class="ident">vmcaller_checked_anyfunc_vmctx</span>()),
+            <span class="ident">i32::from</span>(<span class="self">self</span>.<span class="ident">offsets</span>.<span class="ident">ptr</span>.<span class="ident">vmcaller_checked_anyfunc_vmctx</span>()),
         );
         <span class="ident">real_call_args</span>.<span class="ident">push</span>(<span class="ident">vmctx</span>);
         <span class="ident">real_call_args</span>.<span class="ident">push</span>(<span class="ident">caller_vmctx</span>);
@@ -4062,31 +4012,6 @@
     }
 
     <span class="kw">fn</span> <span class="ident">translate_loop_header</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="ident">builder</span>: <span class="kw-2">&amp;mut</span> <span class="ident">FunctionBuilder</span>) -&gt; <span class="ident">WasmResult</span><span class="op">&lt;</span>()<span class="op">&gt;</span> {
-        <span class="comment">// If enabled check the interrupt flag to prevent long or infinite</span>
-        <span class="comment">// loops.</span>
-        <span class="comment">//</span>
-        <span class="comment">// For more information about this see comments in</span>
-        <span class="comment">// `crates/environ/src/cranelift.rs`</span>
-        <span class="kw">if</span> <span class="self">self</span>.<span class="ident">tunables</span>.<span class="ident">interruptable</span> {
-            <span class="kw">let</span> <span class="ident">pointer_type</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">pointer_type</span>();
-            <span class="kw">let</span> <span class="ident">interrupt_ptr</span> <span class="op">=</span> <span class="ident">builder</span>.<span class="ident">use_var</span>(<span class="self">self</span>.<span class="ident">vminterrupts_ptr</span>);
-            <span class="kw">let</span> <span class="ident">interrupt</span> <span class="op">=</span> <span class="ident">builder</span>.<span class="ident">ins</span>().<span class="ident">load</span>(
-                <span class="ident">pointer_type</span>,
-                <span class="ident">ir::MemFlags::trusted</span>(),
-                <span class="ident">interrupt_ptr</span>,
-                <span class="ident">i32::from</span>(<span class="self">self</span>.<span class="ident">offsets</span>.<span class="ident">vminterrupts_stack_limit</span>()),
-            );
-            <span class="comment">// Note that the cast to `isize` happens first to allow sign-extension,</span>
-            <span class="comment">// if necessary, to `i64`.</span>
-            <span class="kw">let</span> <span class="ident">interrupted_sentinel</span> <span class="op">=</span> <span class="ident">builder</span>
-                .<span class="ident">ins</span>()
-                .<span class="ident">iconst</span>(<span class="ident">pointer_type</span>, <span class="ident">INTERRUPTED</span> <span class="kw">as</span> <span class="ident">isize</span> <span class="kw">as</span> <span class="ident">i64</span>);
-            <span class="kw">let</span> <span class="ident">cmp</span> <span class="op">=</span> <span class="ident">builder</span>
-                .<span class="ident">ins</span>()
-                .<span class="ident">icmp</span>(<span class="ident">IntCC::Equal</span>, <span class="ident">interrupt</span>, <span class="ident">interrupted_sentinel</span>);
-            <span class="ident">builder</span>.<span class="ident">ins</span>().<span class="ident">trapnz</span>(<span class="ident">cmp</span>, <span class="ident">ir::TrapCode::Interrupt</span>);
-        }
-
         <span class="comment">// Additionally if enabled check how much fuel we have remaining to see</span>
         <span class="comment">// if we&#39;ve run out by this point.</span>
         <span class="kw">if</span> <span class="self">self</span>.<span class="ident">tunables</span>.<span class="ident">consume_fuel</span> {
@@ -4131,13 +4056,10 @@
         <span class="ident">builder</span>: <span class="kw-2">&amp;mut</span> <span class="ident">FunctionBuilder</span>,
         <span class="ident">_state</span>: <span class="kw-2">&amp;</span><span class="ident">FuncTranslationState</span>,
     ) -&gt; <span class="ident">WasmResult</span><span class="op">&lt;</span>()<span class="op">&gt;</span> {
-        <span class="comment">// If the `vminterrupts_ptr` variable will get used then we initialize</span>
+        <span class="comment">// If the `vmruntime_limits_ptr` variable will get used then we initialize</span>
         <span class="comment">// it here.</span>
-        <span class="kw">if</span> <span class="self">self</span>.<span class="ident">tunables</span>.<span class="ident">consume_fuel</span>
-            <span class="op">|</span><span class="op">|</span> <span class="self">self</span>.<span class="ident">tunables</span>.<span class="ident">interruptable</span>
-            <span class="op">|</span><span class="op">|</span> <span class="self">self</span>.<span class="ident">tunables</span>.<span class="ident">epoch_interruption</span>
-        {
-            <span class="self">self</span>.<span class="ident">declare_vminterrupts_ptr</span>(<span class="ident">builder</span>);
+        <span class="kw">if</span> <span class="self">self</span>.<span class="ident">tunables</span>.<span class="ident">consume_fuel</span> <span class="op">|</span><span class="op">|</span> <span class="self">self</span>.<span class="ident">tunables</span>.<span class="ident">epoch_interruption</span> {
+            <span class="self">self</span>.<span class="ident">declare_vmruntime_limits_ptr</span>(<span class="ident">builder</span>);
         }
         <span class="comment">// Additionally we initialize `fuel_var` if it will get used.</span>
         <span class="kw">if</span> <span class="self">self</span>.<span class="ident">tunables</span>.<span class="ident">consume_fuel</span> {

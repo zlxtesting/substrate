@@ -17,7 +17,7 @@
     },
     SaveReg {
         clobber_offset: <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.u32.html">u32</a>,
-        reg: <a class="struct" href="../../../regalloc/data_structures/struct.RealReg.html" title="struct regalloc::data_structures::RealReg">RealReg</a>,
+        reg: RealReg,
     },
     Aarch64SetPointerAuth {
         return_addresses: <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.bool.html">bool</a>,
@@ -134,7 +134,7 @@ area. We expect this pseudo-op to come after <code>PushFrameRegs</code>.</p>
 </div></div></div><div class="docblock"><p>The stack pointer was adjusted to allocate the stack.</p>
 </div><h3 id="variant.SaveReg" class="variant small-section-header"><a href="#variant.SaveReg" class="anchor field"></a><code>SaveReg</code></h3><div class="sub-variant" id="variant.SaveReg.fields"><h4>Fields</h4><div class="sub-variant-field"><span id="variant.SaveReg.field.clobber_offset" class="variant small-section-header"><a href="#variant.SaveReg.field.clobber_offset" class="anchor field"></a><code>clobber_offset:&nbsp;<a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.u32.html">u32</a></code></span><div class="docblock"><p>The offset from the start of the clobber area to this register’s
 stack location.</p>
-</div></div><div class="sub-variant-field"><span id="variant.SaveReg.field.reg" class="variant small-section-header"><a href="#variant.SaveReg.field.reg" class="anchor field"></a><code>reg:&nbsp;<a class="struct" href="../../../regalloc/data_structures/struct.RealReg.html" title="struct regalloc::data_structures::RealReg">RealReg</a></code></span><div class="docblock"><p>The saved register.</p>
+</div></div><div class="sub-variant-field"><span id="variant.SaveReg.field.reg" class="variant small-section-header"><a href="#variant.SaveReg.field.reg" class="anchor field"></a><code>reg:&nbsp;RealReg</code></span><div class="docblock"><p>The saved register.</p>
 </div></div></div><div class="docblock"><p>The stack slot at the given offset from the clobber-area base has been
 used to save the given register.</p>
 <p>Given that <code>CreateFrame</code> has occurred first with some

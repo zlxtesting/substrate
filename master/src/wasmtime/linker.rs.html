@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/cargo_home/registry/src/github.com-1ecc6299db9ec823/wasmtime-0.35.3/src/linker.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>linker.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" type="text/css" href="../../normalize.css"><link rel="stylesheet" type="text/css" href="../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../ayu.css" disabled><link rel="stylesheet" type="text/css" href="../../dark.css" disabled><link rel="stylesheet" type="text/css" href="../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../storage.js"></script><script src="../../crates.js"></script><script defer src="../../main.js"></script><script defer src="../../source-script.js"></script><script defer src="../../source-files.js"></script>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/cargo_home/registry/src/github.com-1ecc6299db9ec823/wasmtime-0.38.0/src/linker.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>linker.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" type="text/css" href="../../normalize.css"><link rel="stylesheet" type="text/css" href="../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../ayu.css" disabled><link rel="stylesheet" type="text/css" href="../../dark.css" disabled><link rel="stylesheet" type="text/css" href="../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../storage.js"></script><script src="../../crates.js"></script><script defer src="../../main.js"></script><script defer src="../../source-script.js"></script><script defer src="../../source-files.js"></script>
     <noscript><link rel="stylesheet" href="../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="sidebar-logo" href="../../wasmtime/index.html"><div class="logo-container"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></div>
         </a><h2 class="location"></h2>
     </nav>
@@ -1259,37 +1259,12 @@
 <span id="1254">1254</span>
 <span id="1255">1255</span>
 <span id="1256">1256</span>
-<span id="1257">1257</span>
-<span id="1258">1258</span>
-<span id="1259">1259</span>
-<span id="1260">1260</span>
-<span id="1261">1261</span>
-<span id="1262">1262</span>
-<span id="1263">1263</span>
-<span id="1264">1264</span>
-<span id="1265">1265</span>
-<span id="1266">1266</span>
-<span id="1267">1267</span>
-<span id="1268">1268</span>
-<span id="1269">1269</span>
-<span id="1270">1270</span>
-<span id="1271">1271</span>
-<span id="1272">1272</span>
-<span id="1273">1273</span>
-<span id="1274">1274</span>
-<span id="1275">1275</span>
-<span id="1276">1276</span>
-<span id="1277">1277</span>
-<span id="1278">1278</span>
-<span id="1279">1279</span>
-<span id="1280">1280</span>
-<span id="1281">1281</span>
 </pre><pre class="rust"><code><span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::func::HostFunc</span>;
-<span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::instance</span>::{<span class="ident">InstanceData</span>, <span class="ident">InstancePre</span>};
+<span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::instance::InstancePre</span>;
 <span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::store::StoreOpaque</span>;
 <span class="kw">use</span> <span class="kw">crate</span>::{
-    <span class="ident">AsContextMut</span>, <span class="ident">Caller</span>, <span class="ident">Engine</span>, <span class="ident">Extern</span>, <span class="ident">ExternType</span>, <span class="ident">Func</span>, <span class="ident">FuncType</span>, <span class="ident">ImportType</span>, <span class="ident">Instance</span>,
-    <span class="ident">IntoFunc</span>, <span class="ident">Module</span>, <span class="ident">StoreContextMut</span>, <span class="ident">Trap</span>, <span class="ident">Val</span>, <span class="ident">ValRaw</span>,
+    <span class="ident">AsContextMut</span>, <span class="ident">Caller</span>, <span class="ident">Engine</span>, <span class="ident">Extern</span>, <span class="ident">Func</span>, <span class="ident">FuncType</span>, <span class="ident">ImportType</span>, <span class="ident">Instance</span>, <span class="ident">IntoFunc</span>, <span class="ident">Module</span>,
+    <span class="ident">StoreContextMut</span>, <span class="ident">Trap</span>, <span class="ident">Val</span>, <span class="ident">ValRaw</span>,
 };
 <span class="kw">use</span> <span class="ident">anyhow</span>::{<span class="ident">anyhow</span>, <span class="ident">bail</span>, <span class="ident">Context</span>, <span class="prelude-ty">Result</span>};
 <span class="kw">use</span> <span class="ident">log::warn</span>;
@@ -1401,7 +1376,6 @@
 <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">enum</span> <span class="ident">Definition</span> {
     <span class="ident">Extern</span>(<span class="ident">Extern</span>),
     <span class="ident">HostFunc</span>(<span class="ident">Arc</span><span class="op">&lt;</span><span class="ident">HostFunc</span><span class="op">&gt;</span>),
-    <span class="ident">Instance</span>(<span class="ident">Arc</span><span class="op">&lt;</span><span class="ident">indexmap::IndexMap</span><span class="op">&lt;</span><span class="ident">String</span>, <span class="ident">Definition</span><span class="op">&gt;</span><span class="op">&gt;</span>),
 }
 
 <span class="macro">macro_rules!</span> <span class="ident">generate_wrap_async_func</span> {
@@ -1432,7 +1406,7 @@
                 ),
             );
             <span class="self">self</span>.<span class="ident">func_wrap</span>(<span class="ident">module</span>, <span class="ident">name</span>, <span class="kw">move</span> <span class="op">|</span><span class="kw-2">mut</span> <span class="ident">caller</span>: <span class="ident">Caller</span><span class="op">&lt;</span><span class="lifetime">&#39;_</span>, <span class="ident">T</span><span class="op">&gt;</span>, $(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">args</span>: <span class="macro-nonterminal">$</span><span class="macro-nonterminal">args</span>),<span class="kw-2">*</span><span class="op">|</span> {
-                <span class="kw">let</span> <span class="ident">async_cx</span> <span class="op">=</span> <span class="ident">caller</span>.<span class="ident">store</span>.<span class="ident">as_context_mut</span>().<span class="number">0</span>.<span class="ident">async_cx</span>();
+                <span class="kw">let</span> <span class="ident">async_cx</span> <span class="op">=</span> <span class="ident">caller</span>.<span class="ident">store</span>.<span class="ident">as_context_mut</span>().<span class="number">0</span>.<span class="ident">async_cx</span>().<span class="ident">expect</span>(<span class="string">&quot;Attempt to start async function on dying fiber&quot;</span>);
                 <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">future</span> <span class="op">=</span> <span class="ident">Pin::from</span>(<span class="ident">func</span>(<span class="ident">caller</span>, $(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">args</span>),<span class="kw-2">*</span>));
                 <span class="kw">match</span> <span class="kw">unsafe</span> { <span class="ident">async_cx</span>.<span class="ident">block_on</span>(<span class="ident">future</span>.<span class="ident">as_mut</span>()) } {
                     <span class="prelude-val">Ok</span>(<span class="ident">ret</span>) =&gt; <span class="ident">ret</span>.<span class="ident">into_fallible</span>(),
@@ -1611,7 +1585,7 @@
         <span class="ident">module</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>,
         <span class="ident">name</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>,
         <span class="ident">ty</span>: <span class="ident">FuncType</span>,
-        <span class="ident">func</span>: <span class="kw">impl</span> <span class="ident">Fn</span>(<span class="ident">Caller</span><span class="op">&lt;</span><span class="lifetime">&#39;_</span>, <span class="ident">T</span><span class="op">&gt;</span>, <span class="kw-2">*mut</span> <span class="ident">ValRaw</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span>(), <span class="ident">Trap</span><span class="op">&gt;</span> <span class="op">+</span> <span class="ident">Send</span> <span class="op">+</span> <span class="ident">Sync</span> <span class="op">+</span> <span class="lifetime">&#39;static</span>,
+        <span class="ident">func</span>: <span class="kw">impl</span> <span class="ident">Fn</span>(<span class="ident">Caller</span><span class="op">&lt;</span><span class="lifetime">&#39;_</span>, <span class="ident">T</span><span class="op">&gt;</span>, <span class="kw-2">&amp;mut</span> [<span class="ident">ValRaw</span>]) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span>(), <span class="ident">Trap</span><span class="op">&gt;</span> <span class="op">+</span> <span class="ident">Send</span> <span class="op">+</span> <span class="ident">Sync</span> <span class="op">+</span> <span class="lifetime">&#39;static</span>,
     ) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="kw-2">&amp;mut</span> <span class="self">Self</span><span class="op">&gt;</span> {
         <span class="kw">let</span> <span class="ident">func</span> <span class="op">=</span> <span class="ident">HostFunc::new_unchecked</span>(<span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">engine</span>, <span class="ident">ty</span>, <span class="ident">func</span>);
         <span class="kw">let</span> <span class="ident">key</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">import_key</span>(<span class="ident">module</span>, <span class="prelude-val">Some</span>(<span class="ident">name</span>));
@@ -1646,7 +1620,12 @@
             <span class="string">&quot;cannot use `func_new_async` without enabling async support in the config&quot;</span>
         );
         <span class="self">self</span>.<span class="ident">func_new</span>(<span class="ident">module</span>, <span class="ident">name</span>, <span class="ident">ty</span>, <span class="kw">move</span> <span class="op">|</span><span class="kw-2">mut</span> <span class="ident">caller</span>, <span class="ident">params</span>, <span class="ident">results</span><span class="op">|</span> {
-            <span class="kw">let</span> <span class="ident">async_cx</span> <span class="op">=</span> <span class="ident">caller</span>.<span class="ident">store</span>.<span class="ident">as_context_mut</span>().<span class="number">0</span>.<span class="ident">async_cx</span>();
+            <span class="kw">let</span> <span class="ident">async_cx</span> <span class="op">=</span> <span class="ident">caller</span>
+                .<span class="ident">store</span>
+                .<span class="ident">as_context_mut</span>()
+                .<span class="number">0</span>
+                .<span class="ident">async_cx</span>()
+                .<span class="ident">expect</span>(<span class="string">&quot;Attempt to spawn new function on dying fiber&quot;</span>);
             <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">future</span> <span class="op">=</span> <span class="ident">Pin::from</span>(<span class="ident">func</span>(<span class="ident">caller</span>, <span class="ident">params</span>, <span class="ident">results</span>));
             <span class="kw">match</span> <span class="kw">unsafe</span> { <span class="ident">async_cx</span>.<span class="ident">block_on</span>(<span class="ident">future</span>.<span class="ident">as_mut</span>()) } {
                 <span class="prelude-val">Ok</span>(<span class="prelude-val">Ok</span>(())) =&gt; <span class="prelude-val">Ok</span>(()),
@@ -1903,7 +1882,7 @@
     <span class="doccomment">/// &quot;#;</span>
     <span class="doccomment">/// let module = Module::new(&amp;engine, wat)?;</span>
     <span class="doccomment">/// linker.module(&amp;mut store, &quot;&quot;, &amp;module)?;</span>
-    <span class="doccomment">/// let run = linker.get(&amp;mut store, &quot;&quot;, Some(&quot;run&quot;)).unwrap().into_func().unwrap();</span>
+    <span class="doccomment">/// let run = linker.get(&amp;mut store, &quot;&quot;, &quot;run&quot;).unwrap().into_func().unwrap();</span>
     <span class="doccomment">/// let count = run.typed::&lt;(), i32, _&gt;(&amp;store)?.call(&amp;mut store, ())?;</span>
     <span class="doccomment">/// assert_eq!(count, 0, &quot;a Command should get a fresh instance on each invocation&quot;);</span>
     <span class="doccomment">///</span>
@@ -2374,20 +2353,17 @@
         <span class="kw-2">&amp;</span><span class="self">self</span>,
         <span class="kw-2">mut</span> <span class="ident">store</span>: <span class="kw">impl</span> <span class="ident">AsContextMut</span><span class="op">&lt;</span><span class="ident">Data</span> <span class="op">=</span> <span class="ident">T</span><span class="op">&gt;</span>,
         <span class="ident">module</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>,
-        <span class="ident">name</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="ident">str</span><span class="op">&gt;</span>,
+        <span class="ident">name</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>,
     ) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Extern</span><span class="op">&gt;</span> {
         <span class="kw">let</span> <span class="ident">store</span> <span class="op">=</span> <span class="ident">store</span>.<span class="ident">as_context_mut</span>().<span class="number">0</span>;
         <span class="comment">// Should be safe since `T` is connecting the linker and store</span>
         <span class="prelude-val">Some</span>(<span class="kw">unsafe</span> { <span class="self">self</span>.<span class="ident">_get</span>(<span class="ident">module</span>, <span class="ident">name</span>)<span class="question-mark">?</span>.<span class="ident">to_extern</span>(<span class="ident">store</span>) })
     }
 
-    <span class="kw">fn</span> <span class="ident">_get</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">module</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>, <span class="ident">name</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="ident">str</span><span class="op">&gt;</span>) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="ident">Definition</span><span class="op">&gt;</span> {
+    <span class="kw">fn</span> <span class="ident">_get</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">module</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>, <span class="ident">name</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="ident">Definition</span><span class="op">&gt;</span> {
         <span class="kw">let</span> <span class="ident">key</span> <span class="op">=</span> <span class="ident">ImportKey</span> {
             <span class="ident">module</span>: <span class="kw-2">*</span><span class="self">self</span>.<span class="ident">string2idx</span>.<span class="ident">get</span>(<span class="ident">module</span>)<span class="question-mark">?</span>,
-            <span class="ident">name</span>: <span class="kw">match</span> <span class="ident">name</span> {
-                <span class="prelude-val">Some</span>(<span class="ident">name</span>) =&gt; <span class="kw-2">*</span><span class="self">self</span>.<span class="ident">string2idx</span>.<span class="ident">get</span>(<span class="ident">name</span>)<span class="question-mark">?</span>,
-                <span class="prelude-val">None</span> =&gt; <span class="ident">usize::max_value</span>(),
-            },
+            <span class="ident">name</span>: <span class="kw-2">*</span><span class="self">self</span>.<span class="ident">string2idx</span>.<span class="ident">get</span>(<span class="ident">name</span>)<span class="question-mark">?</span>,
         };
         <span class="self">self</span>.<span class="ident">map</span>.<span class="ident">get</span>(<span class="kw-2">&amp;</span><span class="ident">key</span>)
     }
@@ -2420,37 +2396,11 @@
             <span class="kw">return</span> <span class="prelude-val">Ok</span>(<span class="ident">item</span>.<span class="ident">clone</span>());
         }
 
-        <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">name</span>) <span class="op">=</span> <span class="ident">import</span>.<span class="ident">name</span>() {
-            <span class="kw">return</span> <span class="prelude-val">Err</span>(<span class="ident">undef_err</span>(<span class="kw-2">&amp;</span><span class="macro">format!</span>(<span class="string">&quot;{}::{}&quot;</span>, <span class="ident">import</span>.<span class="ident">module</span>(), <span class="ident">name</span>)));
-        }
-
-        <span class="kw">if</span> <span class="kw">let</span> <span class="ident">ExternType::Instance</span>(<span class="ident">t</span>) <span class="op">=</span> <span class="ident">import</span>.<span class="ident">ty</span>() {
-            <span class="comment">// This is a key location where the module linking proposal is</span>
-            <span class="comment">// implemented. This logic allows single-level imports of an instance to</span>
-            <span class="comment">// get satisfied by multiple definitions of items within this `Linker`.</span>
-            <span class="comment">//</span>
-            <span class="comment">// The instance being import is iterated over to load the names from</span>
-            <span class="comment">// this `Linker` (recursively calling `get`). If anything isn&#39;t defined</span>
-            <span class="comment">// we return `None` since the entire value isn&#39;t defined. Otherwise when</span>
-            <span class="comment">// all values are loaded it&#39;s assembled into an `Instance` and</span>
-            <span class="comment">// returned`.</span>
-            <span class="comment">//</span>
-            <span class="comment">// Note that this isn&#39;t exactly the speediest implementation in the</span>
-            <span class="comment">// world. Ideally we would pre-create the `Instance` instead of creating</span>
-            <span class="comment">// it each time a module is instantiated. For now though while the</span>
-            <span class="comment">// module linking proposal is under development this should hopefully</span>
-            <span class="comment">// suffice.</span>
-            <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">map</span> <span class="op">=</span> <span class="ident">indexmap::IndexMap::new</span>();
-            <span class="kw">for</span> <span class="ident">export</span> <span class="kw">in</span> <span class="ident">t</span>.<span class="ident">exports</span>() {
-                <span class="kw">let</span> <span class="ident">item</span> <span class="op">=</span> <span class="self">self</span>
-                    .<span class="ident">_get</span>(<span class="ident">import</span>.<span class="ident">module</span>(), <span class="prelude-val">Some</span>(<span class="ident">export</span>.<span class="ident">name</span>()))
-                    .<span class="ident">ok_or_else</span>(<span class="op">|</span><span class="op">|</span> <span class="ident">undef_err</span>(<span class="kw-2">&amp;</span><span class="macro">format!</span>(<span class="string">&quot;{}::{}&quot;</span>, <span class="ident">import</span>.<span class="ident">module</span>(), <span class="ident">export</span>.<span class="ident">name</span>())))<span class="question-mark">?</span>;
-                <span class="ident">map</span>.<span class="ident">insert</span>(<span class="ident">export</span>.<span class="ident">name</span>().<span class="ident">to_string</span>(), <span class="ident">item</span>.<span class="ident">clone</span>());
-            }
-            <span class="kw">return</span> <span class="prelude-val">Ok</span>(<span class="ident">Definition::Instance</span>(<span class="ident">Arc::new</span>(<span class="ident">map</span>)));
-        }
-
-        <span class="prelude-val">Err</span>(<span class="ident">undef_err</span>(<span class="kw-2">&amp;</span><span class="ident">import</span>.<span class="ident">module</span>()))
+        <span class="prelude-val">Err</span>(<span class="ident">undef_err</span>(<span class="kw-2">&amp;</span><span class="macro">format!</span>(
+            <span class="string">&quot;{}::{}&quot;</span>,
+            <span class="ident">import</span>.<span class="ident">module</span>(),
+            <span class="ident">import</span>.<span class="ident">name</span>()
+        )))
     }
 
     <span class="doccomment">/// Returns the &quot;default export&quot; of a module.</span>
@@ -2468,7 +2418,7 @@
         <span class="kw-2">mut</span> <span class="ident">store</span>: <span class="kw">impl</span> <span class="ident">AsContextMut</span><span class="op">&lt;</span><span class="ident">Data</span> <span class="op">=</span> <span class="ident">T</span><span class="op">&gt;</span>,
         <span class="ident">module</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>,
     ) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">Func</span><span class="op">&gt;</span> {
-        <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">external</span>) <span class="op">=</span> <span class="self">self</span>.<span class="ident">get</span>(<span class="kw-2">&amp;mut</span> <span class="ident">store</span>, <span class="ident">module</span>, <span class="prelude-val">Some</span>(<span class="string">&quot;&quot;</span>)) {
+        <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">external</span>) <span class="op">=</span> <span class="self">self</span>.<span class="ident">get</span>(<span class="kw-2">&amp;mut</span> <span class="ident">store</span>, <span class="ident">module</span>, <span class="string">&quot;&quot;</span>) {
             <span class="kw">if</span> <span class="kw">let</span> <span class="ident">Extern::Func</span>(<span class="ident">func</span>) <span class="op">=</span> <span class="ident">external</span> {
                 <span class="kw">return</span> <span class="prelude-val">Ok</span>(<span class="ident">func</span>.<span class="ident">clone</span>());
             }
@@ -2476,7 +2426,7 @@
         }
 
         <span class="comment">// For compatibility, also recognize &quot;_start&quot;.</span>
-        <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">external</span>) <span class="op">=</span> <span class="self">self</span>.<span class="ident">get</span>(<span class="kw-2">&amp;mut</span> <span class="ident">store</span>, <span class="ident">module</span>, <span class="prelude-val">Some</span>(<span class="string">&quot;_start&quot;</span>)) {
+        <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">external</span>) <span class="op">=</span> <span class="self">self</span>.<span class="ident">get</span>(<span class="kw-2">&amp;mut</span> <span class="ident">store</span>, <span class="ident">module</span>, <span class="string">&quot;_start&quot;</span>) {
             <span class="kw">if</span> <span class="kw">let</span> <span class="ident">Extern::Func</span>(<span class="ident">func</span>) <span class="op">=</span> <span class="ident">external</span> {
                 <span class="kw">return</span> <span class="prelude-val">Ok</span>(<span class="ident">func</span>.<span class="ident">clone</span>());
             }
@@ -2502,14 +2452,15 @@
         <span class="kw">match</span> <span class="self">self</span> {
             <span class="ident">Definition::Extern</span>(<span class="ident">e</span>) =&gt; <span class="ident">e</span>.<span class="ident">clone</span>(),
             <span class="ident">Definition::HostFunc</span>(<span class="ident">func</span>) =&gt; <span class="ident">func</span>.<span class="ident">to_func</span>(<span class="ident">store</span>).<span class="ident">into</span>(),
-            <span class="ident">Definition::Instance</span>(<span class="ident">i</span>) =&gt; {
-                <span class="kw">let</span> <span class="ident">items</span> <span class="op">=</span> <span class="ident">Arc::new</span>(
-                    <span class="ident">i</span>.<span class="ident">iter</span>()
-                        .<span class="ident">map</span>(<span class="op">|</span>(<span class="ident">name</span>, <span class="ident">item</span>)<span class="op">|</span> (<span class="ident">name</span>.<span class="ident">clone</span>(), <span class="ident">item</span>.<span class="ident">to_extern</span>(<span class="ident">store</span>)))
-                        .<span class="ident">collect</span>(),
-                );
-                <span class="ident">Instance::from_wasmtime</span>(<span class="ident">InstanceData::Synthetic</span>(<span class="ident">items</span>), <span class="ident">store</span>).<span class="ident">into</span>()
-            }
+        }
+    }
+
+    <span class="doccomment">/// Note the unsafety here is due to calling</span>
+    <span class="doccomment">/// `HostFunc::to_func_store_rooted`.</span>
+    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">unsafe</span> <span class="kw">fn</span> <span class="ident">to_extern_store_rooted</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">store</span>: <span class="kw-2">&amp;mut</span> <span class="ident">StoreOpaque</span>) -&gt; <span class="ident">Extern</span> {
+        <span class="kw">match</span> <span class="self">self</span> {
+            <span class="ident">Definition::Extern</span>(<span class="ident">e</span>) =&gt; <span class="ident">e</span>.<span class="ident">clone</span>(),
+            <span class="ident">Definition::HostFunc</span>(<span class="ident">func</span>) =&gt; <span class="ident">func</span>.<span class="ident">to_func_store_rooted</span>(<span class="ident">store</span>).<span class="ident">into</span>(),
         }
     }
 
@@ -2517,7 +2468,6 @@
         <span class="kw">match</span> <span class="self">self</span> {
             <span class="ident">Definition::Extern</span>(<span class="ident">e</span>) =&gt; <span class="ident">e</span>.<span class="ident">comes_from_same_store</span>(<span class="ident">store</span>),
             <span class="ident">Definition::HostFunc</span>(<span class="ident">_func</span>) =&gt; <span class="bool-val">true</span>,
-            <span class="ident">Definition::Instance</span>(<span class="ident">i</span>) =&gt; <span class="ident">i</span>.<span class="ident">values</span>().<span class="ident">all</span>(<span class="op">|</span><span class="ident">e</span><span class="op">|</span> <span class="ident">e</span>.<span class="ident">comes_from_same_store</span>(<span class="ident">store</span>)),
         }
     }
 }

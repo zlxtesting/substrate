@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/cargo_home/registry/src/github.com-1ecc6299db9ec823/wasmparser-0.83.0/src/binary_reader.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>binary_reader.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" type="text/css" href="../../normalize.css"><link rel="stylesheet" type="text/css" href="../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../ayu.css" disabled><link rel="stylesheet" type="text/css" href="../../dark.css" disabled><link rel="stylesheet" type="text/css" href="../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../storage.js"></script><script src="../../crates.js"></script><script defer src="../../main.js"></script><script defer src="../../source-script.js"></script><script defer src="../../source-files.js"></script>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/cargo_home/registry/src/github.com-1ecc6299db9ec823/wasmparser-0.85.0/src/binary_reader.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>binary_reader.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" type="text/css" href="../../normalize.css"><link rel="stylesheet" type="text/css" href="../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../ayu.css" disabled><link rel="stylesheet" type="text/css" href="../../dark.css" disabled><link rel="stylesheet" type="text/css" href="../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../storage.js"></script><script src="../../crates.js"></script><script defer src="../../main.js"></script><script defer src="../../source-script.js"></script><script defer src="../../source-files.js"></script>
     <noscript><link rel="stylesheet" href="../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="sidebar-logo" href="../../wasmparser/index.html"><div class="logo-container"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></div>
         </a><h2 class="location"></h2>
     </nav>
@@ -2049,6 +2049,393 @@
 <span id="2044">2044</span>
 <span id="2045">2045</span>
 <span id="2046">2046</span>
+<span id="2047">2047</span>
+<span id="2048">2048</span>
+<span id="2049">2049</span>
+<span id="2050">2050</span>
+<span id="2051">2051</span>
+<span id="2052">2052</span>
+<span id="2053">2053</span>
+<span id="2054">2054</span>
+<span id="2055">2055</span>
+<span id="2056">2056</span>
+<span id="2057">2057</span>
+<span id="2058">2058</span>
+<span id="2059">2059</span>
+<span id="2060">2060</span>
+<span id="2061">2061</span>
+<span id="2062">2062</span>
+<span id="2063">2063</span>
+<span id="2064">2064</span>
+<span id="2065">2065</span>
+<span id="2066">2066</span>
+<span id="2067">2067</span>
+<span id="2068">2068</span>
+<span id="2069">2069</span>
+<span id="2070">2070</span>
+<span id="2071">2071</span>
+<span id="2072">2072</span>
+<span id="2073">2073</span>
+<span id="2074">2074</span>
+<span id="2075">2075</span>
+<span id="2076">2076</span>
+<span id="2077">2077</span>
+<span id="2078">2078</span>
+<span id="2079">2079</span>
+<span id="2080">2080</span>
+<span id="2081">2081</span>
+<span id="2082">2082</span>
+<span id="2083">2083</span>
+<span id="2084">2084</span>
+<span id="2085">2085</span>
+<span id="2086">2086</span>
+<span id="2087">2087</span>
+<span id="2088">2088</span>
+<span id="2089">2089</span>
+<span id="2090">2090</span>
+<span id="2091">2091</span>
+<span id="2092">2092</span>
+<span id="2093">2093</span>
+<span id="2094">2094</span>
+<span id="2095">2095</span>
+<span id="2096">2096</span>
+<span id="2097">2097</span>
+<span id="2098">2098</span>
+<span id="2099">2099</span>
+<span id="2100">2100</span>
+<span id="2101">2101</span>
+<span id="2102">2102</span>
+<span id="2103">2103</span>
+<span id="2104">2104</span>
+<span id="2105">2105</span>
+<span id="2106">2106</span>
+<span id="2107">2107</span>
+<span id="2108">2108</span>
+<span id="2109">2109</span>
+<span id="2110">2110</span>
+<span id="2111">2111</span>
+<span id="2112">2112</span>
+<span id="2113">2113</span>
+<span id="2114">2114</span>
+<span id="2115">2115</span>
+<span id="2116">2116</span>
+<span id="2117">2117</span>
+<span id="2118">2118</span>
+<span id="2119">2119</span>
+<span id="2120">2120</span>
+<span id="2121">2121</span>
+<span id="2122">2122</span>
+<span id="2123">2123</span>
+<span id="2124">2124</span>
+<span id="2125">2125</span>
+<span id="2126">2126</span>
+<span id="2127">2127</span>
+<span id="2128">2128</span>
+<span id="2129">2129</span>
+<span id="2130">2130</span>
+<span id="2131">2131</span>
+<span id="2132">2132</span>
+<span id="2133">2133</span>
+<span id="2134">2134</span>
+<span id="2135">2135</span>
+<span id="2136">2136</span>
+<span id="2137">2137</span>
+<span id="2138">2138</span>
+<span id="2139">2139</span>
+<span id="2140">2140</span>
+<span id="2141">2141</span>
+<span id="2142">2142</span>
+<span id="2143">2143</span>
+<span id="2144">2144</span>
+<span id="2145">2145</span>
+<span id="2146">2146</span>
+<span id="2147">2147</span>
+<span id="2148">2148</span>
+<span id="2149">2149</span>
+<span id="2150">2150</span>
+<span id="2151">2151</span>
+<span id="2152">2152</span>
+<span id="2153">2153</span>
+<span id="2154">2154</span>
+<span id="2155">2155</span>
+<span id="2156">2156</span>
+<span id="2157">2157</span>
+<span id="2158">2158</span>
+<span id="2159">2159</span>
+<span id="2160">2160</span>
+<span id="2161">2161</span>
+<span id="2162">2162</span>
+<span id="2163">2163</span>
+<span id="2164">2164</span>
+<span id="2165">2165</span>
+<span id="2166">2166</span>
+<span id="2167">2167</span>
+<span id="2168">2168</span>
+<span id="2169">2169</span>
+<span id="2170">2170</span>
+<span id="2171">2171</span>
+<span id="2172">2172</span>
+<span id="2173">2173</span>
+<span id="2174">2174</span>
+<span id="2175">2175</span>
+<span id="2176">2176</span>
+<span id="2177">2177</span>
+<span id="2178">2178</span>
+<span id="2179">2179</span>
+<span id="2180">2180</span>
+<span id="2181">2181</span>
+<span id="2182">2182</span>
+<span id="2183">2183</span>
+<span id="2184">2184</span>
+<span id="2185">2185</span>
+<span id="2186">2186</span>
+<span id="2187">2187</span>
+<span id="2188">2188</span>
+<span id="2189">2189</span>
+<span id="2190">2190</span>
+<span id="2191">2191</span>
+<span id="2192">2192</span>
+<span id="2193">2193</span>
+<span id="2194">2194</span>
+<span id="2195">2195</span>
+<span id="2196">2196</span>
+<span id="2197">2197</span>
+<span id="2198">2198</span>
+<span id="2199">2199</span>
+<span id="2200">2200</span>
+<span id="2201">2201</span>
+<span id="2202">2202</span>
+<span id="2203">2203</span>
+<span id="2204">2204</span>
+<span id="2205">2205</span>
+<span id="2206">2206</span>
+<span id="2207">2207</span>
+<span id="2208">2208</span>
+<span id="2209">2209</span>
+<span id="2210">2210</span>
+<span id="2211">2211</span>
+<span id="2212">2212</span>
+<span id="2213">2213</span>
+<span id="2214">2214</span>
+<span id="2215">2215</span>
+<span id="2216">2216</span>
+<span id="2217">2217</span>
+<span id="2218">2218</span>
+<span id="2219">2219</span>
+<span id="2220">2220</span>
+<span id="2221">2221</span>
+<span id="2222">2222</span>
+<span id="2223">2223</span>
+<span id="2224">2224</span>
+<span id="2225">2225</span>
+<span id="2226">2226</span>
+<span id="2227">2227</span>
+<span id="2228">2228</span>
+<span id="2229">2229</span>
+<span id="2230">2230</span>
+<span id="2231">2231</span>
+<span id="2232">2232</span>
+<span id="2233">2233</span>
+<span id="2234">2234</span>
+<span id="2235">2235</span>
+<span id="2236">2236</span>
+<span id="2237">2237</span>
+<span id="2238">2238</span>
+<span id="2239">2239</span>
+<span id="2240">2240</span>
+<span id="2241">2241</span>
+<span id="2242">2242</span>
+<span id="2243">2243</span>
+<span id="2244">2244</span>
+<span id="2245">2245</span>
+<span id="2246">2246</span>
+<span id="2247">2247</span>
+<span id="2248">2248</span>
+<span id="2249">2249</span>
+<span id="2250">2250</span>
+<span id="2251">2251</span>
+<span id="2252">2252</span>
+<span id="2253">2253</span>
+<span id="2254">2254</span>
+<span id="2255">2255</span>
+<span id="2256">2256</span>
+<span id="2257">2257</span>
+<span id="2258">2258</span>
+<span id="2259">2259</span>
+<span id="2260">2260</span>
+<span id="2261">2261</span>
+<span id="2262">2262</span>
+<span id="2263">2263</span>
+<span id="2264">2264</span>
+<span id="2265">2265</span>
+<span id="2266">2266</span>
+<span id="2267">2267</span>
+<span id="2268">2268</span>
+<span id="2269">2269</span>
+<span id="2270">2270</span>
+<span id="2271">2271</span>
+<span id="2272">2272</span>
+<span id="2273">2273</span>
+<span id="2274">2274</span>
+<span id="2275">2275</span>
+<span id="2276">2276</span>
+<span id="2277">2277</span>
+<span id="2278">2278</span>
+<span id="2279">2279</span>
+<span id="2280">2280</span>
+<span id="2281">2281</span>
+<span id="2282">2282</span>
+<span id="2283">2283</span>
+<span id="2284">2284</span>
+<span id="2285">2285</span>
+<span id="2286">2286</span>
+<span id="2287">2287</span>
+<span id="2288">2288</span>
+<span id="2289">2289</span>
+<span id="2290">2290</span>
+<span id="2291">2291</span>
+<span id="2292">2292</span>
+<span id="2293">2293</span>
+<span id="2294">2294</span>
+<span id="2295">2295</span>
+<span id="2296">2296</span>
+<span id="2297">2297</span>
+<span id="2298">2298</span>
+<span id="2299">2299</span>
+<span id="2300">2300</span>
+<span id="2301">2301</span>
+<span id="2302">2302</span>
+<span id="2303">2303</span>
+<span id="2304">2304</span>
+<span id="2305">2305</span>
+<span id="2306">2306</span>
+<span id="2307">2307</span>
+<span id="2308">2308</span>
+<span id="2309">2309</span>
+<span id="2310">2310</span>
+<span id="2311">2311</span>
+<span id="2312">2312</span>
+<span id="2313">2313</span>
+<span id="2314">2314</span>
+<span id="2315">2315</span>
+<span id="2316">2316</span>
+<span id="2317">2317</span>
+<span id="2318">2318</span>
+<span id="2319">2319</span>
+<span id="2320">2320</span>
+<span id="2321">2321</span>
+<span id="2322">2322</span>
+<span id="2323">2323</span>
+<span id="2324">2324</span>
+<span id="2325">2325</span>
+<span id="2326">2326</span>
+<span id="2327">2327</span>
+<span id="2328">2328</span>
+<span id="2329">2329</span>
+<span id="2330">2330</span>
+<span id="2331">2331</span>
+<span id="2332">2332</span>
+<span id="2333">2333</span>
+<span id="2334">2334</span>
+<span id="2335">2335</span>
+<span id="2336">2336</span>
+<span id="2337">2337</span>
+<span id="2338">2338</span>
+<span id="2339">2339</span>
+<span id="2340">2340</span>
+<span id="2341">2341</span>
+<span id="2342">2342</span>
+<span id="2343">2343</span>
+<span id="2344">2344</span>
+<span id="2345">2345</span>
+<span id="2346">2346</span>
+<span id="2347">2347</span>
+<span id="2348">2348</span>
+<span id="2349">2349</span>
+<span id="2350">2350</span>
+<span id="2351">2351</span>
+<span id="2352">2352</span>
+<span id="2353">2353</span>
+<span id="2354">2354</span>
+<span id="2355">2355</span>
+<span id="2356">2356</span>
+<span id="2357">2357</span>
+<span id="2358">2358</span>
+<span id="2359">2359</span>
+<span id="2360">2360</span>
+<span id="2361">2361</span>
+<span id="2362">2362</span>
+<span id="2363">2363</span>
+<span id="2364">2364</span>
+<span id="2365">2365</span>
+<span id="2366">2366</span>
+<span id="2367">2367</span>
+<span id="2368">2368</span>
+<span id="2369">2369</span>
+<span id="2370">2370</span>
+<span id="2371">2371</span>
+<span id="2372">2372</span>
+<span id="2373">2373</span>
+<span id="2374">2374</span>
+<span id="2375">2375</span>
+<span id="2376">2376</span>
+<span id="2377">2377</span>
+<span id="2378">2378</span>
+<span id="2379">2379</span>
+<span id="2380">2380</span>
+<span id="2381">2381</span>
+<span id="2382">2382</span>
+<span id="2383">2383</span>
+<span id="2384">2384</span>
+<span id="2385">2385</span>
+<span id="2386">2386</span>
+<span id="2387">2387</span>
+<span id="2388">2388</span>
+<span id="2389">2389</span>
+<span id="2390">2390</span>
+<span id="2391">2391</span>
+<span id="2392">2392</span>
+<span id="2393">2393</span>
+<span id="2394">2394</span>
+<span id="2395">2395</span>
+<span id="2396">2396</span>
+<span id="2397">2397</span>
+<span id="2398">2398</span>
+<span id="2399">2399</span>
+<span id="2400">2400</span>
+<span id="2401">2401</span>
+<span id="2402">2402</span>
+<span id="2403">2403</span>
+<span id="2404">2404</span>
+<span id="2405">2405</span>
+<span id="2406">2406</span>
+<span id="2407">2407</span>
+<span id="2408">2408</span>
+<span id="2409">2409</span>
+<span id="2410">2410</span>
+<span id="2411">2411</span>
+<span id="2412">2412</span>
+<span id="2413">2413</span>
+<span id="2414">2414</span>
+<span id="2415">2415</span>
+<span id="2416">2416</span>
+<span id="2417">2417</span>
+<span id="2418">2418</span>
+<span id="2419">2419</span>
+<span id="2420">2420</span>
+<span id="2421">2421</span>
+<span id="2422">2422</span>
+<span id="2423">2423</span>
+<span id="2424">2424</span>
+<span id="2425">2425</span>
+<span id="2426">2426</span>
+<span id="2427">2427</span>
+<span id="2428">2428</span>
+<span id="2429">2429</span>
+<span id="2430">2430</span>
+<span id="2431">2431</span>
+<span id="2432">2432</span>
+<span id="2433">2433</span>
 </pre><pre class="rust"><code><span class="comment">/* Copyright 2018 Mozilla Foundation
  *
  * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
@@ -2064,21 +2451,21 @@
  * limitations under the License.
  */</span>
 
-<span class="kw">use</span> <span class="ident">std::convert::TryFrom</span>;
-<span class="kw">use</span> <span class="ident">std::convert::TryInto</span>;
-<span class="kw">use</span> <span class="ident">std::fmt</span>;
-<span class="kw">use</span> <span class="ident">std::str</span>;
-
-<span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::limits</span>::<span class="kw-2">*</span>;
-
-<span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::primitives</span>::{
-    <span class="ident">BinaryReaderError</span>, <span class="ident">BrTable</span>, <span class="ident">CustomSectionKind</span>, <span class="ident">ExternalKind</span>, <span class="ident">FuncType</span>, <span class="ident">GlobalType</span>, <span class="ident">Ieee32</span>,
-    <span class="ident">Ieee64</span>, <span class="ident">LinkingType</span>, <span class="ident">MemoryImmediate</span>, <span class="ident">MemoryType</span>, <span class="ident">NameType</span>, <span class="ident">Operator</span>, <span class="ident">RelocType</span>, <span class="prelude-ty">Result</span>,
-    <span class="ident">SIMDLaneIndex</span>, <span class="ident">SectionCode</span>, <span class="ident">TableType</span>, <span class="ident">Type</span>, <span class="ident">TypeOrFuncType</span>, <span class="ident">V128</span>,
-};
 <span class="kw">use</span> <span class="kw">crate</span>::{
-    <span class="ident">ExportType</span>, <span class="ident">Import</span>, <span class="ident">ImportSectionEntryType</span>, <span class="ident">InitExpr</span>, <span class="ident">InstanceType</span>, <span class="ident">ModuleType</span>, <span class="ident">TagType</span>,
+    <span class="ident">limits</span>::<span class="kw-2">*</span>, <span class="ident">Alias</span>, <span class="ident">AliasKind</span>, <span class="ident">BlockType</span>, <span class="ident">BrTable</span>, <span class="ident">CanonicalOption</span>, <span class="ident">ComponentExport</span>,
+    <span class="ident">ComponentFuncType</span>, <span class="ident">ComponentFunction</span>, <span class="ident">ComponentImport</span>, <span class="ident">ComponentStartFunction</span>, <span class="ident">ComponentType</span>,
+    <span class="ident">ComponentTypeDef</span>, <span class="ident">CustomSectionKind</span>, <span class="ident">Export</span>, <span class="ident">ExternalKind</span>, <span class="ident">FuncType</span>, <span class="ident">GlobalType</span>, <span class="ident">Ieee32</span>,
+    <span class="ident">Ieee64</span>, <span class="ident">Import</span>, <span class="ident">InitExpr</span>, <span class="ident">Instance</span>, <span class="ident">InstanceType</span>, <span class="ident">InterfaceType</span>, <span class="ident">InterfaceTypeRef</span>, <span class="ident">LinkingType</span>,
+    <span class="ident">MemoryImmediate</span>, <span class="ident">MemoryType</span>, <span class="ident">ModuleArg</span>, <span class="ident">ModuleArgKind</span>, <span class="ident">ModuleType</span>, <span class="ident">NameType</span>, <span class="ident">Operator</span>,
+    <span class="ident">PrimitiveInterfaceType</span>, <span class="ident">RelocType</span>, <span class="ident">SIMDLaneIndex</span>, <span class="ident">SectionCode</span>, <span class="ident">TableType</span>, <span class="ident">TagKind</span>, <span class="ident">TagType</span>,
+    <span class="ident">Type</span>, <span class="ident">TypeDef</span>, <span class="ident">TypeRef</span>, <span class="ident">VariantCase</span>, <span class="ident">V128</span>,
 };
+<span class="kw">use</span> <span class="kw">crate</span>::{<span class="ident">ComponentArg</span>, <span class="ident">ComponentArgKind</span>};
+<span class="kw">use</span> <span class="ident">std::convert::TryInto</span>;
+<span class="kw">use</span> <span class="ident">std::error::Error</span>;
+<span class="kw">use</span> <span class="ident">std::fmt</span>;
+<span class="kw">use</span> <span class="ident">std::ops::Range</span>;
+<span class="kw">use</span> <span class="ident">std::str</span>;
 
 <span class="kw">fn</span> <span class="ident">is_name</span>(<span class="ident">name</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>, <span class="ident">expected</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;static</span> <span class="ident">str</span>) -&gt; <span class="ident">bool</span> {
     <span class="ident">name</span> <span class="op">==</span> <span class="ident">expected</span>
@@ -2089,31 +2476,68 @@
 }
 
 <span class="kw">const</span> <span class="ident">WASM_MAGIC_NUMBER</span>: <span class="kw-2">&amp;</span>[<span class="ident">u8</span>; <span class="number">4</span>] <span class="op">=</span> <span class="string">b&quot;\0asm&quot;</span>;
-<span class="kw">const</span> <span class="ident">WASM_EXPERIMENTAL_VERSION</span>: <span class="ident">u32</span> <span class="op">=</span> <span class="number">0xd</span>;
-<span class="kw">const</span> <span class="ident">WASM_SUPPORTED_VERSION</span>: <span class="ident">u32</span> <span class="op">=</span> <span class="number">0x1</span>;
 
-<span class="doccomment">/// Bytecode range in the WebAssembly module.</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Copy</span>, <span class="ident">Clone</span>, <span class="ident">Debug</span>, <span class="ident">Eq</span>, <span class="ident">Hash</span>, <span class="ident">Ord</span>, <span class="ident">PartialEq</span>, <span class="ident">PartialOrd</span>)]</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">Range</span> {
-    <span class="doccomment">/// The start bound of the range.</span>
-    <span class="kw">pub</span> <span class="ident">start</span>: <span class="ident">usize</span>,
-    <span class="doccomment">/// The end bound of the range.</span>
-    <span class="kw">pub</span> <span class="ident">end</span>: <span class="ident">usize</span>,
+<span class="doccomment">/// A binary reader for WebAssembly modules.</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>, <span class="ident">Clone</span>)]</span>
+<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">BinaryReaderError</span> {
+    <span class="comment">// Wrap the actual error data in a `Box` so that the error is just one</span>
+    <span class="comment">// word. This means that we can continue returning small `Result`s in</span>
+    <span class="comment">// registers.</span>
+    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="ident">inner</span>: <span class="ident">Box</span><span class="op">&lt;</span><span class="ident">BinaryReaderErrorInner</span><span class="op">&gt;</span>,
 }
 
-<span class="kw">impl</span> <span class="ident">Range</span> {
-    <span class="doccomment">/// Constructs a new instance of `Range`.</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// # Panics</span>
-    <span class="doccomment">/// If `start` is greater than `end`.</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new</span>(<span class="ident">start</span>: <span class="ident">usize</span>, <span class="ident">end</span>: <span class="ident">usize</span>) -&gt; <span class="ident">Range</span> {
-        <span class="macro">assert!</span>(<span class="ident">start</span> <span class="op">&lt;</span><span class="op">=</span> <span class="ident">end</span>);
-        <span class="ident">Range</span> { <span class="ident">start</span>, <span class="ident">end</span> }
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>, <span class="ident">Clone</span>)]</span>
+<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">struct</span> <span class="ident">BinaryReaderErrorInner</span> {
+    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="ident">message</span>: <span class="ident">String</span>,
+    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="ident">offset</span>: <span class="ident">usize</span>,
+    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="ident">needed_hint</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">usize</span><span class="op">&gt;</span>,
+}
+
+<span class="doccomment">/// The result for `BinaryReader` operations.</span>
+<span class="kw">pub</span> <span class="kw">type</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">E</span> <span class="op">=</span> <span class="ident">BinaryReaderError</span><span class="op">&gt;</span> <span class="op">=</span> <span class="ident">std::result::Result</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">E</span><span class="op">&gt;</span>;
+
+<span class="kw">impl</span> <span class="ident">Error</span> <span class="kw">for</span> <span class="ident">BinaryReaderError</span> {}
+
+<span class="kw">impl</span> <span class="ident">fmt::Display</span> <span class="kw">for</span> <span class="ident">BinaryReaderError</span> {
+    <span class="kw">fn</span> <span class="ident">fmt</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">f</span>: <span class="kw-2">&amp;mut</span> <span class="ident">fmt::Formatter</span>) -&gt; <span class="ident">fmt::Result</span> {
+        <span class="macro">write!</span>(
+            <span class="ident">f</span>,
+            <span class="string">&quot;{} (at offset 0x{:x})&quot;</span>,
+            <span class="self">self</span>.<span class="ident">inner</span>.<span class="ident">message</span>, <span class="self">self</span>.<span class="ident">inner</span>.<span class="ident">offset</span>
+        )
+    }
+}
+
+<span class="kw">impl</span> <span class="ident">BinaryReaderError</span> {
+    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">new</span>(<span class="ident">message</span>: <span class="kw">impl</span> <span class="ident">Into</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span>, <span class="ident">offset</span>: <span class="ident">usize</span>) -&gt; <span class="self">Self</span> {
+        <span class="kw">let</span> <span class="ident">message</span> <span class="op">=</span> <span class="ident">message</span>.<span class="ident">into</span>();
+        <span class="ident">BinaryReaderError</span> {
+            <span class="ident">inner</span>: <span class="ident">Box::new</span>(<span class="ident">BinaryReaderErrorInner</span> {
+                <span class="ident">message</span>,
+                <span class="ident">offset</span>,
+                <span class="ident">needed_hint</span>: <span class="prelude-val">None</span>,
+            }),
+        }
     }
 
-    <span class="doccomment">/// Returns a new slice between `start` and `end - 1` from `data`.</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">slice</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">data</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> [<span class="ident">u8</span>]) -&gt; <span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> [<span class="ident">u8</span>] {
-        <span class="kw-2">&amp;</span><span class="ident">data</span>[<span class="self">self</span>.<span class="ident">start</span>..<span class="self">self</span>.<span class="ident">end</span>]
+    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">eof</span>(<span class="ident">offset</span>: <span class="ident">usize</span>, <span class="ident">needed_hint</span>: <span class="ident">usize</span>) -&gt; <span class="self">Self</span> {
+        <span class="ident">BinaryReaderError</span> {
+            <span class="ident">inner</span>: <span class="ident">Box::new</span>(<span class="ident">BinaryReaderErrorInner</span> {
+                <span class="ident">message</span>: <span class="string">&quot;unexpected end-of-file&quot;</span>.<span class="ident">to_string</span>(),
+                <span class="ident">offset</span>,
+                <span class="ident">needed_hint</span>: <span class="prelude-val">Some</span>(<span class="ident">needed_hint</span>),
+            }),
+        }
+    }
+
+    <span class="doccomment">/// Get this error&#39;s message.</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">message</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;</span><span class="ident">str</span> {
+        <span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">inner</span>.<span class="ident">message</span>
+    }
+
+    <span class="doccomment">/// Get the offset within the Wasm binary where the error occurred.</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">offset</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">usize</span> {
+        <span class="self">self</span>.<span class="ident">inner</span>.<span class="ident">offset</span>
     }
 }
 
@@ -2157,20 +2581,22 @@
         }
     }
 
+    <span class="doccomment">/// Gets the original position of the binary reader.</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">original_position</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">usize</span> {
         <span class="self">self</span>.<span class="ident">original_offset</span> <span class="op">+</span> <span class="self">self</span>.<span class="ident">position</span>
     }
 
+    <span class="doccomment">/// Whether or not to allow 64-bit memory arguments in functions.</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// This is intended to be `true` when support for the memory64</span>
+    <span class="doccomment">/// WebAssembly proposal is also enabled.</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">allow_memarg64</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="ident">allow</span>: <span class="ident">bool</span>) {
         <span class="self">self</span>.<span class="ident">allow_memarg64</span> <span class="op">=</span> <span class="ident">allow</span>;
     }
 
     <span class="doccomment">/// Returns a range from the starting offset to the end of the buffer.</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">range</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">Range</span> {
-        <span class="ident">Range</span> {
-            <span class="ident">start</span>: <span class="self">self</span>.<span class="ident">original_offset</span>,
-            <span class="ident">end</span>: <span class="self">self</span>.<span class="ident">original_offset</span> <span class="op">+</span> <span class="self">self</span>.<span class="ident">buffer</span>.<span class="ident">len</span>(),
-        }
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">range</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">Range</span><span class="op">&lt;</span><span class="ident">usize</span><span class="op">&gt;</span> {
+        <span class="self">self</span>.<span class="ident">original_offset</span>..<span class="self">self</span>.<span class="ident">original_offset</span> <span class="op">+</span> <span class="self">self</span>.<span class="ident">buffer</span>.<span class="ident">len</span>()
     }
 
     <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">remaining_buffer</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> [<span class="ident">u8</span>] {
@@ -2194,96 +2620,64 @@
         }
     }
 
-    <span class="kw">fn</span> <span class="ident">read_var_u1</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">u32</span><span class="op">&gt;</span> {
+    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">read_u7</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">u8</span><span class="op">&gt;</span> {
         <span class="kw">let</span> <span class="ident">b</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">read_u8</span>()<span class="question-mark">?</span>;
-        <span class="kw">if</span> (<span class="ident">b</span> <span class="op">&amp;</span> <span class="number">0xFE</span>) <span class="op">!</span><span class="op">=</span> <span class="number">0</span> {
+        <span class="kw">if</span> (<span class="ident">b</span> <span class="op">&amp;</span> <span class="number">0x80</span>) <span class="op">!</span><span class="op">=</span> <span class="number">0</span> {
             <span class="kw">return</span> <span class="prelude-val">Err</span>(<span class="ident">BinaryReaderError::new</span>(
-                <span class="string">&quot;Invalid var_u1&quot;</span>,
+                <span class="string">&quot;invalid u7&quot;</span>,
                 <span class="self">self</span>.<span class="ident">original_position</span>() <span class="op">-</span> <span class="number">1</span>,
             ));
         }
         <span class="prelude-val">Ok</span>(<span class="ident">b</span>)
     }
 
-    <span class="kw">fn</span> <span class="ident">read_var_i7</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">i32</span><span class="op">&gt;</span> {
-        <span class="kw">let</span> <span class="ident">b</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">read_u8</span>()<span class="question-mark">?</span>;
-        <span class="kw">if</span> (<span class="ident">b</span> <span class="op">&amp;</span> <span class="number">0x80</span>) <span class="op">!</span><span class="op">=</span> <span class="number">0</span> {
-            <span class="kw">return</span> <span class="prelude-val">Err</span>(<span class="ident">BinaryReaderError::new</span>(
-                <span class="string">&quot;Invalid var_i7&quot;</span>,
-                <span class="self">self</span>.<span class="ident">original_position</span>() <span class="op">-</span> <span class="number">1</span>,
-            ));
-        }
-        <span class="prelude-val">Ok</span>((<span class="ident">b</span> <span class="op">&lt;</span><span class="op">&lt;</span> <span class="number">25</span>) <span class="kw">as</span> <span class="ident">i32</span> <span class="op">&gt;</span><span class="op">&gt;</span> <span class="number">25</span>)
-    }
-
-    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">read_var_u7</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">u32</span><span class="op">&gt;</span> {
-        <span class="kw">let</span> <span class="ident">b</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">read_u8</span>()<span class="question-mark">?</span>;
-        <span class="kw">if</span> (<span class="ident">b</span> <span class="op">&amp;</span> <span class="number">0x80</span>) <span class="op">!</span><span class="op">=</span> <span class="number">0</span> {
-            <span class="kw">return</span> <span class="prelude-val">Err</span>(<span class="ident">BinaryReaderError::new</span>(
-                <span class="string">&quot;Invalid var_u7&quot;</span>,
-                <span class="self">self</span>.<span class="ident">original_position</span>() <span class="op">-</span> <span class="number">1</span>,
-            ));
-        }
-        <span class="prelude-val">Ok</span>(<span class="ident">b</span>)
-    }
-
+    <span class="doccomment">/// Reads a core WebAssembly type from the binary reader.</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">read_type</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">Type</span><span class="op">&gt;</span> {
-        <span class="kw">let</span> <span class="ident">code</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">read_var_i7</span>()<span class="question-mark">?</span>;
-        <span class="kw">match</span> <span class="ident">code</span> {
-            <span class="op">-</span><span class="number">0x01</span> =&gt; <span class="prelude-val">Ok</span>(<span class="ident">Type::I32</span>),
-            <span class="op">-</span><span class="number">0x02</span> =&gt; <span class="prelude-val">Ok</span>(<span class="ident">Type::I64</span>),
-            <span class="op">-</span><span class="number">0x03</span> =&gt; <span class="prelude-val">Ok</span>(<span class="ident">Type::F32</span>),
-            <span class="op">-</span><span class="number">0x04</span> =&gt; <span class="prelude-val">Ok</span>(<span class="ident">Type::F64</span>),
-            <span class="op">-</span><span class="number">0x05</span> =&gt; <span class="prelude-val">Ok</span>(<span class="ident">Type::V128</span>),
-            <span class="op">-</span><span class="number">0x10</span> =&gt; <span class="prelude-val">Ok</span>(<span class="ident">Type::FuncRef</span>),
-            <span class="op">-</span><span class="number">0x11</span> =&gt; <span class="prelude-val">Ok</span>(<span class="ident">Type::ExternRef</span>),
-            <span class="op">-</span><span class="number">0x18</span> =&gt; <span class="prelude-val">Ok</span>(<span class="ident">Type::ExnRef</span>),
-            <span class="op">-</span><span class="number">0x20</span> =&gt; <span class="prelude-val">Ok</span>(<span class="ident">Type::Func</span>),
-            <span class="op">-</span><span class="number">0x40</span> =&gt; <span class="prelude-val">Ok</span>(<span class="ident">Type::EmptyBlockType</span>),
-            <span class="kw">_</span> =&gt; <span class="prelude-val">Err</span>(<span class="ident">BinaryReaderError::new</span>(
-                <span class="string">&quot;Invalid type&quot;</span>,
-                <span class="self">self</span>.<span class="ident">original_position</span>() <span class="op">-</span> <span class="number">1</span>,
+        <span class="kw">match</span> <span class="ident"><span class="self">Self</span>::type_from_byte</span>(<span class="self">self</span>.<span class="ident">peek</span>()<span class="question-mark">?</span>) {
+            <span class="prelude-val">Some</span>(<span class="ident">ty</span>) =&gt; {
+                <span class="self">self</span>.<span class="ident">position</span> <span class="op">+</span><span class="op">=</span> <span class="number">1</span>;
+                <span class="prelude-val">Ok</span>(<span class="ident">ty</span>)
+            }
+            <span class="prelude-val">None</span> =&gt; <span class="prelude-val">Err</span>(<span class="ident">BinaryReaderError::new</span>(
+                <span class="string">&quot;invalid type&quot;</span>,
+                <span class="self">self</span>.<span class="ident">original_position</span>(),
             )),
         }
+    }
+
+    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">read_component_start</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">ComponentStartFunction</span><span class="op">&gt;</span> {
+        <span class="kw">let</span> <span class="ident">func_index</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">read_var_u32</span>()<span class="question-mark">?</span>;
+        <span class="kw">let</span> <span class="ident">size</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">read_size</span>(<span class="ident">MAX_WASM_START_ARGS</span>, <span class="string">&quot;start function arguments&quot;</span>)<span class="question-mark">?</span>;
+        <span class="prelude-val">Ok</span>(<span class="ident">ComponentStartFunction</span> {
+            <span class="ident">func_index</span>,
+            <span class="ident">arguments</span>: (<span class="number">0</span>..<span class="ident">size</span>)
+                .<span class="ident">map</span>(<span class="op">|</span><span class="kw">_</span><span class="op">|</span> <span class="self">self</span>.<span class="ident">read_var_u32</span>())
+                .<span class="ident">collect</span>::<span class="op">&lt;</span><span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="kw">_</span><span class="op">&gt;</span><span class="op">&gt;</span>()<span class="question-mark">?</span>,
+        })
     }
 
     <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">read_external_kind</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">ExternalKind</span><span class="op">&gt;</span> {
         <span class="kw">let</span> <span class="ident">code</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">read_u8</span>()<span class="question-mark">?</span>;
         <span class="kw">match</span> <span class="ident">code</span> {
-            <span class="number">0</span> =&gt; <span class="prelude-val">Ok</span>(<span class="ident">ExternalKind::Function</span>),
+            <span class="number">0</span> =&gt; <span class="prelude-val">Ok</span>(<span class="ident">ExternalKind::Func</span>),
             <span class="number">1</span> =&gt; <span class="prelude-val">Ok</span>(<span class="ident">ExternalKind::Table</span>),
             <span class="number">2</span> =&gt; <span class="prelude-val">Ok</span>(<span class="ident">ExternalKind::Memory</span>),
             <span class="number">3</span> =&gt; <span class="prelude-val">Ok</span>(<span class="ident">ExternalKind::Global</span>),
             <span class="number">4</span> =&gt; <span class="prelude-val">Ok</span>(<span class="ident">ExternalKind::Tag</span>),
-            <span class="number">5</span> =&gt; <span class="prelude-val">Ok</span>(<span class="ident">ExternalKind::Module</span>),
-            <span class="number">6</span> =&gt; <span class="prelude-val">Ok</span>(<span class="ident">ExternalKind::Instance</span>),
-            <span class="number">7</span> =&gt; <span class="prelude-val">Ok</span>(<span class="ident">ExternalKind::Type</span>),
             <span class="kw">_</span> =&gt; <span class="prelude-val">Err</span>(<span class="ident">BinaryReaderError::new</span>(
-                <span class="string">&quot;Invalid external kind&quot;</span>,
+                <span class="string">&quot;invalid external kind&quot;</span>,
                 <span class="self">self</span>.<span class="ident">original_position</span>() <span class="op">-</span> <span class="number">1</span>,
             )),
         }
     }
 
     <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">read_func_type</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">FuncType</span><span class="op">&gt;</span> {
-        <span class="kw">let</span> <span class="ident">params_len</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">read_var_u32</span>()<span class="question-mark">?</span> <span class="kw">as</span> <span class="ident">usize</span>;
-        <span class="kw">if</span> <span class="ident">params_len</span> <span class="op">&gt;</span> <span class="ident">MAX_WASM_FUNCTION_PARAMS</span> {
-            <span class="kw">return</span> <span class="prelude-val">Err</span>(<span class="ident">BinaryReaderError::new</span>(
-                <span class="string">&quot;function params size is out of bound&quot;</span>,
-                <span class="self">self</span>.<span class="ident">original_position</span>() <span class="op">-</span> <span class="number">1</span>,
-            ));
-        }
+        <span class="kw">let</span> <span class="ident">params_len</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">read_size</span>(<span class="ident">MAX_WASM_FUNCTION_PARAMS</span>, <span class="string">&quot;function params&quot;</span>)<span class="question-mark">?</span>;
         <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">params</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">Type</span><span class="op">&gt;</span> <span class="op">=</span> <span class="ident">Vec::with_capacity</span>(<span class="ident">params_len</span>);
         <span class="kw">for</span> <span class="kw">_</span> <span class="kw">in</span> <span class="number">0</span>..<span class="ident">params_len</span> {
             <span class="ident">params</span>.<span class="ident">push</span>(<span class="self">self</span>.<span class="ident">read_type</span>()<span class="question-mark">?</span>);
         }
-        <span class="kw">let</span> <span class="ident">returns_len</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">read_var_u32</span>()<span class="question-mark">?</span> <span class="kw">as</span> <span class="ident">usize</span>;
-        <span class="kw">if</span> <span class="ident">returns_len</span> <span class="op">&gt;</span> <span class="ident">MAX_WASM_FUNCTION_RETURNS</span> {
-            <span class="kw">return</span> <span class="prelude-val">Err</span>(<span class="ident">BinaryReaderError::new</span>(
-                <span class="string">&quot;function returns size is out of bound&quot;</span>,
-                <span class="self">self</span>.<span class="ident">original_position</span>() <span class="op">-</span> <span class="number">1</span>,
-            ));
-        }
+        <span class="kw">let</span> <span class="ident">returns_len</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">read_size</span>(<span class="ident">MAX_WASM_FUNCTION_RETURNS</span>, <span class="string">&quot;function returns&quot;</span>)<span class="question-mark">?</span>;
         <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">returns</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">Type</span><span class="op">&gt;</span> <span class="op">=</span> <span class="ident">Vec::with_capacity</span>(<span class="ident">returns_len</span>);
         <span class="kw">for</span> <span class="kw">_</span> <span class="kw">in</span> <span class="number">0</span>..<span class="ident">returns_len</span> {
             <span class="ident">returns</span>.<span class="ident">push</span>(<span class="self">self</span>.<span class="ident">read_type</span>()<span class="question-mark">?</span>);
@@ -2294,75 +2688,424 @@
         })
     }
 
+    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">read_type_def</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">TypeDef</span><span class="op">&gt;</span> {
+        <span class="prelude-val">Ok</span>(<span class="kw">match</span> <span class="self">self</span>.<span class="ident">read_u8</span>()<span class="question-mark">?</span> {
+            <span class="number">0x60</span> =&gt; <span class="ident">TypeDef::Func</span>(<span class="self">self</span>.<span class="ident">read_func_type</span>()<span class="question-mark">?</span>),
+            <span class="ident">x</span> =&gt; <span class="kw">return</span> <span class="self">self</span>.<span class="ident">invalid_leading_byte</span>(<span class="ident">x</span>, <span class="string">&quot;type&quot;</span>),
+        })
+    }
+
+    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">read_component_type_def</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">ComponentTypeDef</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span><span class="op">&gt;</span> {
+        <span class="prelude-val">Ok</span>(<span class="kw">match</span> <span class="self">self</span>.<span class="ident">read_u8</span>()<span class="question-mark">?</span> {
+            <span class="number">0x4f</span> =&gt; {
+                <span class="kw">let</span> <span class="ident">size</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">read_size</span>(<span class="ident">MAX_WASM_MODULE_TYPEDEFS</span>, <span class="string">&quot;module definition&quot;</span>)<span class="question-mark">?</span>;
+                <span class="ident">ComponentTypeDef::Module</span>(
+                    (<span class="number">0</span>..<span class="ident">size</span>)
+                        .<span class="ident">map</span>(<span class="op">|</span><span class="kw">_</span><span class="op">|</span> <span class="self">self</span>.<span class="ident">read_module_type</span>())
+                        .<span class="ident">collect</span>::<span class="op">&lt;</span><span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="kw">_</span><span class="op">&gt;</span><span class="op">&gt;</span>()<span class="question-mark">?</span>,
+                )
+            }
+            <span class="number">0x4e</span> =&gt; {
+                <span class="kw">let</span> <span class="ident">size</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">read_size</span>(<span class="ident">MAX_WASM_COMPONENT_TYPEDEFS</span>, <span class="string">&quot;component definition&quot;</span>)<span class="question-mark">?</span>;
+                <span class="ident">ComponentTypeDef::Component</span>(
+                    (<span class="number">0</span>..<span class="ident">size</span>)
+                        .<span class="ident">map</span>(<span class="op">|</span><span class="kw">_</span><span class="op">|</span> <span class="self">self</span>.<span class="ident">read_component_type</span>())
+                        .<span class="ident">collect</span>::<span class="op">&lt;</span><span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="kw">_</span><span class="op">&gt;</span><span class="op">&gt;</span>()<span class="question-mark">?</span>,
+                )
+            }
+            <span class="number">0x4d</span> =&gt; {
+                <span class="kw">let</span> <span class="ident">size</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">read_size</span>(<span class="ident">MAX_WASM_INSTANCE_TYPEDEFS</span>, <span class="string">&quot;instance definition&quot;</span>)<span class="question-mark">?</span>;
+                <span class="ident">ComponentTypeDef::Instance</span>(
+                    (<span class="number">0</span>..<span class="ident">size</span>)
+                        .<span class="ident">map</span>(<span class="op">|</span><span class="kw">_</span><span class="op">|</span> <span class="self">self</span>.<span class="ident">read_instance_type</span>())
+                        .<span class="ident">collect</span>::<span class="op">&lt;</span><span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="kw">_</span><span class="op">&gt;</span><span class="op">&gt;</span>()<span class="question-mark">?</span>,
+                )
+            }
+            <span class="number">0x4c</span> =&gt; {
+                <span class="kw">let</span> <span class="ident">params_size</span> <span class="op">=</span>
+                    <span class="self">self</span>.<span class="ident">read_size</span>(<span class="ident">MAX_WASM_FUNCTION_PARAMS</span>, <span class="string">&quot;function parameters&quot;</span>)<span class="question-mark">?</span>;
+                <span class="kw">let</span> <span class="ident">params</span> <span class="op">=</span> (<span class="number">0</span>..<span class="ident">params_size</span>)
+                    .<span class="ident">map</span>(<span class="op">|</span><span class="kw">_</span><span class="op">|</span> {
+                        <span class="prelude-val">Ok</span>((
+                            <span class="self">self</span>.<span class="ident">read_optional_string</span>()<span class="question-mark">?</span>,
+                            <span class="self">self</span>.<span class="ident">read_interface_type_ref</span>()<span class="question-mark">?</span>,
+                        ))
+                    })
+                    .<span class="ident">collect</span>::<span class="op">&lt;</span><span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="kw">_</span><span class="op">&gt;</span><span class="op">&gt;</span>()<span class="question-mark">?</span>;
+                <span class="ident">ComponentTypeDef::Function</span>(<span class="ident">ComponentFuncType</span> {
+                    <span class="ident">params</span>,
+                    <span class="ident">result</span>: <span class="self">self</span>.<span class="ident">read_interface_type_ref</span>()<span class="question-mark">?</span>,
+                })
+            }
+            <span class="number">0x4b</span> =&gt; <span class="ident">ComponentTypeDef::Value</span>(<span class="self">self</span>.<span class="ident">read_interface_type_ref</span>()<span class="question-mark">?</span>),
+            <span class="ident">x</span> =&gt; {
+                <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">it</span>) <span class="op">=</span> <span class="ident"><span class="self">Self</span>::primitive_it_from_byte</span>(<span class="ident">x</span>) {
+                    <span class="ident">ComponentTypeDef::Interface</span>(<span class="ident">InterfaceType::Primitive</span>(<span class="ident">it</span>))
+                } <span class="kw">else</span> {
+                    <span class="ident">ComponentTypeDef::Interface</span>(<span class="self">self</span>.<span class="ident">read_interface_type</span>(<span class="ident">x</span>)<span class="question-mark">?</span>)
+                }
+            }
+        })
+    }
+
     <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">read_module_type</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">ModuleType</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span><span class="op">&gt;</span> {
-        <span class="kw">let</span> <span class="ident">pos</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">original_position</span>();
-        <span class="kw">let</span> <span class="ident">imports_len</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">read_var_u32</span>()<span class="question-mark">?</span> <span class="kw">as</span> <span class="ident">usize</span>;
-        <span class="kw">if</span> <span class="ident">imports_len</span> <span class="op">&gt;</span> <span class="ident">MAX_WASM_IMPORTS</span> {
-            <span class="kw">return</span> <span class="prelude-val">Err</span>(<span class="ident">BinaryReaderError::new</span>(<span class="string">&quot;imports size is out of bounds&quot;</span>, <span class="ident">pos</span>));
+        <span class="prelude-val">Ok</span>(<span class="kw">match</span> <span class="self">self</span>.<span class="ident">read_u8</span>()<span class="question-mark">?</span> {
+            <span class="number">0x01</span> =&gt; <span class="ident">ModuleType::Type</span>(<span class="self">self</span>.<span class="ident">read_type_def</span>()<span class="question-mark">?</span>),
+            <span class="number">0x02</span> =&gt; <span class="ident">ModuleType::Import</span>(<span class="self">self</span>.<span class="ident">read_import</span>()<span class="question-mark">?</span>),
+            <span class="number">0x07</span> =&gt; <span class="ident">ModuleType::Export</span> {
+                <span class="ident">name</span>: <span class="self">self</span>.<span class="ident">read_string</span>()<span class="question-mark">?</span>,
+                <span class="ident">ty</span>: <span class="self">self</span>.<span class="ident">read_type_ref</span>()<span class="question-mark">?</span>,
+            },
+            <span class="ident">x</span> =&gt; <span class="kw">return</span> <span class="self">self</span>.<span class="ident">invalid_leading_byte</span>(<span class="ident">x</span>, <span class="string">&quot;type definition&quot;</span>),
+        })
+    }
+
+    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">read_component_type</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">ComponentType</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span><span class="op">&gt;</span> {
+        <span class="comment">// Component types are effectively instance types with the additional</span>
+        <span class="comment">// variant of imports; check for imports here or delegate to</span>
+        <span class="comment">// `read_instance_type` with the appropriate conversions.</span>
+        <span class="kw">if</span> <span class="self">self</span>.<span class="ident">peek</span>()<span class="question-mark">?</span> <span class="op">==</span> <span class="number">0x02</span> {
+            <span class="self">self</span>.<span class="ident">position</span> <span class="op">+</span><span class="op">=</span> <span class="number">1</span>;
+            <span class="kw">return</span> <span class="prelude-val">Ok</span>(<span class="ident">ComponentType::Import</span>(<span class="self">self</span>.<span class="ident">read_component_import</span>()<span class="question-mark">?</span>));
         }
-        <span class="prelude-val">Ok</span>(<span class="ident">ModuleType</span> {
-            <span class="ident">imports</span>: (<span class="number">0</span>..<span class="ident">imports_len</span>)
-                .<span class="ident">map</span>(<span class="op">|</span><span class="kw">_</span><span class="op">|</span> <span class="self">self</span>.<span class="ident">read_import</span>())
-                .<span class="ident">collect</span>::<span class="op">&lt;</span><span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="kw">_</span><span class="op">&gt;</span><span class="op">&gt;</span>()<span class="question-mark">?</span>,
-            <span class="ident">exports</span>: <span class="self">self</span>.<span class="ident">read_export_types</span>()<span class="question-mark">?</span>,
+
+        <span class="prelude-val">Ok</span>(<span class="kw">match</span> <span class="self">self</span>.<span class="ident">read_instance_type</span>()<span class="question-mark">?</span> {
+            <span class="ident">InstanceType::Type</span>(<span class="ident">t</span>) =&gt; <span class="ident">ComponentType::Type</span>(<span class="ident">t</span>),
+            <span class="ident">InstanceType::OuterType</span> { <span class="ident">count</span>, <span class="ident">index</span> } =&gt; <span class="ident">ComponentType::OuterType</span> { <span class="ident">count</span>, <span class="ident">index</span> },
+            <span class="ident">InstanceType::Export</span> { <span class="ident">name</span>, <span class="ident">ty</span> } =&gt; <span class="ident">ComponentType::Export</span> { <span class="ident">name</span>, <span class="ident">ty</span> },
         })
     }
 
     <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">read_instance_type</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">InstanceType</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span><span class="op">&gt;</span> {
-        <span class="prelude-val">Ok</span>(<span class="ident">InstanceType</span> {
-            <span class="ident">exports</span>: <span class="self">self</span>.<span class="ident">read_export_types</span>()<span class="question-mark">?</span>,
+        <span class="prelude-val">Ok</span>(<span class="kw">match</span> <span class="self">self</span>.<span class="ident">read_u8</span>()<span class="question-mark">?</span> {
+            <span class="number">0x01</span> =&gt; <span class="ident">InstanceType::Type</span>(<span class="self">self</span>.<span class="ident">read_component_type_def</span>()<span class="question-mark">?</span>),
+            <span class="number">0x07</span> =&gt; <span class="ident">InstanceType::Export</span> {
+                <span class="ident">name</span>: <span class="self">self</span>.<span class="ident">read_string</span>()<span class="question-mark">?</span>,
+                <span class="ident">ty</span>: <span class="self">self</span>.<span class="ident">read_var_u32</span>()<span class="question-mark">?</span>,
+            },
+            <span class="number">0x09</span> =&gt; {
+                <span class="kw">let</span> <span class="ident">offset</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">original_position</span>();
+                <span class="kw">let</span> <span class="ident">alias</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">read_alias</span>()<span class="question-mark">?</span>;
+                <span class="kw">match</span> <span class="ident">alias</span> {
+                    <span class="ident">Alias::OuterType</span> { <span class="ident">count</span>, <span class="ident">index</span> } =&gt; <span class="ident">InstanceType::OuterType</span> { <span class="ident">count</span>, <span class="ident">index</span> },
+                    <span class="kw">_</span> =&gt; {
+                        <span class="kw">return</span> <span class="prelude-val">Err</span>(<span class="ident">BinaryReaderError::new</span>(
+                            <span class="string">&quot;only aliases to outer types are supported in type definitions&quot;</span>,
+                            <span class="ident">offset</span>,
+                        ))
+                    }
+                }
+            }
+            <span class="ident">x</span> =&gt; <span class="kw">return</span> <span class="self">self</span>.<span class="ident">invalid_leading_byte</span>(<span class="ident">x</span>, <span class="string">&quot;type definition&quot;</span>),
         })
     }
 
-    <span class="kw">fn</span> <span class="ident">read_export_types</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">Box</span><span class="op">&lt;</span>[<span class="ident">ExportType</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span>]<span class="op">&gt;</span><span class="op">&gt;</span> {
-        <span class="kw">let</span> <span class="ident">pos</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">original_position</span>();
-        <span class="kw">let</span> <span class="ident">exports_len</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">read_var_u32</span>()<span class="question-mark">?</span> <span class="kw">as</span> <span class="ident">usize</span>;
-        <span class="kw">if</span> <span class="ident">exports_len</span> <span class="op">&gt;</span> <span class="ident">MAX_WASM_EXPORTS</span> {
-            <span class="kw">return</span> <span class="prelude-val">Err</span>(<span class="ident">BinaryReaderError::new</span>(<span class="string">&quot;exports size is out of bound&quot;</span>, <span class="ident">pos</span>));
+    <span class="kw">fn</span> <span class="ident">primitive_it_from_byte</span>(<span class="ident">byte</span>: <span class="ident">u8</span>) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">PrimitiveInterfaceType</span><span class="op">&gt;</span> {
+        <span class="prelude-val">Some</span>(<span class="kw">match</span> <span class="ident">byte</span> {
+            <span class="number">0x7f</span> =&gt; <span class="ident">PrimitiveInterfaceType::Unit</span>,
+            <span class="number">0x7e</span> =&gt; <span class="ident">PrimitiveInterfaceType::Bool</span>,
+            <span class="number">0x7d</span> =&gt; <span class="ident">PrimitiveInterfaceType::S8</span>,
+            <span class="number">0x7c</span> =&gt; <span class="ident">PrimitiveInterfaceType::U8</span>,
+            <span class="number">0x7b</span> =&gt; <span class="ident">PrimitiveInterfaceType::S16</span>,
+            <span class="number">0x7a</span> =&gt; <span class="ident">PrimitiveInterfaceType::U16</span>,
+            <span class="number">0x79</span> =&gt; <span class="ident">PrimitiveInterfaceType::S32</span>,
+            <span class="number">0x78</span> =&gt; <span class="ident">PrimitiveInterfaceType::U32</span>,
+            <span class="number">0x77</span> =&gt; <span class="ident">PrimitiveInterfaceType::S64</span>,
+            <span class="number">0x76</span> =&gt; <span class="ident">PrimitiveInterfaceType::U64</span>,
+            <span class="number">0x75</span> =&gt; <span class="ident">PrimitiveInterfaceType::Float32</span>,
+            <span class="number">0x74</span> =&gt; <span class="ident">PrimitiveInterfaceType::Float64</span>,
+            <span class="number">0x73</span> =&gt; <span class="ident">PrimitiveInterfaceType::Char</span>,
+            <span class="number">0x72</span> =&gt; <span class="ident">PrimitiveInterfaceType::String</span>,
+            <span class="kw">_</span> =&gt; <span class="kw">return</span> <span class="prelude-val">None</span>,
+        })
+    }
+
+    <span class="kw">fn</span> <span class="ident">read_variant_case</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">VariantCase</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span><span class="op">&gt;</span> {
+        <span class="prelude-val">Ok</span>(<span class="ident">VariantCase</span> {
+            <span class="ident">name</span>: <span class="self">self</span>.<span class="ident">read_string</span>()<span class="question-mark">?</span>,
+            <span class="ident">ty</span>: <span class="self">self</span>.<span class="ident">read_interface_type_ref</span>()<span class="question-mark">?</span>,
+            <span class="ident">default_to</span>: <span class="kw">match</span> <span class="self">self</span>.<span class="ident">read_u8</span>()<span class="question-mark">?</span> {
+                <span class="number">0x0</span> =&gt; <span class="prelude-val">None</span>,
+                <span class="number">0x1</span> =&gt; <span class="prelude-val">Some</span>(<span class="self">self</span>.<span class="ident">read_var_u32</span>()<span class="question-mark">?</span>),
+                <span class="ident">x</span> =&gt; <span class="kw">return</span> <span class="self">self</span>.<span class="ident">invalid_leading_byte</span>(<span class="ident">x</span>, <span class="string">&quot;variant case default&quot;</span>),
+            },
+        })
+    }
+
+    <span class="kw">fn</span> <span class="ident">read_interface_type_ref</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">InterfaceTypeRef</span><span class="op">&gt;</span> {
+        <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">it</span>) <span class="op">=</span> <span class="ident"><span class="self">Self</span>::primitive_it_from_byte</span>(<span class="self">self</span>.<span class="ident">peek</span>()<span class="question-mark">?</span>) {
+            <span class="self">self</span>.<span class="ident">position</span> <span class="op">+</span><span class="op">=</span> <span class="number">1</span>;
+            <span class="kw">return</span> <span class="prelude-val">Ok</span>(<span class="ident">InterfaceTypeRef::Primitive</span>(<span class="ident">it</span>));
         }
-        (<span class="number">0</span>..<span class="ident">exports_len</span>).<span class="ident">map</span>(<span class="op">|</span><span class="kw">_</span><span class="op">|</span> <span class="self">self</span>.<span class="ident">read_export_type</span>()).<span class="ident">collect</span>()
+
+        <span class="prelude-val">Ok</span>(<span class="ident">InterfaceTypeRef::Type</span>(<span class="self">self</span>.<span class="ident">read_var_s33</span>()<span class="question-mark">?</span> <span class="kw">as</span> <span class="ident">u32</span>))
+    }
+
+    <span class="kw">fn</span> <span class="ident">read_interface_type</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="ident">byte</span>: <span class="ident">u8</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">InterfaceType</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span><span class="op">&gt;</span> {
+        <span class="prelude-val">Ok</span>(<span class="kw">match</span> <span class="ident">byte</span> {
+            <span class="number">0x71</span> =&gt; {
+                <span class="kw">let</span> <span class="ident">size</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">read_size</span>(<span class="ident">MAX_WASM_RECORD_FIELDS</span>, <span class="string">&quot;record field&quot;</span>)<span class="question-mark">?</span>;
+                <span class="ident">InterfaceType::Record</span>(
+                    (<span class="number">0</span>..<span class="ident">size</span>)
+                        .<span class="ident">map</span>(<span class="op">|</span><span class="kw">_</span><span class="op">|</span> <span class="prelude-val">Ok</span>((<span class="self">self</span>.<span class="ident">read_string</span>()<span class="question-mark">?</span>, <span class="self">self</span>.<span class="ident">read_interface_type_ref</span>()<span class="question-mark">?</span>)))
+                        .<span class="ident">collect</span>::<span class="op">&lt;</span><span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="kw">_</span><span class="op">&gt;</span><span class="op">&gt;</span>()<span class="question-mark">?</span>,
+                )
+            }
+            <span class="number">0x70</span> =&gt; {
+                <span class="kw">let</span> <span class="ident">size</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">read_size</span>(<span class="ident">MAX_WASM_VARIANT_CASES</span>, <span class="string">&quot;variant cases&quot;</span>)<span class="question-mark">?</span>;
+                <span class="ident">InterfaceType::Variant</span>(
+                    (<span class="number">0</span>..<span class="ident">size</span>)
+                        .<span class="ident">map</span>(<span class="op">|</span><span class="kw">_</span><span class="op">|</span> <span class="self">self</span>.<span class="ident">read_variant_case</span>())
+                        .<span class="ident">collect</span>::<span class="op">&lt;</span><span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="kw">_</span><span class="op">&gt;</span><span class="op">&gt;</span>()<span class="question-mark">?</span>,
+                )
+            }
+            <span class="number">0x6f</span> =&gt; <span class="ident">InterfaceType::List</span>(<span class="self">self</span>.<span class="ident">read_interface_type_ref</span>()<span class="question-mark">?</span>),
+            <span class="number">0x6e</span> =&gt; {
+                <span class="kw">let</span> <span class="ident">size</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">read_size</span>(<span class="ident">MAX_WASM_TUPLE_TYPES</span>, <span class="string">&quot;tuple types&quot;</span>)<span class="question-mark">?</span>;
+                <span class="ident">InterfaceType::Tuple</span>(
+                    (<span class="number">0</span>..<span class="ident">size</span>)
+                        .<span class="ident">map</span>(<span class="op">|</span><span class="kw">_</span><span class="op">|</span> <span class="self">self</span>.<span class="ident">read_interface_type_ref</span>())
+                        .<span class="ident">collect</span>::<span class="op">&lt;</span><span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="kw">_</span><span class="op">&gt;</span><span class="op">&gt;</span>()<span class="question-mark">?</span>,
+                )
+            }
+            <span class="number">0x6d</span> =&gt; {
+                <span class="kw">let</span> <span class="ident">size</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">read_size</span>(<span class="ident">MAX_WASM_FLAG_NAMES</span>, <span class="string">&quot;flag names&quot;</span>)<span class="question-mark">?</span>;
+                <span class="ident">InterfaceType::Flags</span>(
+                    (<span class="number">0</span>..<span class="ident">size</span>)
+                        .<span class="ident">map</span>(<span class="op">|</span><span class="kw">_</span><span class="op">|</span> <span class="self">self</span>.<span class="ident">read_string</span>())
+                        .<span class="ident">collect</span>::<span class="op">&lt;</span><span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="kw">_</span><span class="op">&gt;</span><span class="op">&gt;</span>()<span class="question-mark">?</span>,
+                )
+            }
+            <span class="number">0x6c</span> =&gt; {
+                <span class="kw">let</span> <span class="ident">size</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">read_size</span>(<span class="ident">MAX_WASM_ENUM_CASES</span>, <span class="string">&quot;enum cases&quot;</span>)<span class="question-mark">?</span>;
+                <span class="ident">InterfaceType::Enum</span>(
+                    (<span class="number">0</span>..<span class="ident">size</span>)
+                        .<span class="ident">map</span>(<span class="op">|</span><span class="kw">_</span><span class="op">|</span> <span class="self">self</span>.<span class="ident">read_string</span>())
+                        .<span class="ident">collect</span>::<span class="op">&lt;</span><span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="kw">_</span><span class="op">&gt;</span><span class="op">&gt;</span>()<span class="question-mark">?</span>,
+                )
+            }
+            <span class="number">0x6b</span> =&gt; {
+                <span class="kw">let</span> <span class="ident">size</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">read_size</span>(<span class="ident">MAX_WASM_UNION_TYPES</span>, <span class="string">&quot;union types&quot;</span>)<span class="question-mark">?</span>;
+                <span class="ident">InterfaceType::Union</span>(
+                    (<span class="number">0</span>..<span class="ident">size</span>)
+                        .<span class="ident">map</span>(<span class="op">|</span><span class="kw">_</span><span class="op">|</span> <span class="self">self</span>.<span class="ident">read_interface_type_ref</span>())
+                        .<span class="ident">collect</span>::<span class="op">&lt;</span><span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="kw">_</span><span class="op">&gt;</span><span class="op">&gt;</span>()<span class="question-mark">?</span>,
+                )
+            }
+            <span class="number">0x6a</span> =&gt; <span class="ident">InterfaceType::Option</span>(<span class="self">self</span>.<span class="ident">read_interface_type_ref</span>()<span class="question-mark">?</span>),
+            <span class="number">0x69</span> =&gt; <span class="ident">InterfaceType::Expected</span> {
+                <span class="ident">ok</span>: <span class="self">self</span>.<span class="ident">read_interface_type_ref</span>()<span class="question-mark">?</span>,
+                <span class="ident">error</span>: <span class="self">self</span>.<span class="ident">read_interface_type_ref</span>()<span class="question-mark">?</span>,
+            },
+            <span class="ident">x</span> =&gt; <span class="kw">return</span> <span class="self">self</span>.<span class="ident">invalid_leading_byte</span>(<span class="ident">x</span>, <span class="string">&quot;type&quot;</span>),
+        })
+    }
+
+    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">read_export</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">Export</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span><span class="op">&gt;</span> {
+        <span class="prelude-val">Ok</span>(<span class="ident">Export</span> {
+            <span class="ident">name</span>: <span class="self">self</span>.<span class="ident">read_string</span>()<span class="question-mark">?</span>,
+            <span class="ident">kind</span>: <span class="self">self</span>.<span class="ident">read_external_kind</span>()<span class="question-mark">?</span>,
+            <span class="ident">index</span>: <span class="self">self</span>.<span class="ident">read_var_u32</span>()<span class="question-mark">?</span>,
+        })
+    }
+
+    <span class="kw">fn</span> <span class="ident">read_component_arg_kind</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="ident">desc</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">ComponentArgKind</span><span class="op">&gt;</span> {
+        <span class="prelude-val">Ok</span>(<span class="kw">match</span> <span class="self">self</span>.<span class="ident">read_u8</span>()<span class="question-mark">?</span> {
+            <span class="number">0x00</span> =&gt; <span class="ident">ComponentArgKind::Module</span>(<span class="self">self</span>.<span class="ident">read_var_u32</span>()<span class="question-mark">?</span>),
+            <span class="number">0x01</span> =&gt; <span class="ident">ComponentArgKind::Component</span>(<span class="self">self</span>.<span class="ident">read_var_u32</span>()<span class="question-mark">?</span>),
+            <span class="number">0x02</span> =&gt; <span class="ident">ComponentArgKind::Instance</span>(<span class="self">self</span>.<span class="ident">read_var_u32</span>()<span class="question-mark">?</span>),
+            <span class="number">0x03</span> =&gt; <span class="ident">ComponentArgKind::Function</span>(<span class="self">self</span>.<span class="ident">read_var_u32</span>()<span class="question-mark">?</span>),
+            <span class="number">0x04</span> =&gt; <span class="ident">ComponentArgKind::Value</span>(<span class="self">self</span>.<span class="ident">read_var_u32</span>()<span class="question-mark">?</span>),
+            <span class="number">0x05</span> =&gt; <span class="ident">ComponentArgKind::Type</span>(<span class="self">self</span>.<span class="ident">read_var_u32</span>()<span class="question-mark">?</span>),
+            <span class="ident">x</span> =&gt; <span class="kw">return</span> <span class="self">self</span>.<span class="ident">invalid_leading_byte</span>(<span class="ident">x</span>, <span class="ident">desc</span>),
+        })
+    }
+
+    <span class="kw">fn</span> <span class="ident">read_component_arg</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">ComponentArg</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span><span class="op">&gt;</span> {
+        <span class="prelude-val">Ok</span>(<span class="ident">ComponentArg</span> {
+            <span class="ident">name</span>: <span class="self">self</span>.<span class="ident">read_string</span>()<span class="question-mark">?</span>,
+            <span class="ident">kind</span>: <span class="self">self</span>.<span class="ident">read_component_arg_kind</span>(<span class="string">&quot;component argument kind&quot;</span>)<span class="question-mark">?</span>,
+        })
+    }
+
+    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">read_component_export</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">ComponentExport</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span><span class="op">&gt;</span> {
+        <span class="prelude-val">Ok</span>(<span class="ident">ComponentExport</span> {
+            <span class="ident">name</span>: <span class="self">self</span>.<span class="ident">read_string</span>()<span class="question-mark">?</span>,
+            <span class="ident">kind</span>: <span class="self">self</span>.<span class="ident">read_component_arg_kind</span>(<span class="string">&quot;component export kind&quot;</span>)<span class="question-mark">?</span>,
+        })
     }
 
     <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">read_import</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">Import</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span><span class="op">&gt;</span> {
-        <span class="kw">let</span> <span class="ident">module</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">read_string</span>()<span class="question-mark">?</span>;
-        <span class="kw">let</span> <span class="ident">field</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">read_string</span>()<span class="question-mark">?</span>;
+        <span class="prelude-val">Ok</span>(<span class="ident">Import</span> {
+            <span class="ident">module</span>: <span class="self">self</span>.<span class="ident">read_string</span>()<span class="question-mark">?</span>,
+            <span class="ident">name</span>: <span class="self">self</span>.<span class="ident">read_string</span>()<span class="question-mark">?</span>,
+            <span class="ident">ty</span>: <span class="self">self</span>.<span class="ident">read_type_ref</span>()<span class="question-mark">?</span>,
+        })
+    }
 
-        <span class="comment">// For the `field`, figure out if we&#39;re the experimental encoding of</span>
-        <span class="comment">// single-level imports for the module linking proposal (a single-byte</span>
-        <span class="comment">// string which is 0xc0, which is invalid utf-8) or if we have a second</span>
-        <span class="comment">// level of import.</span>
-        <span class="kw">let</span> <span class="ident">field</span> <span class="op">=</span> <span class="kw">if</span> <span class="ident">field</span>.<span class="ident">is_empty</span>() <span class="op">&amp;&amp;</span> <span class="self">self</span>.<span class="ident">buffer</span>.<span class="ident">get</span>(<span class="self">self</span>.<span class="ident">position</span>) <span class="op">==</span> <span class="prelude-val">Some</span>(<span class="kw-2">&amp;</span><span class="number">0xff</span>) {
-            <span class="self">self</span>.<span class="ident">position</span> <span class="op">+</span><span class="op">=</span> <span class="number">1</span>;
-            <span class="prelude-val">None</span>
-        } <span class="kw">else</span> {
-            <span class="prelude-val">Some</span>(<span class="ident">field</span>)
+    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">read_component_import</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">ComponentImport</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span><span class="op">&gt;</span> {
+        <span class="prelude-val">Ok</span>(<span class="ident">ComponentImport</span> {
+            <span class="ident">name</span>: <span class="self">self</span>.<span class="ident">read_string</span>()<span class="question-mark">?</span>,
+            <span class="ident">ty</span>: <span class="self">self</span>.<span class="ident">read_var_u32</span>()<span class="question-mark">?</span>,
+        })
+    }
+
+    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">read_component_func</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">ComponentFunction</span><span class="op">&gt;</span> {
+        <span class="prelude-val">Ok</span>(<span class="kw">match</span> <span class="self">self</span>.<span class="ident">read_u8</span>()<span class="question-mark">?</span> {
+            <span class="number">0x00</span> =&gt; {
+                <span class="kw">let</span> <span class="ident">type_index</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">read_var_u32</span>()<span class="question-mark">?</span>;
+                <span class="kw">let</span> <span class="ident">options_size</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">read_size</span>(<span class="ident">MAX_WASM_FUNCTION_OPTIONS</span>, <span class="string">&quot;function options&quot;</span>)<span class="question-mark">?</span>;
+                <span class="ident">ComponentFunction::Lift</span> {
+                    <span class="ident">type_index</span>,
+                    <span class="ident">options</span>: (<span class="number">0</span>..<span class="ident">options_size</span>)
+                        .<span class="ident">map</span>(<span class="op">|</span><span class="kw">_</span><span class="op">|</span> <span class="self">self</span>.<span class="ident">read_canonical_option</span>())
+                        .<span class="ident">collect</span>::<span class="op">&lt;</span><span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="kw">_</span><span class="op">&gt;</span><span class="op">&gt;</span>()<span class="question-mark">?</span>,
+                    <span class="ident">func_index</span>: <span class="self">self</span>.<span class="ident">read_var_u32</span>()<span class="question-mark">?</span>,
+                }
+            }
+            <span class="number">0x01</span> =&gt; {
+                <span class="kw">let</span> <span class="ident">options_size</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">read_size</span>(<span class="ident">MAX_WASM_FUNCTION_OPTIONS</span>, <span class="string">&quot;function options&quot;</span>)<span class="question-mark">?</span>;
+
+                <span class="ident">ComponentFunction::Lower</span> {
+                    <span class="ident">options</span>: (<span class="number">0</span>..<span class="ident">options_size</span>)
+                        .<span class="ident">map</span>(<span class="op">|</span><span class="kw">_</span><span class="op">|</span> <span class="self">self</span>.<span class="ident">read_canonical_option</span>())
+                        .<span class="ident">collect</span>::<span class="op">&lt;</span><span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="kw">_</span><span class="op">&gt;</span><span class="op">&gt;</span>()<span class="question-mark">?</span>,
+                    <span class="ident">func_index</span>: <span class="self">self</span>.<span class="ident">read_var_u32</span>()<span class="question-mark">?</span>,
+                }
+            }
+            <span class="ident">x</span> =&gt; <span class="kw">return</span> <span class="self">self</span>.<span class="ident">invalid_leading_byte</span>(<span class="ident">x</span>, <span class="string">&quot;component function&quot;</span>),
+        })
+    }
+
+    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">read_canonical_option</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">CanonicalOption</span><span class="op">&gt;</span> {
+        <span class="prelude-val">Ok</span>(<span class="kw">match</span> <span class="self">self</span>.<span class="ident">read_u8</span>()<span class="question-mark">?</span> {
+            <span class="number">0x00</span> =&gt; <span class="ident">CanonicalOption::UTF8</span>,
+            <span class="number">0x01</span> =&gt; <span class="ident">CanonicalOption::UTF16</span>,
+            <span class="number">0x02</span> =&gt; <span class="ident">CanonicalOption::CompactUTF16</span>,
+            <span class="number">0x03</span> =&gt; <span class="ident">CanonicalOption::Into</span>(<span class="self">self</span>.<span class="ident">read_var_u32</span>()<span class="question-mark">?</span>),
+            <span class="ident">x</span> =&gt; <span class="kw">return</span> <span class="self">self</span>.<span class="ident">invalid_leading_byte</span>(<span class="ident">x</span>, <span class="string">&quot;canonical option&quot;</span>),
+        })
+    }
+
+    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">read_instance</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">Instance</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span><span class="op">&gt;</span> {
+        <span class="prelude-val">Ok</span>(<span class="kw">match</span> <span class="self">self</span>.<span class="ident">read_u8</span>()<span class="question-mark">?</span> {
+            <span class="number">0x00</span> =&gt; <span class="kw">match</span> <span class="self">self</span>.<span class="ident">read_u8</span>()<span class="question-mark">?</span> {
+                <span class="number">0x00</span> =&gt; {
+                    <span class="kw">let</span> <span class="ident">index</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">read_var_u32</span>()<span class="question-mark">?</span>;
+                    <span class="kw">let</span> <span class="ident">args_size</span> <span class="op">=</span>
+                        <span class="self">self</span>.<span class="ident">read_size</span>(<span class="ident">MAX_WASM_INSTANTIATION_ARGS</span>, <span class="string">&quot;instantiation arguments&quot;</span>)<span class="question-mark">?</span>;
+                    <span class="ident">Instance::Module</span> {
+                        <span class="ident">index</span>,
+                        <span class="ident">args</span>: (<span class="number">0</span>..<span class="ident">args_size</span>)
+                            .<span class="ident">map</span>(<span class="op">|</span><span class="kw">_</span><span class="op">|</span> <span class="self">self</span>.<span class="ident">read_module_arg</span>())
+                            .<span class="ident">collect</span>::<span class="op">&lt;</span><span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="kw">_</span><span class="op">&gt;</span><span class="op">&gt;</span>()<span class="question-mark">?</span>,
+                    }
+                }
+                <span class="number">0x01</span> =&gt; {
+                    <span class="kw">let</span> <span class="ident">index</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">read_var_u32</span>()<span class="question-mark">?</span>;
+                    <span class="kw">let</span> <span class="ident">args_size</span> <span class="op">=</span>
+                        <span class="self">self</span>.<span class="ident">read_size</span>(<span class="ident">MAX_WASM_INSTANTIATION_ARGS</span>, <span class="string">&quot;instantiation arguments&quot;</span>)<span class="question-mark">?</span>;
+                    <span class="ident">Instance::Component</span> {
+                        <span class="ident">index</span>,
+                        <span class="ident">args</span>: (<span class="number">0</span>..<span class="ident">args_size</span>)
+                            .<span class="ident">map</span>(<span class="op">|</span><span class="kw">_</span><span class="op">|</span> <span class="self">self</span>.<span class="ident">read_component_arg</span>())
+                            .<span class="ident">collect</span>::<span class="op">&lt;</span><span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="kw">_</span><span class="op">&gt;</span><span class="op">&gt;</span>()<span class="question-mark">?</span>,
+                    }
+                }
+                <span class="ident">x</span> =&gt; <span class="kw">return</span> <span class="self">self</span>.<span class="ident">invalid_leading_byte</span>(<span class="ident">x</span>, <span class="string">&quot;instance&quot;</span>),
+            },
+            <span class="number">0x01</span> =&gt; {
+                <span class="kw">let</span> <span class="ident">size</span> <span class="op">=</span>
+                    <span class="self">self</span>.<span class="ident">read_size</span>(<span class="ident">MAX_WASM_INSTANTIATION_EXPORTS</span>, <span class="string">&quot;instantiation exports&quot;</span>)<span class="question-mark">?</span>;
+                <span class="ident">Instance::ComponentFromExports</span>(
+                    (<span class="number">0</span>..<span class="ident">size</span>)
+                        .<span class="ident">map</span>(<span class="op">|</span><span class="kw">_</span><span class="op">|</span> <span class="self">self</span>.<span class="ident">read_component_export</span>())
+                        .<span class="ident">collect</span>::<span class="op">&lt;</span><span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="kw">_</span><span class="op">&gt;</span><span class="op">&gt;</span>()<span class="question-mark">?</span>,
+                )
+            }
+            <span class="number">0x02</span> =&gt; {
+                <span class="kw">let</span> <span class="ident">size</span> <span class="op">=</span>
+                    <span class="self">self</span>.<span class="ident">read_size</span>(<span class="ident">MAX_WASM_INSTANTIATION_EXPORTS</span>, <span class="string">&quot;instantiation exports&quot;</span>)<span class="question-mark">?</span>;
+                <span class="ident">Instance::ModuleFromExports</span>(
+                    (<span class="number">0</span>..<span class="ident">size</span>)
+                        .<span class="ident">map</span>(<span class="op">|</span><span class="kw">_</span><span class="op">|</span> <span class="self">self</span>.<span class="ident">read_export</span>())
+                        .<span class="ident">collect</span>::<span class="op">&lt;</span><span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="kw">_</span><span class="op">&gt;</span><span class="op">&gt;</span>()<span class="question-mark">?</span>,
+                )
+            }
+            <span class="ident">x</span> =&gt; <span class="kw">return</span> <span class="self">self</span>.<span class="ident">invalid_leading_byte</span>(<span class="ident">x</span>, <span class="string">&quot;instance&quot;</span>),
+        })
+    }
+
+    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">read_module_arg</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">ModuleArg</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span><span class="op">&gt;</span> {
+        <span class="kw">let</span> <span class="ident">name</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">read_string</span>()<span class="question-mark">?</span>;
+        <span class="kw">let</span> <span class="ident">kind</span> <span class="op">=</span> <span class="kw">match</span> <span class="self">self</span>.<span class="ident">read_u8</span>()<span class="question-mark">?</span> {
+            <span class="number">0x02</span> =&gt; <span class="ident">ModuleArgKind::Instance</span>(<span class="self">self</span>.<span class="ident">read_var_u32</span>()<span class="question-mark">?</span>),
+            <span class="ident">x</span> =&gt; <span class="kw">return</span> <span class="self">self</span>.<span class="ident">invalid_leading_byte</span>(<span class="ident">x</span>, <span class="string">&quot;module argument&quot;</span>),
         };
 
-        <span class="kw">let</span> <span class="ident">ty</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">read_import_desc</span>()<span class="question-mark">?</span>;
-        <span class="prelude-val">Ok</span>(<span class="ident">Import</span> { <span class="ident">module</span>, <span class="ident">field</span>, <span class="ident">ty</span> })
+        <span class="prelude-val">Ok</span>(<span class="ident">ModuleArg</span> { <span class="ident">name</span>, <span class="ident">kind</span> })
     }
 
-    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">read_export_type</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">ExportType</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span><span class="op">&gt;</span> {
-        <span class="kw">let</span> <span class="ident">name</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">read_string</span>()<span class="question-mark">?</span>;
-        <span class="kw">let</span> <span class="ident">ty</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">read_import_desc</span>()<span class="question-mark">?</span>;
-        <span class="prelude-val">Ok</span>(<span class="ident">ExportType</span> { <span class="ident">name</span>, <span class="ident">ty</span> })
-    }
+    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">read_alias</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">Alias</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span><span class="op">&gt;</span> {
+        <span class="kw">let</span> <span class="ident">preamble</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">read_u8</span>()<span class="question-mark">?</span>;
 
-    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">read_import_desc</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">ImportSectionEntryType</span><span class="op">&gt;</span> {
-        <span class="prelude-val">Ok</span>(<span class="kw">match</span> <span class="self">self</span>.<span class="ident">read_external_kind</span>()<span class="question-mark">?</span> {
-            <span class="ident">ExternalKind::Function</span> =&gt; <span class="ident">ImportSectionEntryType::Function</span>(<span class="self">self</span>.<span class="ident">read_var_u32</span>()<span class="question-mark">?</span>),
-            <span class="ident">ExternalKind::Table</span> =&gt; <span class="ident">ImportSectionEntryType::Table</span>(<span class="self">self</span>.<span class="ident">read_table_type</span>()<span class="question-mark">?</span>),
-            <span class="ident">ExternalKind::Memory</span> =&gt; <span class="ident">ImportSectionEntryType::Memory</span>(<span class="self">self</span>.<span class="ident">read_memory_type</span>()<span class="question-mark">?</span>),
-            <span class="ident">ExternalKind::Tag</span> =&gt; <span class="ident">ImportSectionEntryType::Tag</span>(<span class="self">self</span>.<span class="ident">read_tag_type</span>()<span class="question-mark">?</span>),
-            <span class="ident">ExternalKind::Global</span> =&gt; <span class="ident">ImportSectionEntryType::Global</span>(<span class="self">self</span>.<span class="ident">read_global_type</span>()<span class="question-mark">?</span>),
-            <span class="ident">ExternalKind::Module</span> =&gt; <span class="ident">ImportSectionEntryType::Module</span>(<span class="self">self</span>.<span class="ident">read_var_u32</span>()<span class="question-mark">?</span>),
-            <span class="ident">ExternalKind::Instance</span> =&gt; <span class="ident">ImportSectionEntryType::Instance</span>(<span class="self">self</span>.<span class="ident">read_var_u32</span>()<span class="question-mark">?</span>),
-            <span class="ident">ExternalKind::Type</span> =&gt; {
-                <span class="kw">return</span> <span class="prelude-val">Err</span>(<span class="ident">BinaryReaderError::new</span>(
-                    <span class="string">&quot;cannot import types&quot;</span>,
-                    <span class="self">self</span>.<span class="ident">original_position</span>() <span class="op">-</span> <span class="number">1</span>,
-                ))
+        <span class="prelude-val">Ok</span>(<span class="kw">match</span> <span class="ident">preamble</span> {
+            <span class="number">0x00</span> <span class="op">|</span> <span class="number">0x01</span> =&gt; {
+                <span class="kw">let</span> <span class="ident">offset</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">original_position</span>();
+                <span class="kw">let</span> <span class="ident">kind</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">read_u8</span>()<span class="question-mark">?</span>;
+                <span class="kw">let</span> <span class="ident">instance</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">read_var_u32</span>()<span class="question-mark">?</span>;
+                <span class="kw">let</span> <span class="ident">name</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">read_string</span>()<span class="question-mark">?</span>;
+
+                <span class="kw">let</span> <span class="ident">kind</span> <span class="op">=</span> <span class="kw">match</span> (<span class="ident">preamble</span>, <span class="ident">kind</span>) {
+                    (<span class="number">0x00</span>, <span class="number">0x00</span>) =&gt; <span class="ident">AliasKind::Module</span>,
+                    (<span class="number">0x00</span>, <span class="number">0x01</span>) =&gt; <span class="ident">AliasKind::Component</span>,
+                    (<span class="number">0x00</span>, <span class="number">0x02</span>) =&gt; <span class="ident">AliasKind::Instance</span>,
+                    (<span class="number">0x00</span>, <span class="number">0x03</span>) =&gt; <span class="ident">AliasKind::ComponentFunc</span>,
+                    (<span class="number">0x00</span>, <span class="number">0x04</span>) =&gt; <span class="ident">AliasKind::Value</span>,
+                    (<span class="number">0x01</span>, <span class="number">0x00</span>) =&gt; <span class="ident">AliasKind::Func</span>,
+                    (<span class="number">0x01</span>, <span class="number">0x01</span>) =&gt; <span class="ident">AliasKind::Table</span>,
+                    (<span class="number">0x01</span>, <span class="number">0x02</span>) =&gt; <span class="ident">AliasKind::Memory</span>,
+                    (<span class="number">0x01</span>, <span class="number">0x03</span>) =&gt; <span class="ident">AliasKind::Global</span>,
+                    (<span class="number">0x01</span>, <span class="number">0x04</span>) =&gt; <span class="ident">AliasKind::Tag</span>,
+                    (<span class="kw">_</span>, <span class="ident">x</span>) =&gt; {
+                        <span class="kw">return</span> <span class="prelude-val">Err</span>(<span class="ident"><span class="self">Self</span>::invalid_leading_byte_error</span>(
+                            <span class="ident">x</span>,
+                            <span class="string">&quot;export alias kind&quot;</span>,
+                            <span class="ident">offset</span>,
+                        ))
+                    }
+                };
+
+                <span class="ident">Alias::InstanceExport</span> {
+                    <span class="ident">kind</span>,
+                    <span class="ident">instance</span>,
+                    <span class="ident">name</span>,
+                }
             }
+            <span class="number">0x02</span> =&gt; {
+                <span class="kw">let</span> <span class="ident">offset</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">original_position</span>();
+                <span class="kw">let</span> <span class="ident">kind</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">read_u8</span>()<span class="question-mark">?</span>;
+                <span class="kw">let</span> <span class="ident">count</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">read_var_u32</span>()<span class="question-mark">?</span>;
+                <span class="kw">let</span> <span class="ident">index</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">read_var_u32</span>()<span class="question-mark">?</span>;
+
+                <span class="kw">match</span> <span class="ident">kind</span> {
+                    <span class="number">0x00</span> =&gt; <span class="ident">Alias::OuterModule</span> { <span class="ident">count</span>, <span class="ident">index</span> },
+                    <span class="number">0x01</span> =&gt; <span class="ident">Alias::OuterComponent</span> { <span class="ident">count</span>, <span class="ident">index</span> },
+                    <span class="number">0x05</span> =&gt; <span class="ident">Alias::OuterType</span> { <span class="ident">count</span>, <span class="ident">index</span> },
+                    <span class="ident">x</span> =&gt; <span class="kw">return</span> <span class="prelude-val">Err</span>(<span class="ident"><span class="self">Self</span>::invalid_leading_byte_error</span>(<span class="ident">x</span>, <span class="string">&quot;outer alias&quot;</span>, <span class="ident">offset</span>)),
+                }
+            }
+            <span class="ident">x</span> =&gt; <span class="kw">return</span> <span class="self">self</span>.<span class="ident">invalid_leading_byte</span>(<span class="ident">x</span>, <span class="string">&quot;alias&quot;</span>),
+        })
+    }
+
+    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">read_type_ref</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">TypeRef</span><span class="op">&gt;</span> {
+        <span class="prelude-val">Ok</span>(<span class="kw">match</span> <span class="self">self</span>.<span class="ident">read_external_kind</span>()<span class="question-mark">?</span> {
+            <span class="ident">ExternalKind::Func</span> =&gt; <span class="ident">TypeRef::Func</span>(<span class="self">self</span>.<span class="ident">read_var_u32</span>()<span class="question-mark">?</span>),
+            <span class="ident">ExternalKind::Table</span> =&gt; <span class="ident">TypeRef::Table</span>(<span class="self">self</span>.<span class="ident">read_table_type</span>()<span class="question-mark">?</span>),
+            <span class="ident">ExternalKind::Memory</span> =&gt; <span class="ident">TypeRef::Memory</span>(<span class="self">self</span>.<span class="ident">read_memory_type</span>()<span class="question-mark">?</span>),
+            <span class="ident">ExternalKind::Tag</span> =&gt; <span class="ident">TypeRef::Tag</span>(<span class="self">self</span>.<span class="ident">read_tag_type</span>()<span class="question-mark">?</span>),
+            <span class="ident">ExternalKind::Global</span> =&gt; <span class="ident">TypeRef::Global</span>(<span class="self">self</span>.<span class="ident">read_global_type</span>()<span class="question-mark">?</span>),
         })
     }
 
@@ -2434,15 +3177,39 @@
                 <span class="self">self</span>.<span class="ident">original_position</span>() <span class="op">-</span> <span class="number">1</span>,
             ));
         }
-        <span class="kw">let</span> <span class="ident">type_index</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">read_var_u32</span>()<span class="question-mark">?</span>;
-        <span class="prelude-val">Ok</span>(<span class="ident">TagType</span> { <span class="ident">type_index</span> })
+        <span class="prelude-val">Ok</span>(<span class="ident">TagType</span> {
+            <span class="ident">kind</span>: <span class="ident">TagKind::Exception</span>,
+            <span class="ident">func_type_idx</span>: <span class="self">self</span>.<span class="ident">read_var_u32</span>()<span class="question-mark">?</span>,
+        })
     }
 
     <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">read_global_type</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">GlobalType</span><span class="op">&gt;</span> {
         <span class="prelude-val">Ok</span>(<span class="ident">GlobalType</span> {
             <span class="ident">content_type</span>: <span class="self">self</span>.<span class="ident">read_type</span>()<span class="question-mark">?</span>,
-            <span class="ident">mutable</span>: <span class="self">self</span>.<span class="ident">read_var_u1</span>()<span class="question-mark">?</span> <span class="op">!</span><span class="op">=</span> <span class="number">0</span>,
+            <span class="ident">mutable</span>: <span class="kw">match</span> <span class="self">self</span>.<span class="ident">read_u8</span>()<span class="question-mark">?</span> {
+                <span class="number">0x00</span> =&gt; <span class="bool-val">false</span>,
+                <span class="number">0x01</span> =&gt; <span class="bool-val">true</span>,
+                <span class="kw">_</span> =&gt; {
+                    <span class="kw">return</span> <span class="prelude-val">Err</span>(<span class="ident">BinaryReaderError::new</span>(
+                        <span class="string">&quot;malformed mutability&quot;</span>,
+                        <span class="self">self</span>.<span class="ident">original_position</span>() <span class="op">-</span> <span class="number">1</span>,
+                    ))
+                }
+            },
         })
+    }
+
+    <span class="comment">// Reads a variable-length 32-bit size from the byte stream while checking</span>
+    <span class="comment">// against a limit.</span>
+    <span class="kw">fn</span> <span class="ident">read_size</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="ident">limit</span>: <span class="ident">usize</span>, <span class="ident">desc</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">usize</span><span class="op">&gt;</span> {
+        <span class="kw">let</span> <span class="ident">size</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">read_var_u32</span>()<span class="question-mark">?</span> <span class="kw">as</span> <span class="ident">usize</span>;
+        <span class="kw">if</span> <span class="ident">size</span> <span class="op">&gt;</span> <span class="ident">limit</span> {
+            <span class="kw">return</span> <span class="prelude-val">Err</span>(<span class="ident">BinaryReaderError::new</span>(
+                <span class="macro">format!</span>(<span class="string">&quot;{} size is out of bounds&quot;</span>, <span class="ident">desc</span>),
+                <span class="self">self</span>.<span class="ident">original_position</span>() <span class="op">-</span> <span class="number">4</span>,
+            ));
+        }
+        <span class="prelude-val">Ok</span>(<span class="ident">size</span>)
     }
 
     <span class="kw">fn</span> <span class="ident">read_first_byte_and_var_u32</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span>(<span class="ident">u8</span>, <span class="ident">u32</span>)<span class="op">&gt;</span> {
@@ -2477,7 +3244,7 @@
         })
     }
 
-    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">read_section_code</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="ident">id</span>: <span class="ident">u32</span>, <span class="ident">offset</span>: <span class="ident">usize</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">SectionCode</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span><span class="op">&gt;</span> {
+    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">read_section_code</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="ident">id</span>: <span class="ident">u8</span>, <span class="ident">offset</span>: <span class="ident">usize</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">SectionCode</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span><span class="op">&gt;</span> {
         <span class="kw">match</span> <span class="ident">id</span> {
             <span class="number">0</span> =&gt; {
                 <span class="kw">let</span> <span class="ident">name</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">read_string</span>()<span class="question-mark">?</span>;
@@ -2509,31 +3276,21 @@
             <span class="number">11</span> =&gt; <span class="prelude-val">Ok</span>(<span class="ident">SectionCode::Data</span>),
             <span class="number">12</span> =&gt; <span class="prelude-val">Ok</span>(<span class="ident">SectionCode::DataCount</span>),
             <span class="number">13</span> =&gt; <span class="prelude-val">Ok</span>(<span class="ident">SectionCode::Tag</span>),
-            <span class="number">14</span> =&gt; <span class="prelude-val">Ok</span>(<span class="ident">SectionCode::Module</span>),
-            <span class="number">15</span> =&gt; <span class="prelude-val">Ok</span>(<span class="ident">SectionCode::Instance</span>),
-            <span class="number">16</span> =&gt; <span class="prelude-val">Ok</span>(<span class="ident">SectionCode::Alias</span>),
-            <span class="number">17</span> =&gt; <span class="prelude-val">Ok</span>(<span class="ident">SectionCode::ModuleCode</span>),
-            <span class="kw">_</span> =&gt; <span class="prelude-val">Err</span>(<span class="ident">BinaryReaderError::new</span>(<span class="string">&quot;Invalid section code&quot;</span>, <span class="ident">offset</span>)),
+            <span class="kw">_</span> =&gt; <span class="prelude-val">Err</span>(<span class="ident">BinaryReaderError::new</span>(<span class="string">&quot;invalid section code&quot;</span>, <span class="ident">offset</span>)),
         }
     }
 
     <span class="kw">fn</span> <span class="ident">read_br_table</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">BrTable</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span><span class="op">&gt;</span> {
-        <span class="kw">let</span> <span class="ident">cnt</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">read_var_u32</span>()<span class="question-mark">?</span>;
-        <span class="kw">if</span> <span class="ident">cnt</span> <span class="op">&gt;</span> <span class="ident">MAX_WASM_BR_TABLE_SIZE</span> {
-            <span class="kw">return</span> <span class="prelude-val">Err</span>(<span class="ident">BinaryReaderError::new</span>(
-                <span class="string">&quot;br_table size is out of bound&quot;</span>,
-                <span class="self">self</span>.<span class="ident">original_position</span>() <span class="op">-</span> <span class="number">1</span>,
-            ));
-        }
+        <span class="kw">let</span> <span class="ident">cnt</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">read_size</span>(<span class="ident">MAX_WASM_BR_TABLE_SIZE</span>, <span class="string">&quot;br_table&quot;</span>)<span class="question-mark">?</span>;
         <span class="kw">let</span> <span class="ident">start</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">position</span>;
         <span class="kw">for</span> <span class="kw">_</span> <span class="kw">in</span> <span class="number">0</span>..<span class="ident">cnt</span> {
-            <span class="self">self</span>.<span class="ident">skip_var_32</span>()<span class="question-mark">?</span>;
+            <span class="self">self</span>.<span class="ident">read_var_u32</span>()<span class="question-mark">?</span>;
         }
         <span class="kw">let</span> <span class="ident">end</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">position</span>;
         <span class="kw">let</span> <span class="ident">default</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">read_var_u32</span>()<span class="question-mark">?</span>;
         <span class="prelude-val">Ok</span>(<span class="ident">BrTable</span> {
             <span class="ident">reader</span>: <span class="ident">BinaryReader::new_with_offset</span>(<span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">buffer</span>[<span class="ident">start</span>..<span class="ident">end</span>], <span class="ident">start</span>),
-            <span class="ident">cnt</span>,
+            <span class="ident">cnt</span>: <span class="ident">cnt</span> <span class="kw">as</span> <span class="ident">u32</span>,
             <span class="ident">default</span>,
         })
     }
@@ -2593,41 +3350,16 @@
         <span class="prelude-val">Ok</span>(<span class="ident">word</span>)
     }
 
-    <span class="doccomment">/// Advances the `BinaryReader` a single byte, and returns the data as</span>
-    <span class="doccomment">/// a `u32`.</span>
+    <span class="doccomment">/// Advances the `BinaryReader` a single byte.</span>
     <span class="doccomment">///</span>
     <span class="doccomment">/// # Errors</span>
     <span class="doccomment">///</span>
     <span class="doccomment">/// If `BinaryReader` has no bytes remaining.</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">read_u8</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">u32</span><span class="op">&gt;</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">read_u8</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">u8</span><span class="op">&gt;</span> {
         <span class="self">self</span>.<span class="ident">ensure_has_byte</span>()<span class="question-mark">?</span>;
-        <span class="kw">let</span> <span class="ident">b</span> <span class="op">=</span> <span class="ident">u32::from</span>(<span class="self">self</span>.<span class="ident">buffer</span>[<span class="self">self</span>.<span class="ident">position</span>]);
+        <span class="kw">let</span> <span class="ident">b</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">buffer</span>[<span class="self">self</span>.<span class="ident">position</span>];
         <span class="self">self</span>.<span class="ident">position</span> <span class="op">+</span><span class="op">=</span> <span class="number">1</span>;
         <span class="prelude-val">Ok</span>(<span class="ident">b</span>)
-    }
-
-    <span class="doccomment">/// Advances the `BinaryReader` up to two bytes to parse a variable</span>
-    <span class="doccomment">/// length integer as a `u8`.</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// # Errors</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// If `BinaryReader` has less than one or two bytes remaining, or the</span>
-    <span class="doccomment">/// integer is larger than eight bits.</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">read_var_u8</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">u32</span><span class="op">&gt;</span> {
-        <span class="comment">// Optimization for single byte i32.</span>
-        <span class="kw">let</span> <span class="ident">byte</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">read_u8</span>()<span class="question-mark">?</span>;
-        <span class="kw">if</span> (<span class="ident">byte</span> <span class="op">&amp;</span> <span class="number">0x80</span>) <span class="op">==</span> <span class="number">0</span> {
-            <span class="kw">return</span> <span class="prelude-val">Ok</span>(<span class="ident">byte</span>);
-        }
-
-        <span class="kw">let</span> <span class="ident">result</span> <span class="op">=</span> (<span class="self">self</span>.<span class="ident">read_u8</span>()<span class="question-mark">?</span> <span class="op">&lt;</span><span class="op">&lt;</span> <span class="number">7</span>) <span class="op">|</span> (<span class="ident">byte</span> <span class="op">&amp;</span> <span class="number">0x7F</span>);
-        <span class="kw">if</span> <span class="ident">result</span> <span class="op">&gt;</span><span class="op">=</span> <span class="number">0x100</span> {
-            <span class="kw">return</span> <span class="prelude-val">Err</span>(<span class="ident">BinaryReaderError::new</span>(
-                <span class="string">&quot;Invalid var_u8&quot;</span>,
-                <span class="self">self</span>.<span class="ident">original_position</span>() <span class="op">-</span> <span class="number">1</span>,
-            ));
-        }
-        <span class="prelude-val">Ok</span>(<span class="ident">result</span>)
     }
 
     <span class="doccomment">/// Advances the `BinaryReader` up to four bytes to parse a variable</span>
@@ -2641,20 +3373,22 @@
         <span class="comment">// Optimization for single byte i32.</span>
         <span class="kw">let</span> <span class="ident">byte</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">read_u8</span>()<span class="question-mark">?</span>;
         <span class="kw">if</span> (<span class="ident">byte</span> <span class="op">&amp;</span> <span class="number">0x80</span>) <span class="op">==</span> <span class="number">0</span> {
-            <span class="kw">return</span> <span class="prelude-val">Ok</span>(<span class="ident">byte</span>);
+            <span class="kw">return</span> <span class="prelude-val">Ok</span>(<span class="ident">byte</span> <span class="kw">as</span> <span class="ident">u32</span>);
         }
 
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">result</span> <span class="op">=</span> <span class="ident">byte</span> <span class="op">&amp;</span> <span class="number">0x7F</span>;
+        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">result</span> <span class="op">=</span> (<span class="ident">byte</span> <span class="op">&amp;</span> <span class="number">0x7F</span>) <span class="kw">as</span> <span class="ident">u32</span>;
         <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">shift</span> <span class="op">=</span> <span class="number">7</span>;
         <span class="kw">loop</span> {
             <span class="kw">let</span> <span class="ident">byte</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">read_u8</span>()<span class="question-mark">?</span>;
             <span class="ident">result</span> <span class="op">|</span><span class="op">=</span> ((<span class="ident">byte</span> <span class="op">&amp;</span> <span class="number">0x7F</span>) <span class="kw">as</span> <span class="ident">u32</span>) <span class="op">&lt;</span><span class="op">&lt;</span> <span class="ident">shift</span>;
             <span class="kw">if</span> <span class="ident">shift</span> <span class="op">&gt;</span><span class="op">=</span> <span class="number">25</span> <span class="op">&amp;&amp;</span> (<span class="ident">byte</span> <span class="op">&gt;</span><span class="op">&gt;</span> (<span class="number">32</span> <span class="op">-</span> <span class="ident">shift</span>)) <span class="op">!</span><span class="op">=</span> <span class="number">0</span> {
+                <span class="kw">let</span> <span class="ident">msg</span> <span class="op">=</span> <span class="kw">if</span> <span class="ident">byte</span> <span class="op">&amp;</span> <span class="number">0x80</span> <span class="op">!</span><span class="op">=</span> <span class="number">0</span> {
+                    <span class="string">&quot;invalid var_u32: integer representation too long&quot;</span>
+                } <span class="kw">else</span> {
+                    <span class="string">&quot;invalid var_u32: integer too large&quot;</span>
+                };
                 <span class="comment">// The continuation bit or unused bits are set.</span>
-                <span class="kw">return</span> <span class="prelude-val">Err</span>(<span class="ident">BinaryReaderError::new</span>(
-                    <span class="string">&quot;Invalid var_u32&quot;</span>,
-                    <span class="self">self</span>.<span class="ident">original_position</span>() <span class="op">-</span> <span class="number">1</span>,
-                ));
+                <span class="kw">return</span> <span class="prelude-val">Err</span>(<span class="ident">BinaryReaderError::new</span>(<span class="ident">msg</span>, <span class="self">self</span>.<span class="ident">original_position</span>() <span class="op">-</span> <span class="number">1</span>));
             }
             <span class="ident">shift</span> <span class="op">+</span><span class="op">=</span> <span class="number">7</span>;
             <span class="kw">if</span> (<span class="ident">byte</span> <span class="op">&amp;</span> <span class="number">0x80</span>) <span class="op">==</span> <span class="number">0</span> {
@@ -2684,11 +3418,13 @@
             <span class="kw">let</span> <span class="ident">byte</span> <span class="op">=</span> <span class="ident">u64::from</span>(<span class="self">self</span>.<span class="ident">read_u8</span>()<span class="question-mark">?</span>);
             <span class="ident">result</span> <span class="op">|</span><span class="op">=</span> (<span class="ident">byte</span> <span class="op">&amp;</span> <span class="number">0x7F</span>) <span class="op">&lt;</span><span class="op">&lt;</span> <span class="ident">shift</span>;
             <span class="kw">if</span> <span class="ident">shift</span> <span class="op">&gt;</span><span class="op">=</span> <span class="number">57</span> <span class="op">&amp;&amp;</span> (<span class="ident">byte</span> <span class="op">&gt;</span><span class="op">&gt;</span> (<span class="number">64</span> <span class="op">-</span> <span class="ident">shift</span>)) <span class="op">!</span><span class="op">=</span> <span class="number">0</span> {
+                <span class="kw">let</span> <span class="ident">msg</span> <span class="op">=</span> <span class="kw">if</span> <span class="ident">byte</span> <span class="op">&amp;</span> <span class="number">0x80</span> <span class="op">!</span><span class="op">=</span> <span class="number">0</span> {
+                    <span class="string">&quot;invalid var_u64: integer representation too long&quot;</span>
+                } <span class="kw">else</span> {
+                    <span class="string">&quot;invalid var_u64: integer too large&quot;</span>
+                };
                 <span class="comment">// The continuation bit or unused bits are set.</span>
-                <span class="kw">return</span> <span class="prelude-val">Err</span>(<span class="ident">BinaryReaderError::new</span>(
-                    <span class="string">&quot;Invalid var_u64&quot;</span>,
-                    <span class="self">self</span>.<span class="ident">original_position</span>() <span class="op">-</span> <span class="number">1</span>,
-                ));
+                <span class="kw">return</span> <span class="prelude-val">Err</span>(<span class="ident">BinaryReaderError::new</span>(<span class="ident">msg</span>, <span class="self">self</span>.<span class="ident">original_position</span>() <span class="op">-</span> <span class="number">1</span>));
             }
             <span class="ident">shift</span> <span class="op">+</span><span class="op">=</span> <span class="number">7</span>;
             <span class="kw">if</span> (<span class="ident">byte</span> <span class="op">&amp;</span> <span class="number">0x80</span>) <span class="op">==</span> <span class="number">0</span> {
@@ -2696,29 +3432,6 @@
             }
         }
         <span class="prelude-val">Ok</span>(<span class="ident">result</span>)
-    }
-
-    <span class="doccomment">/// Advances the `BinaryReader` up to four bytes over a variable length 32</span>
-    <span class="doccomment">/// bit integer, discarding the result.</span>
-    <span class="doccomment">/// # Errors</span>
-    <span class="doccomment">/// If `BinaryReader` has less than one or up to four bytes remaining, or</span>
-    <span class="doccomment">/// the integer is larger than 32 bits.</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">skip_var_32</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span>()<span class="op">&gt;</span> {
-        <span class="kw">for</span> <span class="kw">_</span> <span class="kw">in</span> <span class="number">0</span>..<span class="number">5</span> {
-            <span class="kw">let</span> <span class="ident">byte</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">read_u8</span>()<span class="question-mark">?</span>;
-            <span class="kw">if</span> (<span class="ident">byte</span> <span class="op">&amp;</span> <span class="number">0x80</span>) <span class="op">==</span> <span class="number">0</span> {
-                <span class="kw">return</span> <span class="prelude-val">Ok</span>(());
-            }
-        }
-        <span class="prelude-val">Err</span>(<span class="ident">BinaryReaderError::new</span>(
-            <span class="string">&quot;Invalid var_32&quot;</span>,
-            <span class="self">self</span>.<span class="ident">original_position</span>() <span class="op">-</span> <span class="number">1</span>,
-        ))
-    }
-
-    <span class="doccomment">/// Alias method for `BinaryReader::skip_var_u32`.</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">skip_type</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span>()<span class="op">&gt;</span> {
-        <span class="self">self</span>.<span class="ident">skip_var_32</span>()
     }
 
     <span class="doccomment">/// Advances the `BinaryReader` `len` bytes, skipping the result.</span>
@@ -2776,10 +3489,12 @@
                 <span class="kw">let</span> <span class="ident">continuation_bit</span> <span class="op">=</span> (<span class="ident">byte</span> <span class="op">&amp;</span> <span class="number">0x80</span>) <span class="op">!</span><span class="op">=</span> <span class="number">0</span>;
                 <span class="kw">let</span> <span class="ident">sign_and_unused_bit</span> <span class="op">=</span> (<span class="ident">byte</span> <span class="op">&lt;</span><span class="op">&lt;</span> <span class="number">1</span>) <span class="kw">as</span> <span class="ident">i8</span> <span class="op">&gt;</span><span class="op">&gt;</span> (<span class="number">32</span> <span class="op">-</span> <span class="ident">shift</span>);
                 <span class="kw">if</span> <span class="ident">continuation_bit</span> <span class="op">|</span><span class="op">|</span> (<span class="ident">sign_and_unused_bit</span> <span class="op">!</span><span class="op">=</span> <span class="number">0</span> <span class="op">&amp;&amp;</span> <span class="ident">sign_and_unused_bit</span> <span class="op">!</span><span class="op">=</span> <span class="op">-</span><span class="number">1</span>) {
-                    <span class="kw">return</span> <span class="prelude-val">Err</span>(<span class="ident">BinaryReaderError::new</span>(
-                        <span class="string">&quot;Invalid var_i32&quot;</span>,
-                        <span class="self">self</span>.<span class="ident">original_position</span>() <span class="op">-</span> <span class="number">1</span>,
-                    ));
+                    <span class="kw">let</span> <span class="ident">msg</span> <span class="op">=</span> <span class="kw">if</span> <span class="ident">continuation_bit</span> {
+                        <span class="string">&quot;invalid var_i32: integer representation too long&quot;</span>
+                    } <span class="kw">else</span> {
+                        <span class="string">&quot;invalid var_i32: integer too large&quot;</span>
+                    };
+                    <span class="kw">return</span> <span class="prelude-val">Err</span>(<span class="ident">BinaryReaderError::new</span>(<span class="ident">msg</span>, <span class="self">self</span>.<span class="ident">original_position</span>() <span class="op">-</span> <span class="number">1</span>));
                 }
                 <span class="kw">return</span> <span class="prelude-val">Ok</span>(<span class="ident">result</span>);
             }
@@ -2814,7 +3529,7 @@
                 <span class="kw">let</span> <span class="ident">sign_and_unused_bit</span> <span class="op">=</span> (<span class="ident">byte</span> <span class="op">&lt;</span><span class="op">&lt;</span> <span class="number">1</span>) <span class="kw">as</span> <span class="ident">i8</span> <span class="op">&gt;</span><span class="op">&gt;</span> (<span class="number">33</span> <span class="op">-</span> <span class="ident">shift</span>);
                 <span class="kw">if</span> <span class="ident">continuation_bit</span> <span class="op">|</span><span class="op">|</span> (<span class="ident">sign_and_unused_bit</span> <span class="op">!</span><span class="op">=</span> <span class="number">0</span> <span class="op">&amp;&amp;</span> <span class="ident">sign_and_unused_bit</span> <span class="op">!</span><span class="op">=</span> <span class="op">-</span><span class="number">1</span>) {
                     <span class="kw">return</span> <span class="prelude-val">Err</span>(<span class="ident">BinaryReaderError::new</span>(
-                        <span class="string">&quot;Invalid var_s33&quot;</span>,
+                        <span class="string">&quot;invalid var_s33: integer representation too long&quot;</span>,
                         <span class="self">self</span>.<span class="ident">original_position</span>() <span class="op">-</span> <span class="number">1</span>,
                     ));
                 }
@@ -2844,10 +3559,12 @@
                 <span class="kw">let</span> <span class="ident">continuation_bit</span> <span class="op">=</span> (<span class="ident">byte</span> <span class="op">&amp;</span> <span class="number">0x80</span>) <span class="op">!</span><span class="op">=</span> <span class="number">0</span>;
                 <span class="kw">let</span> <span class="ident">sign_and_unused_bit</span> <span class="op">=</span> ((<span class="ident">byte</span> <span class="op">&lt;</span><span class="op">&lt;</span> <span class="number">1</span>) <span class="kw">as</span> <span class="ident">i8</span>) <span class="op">&gt;</span><span class="op">&gt;</span> (<span class="number">64</span> <span class="op">-</span> <span class="ident">shift</span>);
                 <span class="kw">if</span> <span class="ident">continuation_bit</span> <span class="op">|</span><span class="op">|</span> (<span class="ident">sign_and_unused_bit</span> <span class="op">!</span><span class="op">=</span> <span class="number">0</span> <span class="op">&amp;&amp;</span> <span class="ident">sign_and_unused_bit</span> <span class="op">!</span><span class="op">=</span> <span class="op">-</span><span class="number">1</span>) {
-                    <span class="kw">return</span> <span class="prelude-val">Err</span>(<span class="ident">BinaryReaderError::new</span>(
-                        <span class="string">&quot;Invalid var_i64&quot;</span>,
-                        <span class="self">self</span>.<span class="ident">original_position</span>() <span class="op">-</span> <span class="number">1</span>,
-                    ));
+                    <span class="kw">let</span> <span class="ident">msg</span> <span class="op">=</span> <span class="kw">if</span> <span class="ident">continuation_bit</span> {
+                        <span class="string">&quot;invalid var_i64: integer representation too long&quot;</span>
+                    } <span class="kw">else</span> {
+                        <span class="string">&quot;invalid var_i64: integer too large&quot;</span>
+                    };
+                    <span class="kw">return</span> <span class="prelude-val">Err</span>(<span class="ident">BinaryReaderError::new</span>(<span class="ident">msg</span>, <span class="self">self</span>.<span class="ident">original_position</span>() <span class="op">-</span> <span class="number">1</span>));
                 }
                 <span class="kw">return</span> <span class="prelude-val">Ok</span>(<span class="ident">result</span>);
             }
@@ -2897,6 +3614,17 @@
         <span class="ident">str::from_utf8</span>(<span class="ident">bytes</span>).<span class="ident">map_err</span>(<span class="op">|</span><span class="kw">_</span><span class="op">|</span> {
             <span class="ident">BinaryReaderError::new</span>(<span class="string">&quot;invalid UTF-8 encoding&quot;</span>, <span class="self">self</span>.<span class="ident">original_position</span>() <span class="op">-</span> <span class="number">1</span>)
         })
+    }
+
+    <span class="kw">fn</span> <span class="ident">read_optional_string</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="ident">str</span><span class="op">&gt;</span><span class="op">&gt;</span> {
+        <span class="kw">match</span> <span class="self">self</span>.<span class="ident">read_u8</span>()<span class="question-mark">?</span> {
+            <span class="number">0x0</span> =&gt; <span class="prelude-val">Ok</span>(<span class="prelude-val">None</span>),
+            <span class="number">0x1</span> =&gt; <span class="prelude-val">Ok</span>(<span class="prelude-val">Some</span>(<span class="self">self</span>.<span class="ident">read_string</span>()<span class="question-mark">?</span>)),
+            <span class="kw">_</span> =&gt; <span class="prelude-val">Err</span>(<span class="ident">BinaryReaderError::new</span>(
+                <span class="string">&quot;invalid optional string encoding&quot;</span>,
+                <span class="self">self</span>.<span class="ident">original_position</span>() <span class="op">-</span> <span class="number">1</span>,
+            )),
+        }
     }
 
     <span class="kw">fn</span> <span class="ident">read_memarg_of_align</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="ident">max_align</span>: <span class="ident">u8</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">MemoryImmediate</span><span class="op">&gt;</span> {
@@ -3118,25 +3846,73 @@
 
             <span class="kw">_</span> =&gt; {
                 <span class="kw">return</span> <span class="prelude-val">Err</span>(<span class="ident">BinaryReaderError::new</span>(
-                    <span class="macro">format!</span>(<span class="string">&quot;Unknown 0xfe subopcode: 0x{:x}&quot;</span>, <span class="ident">code</span>),
+                    <span class="macro">format!</span>(<span class="string">&quot;unknown 0xfe subopcode: 0x{:x}&quot;</span>, <span class="ident">code</span>),
                     <span class="self">self</span>.<span class="ident">original_position</span>() <span class="op">-</span> <span class="number">1</span>,
                 ));
             }
         })
     }
 
-    <span class="kw">fn</span> <span class="ident">read_blocktype</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">TypeOrFuncType</span><span class="op">&gt;</span> {
-        <span class="kw">let</span> <span class="ident">position</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">position</span>;
-        <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Ok</span>(<span class="ident">ty</span>) <span class="op">=</span> <span class="self">self</span>.<span class="ident">read_type</span>() {
-            <span class="prelude-val">Ok</span>(<span class="ident">TypeOrFuncType::Type</span>(<span class="ident">ty</span>))
-        } <span class="kw">else</span> {
-            <span class="self">self</span>.<span class="ident">position</span> <span class="op">=</span> <span class="ident">position</span>;
-            <span class="kw">let</span> <span class="ident">idx</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">read_var_s33</span>()<span class="question-mark">?</span>;
-            <span class="kw">if</span> <span class="ident">idx</span> <span class="op">&lt;</span> <span class="number">0</span> <span class="op">|</span><span class="op">|</span> <span class="ident">idx</span> <span class="op">&gt;</span> (<span class="ident">std::u32::MAX</span> <span class="kw">as</span> <span class="ident">i64</span>) {
-                <span class="kw">return</span> <span class="prelude-val">Err</span>(<span class="ident">BinaryReaderError::new</span>(<span class="string">&quot;invalid function type&quot;</span>, <span class="ident">position</span>));
-            }
-            <span class="prelude-val">Ok</span>(<span class="ident">TypeOrFuncType::FuncType</span>(<span class="ident">idx</span> <span class="kw">as</span> <span class="ident">u32</span>))
+    <span class="attribute">#[<span class="ident">cold</span>]</span>
+    <span class="kw">fn</span> <span class="ident">invalid_leading_byte</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">byte</span>: <span class="ident">u8</span>, <span class="ident">desc</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span> {
+        <span class="prelude-val">Err</span>(<span class="ident"><span class="self">Self</span>::invalid_leading_byte_error</span>(
+            <span class="ident">byte</span>,
+            <span class="ident">desc</span>,
+            <span class="self">self</span>.<span class="ident">original_position</span>() <span class="op">-</span> <span class="number">1</span>,
+        ))
+    }
+
+    <span class="attribute">#[<span class="ident">cold</span>]</span>
+    <span class="kw">fn</span> <span class="ident">invalid_leading_byte_error</span>(<span class="ident">byte</span>: <span class="ident">u8</span>, <span class="ident">desc</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>, <span class="ident">offset</span>: <span class="ident">usize</span>) -&gt; <span class="ident">BinaryReaderError</span> {
+        <span class="ident">BinaryReaderError::new</span>(
+            <span class="macro">format!</span>(<span class="string">&quot;invalid leading byte (0x{:x}) for {}&quot;</span>, <span class="ident">byte</span>, <span class="ident">desc</span>),
+            <span class="ident">offset</span>,
+        )
+    }
+
+    <span class="kw">fn</span> <span class="ident">peek</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">u8</span><span class="op">&gt;</span> {
+        <span class="self">self</span>.<span class="ident">ensure_has_byte</span>()<span class="question-mark">?</span>;
+        <span class="prelude-val">Ok</span>(<span class="self">self</span>.<span class="ident">buffer</span>[<span class="self">self</span>.<span class="ident">position</span>])
+    }
+
+    <span class="kw">fn</span> <span class="ident">type_from_byte</span>(<span class="ident">byte</span>: <span class="ident">u8</span>) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Type</span><span class="op">&gt;</span> {
+        <span class="kw">match</span> <span class="ident">byte</span> {
+            <span class="number">0x7F</span> =&gt; <span class="prelude-val">Some</span>(<span class="ident">Type::I32</span>),
+            <span class="number">0x7E</span> =&gt; <span class="prelude-val">Some</span>(<span class="ident">Type::I64</span>),
+            <span class="number">0x7D</span> =&gt; <span class="prelude-val">Some</span>(<span class="ident">Type::F32</span>),
+            <span class="number">0x7C</span> =&gt; <span class="prelude-val">Some</span>(<span class="ident">Type::F64</span>),
+            <span class="number">0x7B</span> =&gt; <span class="prelude-val">Some</span>(<span class="ident">Type::V128</span>),
+            <span class="number">0x70</span> =&gt; <span class="prelude-val">Some</span>(<span class="ident">Type::FuncRef</span>),
+            <span class="number">0x6F</span> =&gt; <span class="prelude-val">Some</span>(<span class="ident">Type::ExternRef</span>),
+            <span class="kw">_</span> =&gt; <span class="prelude-val">None</span>,
         }
+    }
+
+    <span class="kw">fn</span> <span class="ident">read_block_type</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">BlockType</span><span class="op">&gt;</span> {
+        <span class="kw">let</span> <span class="ident">b</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">peek</span>()<span class="question-mark">?</span>;
+
+        <span class="comment">// Check for empty block</span>
+        <span class="kw">if</span> <span class="ident">b</span> <span class="op">==</span> <span class="number">0x40</span> {
+            <span class="self">self</span>.<span class="ident">position</span> <span class="op">+</span><span class="op">=</span> <span class="number">1</span>;
+            <span class="kw">return</span> <span class="prelude-val">Ok</span>(<span class="ident">BlockType::Empty</span>);
+        }
+
+        <span class="comment">// Check for a block type of form [] -&gt; [t].</span>
+        <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">ty</span>) <span class="op">=</span> <span class="ident"><span class="self">Self</span>::type_from_byte</span>(<span class="ident">b</span>) {
+            <span class="self">self</span>.<span class="ident">position</span> <span class="op">+</span><span class="op">=</span> <span class="number">1</span>;
+            <span class="kw">return</span> <span class="prelude-val">Ok</span>(<span class="ident">BlockType::Type</span>(<span class="ident">ty</span>));
+        }
+
+        <span class="comment">// Not empty or a singular type, so read the function type index</span>
+        <span class="kw">let</span> <span class="ident">idx</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">read_var_s33</span>()<span class="question-mark">?</span>;
+        <span class="kw">if</span> <span class="ident">idx</span> <span class="op">&lt;</span> <span class="number">0</span> <span class="op">|</span><span class="op">|</span> <span class="ident">idx</span> <span class="op">&gt;</span> (<span class="ident">std::u32::MAX</span> <span class="kw">as</span> <span class="ident">i64</span>) {
+            <span class="kw">return</span> <span class="prelude-val">Err</span>(<span class="ident">BinaryReaderError::new</span>(
+                <span class="string">&quot;invalid function type&quot;</span>,
+                <span class="self">self</span>.<span class="ident">original_position</span>(),
+            ));
+        }
+
+        <span class="prelude-val">Ok</span>(<span class="ident">BlockType::FuncType</span>(<span class="ident">idx</span> <span class="kw">as</span> <span class="ident">u32</span>))
     }
 
     <span class="doccomment">/// Reads the next available `Operator`.</span>
@@ -3149,17 +3925,17 @@
             <span class="number">0x00</span> =&gt; <span class="ident">Operator::Unreachable</span>,
             <span class="number">0x01</span> =&gt; <span class="ident">Operator::Nop</span>,
             <span class="number">0x02</span> =&gt; <span class="ident">Operator::Block</span> {
-                <span class="ident">ty</span>: <span class="self">self</span>.<span class="ident">read_blocktype</span>()<span class="question-mark">?</span>,
+                <span class="ident">ty</span>: <span class="self">self</span>.<span class="ident">read_block_type</span>()<span class="question-mark">?</span>,
             },
             <span class="number">0x03</span> =&gt; <span class="ident">Operator::Loop</span> {
-                <span class="ident">ty</span>: <span class="self">self</span>.<span class="ident">read_blocktype</span>()<span class="question-mark">?</span>,
+                <span class="ident">ty</span>: <span class="self">self</span>.<span class="ident">read_block_type</span>()<span class="question-mark">?</span>,
             },
             <span class="number">0x04</span> =&gt; <span class="ident">Operator::If</span> {
-                <span class="ident">ty</span>: <span class="self">self</span>.<span class="ident">read_blocktype</span>()<span class="question-mark">?</span>,
+                <span class="ident">ty</span>: <span class="self">self</span>.<span class="ident">read_block_type</span>()<span class="question-mark">?</span>,
             },
             <span class="number">0x05</span> =&gt; <span class="ident">Operator::Else</span>,
             <span class="number">0x06</span> =&gt; <span class="ident">Operator::Try</span> {
-                <span class="ident">ty</span>: <span class="self">self</span>.<span class="ident">read_blocktype</span>()<span class="question-mark">?</span>,
+                <span class="ident">ty</span>: <span class="self">self</span>.<span class="ident">read_block_type</span>()<span class="question-mark">?</span>,
             },
             <span class="number">0x07</span> =&gt; <span class="ident">Operator::Catch</span> {
                 <span class="ident">index</span>: <span class="self">self</span>.<span class="ident">read_var_u32</span>()<span class="question-mark">?</span>,
@@ -3184,10 +3960,15 @@
             <span class="number">0x10</span> =&gt; <span class="ident">Operator::Call</span> {
                 <span class="ident">function_index</span>: <span class="self">self</span>.<span class="ident">read_var_u32</span>()<span class="question-mark">?</span>,
             },
-            <span class="number">0x11</span> =&gt; <span class="ident">Operator::CallIndirect</span> {
-                <span class="ident">index</span>: <span class="self">self</span>.<span class="ident">read_var_u32</span>()<span class="question-mark">?</span>,
-                <span class="ident">table_index</span>: <span class="self">self</span>.<span class="ident">read_var_u32</span>()<span class="question-mark">?</span>,
-            },
+            <span class="number">0x11</span> =&gt; {
+                <span class="kw">let</span> <span class="ident">index</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">read_var_u32</span>()<span class="question-mark">?</span>;
+                <span class="kw">let</span> (<span class="ident">table_byte</span>, <span class="ident">table_index</span>) <span class="op">=</span> <span class="self">self</span>.<span class="ident">read_first_byte_and_var_u32</span>()<span class="question-mark">?</span>;
+                <span class="ident">Operator::CallIndirect</span> {
+                    <span class="ident">index</span>,
+                    <span class="ident">table_index</span>,
+                    <span class="ident">table_byte</span>,
+                }
+            }
             <span class="number">0x12</span> =&gt; <span class="ident">Operator::ReturnCall</span> {
                 <span class="ident">function_index</span>: <span class="self">self</span>.<span class="ident">read_var_u32</span>()<span class="question-mark">?</span>,
             },
@@ -3467,7 +4248,7 @@
 
             <span class="kw">_</span> =&gt; {
                 <span class="kw">return</span> <span class="prelude-val">Err</span>(<span class="ident">BinaryReaderError::new</span>(
-                    <span class="macro">format!</span>(<span class="string">&quot;Unknown opcode: 0x{:x}&quot;</span>, <span class="ident">code</span>),
+                    <span class="macro">format!</span>(<span class="string">&quot;illegal opcode: 0x{:x}&quot;</span>, <span class="ident">code</span>),
                     <span class="self">self</span>.<span class="ident">original_position</span>() <span class="op">-</span> <span class="number">1</span>,
                 ));
             }
@@ -3538,14 +4319,14 @@
 
             <span class="kw">_</span> =&gt; {
                 <span class="kw">return</span> <span class="prelude-val">Err</span>(<span class="ident">BinaryReaderError::new</span>(
-                    <span class="macro">format!</span>(<span class="string">&quot;Unknown 0xfc subopcode: 0x{:x}&quot;</span>, <span class="ident">code</span>),
+                    <span class="macro">format!</span>(<span class="string">&quot;unknown 0xfc subopcode: 0x{:x}&quot;</span>, <span class="ident">code</span>),
                     <span class="self">self</span>.<span class="ident">original_position</span>() <span class="op">-</span> <span class="number">1</span>,
                 ));
             }
         })
     }
 
-    <span class="kw">fn</span> <span class="ident">read_lane_index</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="ident">max</span>: <span class="ident">u32</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">SIMDLaneIndex</span><span class="op">&gt;</span> {
+    <span class="kw">fn</span> <span class="ident">read_lane_index</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="ident">max</span>: <span class="ident">u8</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">SIMDLaneIndex</span><span class="op">&gt;</span> {
         <span class="kw">let</span> <span class="ident">index</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">read_u8</span>()<span class="question-mark">?</span>;
         <span class="kw">if</span> <span class="ident">index</span> <span class="op">&gt;</span><span class="op">=</span> <span class="ident">max</span> {
             <span class="kw">return</span> <span class="prelude-val">Err</span>(<span class="ident">BinaryReaderError::new</span>(
@@ -3909,33 +4690,26 @@
 
             <span class="kw">_</span> =&gt; {
                 <span class="kw">return</span> <span class="prelude-val">Err</span>(<span class="ident">BinaryReaderError::new</span>(
-                    <span class="macro">format!</span>(<span class="string">&quot;Unknown 0xfd subopcode: 0x{:x}&quot;</span>, <span class="ident">code</span>),
+                    <span class="macro">format!</span>(<span class="string">&quot;unknown 0xfd subopcode: 0x{:x}&quot;</span>, <span class="ident">code</span>),
                     <span class="self">self</span>.<span class="ident">original_position</span>() <span class="op">-</span> <span class="number">1</span>,
                 ));
             }
         })
     }
 
-    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">read_file_header</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">u32</span><span class="op">&gt;</span> {
+    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">read_header_version</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">u32</span><span class="op">&gt;</span> {
         <span class="kw">let</span> <span class="ident">magic_number</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">read_bytes</span>(<span class="number">4</span>)<span class="question-mark">?</span>;
         <span class="kw">if</span> <span class="ident">magic_number</span> <span class="op">!</span><span class="op">=</span> <span class="ident">WASM_MAGIC_NUMBER</span> {
             <span class="kw">return</span> <span class="prelude-val">Err</span>(<span class="ident">BinaryReaderError::new</span>(
-                <span class="string">&quot;Bad magic number&quot;</span>,
+                <span class="string">&quot;magic header not detected: bad magic number&quot;</span>,
                 <span class="self">self</span>.<span class="ident">original_position</span>() <span class="op">-</span> <span class="number">4</span>,
             ));
         }
-        <span class="kw">let</span> <span class="ident">version</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">read_u32</span>()<span class="question-mark">?</span>;
-        <span class="kw">if</span> <span class="ident">version</span> <span class="op">!</span><span class="op">=</span> <span class="ident">WASM_SUPPORTED_VERSION</span> <span class="op">&amp;&amp;</span> <span class="ident">version</span> <span class="op">!</span><span class="op">=</span> <span class="ident">WASM_EXPERIMENTAL_VERSION</span> {
-            <span class="kw">return</span> <span class="prelude-val">Err</span>(<span class="ident">BinaryReaderError::new</span>(
-                <span class="string">&quot;Bad version number&quot;</span>,
-                <span class="self">self</span>.<span class="ident">original_position</span>() <span class="op">-</span> <span class="number">4</span>,
-            ));
-        }
-        <span class="prelude-val">Ok</span>(<span class="ident">version</span>)
+        <span class="self">self</span>.<span class="ident">read_u32</span>()
     }
 
     <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">read_name_type</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">NameType</span><span class="op">&gt;</span> {
-        <span class="kw">let</span> <span class="ident">code</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">read_var_u7</span>()<span class="question-mark">?</span>;
+        <span class="kw">let</span> <span class="ident">code</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">read_u7</span>()<span class="question-mark">?</span>;
         <span class="kw">match</span> <span class="ident">code</span> {
             <span class="number">0</span> =&gt; <span class="prelude-val">Ok</span>(<span class="ident">NameType::Module</span>),
             <span class="number">1</span> =&gt; <span class="prelude-val">Ok</span>(<span class="ident">NameType::Function</span>),
@@ -3957,7 +4731,7 @@
             <span class="number">1</span> =&gt; <span class="ident">LinkingType::StackPointer</span>(<span class="self">self</span>.<span class="ident">read_var_u32</span>()<span class="question-mark">?</span>),
             <span class="kw">_</span> =&gt; {
                 <span class="kw">return</span> <span class="prelude-val">Err</span>(<span class="ident">BinaryReaderError::new</span>(
-                    <span class="string">&quot;Invalid linking type&quot;</span>,
+                    <span class="string">&quot;invalid linking type&quot;</span>,
                     <span class="self">self</span>.<span class="ident">original_position</span>() <span class="op">-</span> <span class="number">1</span>,
                 ));
             }
@@ -3965,7 +4739,7 @@
     }
 
     <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">read_reloc_type</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">RelocType</span><span class="op">&gt;</span> {
-        <span class="kw">let</span> <span class="ident">code</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">read_var_u7</span>()<span class="question-mark">?</span>;
+        <span class="kw">let</span> <span class="ident">code</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">read_u7</span>()<span class="question-mark">?</span>;
         <span class="kw">match</span> <span class="ident">code</span> {
             <span class="number">0</span> =&gt; <span class="prelude-val">Ok</span>(<span class="ident">RelocType::FunctionIndexLEB</span>),
             <span class="number">1</span> =&gt; <span class="prelude-val">Ok</span>(<span class="ident">RelocType::TableIndexSLEB</span>),
@@ -3976,7 +4750,7 @@
             <span class="number">6</span> =&gt; <span class="prelude-val">Ok</span>(<span class="ident">RelocType::TypeIndexLEB</span>),
             <span class="number">7</span> =&gt; <span class="prelude-val">Ok</span>(<span class="ident">RelocType::GlobalIndexLEB</span>),
             <span class="kw">_</span> =&gt; <span class="prelude-val">Err</span>(<span class="ident">BinaryReaderError::new</span>(
-                <span class="string">&quot;Invalid reloc type&quot;</span>,
+                <span class="string">&quot;invalid reloc type&quot;</span>,
                 <span class="self">self</span>.<span class="ident">original_position</span>() <span class="op">-</span> <span class="number">1</span>,
             )),
         }

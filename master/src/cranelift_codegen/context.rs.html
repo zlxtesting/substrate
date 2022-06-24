@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/cargo_home/registry/src/github.com-1ecc6299db9ec823/cranelift-codegen-0.82.3/src/context.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>context.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" type="text/css" href="../../normalize.css"><link rel="stylesheet" type="text/css" href="../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../ayu.css" disabled><link rel="stylesheet" type="text/css" href="../../dark.css" disabled><link rel="stylesheet" type="text/css" href="../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../storage.js"></script><script src="../../crates.js"></script><script defer src="../../main.js"></script><script defer src="../../source-script.js"></script><script defer src="../../source-files.js"></script>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/cargo_home/registry/src/github.com-1ecc6299db9ec823/cranelift-codegen-0.85.0/src/context.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>context.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" type="text/css" href="../../normalize.css"><link rel="stylesheet" type="text/css" href="../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../ayu.css" disabled><link rel="stylesheet" type="text/css" href="../../dark.css" disabled><link rel="stylesheet" type="text/css" href="../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../storage.js"></script><script src="../../crates.js"></script><script defer src="../../main.js"></script><script defer src="../../source-script.js"></script><script defer src="../../source-files.js"></script>
     <noscript><link rel="stylesheet" href="../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="sidebar-logo" href="../../cranelift_codegen/index.html"><div class="logo-container"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></div>
         </a><h2 class="location"></h2>
     </nav>
@@ -355,6 +355,24 @@
 <span id="350">350</span>
 <span id="351">351</span>
 <span id="352">352</span>
+<span id="353">353</span>
+<span id="354">354</span>
+<span id="355">355</span>
+<span id="356">356</span>
+<span id="357">357</span>
+<span id="358">358</span>
+<span id="359">359</span>
+<span id="360">360</span>
+<span id="361">361</span>
+<span id="362">362</span>
+<span id="363">363</span>
+<span id="364">364</span>
+<span id="365">365</span>
+<span id="366">366</span>
+<span id="367">367</span>
+<span id="368">368</span>
+<span id="369">369</span>
+<span id="370">370</span>
 </pre><pre class="rust"><code><span class="doccomment">//! Cranelift compilation context and main entry point.</span>
 <span class="doccomment">//!</span>
 <span class="doccomment">//! When compiling many small functions, it is important to avoid repeatedly allocating and</span>
@@ -366,6 +384,7 @@
 <span class="doccomment">//! contexts concurrently. Typically, you would have one context per compilation thread and only a</span>
 <span class="doccomment">//! single ISA instance.</span>
 
+<span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::alias_analysis::AliasAnalysis</span>;
 <span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::binemit::CodeInfo</span>;
 <span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::dce::do_dce</span>;
 <span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::dominator_tree::DominatorTree</span>;
@@ -457,8 +476,8 @@
     <span class="doccomment">///</span>
     <span class="doccomment">/// Run the function through all the passes necessary to generate code for the target ISA</span>
     <span class="doccomment">/// represented by `isa`, as well as the final step of emitting machine code into a</span>
-    <span class="doccomment">/// `Vec&lt;u8&gt;`. The machine code is not relocated. Instead, any relocations are emitted</span>
-    <span class="doccomment">/// into `relocs`.</span>
+    <span class="doccomment">/// `Vec&lt;u8&gt;`. The machine code is not relocated. Instead, any relocations can be obtained</span>
+    <span class="doccomment">/// from `mach_compile_result`.</span>
     <span class="doccomment">///</span>
     <span class="doccomment">/// This function calls `compile` and `emit_to_memory`, taking care to resize `mem` as</span>
     <span class="doccomment">/// needed, so it provides a safe interface.</span>
@@ -519,6 +538,11 @@
 
         <span class="self">self</span>.<span class="ident">remove_constant_phis</span>(<span class="ident">isa</span>)<span class="question-mark">?</span>;
 
+        <span class="kw">if</span> <span class="ident">opt_level</span> <span class="op">!</span><span class="op">=</span> <span class="ident">OptLevel::None</span> {
+            <span class="self">self</span>.<span class="ident">replace_redundant_loads</span>()<span class="question-mark">?</span>;
+            <span class="self">self</span>.<span class="ident">simple_gvn</span>(<span class="ident">isa</span>)<span class="question-mark">?</span>;
+        }
+
         <span class="kw">let</span> <span class="ident">result</span> <span class="op">=</span> <span class="ident">isa</span>.<span class="ident">compile_function</span>(<span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">func</span>, <span class="self">self</span>.<span class="ident">want_disasm</span>)<span class="question-mark">?</span>;
         <span class="kw">let</span> <span class="ident">info</span> <span class="op">=</span> <span class="ident">result</span>.<span class="ident">code_info</span>();
         <span class="self">self</span>.<span class="ident">mach_compile_result</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">result</span>);
@@ -530,7 +554,8 @@
     <span class="doccomment">/// Write all of the function&#39;s machine code to the memory at `mem`. The size of the machine</span>
     <span class="doccomment">/// code is returned by `compile` above.</span>
     <span class="doccomment">///</span>
-    <span class="doccomment">/// The machine code is not relocated. Instead, any relocations are emitted into `relocs`.</span>
+    <span class="doccomment">/// The machine code is not relocated.</span>
+    <span class="doccomment">/// Instead, any relocations can be obtained from `mach_compile_result`.</span>
     <span class="doccomment">///</span>
     <span class="doccomment">/// # Safety</span>
     <span class="doccomment">///</span>
@@ -695,6 +720,17 @@
     {
         <span class="ident">eliminate_unreachable_code</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>.<span class="ident">func</span>, <span class="kw-2">&amp;mut</span> <span class="self">self</span>.<span class="ident">cfg</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">domtree</span>);
         <span class="self">self</span>.<span class="ident">verify_if</span>(<span class="ident">fisa</span>)
+    }
+
+    <span class="doccomment">/// Replace all redundant loads with the known values in</span>
+    <span class="doccomment">/// memory. These are loads whose values were already loaded by</span>
+    <span class="doccomment">/// other loads earlier, as well as loads whose values were stored</span>
+    <span class="doccomment">/// by a store instruction to the same instruction (so-called</span>
+    <span class="doccomment">/// &quot;store-to-load forwarding&quot;).</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">replace_redundant_loads</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>) -&gt; <span class="ident">CodegenResult</span><span class="op">&lt;</span>()<span class="op">&gt;</span> {
+        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">analysis</span> <span class="op">=</span> <span class="ident">AliasAnalysis::new</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>.<span class="ident">func</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">domtree</span>);
+        <span class="ident">analysis</span>.<span class="ident">compute_and_update_aliases</span>();
+        <span class="prelude-val">Ok</span>(())
     }
 
     <span class="doccomment">/// Harvest candidate left-hand sides for superoptimization with Souper.</span>

@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/cargo_home/registry/src/github.com-1ecc6299db9ec823/wasmtime-cranelift-0.35.3/src/lib.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>lib.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" type="text/css" href="../../normalize.css"><link rel="stylesheet" type="text/css" href="../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../ayu.css" disabled><link rel="stylesheet" type="text/css" href="../../dark.css" disabled><link rel="stylesheet" type="text/css" href="../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../storage.js"></script><script src="../../crates.js"></script><script defer src="../../main.js"></script><script defer src="../../source-script.js"></script><script defer src="../../source-files.js"></script>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/cargo_home/registry/src/github.com-1ecc6299db9ec823/wasmtime-cranelift-0.38.0/src/lib.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>lib.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" type="text/css" href="../../normalize.css"><link rel="stylesheet" type="text/css" href="../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../ayu.css" disabled><link rel="stylesheet" type="text/css" href="../../dark.css" disabled><link rel="stylesheet" type="text/css" href="../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../storage.js"></script><script src="../../crates.js"></script><script defer src="../../main.js"></script><script defer src="../../source-script.js"></script><script defer src="../../source-files.js"></script>
     <noscript><link rel="stylesheet" href="../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="sidebar-logo" href="../../wasmtime_cranelift/index.html"><div class="logo-container"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></div>
         </a><h2 class="location"></h2>
     </nav>
@@ -246,51 +246,6 @@
 <span id="241">241</span>
 <span id="242">242</span>
 <span id="243">243</span>
-<span id="244">244</span>
-<span id="245">245</span>
-<span id="246">246</span>
-<span id="247">247</span>
-<span id="248">248</span>
-<span id="249">249</span>
-<span id="250">250</span>
-<span id="251">251</span>
-<span id="252">252</span>
-<span id="253">253</span>
-<span id="254">254</span>
-<span id="255">255</span>
-<span id="256">256</span>
-<span id="257">257</span>
-<span id="258">258</span>
-<span id="259">259</span>
-<span id="260">260</span>
-<span id="261">261</span>
-<span id="262">262</span>
-<span id="263">263</span>
-<span id="264">264</span>
-<span id="265">265</span>
-<span id="266">266</span>
-<span id="267">267</span>
-<span id="268">268</span>
-<span id="269">269</span>
-<span id="270">270</span>
-<span id="271">271</span>
-<span id="272">272</span>
-<span id="273">273</span>
-<span id="274">274</span>
-<span id="275">275</span>
-<span id="276">276</span>
-<span id="277">277</span>
-<span id="278">278</span>
-<span id="279">279</span>
-<span id="280">280</span>
-<span id="281">281</span>
-<span id="282">282</span>
-<span id="283">283</span>
-<span id="284">284</span>
-<span id="285">285</span>
-<span id="286">286</span>
-<span id="287">287</span>
-<span id="288">288</span>
 </pre><pre class="rust"><code><span class="doccomment">//! Support for compiling with Cranelift.</span>
 <span class="doccomment">//!</span>
 <span class="doccomment">//! This crate provides an implementation of the `wasmtime_environ::Compiler`</span>
@@ -298,20 +253,20 @@
 
 <span class="comment">// # How does Wasmtime prevent stack overflow?</span>
 <span class="comment">//</span>
-<span class="comment">// A few locations throughout the codebase link to this file to explain</span>
-<span class="comment">// interrupts and stack overflow. To start off, let&#39;s take a look at stack</span>
-<span class="comment">// overflow. Wasm code is well-defined to have stack overflow being recoverable</span>
-<span class="comment">// and raising a trap, so we need to handle this somehow! There&#39;s also an added</span>
-<span class="comment">// constraint where as an embedder you frequently are running host-provided</span>
-<span class="comment">// code called from wasm. WebAssembly and native code currently share the same</span>
-<span class="comment">// call stack, so you want to make sure that your host-provided code will have</span>
-<span class="comment">// enough call-stack available to it.</span>
+<span class="comment">// A few locations throughout the codebase link to this file to explain stack</span>
+<span class="comment">// overflow. To start off, let&#39;s take a look at stack overflow. Wasm code is</span>
+<span class="comment">// well-defined to have stack overflow being recoverable and raising a trap, so</span>
+<span class="comment">// we need to handle this somehow! There&#39;s also an added constraint where as an</span>
+<span class="comment">// embedder you frequently are running host-provided code called from wasm.</span>
+<span class="comment">// WebAssembly and native code currently share the same call stack, so you want</span>
+<span class="comment">// to make sure that your host-provided code will have enough call-stack</span>
+<span class="comment">// available to it.</span>
 <span class="comment">//</span>
 <span class="comment">// Given all that, the way that stack overflow is handled is by adding a</span>
 <span class="comment">// prologue check to all JIT functions for how much native stack is remaining.</span>
 <span class="comment">// The `VMContext` pointer is the first argument to all functions, and the first</span>
-<span class="comment">// field of this structure is `*const VMInterrupts` and the first field of that</span>
-<span class="comment">// is the stack limit. Note that the stack limit in this case means &quot;if the</span>
+<span class="comment">// field of this structure is `*const VMRuntimeLimits` and the first field of</span>
+<span class="comment">// that is the stack limit. Note that the stack limit in this case means &quot;if the</span>
 <span class="comment">// stack pointer goes below this, trap&quot;. Each JIT function which consumes stack</span>
 <span class="comment">// space or isn&#39;t a leaf function starts off by loading the stack limit,</span>
 <span class="comment">// checking it against the stack pointer, and optionally traps.</span>
@@ -336,50 +291,6 @@
 <span class="comment">// For more information about the tricky bits of managing the reserved stack</span>
 <span class="comment">// size of wasm, see the implementation in `traphandlers.rs` in the</span>
 <span class="comment">// `update_stack_limit` function.</span>
-<span class="comment">//</span>
-<span class="comment">// # How is Wasmtime interrupted?</span>
-<span class="comment">//</span>
-<span class="comment">// Ok so given all that background of stack checks, the next thing we want to</span>
-<span class="comment">// build on top of this is the ability to *interrupt* executing wasm code. This</span>
-<span class="comment">// is useful to ensure that wasm always executes within a particular time slice</span>
-<span class="comment">// or otherwise doesn&#39;t consume all CPU resources on a system. There are two</span>
-<span class="comment">// major ways that interrupts are required:</span>
-<span class="comment">//</span>
-<span class="comment">// * Loops - likely immediately apparent but it&#39;s easy to write an infinite</span>
-<span class="comment">//   loop in wasm, so we need the ability to interrupt loops.</span>
-<span class="comment">// * Function entries - somewhat more subtle, but imagine a module where each</span>
-<span class="comment">//   function calls the next function twice. This creates 2^n calls pretty</span>
-<span class="comment">//   quickly, so a pretty small module can export a function with no loops</span>
-<span class="comment">//   that takes an extremely long time to call.</span>
-<span class="comment">//</span>
-<span class="comment">// In many cases if an interrupt comes in you want to interrupt host code as</span>
-<span class="comment">// well, but we&#39;re explicitly not considering that here. We&#39;re hoping that</span>
-<span class="comment">// interrupting host code is largely left to the embedder (e.g. figuring out</span>
-<span class="comment">// how to interrupt blocking syscalls) and they can figure that out. The purpose</span>
-<span class="comment">// of this feature is to basically only give the ability to interrupt</span>
-<span class="comment">// currently-executing wasm code (or triggering an interrupt as soon as wasm</span>
-<span class="comment">// reenters itself).</span>
-<span class="comment">//</span>
-<span class="comment">// To implement interruption of loops we insert code at the head of all loops</span>
-<span class="comment">// which checks the stack limit counter. If the counter matches a magical</span>
-<span class="comment">// sentinel value that&#39;s impossible to be the real stack limit, then we</span>
-<span class="comment">// interrupt the loop and trap. To implement interrupts of functions, we</span>
-<span class="comment">// actually do the same thing where the magical sentinel value we use here is</span>
-<span class="comment">// automatically considered as considering all stack pointer values as &quot;you ran</span>
-<span class="comment">// over your stack&quot;. This means that with a write of a magical value to one</span>
-<span class="comment">// location we can interrupt both loops and function bodies.</span>
-<span class="comment">//</span>
-<span class="comment">// The &quot;magical value&quot; here is `usize::max_value() - N`. We reserve</span>
-<span class="comment">// `usize::max_value()` for &quot;the stack limit isn&#39;t set yet&quot; and so -N is</span>
-<span class="comment">// then used for &quot;you got interrupted&quot;. We do a bit of patching afterwards to</span>
-<span class="comment">// translate a stack overflow into an interrupt trap if we see that an</span>
-<span class="comment">// interrupt happened. Note that `N` here is a medium-size-ish nonzero value</span>
-<span class="comment">// chosen in coordination with the cranelift backend. Currently it&#39;s 32k. The</span>
-<span class="comment">// value of N is basically a threshold in the backend for &quot;anything less than</span>
-<span class="comment">// this requires only one branch in the prologue, any stack size bigger requires</span>
-<span class="comment">// two branches&quot;. Naturally we want most functions to have one branch, but we</span>
-<span class="comment">// also need to actually catch stack overflow, so for now 32k is chosen and it&#39;s</span>
-<span class="comment">// assume no valid stack pointer will ever be `usize::max_value() - 32k`.</span>
 
 <span class="kw">use</span> <span class="ident">cranelift_codegen::binemit</span>;
 <span class="kw">use</span> <span class="ident">cranelift_codegen::ir</span>;
@@ -388,7 +299,7 @@
 <span class="kw">use</span> <span class="ident">cranelift_wasm</span>::{<span class="ident">DefinedFuncIndex</span>, <span class="ident">FuncIndex</span>, <span class="ident">WasmFuncType</span>, <span class="ident">WasmType</span>};
 <span class="kw">use</span> <span class="ident">target_lexicon::CallingConvention</span>;
 <span class="kw">use</span> <span class="ident">wasmtime_environ</span>::{
-    <span class="ident">FilePos</span>, <span class="ident">FunctionInfo</span>, <span class="ident">InstructionAddressMap</span>, <span class="ident">ModuleTranslation</span>, <span class="ident">TrapInformation</span>, <span class="ident">TypeTables</span>,
+    <span class="ident">FilePos</span>, <span class="ident">FunctionInfo</span>, <span class="ident">InstructionAddressMap</span>, <span class="ident">ModuleTranslation</span>, <span class="ident">ModuleTypes</span>, <span class="ident">TrapInformation</span>,
 };
 
 <span class="kw">pub</span> <span class="kw">use</span> <span class="ident">builder::builder</span>;
@@ -521,7 +432,6 @@
         <span class="ident">WasmType::F64</span> =&gt; <span class="ident">ir::types::F64</span>,
         <span class="ident">WasmType::V128</span> =&gt; <span class="ident">ir::types::I8X16</span>,
         <span class="ident">WasmType::FuncRef</span> <span class="op">|</span> <span class="ident">WasmType::ExternRef</span> =&gt; <span class="ident">reference_type</span>(<span class="ident">ty</span>, <span class="ident">isa</span>.<span class="ident">pointer_type</span>()),
-        <span class="ident">WasmType::ExnRef</span> =&gt; <span class="macro">unimplemented!</span>(),
     }
 }
 
@@ -546,7 +456,7 @@
 <span class="kw">fn</span> <span class="ident">func_signature</span>(
     <span class="ident">isa</span>: <span class="kw-2">&amp;</span><span class="kw">dyn</span> <span class="ident">TargetIsa</span>,
     <span class="ident">translation</span>: <span class="kw-2">&amp;</span><span class="ident">ModuleTranslation</span>,
-    <span class="ident">types</span>: <span class="kw-2">&amp;</span><span class="ident">TypeTables</span>,
+    <span class="ident">types</span>: <span class="kw-2">&amp;</span><span class="ident">ModuleTypes</span>,
     <span class="ident">index</span>: <span class="ident">FuncIndex</span>,
 ) -&gt; <span class="ident">ir::Signature</span> {
     <span class="kw">let</span> <span class="ident">func</span> <span class="op">=</span> <span class="kw-2">&amp;</span><span class="ident">translation</span>.<span class="ident">module</span>.<span class="ident">functions</span>[<span class="ident">index</span>];
@@ -563,7 +473,7 @@
         <span class="kw">_</span> =&gt; <span class="ident">wasmtime_call_conv</span>(<span class="ident">isa</span>),
     };
     <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">sig</span> <span class="op">=</span> <span class="ident">blank_sig</span>(<span class="ident">isa</span>, <span class="ident">call_conv</span>);
-    <span class="ident">push_types</span>(<span class="ident">isa</span>, <span class="kw-2">&amp;mut</span> <span class="ident">sig</span>, <span class="kw-2">&amp;</span><span class="ident">types</span>.<span class="ident">wasm_signatures</span>[<span class="ident">func</span>.<span class="ident">signature</span>]);
+    <span class="ident">push_types</span>(<span class="ident">isa</span>, <span class="kw-2">&amp;mut</span> <span class="ident">sig</span>, <span class="kw-2">&amp;</span><span class="ident">types</span>[<span class="ident">func</span>.<span class="ident">signature</span>]);
     <span class="kw">return</span> <span class="ident">sig</span>;
 }
 

@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/cargo_home/registry/src/github.com-1ecc6299db9ec823/wasmtime-0.35.3/src/func.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>func.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" type="text/css" href="../../normalize.css"><link rel="stylesheet" type="text/css" href="../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../ayu.css" disabled><link rel="stylesheet" type="text/css" href="../../dark.css" disabled><link rel="stylesheet" type="text/css" href="../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../storage.js"></script><script src="../../crates.js"></script><script defer src="../../main.js"></script><script defer src="../../source-script.js"></script><script defer src="../../source-files.js"></script>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/cargo_home/registry/src/github.com-1ecc6299db9ec823/wasmtime-0.38.0/src/func.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>func.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" type="text/css" href="../../normalize.css"><link rel="stylesheet" type="text/css" href="../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../ayu.css" disabled><link rel="stylesheet" type="text/css" href="../../dark.css" disabled><link rel="stylesheet" type="text/css" href="../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../storage.js"></script><script src="../../crates.js"></script><script defer src="../../main.js"></script><script defer src="../../source-script.js"></script><script defer src="../../source-files.js"></script>
     <noscript><link rel="stylesheet" href="../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="sidebar-logo" href="../../wasmtime/index.html"><div class="logo-container"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></div>
         </a><h2 class="location"></h2>
     </nav>
@@ -2169,10 +2169,74 @@
 <span id="2164">2164</span>
 <span id="2165">2165</span>
 <span id="2166">2166</span>
+<span id="2167">2167</span>
+<span id="2168">2168</span>
+<span id="2169">2169</span>
+<span id="2170">2170</span>
+<span id="2171">2171</span>
+<span id="2172">2172</span>
+<span id="2173">2173</span>
+<span id="2174">2174</span>
+<span id="2175">2175</span>
+<span id="2176">2176</span>
+<span id="2177">2177</span>
+<span id="2178">2178</span>
+<span id="2179">2179</span>
+<span id="2180">2180</span>
+<span id="2181">2181</span>
+<span id="2182">2182</span>
+<span id="2183">2183</span>
+<span id="2184">2184</span>
+<span id="2185">2185</span>
+<span id="2186">2186</span>
+<span id="2187">2187</span>
+<span id="2188">2188</span>
+<span id="2189">2189</span>
+<span id="2190">2190</span>
+<span id="2191">2191</span>
+<span id="2192">2192</span>
+<span id="2193">2193</span>
+<span id="2194">2194</span>
+<span id="2195">2195</span>
+<span id="2196">2196</span>
+<span id="2197">2197</span>
+<span id="2198">2198</span>
+<span id="2199">2199</span>
+<span id="2200">2200</span>
+<span id="2201">2201</span>
+<span id="2202">2202</span>
+<span id="2203">2203</span>
+<span id="2204">2204</span>
+<span id="2205">2205</span>
+<span id="2206">2206</span>
+<span id="2207">2207</span>
+<span id="2208">2208</span>
+<span id="2209">2209</span>
+<span id="2210">2210</span>
+<span id="2211">2211</span>
+<span id="2212">2212</span>
+<span id="2213">2213</span>
+<span id="2214">2214</span>
+<span id="2215">2215</span>
+<span id="2216">2216</span>
+<span id="2217">2217</span>
+<span id="2218">2218</span>
+<span id="2219">2219</span>
+<span id="2220">2220</span>
+<span id="2221">2221</span>
+<span id="2222">2222</span>
+<span id="2223">2223</span>
+<span id="2224">2224</span>
+<span id="2225">2225</span>
+<span id="2226">2226</span>
+<span id="2227">2227</span>
+<span id="2228">2228</span>
+<span id="2229">2229</span>
+<span id="2230">2230</span>
 </pre><pre class="rust"><code><span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::store</span>::{<span class="ident">StoreData</span>, <span class="ident">StoreOpaque</span>, <span class="ident">Stored</span>};
 <span class="kw">use</span> <span class="kw">crate</span>::{
-    <span class="ident">AsContext</span>, <span class="ident">AsContextMut</span>, <span class="ident">CallHook</span>, <span class="ident">Engine</span>, <span class="ident">Extern</span>, <span class="ident">FuncType</span>, <span class="ident">Instance</span>, <span class="ident">InterruptHandle</span>,
-    <span class="ident">StoreContext</span>, <span class="ident">StoreContextMut</span>, <span class="ident">Trap</span>, <span class="ident">Val</span>, <span class="ident">ValRaw</span>, <span class="ident">ValType</span>,
+    <span class="ident">AsContext</span>, <span class="ident">AsContextMut</span>, <span class="ident">CallHook</span>, <span class="ident">Engine</span>, <span class="ident">Extern</span>, <span class="ident">FuncType</span>, <span class="ident">Instance</span>, <span class="ident">StoreContext</span>,
+    <span class="ident">StoreContextMut</span>, <span class="ident">Trap</span>, <span class="ident">Val</span>, <span class="ident">ValRaw</span>, <span class="ident">ValType</span>,
 };
 <span class="kw">use</span> <span class="ident">anyhow</span>::{<span class="ident">bail</span>, <span class="ident">Context</span> <span class="kw">as</span> <span class="kw">_</span>, <span class="prelude-ty">Result</span>};
 <span class="kw">use</span> <span class="ident">std::future::Future</span>;
@@ -2180,13 +2244,12 @@
 <span class="kw">use</span> <span class="ident">std::panic</span>::{<span class="self">self</span>, <span class="ident">AssertUnwindSafe</span>};
 <span class="kw">use</span> <span class="ident">std::pin::Pin</span>;
 <span class="kw">use</span> <span class="ident">std::ptr::NonNull</span>;
-<span class="kw">use</span> <span class="ident">std::sync::atomic::Ordering::Relaxed</span>;
 <span class="kw">use</span> <span class="ident">std::sync::Arc</span>;
-<span class="kw">use</span> <span class="ident">wasmtime_environ</span>::{<span class="ident">EntityIndex</span>, <span class="ident">FuncIndex</span>};
+<span class="kw">use</span> <span class="ident">wasmtime_environ::FuncIndex</span>;
 <span class="kw">use</span> <span class="ident">wasmtime_runtime</span>::{
     <span class="ident">raise_user_trap</span>, <span class="ident">ExportFunction</span>, <span class="ident">InstanceAllocator</span>, <span class="ident">InstanceHandle</span>, <span class="ident">OnDemandInstanceAllocator</span>,
-    <span class="ident">VMCallerCheckedAnyfunc</span>, <span class="ident">VMContext</span>, <span class="ident">VMFunctionBody</span>, <span class="ident">VMFunctionImport</span>, <span class="ident">VMSharedSignatureIndex</span>,
-    <span class="ident">VMTrampoline</span>,
+    <span class="ident">VMCallerCheckedAnyfunc</span>, <span class="ident">VMContext</span>, <span class="ident">VMFunctionBody</span>, <span class="ident">VMFunctionImport</span>, <span class="ident">VMOpaqueContext</span>,
+    <span class="ident">VMSharedSignatureIndex</span>, <span class="ident">VMTrampoline</span>,
 };
 
 <span class="doccomment">/// A WebAssembly function which can be called.</span>
@@ -2396,6 +2459,21 @@
     <span class="doccomment">/// situations is `SharedHost` and `StoreOwned`, so this ideally isn&#39;t</span>
     <span class="doccomment">/// larger than those two.</span>
     <span class="ident">Host</span>(<span class="ident">Box</span><span class="op">&lt;</span><span class="ident">HostFunc</span><span class="op">&gt;</span>),
+
+    <span class="doccomment">/// A reference to a `HostFunc`, but one that&#39;s &quot;rooted&quot; in the `Store`</span>
+    <span class="doccomment">/// itself.</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// This variant is created when an `InstancePre&lt;T&gt;` is instantiated in to a</span>
+    <span class="doccomment">/// `Store&lt;T&gt;`. In that situation the `InstancePre&lt;T&gt;` already has a list of</span>
+    <span class="doccomment">/// host functions that are packaged up in an `Arc`, so the `Arc&lt;[T]&gt;` is</span>
+    <span class="doccomment">/// cloned once into the `Store` to avoid each individual function requiring</span>
+    <span class="doccomment">/// an `Arc::clone`.</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// The lifetime management of this type is `unsafe` because</span>
+    <span class="doccomment">/// `RootedHostFunc` is a small wrapper around `NonNull&lt;HostFunc&gt;`. To be</span>
+    <span class="doccomment">/// safe this is required that the memory of the host function is pinned</span>
+    <span class="doccomment">/// elsewhere (e.g. the `Arc` in the `Store`).</span>
+    <span class="ident">RootedHost</span>(<span class="ident">RootedHostFunc</span>),
 }
 
 <span class="macro">macro_rules!</span> <span class="ident">for_each_function_signature</span> {
@@ -2444,8 +2522,9 @@
         {
             <span class="macro">assert!</span>(<span class="ident">store</span>.<span class="ident">as_context</span>().<span class="ident">async_support</span>(), <span class="macro">concat!</span>(<span class="string">&quot;cannot use `wrap&quot;</span>, <span class="macro-nonterminal">$</span><span class="macro-nonterminal">num</span>, <span class="string">&quot;_async` without enabling async support on the config&quot;</span>));
             <span class="ident">Func::wrap</span>(<span class="ident">store</span>, <span class="kw">move</span> <span class="op">|</span><span class="kw-2">mut</span> <span class="ident">caller</span>: <span class="ident">Caller</span><span class="op">&lt;</span><span class="lifetime">&#39;_</span>, <span class="ident">T</span><span class="op">&gt;</span>, $(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">args</span>: <span class="macro-nonterminal">$</span><span class="macro-nonterminal">args</span>),<span class="kw-2">*</span><span class="op">|</span> {
-                <span class="kw">let</span> <span class="ident">async_cx</span> <span class="op">=</span> <span class="ident">caller</span>.<span class="ident">store</span>.<span class="ident">as_context_mut</span>().<span class="number">0</span>.<span class="ident">async_cx</span>();
+                <span class="kw">let</span> <span class="ident">async_cx</span> <span class="op">=</span> <span class="ident">caller</span>.<span class="ident">store</span>.<span class="ident">as_context_mut</span>().<span class="number">0</span>.<span class="ident">async_cx</span>().<span class="ident">expect</span>(<span class="string">&quot;Attempt to start async function on dying fiber&quot;</span>);
                 <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">future</span> <span class="op">=</span> <span class="ident">Pin::from</span>(<span class="ident">func</span>(<span class="ident">caller</span>, $(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">args</span>),<span class="kw-2">*</span>));
+
                 <span class="kw">match</span> <span class="kw">unsafe</span> { <span class="ident">async_cx</span>.<span class="ident">block_on</span>(<span class="ident">future</span>.<span class="ident">as_mut</span>()) } {
                     <span class="prelude-val">Ok</span>(<span class="ident">ret</span>) =&gt; <span class="ident">ret</span>.<span class="ident">into_fallible</span>(),
                     <span class="prelude-val">Err</span>(<span class="ident">e</span>) =&gt; <span class="ident">R::fallible_from_trap</span>(<span class="ident">e</span>),
@@ -2523,7 +2602,7 @@
     <span class="kw">pub</span> <span class="kw">unsafe</span> <span class="kw">fn</span> <span class="ident">new_unchecked</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>(
         <span class="kw-2">mut</span> <span class="ident">store</span>: <span class="kw">impl</span> <span class="ident">AsContextMut</span><span class="op">&lt;</span><span class="ident">Data</span> <span class="op">=</span> <span class="ident">T</span><span class="op">&gt;</span>,
         <span class="ident">ty</span>: <span class="ident">FuncType</span>,
-        <span class="ident">func</span>: <span class="kw">impl</span> <span class="ident">Fn</span>(<span class="ident">Caller</span><span class="op">&lt;</span><span class="lifetime">&#39;_</span>, <span class="ident">T</span><span class="op">&gt;</span>, <span class="kw-2">*mut</span> <span class="ident">ValRaw</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span>(), <span class="ident">Trap</span><span class="op">&gt;</span> <span class="op">+</span> <span class="ident">Send</span> <span class="op">+</span> <span class="ident">Sync</span> <span class="op">+</span> <span class="lifetime">&#39;static</span>,
+        <span class="ident">func</span>: <span class="kw">impl</span> <span class="ident">Fn</span>(<span class="ident">Caller</span><span class="op">&lt;</span><span class="lifetime">&#39;_</span>, <span class="ident">T</span><span class="op">&gt;</span>, <span class="kw-2">&amp;mut</span> [<span class="ident">ValRaw</span>]) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span>(), <span class="ident">Trap</span><span class="op">&gt;</span> <span class="op">+</span> <span class="ident">Send</span> <span class="op">+</span> <span class="ident">Sync</span> <span class="op">+</span> <span class="lifetime">&#39;static</span>,
     ) -&gt; <span class="self">Self</span> {
         <span class="kw">let</span> <span class="ident">store</span> <span class="op">=</span> <span class="ident">store</span>.<span class="ident">as_context_mut</span>().<span class="number">0</span>;
         <span class="kw">let</span> <span class="ident">host</span> <span class="op">=</span> <span class="ident">HostFunc::new_unchecked</span>(<span class="ident">store</span>.<span class="ident">engine</span>(), <span class="ident">ty</span>, <span class="ident">func</span>);
@@ -2611,7 +2690,12 @@
             <span class="string">&quot;cannot use `new_async` without enabling async support in the config&quot;</span>
         );
         <span class="ident">Func::new</span>(<span class="ident">store</span>, <span class="ident">ty</span>, <span class="kw">move</span> <span class="op">|</span><span class="kw-2">mut</span> <span class="ident">caller</span>, <span class="ident">params</span>, <span class="ident">results</span><span class="op">|</span> {
-            <span class="kw">let</span> <span class="ident">async_cx</span> <span class="op">=</span> <span class="ident">caller</span>.<span class="ident">store</span>.<span class="ident">as_context_mut</span>().<span class="number">0</span>.<span class="ident">async_cx</span>();
+            <span class="kw">let</span> <span class="ident">async_cx</span> <span class="op">=</span> <span class="ident">caller</span>
+                .<span class="ident">store</span>
+                .<span class="ident">as_context_mut</span>()
+                .<span class="number">0</span>
+                .<span class="ident">async_cx</span>()
+                .<span class="ident">expect</span>(<span class="string">&quot;Attempt to spawn new action on dying fiber&quot;</span>);
             <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">future</span> <span class="op">=</span> <span class="ident">Pin::from</span>(<span class="ident">func</span>(<span class="ident">caller</span>, <span class="ident">params</span>, <span class="ident">results</span>));
             <span class="kw">match</span> <span class="kw">unsafe</span> { <span class="ident">async_cx</span>.<span class="ident">block_on</span>(<span class="ident">future</span>.<span class="ident">as_mut</span>()) } {
                 <span class="prelude-val">Ok</span>(<span class="prelude-val">Ok</span>(())) =&gt; <span class="prelude-val">Ok</span>(()),
@@ -2964,13 +3048,22 @@
     ) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span>(), <span class="ident">Trap</span><span class="op">&gt;</span> {
         <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">store</span> <span class="op">=</span> <span class="ident">store</span>.<span class="ident">as_context_mut</span>();
         <span class="kw">let</span> <span class="ident">data</span> <span class="op">=</span> <span class="kw-2">&amp;</span><span class="ident">store</span>.<span class="number">0</span>.<span class="ident">store_data</span>()[<span class="self">self</span>.<span class="number">0</span>];
-        <span class="kw">let</span> <span class="ident">trampoline</span> <span class="op">=</span> <span class="ident">data</span>.<span class="ident">trampoline</span>();
         <span class="kw">let</span> <span class="ident">anyfunc</span> <span class="op">=</span> <span class="ident">data</span>.<span class="ident">export</span>().<span class="ident">anyfunc</span>;
-        <span class="ident">invoke_wasm_and_catch_traps</span>(<span class="kw-2">&amp;mut</span> <span class="ident">store</span>, <span class="op">|</span><span class="ident">callee</span><span class="op">|</span> {
+        <span class="kw">let</span> <span class="ident">trampoline</span> <span class="op">=</span> <span class="ident">data</span>.<span class="ident">trampoline</span>();
+        <span class="ident"><span class="self">Self</span>::call_unchecked_raw</span>(<span class="kw-2">&amp;mut</span> <span class="ident">store</span>, <span class="ident">anyfunc</span>, <span class="ident">trampoline</span>, <span class="ident">params_and_returns</span>)
+    }
+
+    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">unsafe</span> <span class="kw">fn</span> <span class="ident">call_unchecked_raw</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>(
+        <span class="ident">store</span>: <span class="kw-2">&amp;mut</span> <span class="ident">StoreContextMut</span><span class="op">&lt;</span><span class="lifetime">&#39;_</span>, <span class="ident">T</span><span class="op">&gt;</span>,
+        <span class="ident">anyfunc</span>: <span class="ident">NonNull</span><span class="op">&lt;</span><span class="ident">VMCallerCheckedAnyfunc</span><span class="op">&gt;</span>,
+        <span class="ident">trampoline</span>: <span class="ident">VMTrampoline</span>,
+        <span class="ident">params_and_returns</span>: <span class="kw-2">*mut</span> <span class="ident">ValRaw</span>,
+    ) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span>(), <span class="ident">Trap</span><span class="op">&gt;</span> {
+        <span class="ident">invoke_wasm_and_catch_traps</span>(<span class="ident">store</span>, <span class="op">|</span><span class="ident">callee</span><span class="op">|</span> {
             <span class="ident">trampoline</span>(
-                (<span class="kw-2">*</span><span class="ident">anyfunc</span>.<span class="ident">as_ptr</span>()).<span class="ident">vmctx</span>,
+                <span class="ident">anyfunc</span>.<span class="ident">as_ref</span>().<span class="ident">vmctx</span>,
                 <span class="ident">callee</span>,
-                (<span class="kw-2">*</span><span class="ident">anyfunc</span>.<span class="ident">as_ptr</span>()).<span class="ident">func_ptr</span>.<span class="ident">as_ptr</span>(),
+                <span class="ident">anyfunc</span>.<span class="ident">as_ref</span>().<span class="ident">func_ptr</span>.<span class="ident">as_ptr</span>(),
                 <span class="ident">params_and_returns</span>,
             )
         })
@@ -3108,7 +3201,7 @@
         <span class="comment">// Store the argument values into `values_vec`.</span>
         <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">values_vec</span> <span class="op">=</span> <span class="ident">store</span>.<span class="number">0</span>.<span class="ident">take_wasm_val_raw_storage</span>();
         <span class="macro">debug_assert!</span>(<span class="ident">values_vec</span>.<span class="ident">is_empty</span>());
-        <span class="ident">values_vec</span>.<span class="ident">resize_with</span>(<span class="ident">values_vec_size</span>, <span class="op">|</span><span class="op">|</span> <span class="ident">ValRaw</span> { <span class="ident">i32</span>: <span class="number">0</span> });
+        <span class="ident">values_vec</span>.<span class="ident">resize_with</span>(<span class="ident">values_vec_size</span>, <span class="op">|</span><span class="op">|</span> <span class="ident">ValRaw::i32</span>(<span class="number">0</span>));
         <span class="kw">for</span> (<span class="ident">arg</span>, <span class="ident">slot</span>) <span class="kw">in</span> <span class="ident">params</span>.<span class="ident">iter</span>().<span class="ident">cloned</span>().<span class="ident">zip</span>(<span class="kw-2">&amp;mut</span> <span class="ident">values_vec</span>) {
             <span class="kw">unsafe</span> {
                 <span class="kw-2">*</span><span class="ident">slot</span> <span class="op">=</span> <span class="ident">arg</span>.<span class="ident">to_raw</span>(<span class="kw-2">&amp;mut</span> <span class="kw-2">*</span><span class="ident">store</span>);
@@ -3166,7 +3259,7 @@
     <span class="kw">fn</span> <span class="ident">invoke</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>(
         <span class="kw-2">mut</span> <span class="ident">caller</span>: <span class="ident">Caller</span><span class="op">&lt;</span><span class="lifetime">&#39;_</span>, <span class="ident">T</span><span class="op">&gt;</span>,
         <span class="ident">ty</span>: <span class="kw-2">&amp;</span><span class="ident">FuncType</span>,
-        <span class="ident">values_vec</span>: <span class="kw-2">*mut</span> <span class="ident">ValRaw</span>,
+        <span class="ident">values_vec</span>: <span class="kw-2">&amp;mut</span> [<span class="ident">ValRaw</span>],
         <span class="ident">func</span>: <span class="kw-2">&amp;</span><span class="kw">dyn</span> <span class="ident">Fn</span>(<span class="ident">Caller</span><span class="op">&lt;</span><span class="lifetime">&#39;_</span>, <span class="ident">T</span><span class="op">&gt;</span>, <span class="kw-2">&amp;</span>[<span class="ident">Val</span>], <span class="kw-2">&amp;mut</span> [<span class="ident">Val</span>]) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span>(), <span class="ident">Trap</span><span class="op">&gt;</span>,
     ) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span>(), <span class="ident">Trap</span><span class="op">&gt;</span> {
         <span class="comment">// Translate the raw JIT arguments in `values_vec` into a `Val` which</span>
@@ -3183,7 +3276,7 @@
         <span class="kw">let</span> <span class="ident">nparams</span> <span class="op">=</span> <span class="ident">ty</span>.<span class="ident">params</span>().<span class="ident">len</span>();
         <span class="ident">val_vec</span>.<span class="ident">reserve</span>(<span class="ident">nparams</span> <span class="op">+</span> <span class="ident">ty</span>.<span class="ident">results</span>().<span class="ident">len</span>());
         <span class="kw">for</span> (<span class="ident">i</span>, <span class="ident">ty</span>) <span class="kw">in</span> <span class="ident">ty</span>.<span class="ident">params</span>().<span class="ident">enumerate</span>() {
-            <span class="ident">val_vec</span>.<span class="ident">push</span>(<span class="kw">unsafe</span> { <span class="ident">Val::from_raw</span>(<span class="kw-2">&amp;mut</span> <span class="ident">caller</span>.<span class="ident">store</span>, <span class="kw-2">*</span><span class="ident">values_vec</span>.<span class="ident">add</span>(<span class="ident">i</span>), <span class="ident">ty</span>) })
+            <span class="ident">val_vec</span>.<span class="ident">push</span>(<span class="kw">unsafe</span> { <span class="ident">Val::from_raw</span>(<span class="kw-2">&amp;mut</span> <span class="ident">caller</span>.<span class="ident">store</span>, <span class="ident">values_vec</span>[<span class="ident">i</span>], <span class="ident">ty</span>) })
         }
 
         <span class="ident">val_vec</span>.<span class="ident">extend</span>((<span class="number">0</span>..<span class="ident">ty</span>.<span class="ident">results</span>().<span class="ident">len</span>()).<span class="ident">map</span>(<span class="op">|</span><span class="kw">_</span><span class="op">|</span> <span class="ident">Val::null</span>()));
@@ -3217,7 +3310,7 @@
                 ));
             }
             <span class="kw">unsafe</span> {
-                <span class="kw-2">*</span><span class="ident">values_vec</span>.<span class="ident">add</span>(<span class="ident">i</span>) <span class="op">=</span> <span class="ident">ret</span>.<span class="ident">to_raw</span>(<span class="kw-2">&amp;mut</span> <span class="ident">caller</span>.<span class="ident">store</span>);
+                <span class="ident">values_vec</span>[<span class="ident">i</span>] <span class="op">=</span> <span class="ident">ret</span>.<span class="ident">to_raw</span>(<span class="kw-2">&amp;mut</span> <span class="ident">caller</span>.<span class="ident">store</span>);
             }
         }
 
@@ -3369,15 +3462,15 @@
     <span class="ident">closure</span>: <span class="kw">impl</span> <span class="ident">FnMut</span>(<span class="kw-2">*mut</span> <span class="ident">VMContext</span>),
 ) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span>(), <span class="ident">Trap</span><span class="op">&gt;</span> {
     <span class="kw">unsafe</span> {
-        <span class="kw">let</span> <span class="ident">exit</span> <span class="op">=</span> <span class="ident">enter_wasm</span>(<span class="ident">store</span>)<span class="question-mark">?</span>;
+        <span class="kw">let</span> <span class="ident">exit</span> <span class="op">=</span> <span class="ident">enter_wasm</span>(<span class="ident">store</span>);
 
         <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Err</span>(<span class="ident">trap</span>) <span class="op">=</span> <span class="ident">store</span>.<span class="number">0</span>.<span class="ident">call_hook</span>(<span class="ident">CallHook::CallingWasm</span>) {
             <span class="ident">exit_wasm</span>(<span class="ident">store</span>, <span class="ident">exit</span>);
             <span class="kw">return</span> <span class="prelude-val">Err</span>(<span class="ident">trap</span>);
         }
         <span class="kw">let</span> <span class="ident">result</span> <span class="op">=</span> <span class="ident">wasmtime_runtime::catch_traps</span>(
-            <span class="ident">store</span>.<span class="number">0</span>.<span class="ident">vminterrupts</span>(),
             <span class="ident">store</span>.<span class="number">0</span>.<span class="ident">signal_handler</span>(),
+            <span class="ident">store</span>.<span class="number">0</span>.<span class="ident">engine</span>().<span class="ident">config</span>().<span class="ident">wasm_backtrace</span>,
             <span class="ident">store</span>.<span class="number">0</span>.<span class="ident">default_callee</span>(),
             <span class="ident">closure</span>,
         );
@@ -3403,7 +3496,7 @@
 <span class="doccomment">///</span>
 <span class="doccomment">/// This function may fail if the the stack limit can&#39;t be set because an</span>
 <span class="doccomment">/// interrupt already happened.</span>
-<span class="kw">fn</span> <span class="ident">enter_wasm</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>(<span class="ident">store</span>: <span class="kw-2">&amp;mut</span> <span class="ident">StoreContextMut</span><span class="op">&lt;</span><span class="lifetime">&#39;_</span>, <span class="ident">T</span><span class="op">&gt;</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">usize</span><span class="op">&gt;</span>, <span class="ident">Trap</span><span class="op">&gt;</span> {
+<span class="kw">fn</span> <span class="ident">enter_wasm</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>(<span class="ident">store</span>: <span class="kw-2">&amp;mut</span> <span class="ident">StoreContextMut</span><span class="op">&lt;</span><span class="lifetime">&#39;_</span>, <span class="ident">T</span><span class="op">&gt;</span>) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">usize</span><span class="op">&gt;</span> {
     <span class="comment">// If this is a recursive call, e.g. our stack canary is already set, then</span>
     <span class="comment">// we may be able to skip this function.</span>
     <span class="comment">//</span>
@@ -3423,7 +3516,7 @@
         .<span class="ident">is_some</span>()
         <span class="op">&amp;&amp;</span> <span class="op">!</span><span class="ident">store</span>.<span class="number">0</span>.<span class="ident">async_support</span>()
     {
-        <span class="kw">return</span> <span class="prelude-val">Ok</span>(<span class="prelude-val">None</span>);
+        <span class="kw">return</span> <span class="prelude-val">None</span>;
     }
 
     <span class="kw">let</span> <span class="ident">stack_pointer</span> <span class="op">=</span> <span class="ident">psm::stack_pointer</span>() <span class="kw">as</span> <span class="ident">usize</span>;
@@ -3441,34 +3534,13 @@
     <span class="comment">// (a million bytes) the slop shouldn&#39;t matter too much.</span>
     <span class="comment">//</span>
     <span class="comment">// After we&#39;ve got the stack limit then we store it into the `stack_limit`</span>
-    <span class="comment">// variable. Note that the store is an atomic swap to ensure that we can</span>
-    <span class="comment">// consume any previously-sent interrupt requests. If we found that wasm was</span>
-    <span class="comment">// previously interrupted then we immediately return a trap (after resetting</span>
-    <span class="comment">// the stack limit). Otherwise we&#39;re good to keep on going.</span>
-    <span class="comment">//</span>
-    <span class="comment">// Note the usage of `Relaxed` memory orderings here. This is specifically</span>
-    <span class="comment">// an optimization in the `Drop` below where a `Relaxed` store is speedier</span>
-    <span class="comment">// than a `SeqCst` store. The rationale for `Relaxed` here is that the</span>
-    <span class="comment">// atomic orderings here aren&#39;t actually protecting any memory, we&#39;re just</span>
-    <span class="comment">// trying to be atomic with respect to this one location in memory (for when</span>
-    <span class="comment">// `InterruptHandle` sends us a signal). Due to the lack of needing to</span>
-    <span class="comment">// synchronize with any other memory it&#39;s hoped that the choice of `Relaxed`</span>
-    <span class="comment">// here should be correct for our use case.</span>
+    <span class="comment">// variable.</span>
     <span class="kw">let</span> <span class="ident">wasm_stack_limit</span> <span class="op">=</span> <span class="ident">stack_pointer</span> <span class="op">-</span> <span class="ident">store</span>.<span class="ident">engine</span>().<span class="ident">config</span>().<span class="ident">max_wasm_stack</span>;
-    <span class="kw">let</span> <span class="ident">interrupts</span> <span class="op">=</span> <span class="ident">store</span>.<span class="number">0</span>.<span class="ident">interrupts</span>();
-    <span class="kw">let</span> <span class="ident">prev_stack</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">interrupts</span>.<span class="ident">stack_limit</span>.<span class="ident">swap</span>(<span class="ident">wasm_stack_limit</span>, <span class="ident">Relaxed</span>) {
-        <span class="ident">wasmtime_environ::INTERRUPTED</span> =&gt; {
-            <span class="comment">// This means that an interrupt happened before we actually</span>
-            <span class="comment">// called this function, which means that we&#39;re now</span>
-            <span class="comment">// considered interrupted.</span>
-            <span class="ident">interrupts</span>.<span class="ident">stack_limit</span>.<span class="ident">store</span>(<span class="ident">usize::max_value</span>(), <span class="ident">Relaxed</span>);
-            <span class="kw">return</span> <span class="prelude-val">Err</span>(<span class="ident">Trap::new_wasm</span>(
-                <span class="prelude-val">None</span>,
-                <span class="ident">wasmtime_environ::TrapCode::Interrupt</span>,
-                <span class="ident">backtrace::Backtrace::new_unresolved</span>(),
-            ));
-        }
-        <span class="ident">n</span> =&gt; <span class="ident">n</span>,
+    <span class="kw">let</span> <span class="ident">prev_stack</span> <span class="op">=</span> <span class="kw">unsafe</span> {
+        <span class="ident">mem::replace</span>(
+            <span class="kw-2">&amp;mut</span> <span class="kw-2">*</span><span class="ident">store</span>.<span class="number">0</span>.<span class="ident">runtime_limits</span>().<span class="ident">stack_limit</span>.<span class="ident">get</span>(),
+            <span class="ident">wasm_stack_limit</span>,
+        )
     };
 
     <span class="comment">// The `usize::max_value()` sentinel is present on recursive calls to</span>
@@ -3486,7 +3558,7 @@
             .<span class="ident">set_stack_canary</span>(<span class="prelude-val">Some</span>(<span class="ident">stack_pointer</span>));
     }
 
-    <span class="prelude-val">Ok</span>(<span class="prelude-val">Some</span>(<span class="ident">prev_stack</span>))
+    <span class="prelude-val">Some</span>(<span class="ident">prev_stack</span>)
 }
 
 <span class="kw">fn</span> <span class="ident">exit_wasm</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>(<span class="ident">store</span>: <span class="kw-2">&amp;mut</span> <span class="ident">StoreContextMut</span><span class="op">&lt;</span><span class="lifetime">&#39;_</span>, <span class="ident">T</span><span class="op">&gt;</span>, <span class="ident">prev_stack</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">usize</span><span class="op">&gt;</span>) {
@@ -3504,8 +3576,9 @@
         <span class="ident">store</span>.<span class="number">0</span>.<span class="ident">externref_activations_table</span>().<span class="ident">set_stack_canary</span>(<span class="prelude-val">None</span>);
     }
 
-    <span class="comment">// see docs above for why this uses `Relaxed`</span>
-    <span class="ident">store</span>.<span class="number">0</span>.<span class="ident">interrupts</span>().<span class="ident">stack_limit</span>.<span class="ident">store</span>(<span class="ident">prev_stack</span>, <span class="ident">Relaxed</span>);
+    <span class="kw">unsafe</span> {
+        <span class="kw-2">*</span><span class="ident">store</span>.<span class="number">0</span>.<span class="ident">runtime_limits</span>().<span class="ident">stack_limit</span>.<span class="ident">get</span>() <span class="op">=</span> <span class="ident">prev_stack</span>;
+    }
 }
 
 <span class="doccomment">/// A trait implemented for types which can be returned from closures passed to</span>
@@ -3582,7 +3655,7 @@
     }
 
     <span class="kw">unsafe</span> <span class="kw">fn</span> <span class="ident">wrap_trampoline</span>(<span class="ident">ptr</span>: <span class="kw-2">*mut</span> <span class="ident">ValRaw</span>, <span class="ident">f</span>: <span class="kw">impl</span> <span class="ident">FnOnce</span>(<span class="ident"><span class="self">Self</span>::Retptr</span>) -&gt; <span class="ident"><span class="self">Self</span>::Abi</span>) {
-        <span class="kw-2">*</span><span class="ident">ptr</span>.<span class="ident">cast</span>::<span class="op">&lt;</span><span class="ident"><span class="self">Self</span>::Abi</span><span class="op">&gt;</span>() <span class="op">=</span> <span class="ident">f</span>(());
+        <span class="ident">T::abi_into_raw</span>(<span class="ident">f</span>(()), <span class="ident">ptr</span>);
     }
 
     <span class="kw">fn</span> <span class="ident">into_fallible</span>(<span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">Trap</span><span class="op">&gt;</span> {
@@ -3670,7 +3743,7 @@
             <span class="kw">unsafe</span> <span class="kw">fn</span> <span class="ident">wrap_trampoline</span>(<span class="kw-2">mut</span> <span class="ident">_ptr</span>: <span class="kw-2">*mut</span> <span class="ident">ValRaw</span>, <span class="ident">f</span>: <span class="kw">impl</span> <span class="ident">FnOnce</span>(<span class="ident"><span class="self">Self</span>::Retptr</span>) -&gt; <span class="ident"><span class="self">Self</span>::Abi</span>) {
                 <span class="kw">let</span> ($(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">t</span>,)<span class="kw-2">*</span>) <span class="op">=</span> <span class="op">&lt;</span>($(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">t::Abi</span>,)<span class="kw-2">*</span>) <span class="kw">as</span> <span class="ident">HostAbi</span><span class="op">&gt;</span><span class="ident">::call</span>(<span class="ident">f</span>);
                 $(
-                    <span class="kw-2">*</span><span class="ident">_ptr</span>.<span class="ident">cast</span>() <span class="op">=</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">t</span>;
+                    <span class="macro-nonterminal">$</span><span class="macro-nonterminal">t::abi_into_raw</span>(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">t</span>, <span class="ident">_ptr</span>);
                     <span class="ident">_ptr</span> <span class="op">=</span> <span class="ident">_ptr</span>.<span class="ident">add</span>(<span class="number">1</span>);
                 )<span class="op">*</span>
             }
@@ -3917,14 +3990,6 @@
         <span class="self">self</span>.<span class="ident">store</span>.<span class="ident">engine</span>()
     }
 
-    <span class="doccomment">/// Returns an [`InterruptHandle`] to interrupt wasm execution.</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// See [`Store::interrupt_handle`](crate::Store::interrupt_handle) for more</span>
-    <span class="doccomment">/// information.</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">interrupt_handle</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">InterruptHandle</span><span class="op">&gt;</span> {
-        <span class="self">self</span>.<span class="ident">store</span>.<span class="ident">interrupt_handle</span>()
-    }
-
     <span class="doccomment">/// Perform garbage collection of `ExternRef`s.</span>
     <span class="doccomment">///</span>
     <span class="doccomment">/// Same as [`Store::gc`](crate::Store::gc).</span>
@@ -4022,7 +4087,7 @@
                 <span class="doccomment">/// by Cranelift, since Cranelift is generating raw function</span>
                 <span class="doccomment">/// calls directly to this function.</span>
                 <span class="kw">unsafe</span> <span class="kw">extern</span> <span class="string">&quot;C&quot;</span> <span class="kw">fn</span> <span class="ident">wasm_to_host_shim</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">F</span>, $(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">args</span>,)<span class="op">*</span> <span class="ident">R</span><span class="op">&gt;</span>(
-                    <span class="ident">vmctx</span>: <span class="kw-2">*mut</span> <span class="ident">VMContext</span>,
+                    <span class="ident">vmctx</span>: <span class="kw-2">*mut</span> <span class="ident">VMOpaqueContext</span>,
                     <span class="ident">caller_vmctx</span>: <span class="kw-2">*mut</span> <span class="ident">VMContext</span>,
                     $( <span class="macro-nonterminal">$</span><span class="macro-nonterminal">args</span>: <span class="macro-nonterminal">$</span><span class="macro-nonterminal">args::Abi</span>, )<span class="op">*</span>
                     <span class="ident">retptr</span>: <span class="ident">R::Retptr</span>,
@@ -4045,6 +4110,7 @@
                     <span class="comment">// should be part of this block, and the long-jmp-ing</span>
                     <span class="comment">// happens after the block in handling `CallResult`.</span>
                     <span class="kw">let</span> <span class="ident">result</span> <span class="op">=</span> <span class="ident">Caller::with</span>(<span class="ident">caller_vmctx</span>, <span class="op">|</span><span class="kw-2">mut</span> <span class="ident">caller</span><span class="op">|</span> {
+                        <span class="kw">let</span> <span class="ident">vmctx</span> <span class="op">=</span> <span class="ident">VMContext::from_opaque</span>(<span class="ident">vmctx</span>);
                         <span class="kw">let</span> <span class="ident">state</span> <span class="op">=</span> (<span class="kw-2">*</span><span class="ident">vmctx</span>).<span class="ident">host_state</span>();
                         <span class="comment">// Double-check ourselves in debug mode, but we control</span>
                         <span class="comment">// the `Any` here so an unsafe downcast should also</span>
@@ -4110,7 +4176,7 @@
                 <span class="doccomment">/// calls the given function pointer, and then stores the result</span>
                 <span class="doccomment">/// back into the `args` array.</span>
                 <span class="kw">unsafe</span> <span class="kw">extern</span> <span class="string">&quot;C&quot;</span> <span class="kw">fn</span> <span class="ident">host_trampoline</span><span class="op">&lt;</span>$(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">args</span>,)<span class="op">*</span> <span class="ident">R</span><span class="op">&gt;</span>(
-                    <span class="ident">callee_vmctx</span>: <span class="kw-2">*mut</span> <span class="ident">VMContext</span>,
+                    <span class="ident">callee_vmctx</span>: <span class="kw-2">*mut</span> <span class="ident">VMOpaqueContext</span>,
                     <span class="ident">caller_vmctx</span>: <span class="kw-2">*mut</span> <span class="ident">VMContext</span>,
                     <span class="ident">ptr</span>: <span class="kw-2">*const</span> <span class="ident">VMFunctionBody</span>,
                     <span class="ident">args</span>: <span class="kw-2">*mut</span> <span class="ident">ValRaw</span>,
@@ -4122,7 +4188,7 @@
                     <span class="kw">let</span> <span class="ident">ptr</span> <span class="op">=</span> <span class="ident">mem::transmute</span>::<span class="op">&lt;</span>
                         <span class="kw-2">*const</span> <span class="ident">VMFunctionBody</span>,
                         <span class="kw">unsafe</span> <span class="kw">extern</span> <span class="string">&quot;C&quot;</span> <span class="kw">fn</span>(
-                            <span class="kw-2">*mut</span> <span class="ident">VMContext</span>,
+                            <span class="kw-2">*mut</span> <span class="ident">VMOpaqueContext</span>,
                             <span class="kw-2">*mut</span> <span class="ident">VMContext</span>,
                             $( <span class="macro-nonterminal">$</span><span class="macro-nonterminal">args::Abi</span>, )<span class="op">*</span>
                             <span class="ident">R::Retptr</span>,
@@ -4131,7 +4197,7 @@
 
                     <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">_n</span> <span class="op">=</span> <span class="number">0</span>;
                     $(
-                        <span class="kw">let</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">args</span> <span class="op">=</span> <span class="kw-2">*</span><span class="ident">args</span>.<span class="ident">add</span>(<span class="ident">_n</span>).<span class="ident">cast</span>::<span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">args::Abi</span><span class="op">&gt;</span>();
+                        <span class="kw">let</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">args</span> <span class="op">=</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">args::abi_from_raw</span>(<span class="ident">args</span>.<span class="ident">add</span>(<span class="ident">_n</span>));
                         <span class="ident">_n</span> <span class="op">+</span><span class="op">=</span> <span class="number">1</span>;
                     )<span class="op">*</span>
                     <span class="ident">R::wrap_trampoline</span>(<span class="ident">args</span>, <span class="op">|</span><span class="ident">retptr</span><span class="op">|</span> {
@@ -4215,9 +4281,9 @@
     <span class="kw">pub</span> <span class="kw">unsafe</span> <span class="kw">fn</span> <span class="ident">new_unchecked</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>(
         <span class="ident">engine</span>: <span class="kw-2">&amp;</span><span class="ident">Engine</span>,
         <span class="ident">ty</span>: <span class="ident">FuncType</span>,
-        <span class="ident">func</span>: <span class="kw">impl</span> <span class="ident">Fn</span>(<span class="ident">Caller</span><span class="op">&lt;</span><span class="lifetime">&#39;_</span>, <span class="ident">T</span><span class="op">&gt;</span>, <span class="kw-2">*mut</span> <span class="ident">ValRaw</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span>(), <span class="ident">Trap</span><span class="op">&gt;</span> <span class="op">+</span> <span class="ident">Send</span> <span class="op">+</span> <span class="ident">Sync</span> <span class="op">+</span> <span class="lifetime">&#39;static</span>,
+        <span class="ident">func</span>: <span class="kw">impl</span> <span class="ident">Fn</span>(<span class="ident">Caller</span><span class="op">&lt;</span><span class="lifetime">&#39;_</span>, <span class="ident">T</span><span class="op">&gt;</span>, <span class="kw-2">&amp;mut</span> [<span class="ident">ValRaw</span>]) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span>(), <span class="ident">Trap</span><span class="op">&gt;</span> <span class="op">+</span> <span class="ident">Send</span> <span class="op">+</span> <span class="ident">Sync</span> <span class="op">+</span> <span class="lifetime">&#39;static</span>,
     ) -&gt; <span class="self">Self</span> {
-        <span class="kw">let</span> <span class="ident">func</span> <span class="op">=</span> <span class="kw">move</span> <span class="op">|</span><span class="ident">caller_vmctx</span>, <span class="ident">values</span>: <span class="kw-2">*mut</span> <span class="ident">ValRaw</span><span class="op">|</span> {
+        <span class="kw">let</span> <span class="ident">func</span> <span class="op">=</span> <span class="kw">move</span> <span class="op">|</span><span class="ident">caller_vmctx</span>, <span class="ident">values</span>: <span class="kw-2">&amp;mut</span> [<span class="ident">ValRaw</span>]<span class="op">|</span> {
             <span class="ident">Caller</span>::<span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span><span class="ident">::with</span>(<span class="ident">caller_vmctx</span>, <span class="op">|</span><span class="kw-2">mut</span> <span class="ident">caller</span><span class="op">|</span> {
                 <span class="ident">caller</span>.<span class="ident">store</span>.<span class="number">0</span>.<span class="ident">call_hook</span>(<span class="ident">CallHook::CallingHost</span>)<span class="question-mark">?</span>;
                 <span class="kw">let</span> <span class="ident">result</span> <span class="op">=</span> <span class="ident">func</span>(<span class="ident">caller</span>.<span class="ident">sub_caller</span>(), <span class="ident">values</span>)<span class="question-mark">?</span>;
@@ -4242,12 +4308,7 @@
     <span class="doccomment">/// Requires that this function&#39;s signature is already registered within</span>
     <span class="doccomment">/// `Engine`. This happens automatically during the above two constructors.</span>
     <span class="kw">fn</span> <span class="ident">_new</span>(<span class="ident">engine</span>: <span class="kw-2">&amp;</span><span class="ident">Engine</span>, <span class="kw-2">mut</span> <span class="ident">instance</span>: <span class="ident">InstanceHandle</span>, <span class="ident">trampoline</span>: <span class="ident">VMTrampoline</span>) -&gt; <span class="self">Self</span> {
-        <span class="kw">let</span> <span class="ident">idx</span> <span class="op">=</span> <span class="ident">EntityIndex::Function</span>(<span class="ident">FuncIndex::from_u32</span>(<span class="number">0</span>));
-        <span class="kw">let</span> <span class="ident">export</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">instance</span>.<span class="ident">lookup_by_declaration</span>(<span class="kw-2">&amp;</span><span class="ident">idx</span>) {
-            <span class="ident">wasmtime_runtime::Export::Function</span>(<span class="ident">f</span>) =&gt; <span class="ident">f</span>,
-            <span class="kw">_</span> =&gt; <span class="macro">unreachable!</span>(),
-        };
-
+        <span class="kw">let</span> <span class="ident">export</span> <span class="op">=</span> <span class="ident">instance</span>.<span class="ident">get_exported_func</span>(<span class="ident">FuncIndex::from_u32</span>(<span class="number">0</span>));
         <span class="ident">HostFunc</span> {
             <span class="ident">instance</span>,
             <span class="ident">trampoline</span>,
@@ -4267,6 +4328,29 @@
         <span class="self">self</span>.<span class="ident">validate_store</span>(<span class="ident">store</span>);
         <span class="kw">let</span> <span class="ident">me</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">clone</span>();
         <span class="ident">Func::from_func_kind</span>(<span class="ident">FuncKind::SharedHost</span>(<span class="ident">me</span>), <span class="ident">store</span>)
+    }
+
+    <span class="doccomment">/// Inserts this `HostFunc` into a `Store`, returning the `Func` pointing to</span>
+    <span class="doccomment">/// it.</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// This function is similar to, but not equivalent, to `HostFunc::to_func`.</span>
+    <span class="doccomment">/// Notably this function requires that the `Arc&lt;Self&gt;` pointer is otherwise</span>
+    <span class="doccomment">/// rooted within the `StoreOpaque` via another means. When in doubt use</span>
+    <span class="doccomment">/// `to_func` above as it&#39;s safer.</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// # Unsafety</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// Can only be inserted into stores with a matching `T` relative to when</span>
+    <span class="doccomment">/// this `HostFunc` was first created.</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// Additionally the `&amp;Arc&lt;Self&gt;` is not cloned in this function. Instead a</span>
+    <span class="doccomment">/// raw pointer to `Self` is stored within the `Store` for this function.</span>
+    <span class="doccomment">/// The caller must arrange for the `Arc&lt;Self&gt;` to be &quot;rooted&quot; in the store</span>
+    <span class="doccomment">/// provided via another means, probably by pushing to</span>
+    <span class="doccomment">/// `StoreOpaque::rooted_host_funcs`.</span>
+    <span class="kw">pub</span> <span class="kw">unsafe</span> <span class="kw">fn</span> <span class="ident">to_func_store_rooted</span>(<span class="self">self</span>: <span class="kw-2">&amp;</span><span class="ident">Arc</span><span class="op">&lt;</span><span class="self">Self</span><span class="op">&gt;</span>, <span class="ident">store</span>: <span class="kw-2">&amp;mut</span> <span class="ident">StoreOpaque</span>) -&gt; <span class="ident">Func</span> {
+        <span class="self">self</span>.<span class="ident">validate_store</span>(<span class="ident">store</span>);
+        <span class="ident">Func::from_func_kind</span>(<span class="ident">FuncKind::RootedHost</span>(<span class="ident">RootedHostFunc::new</span>(<span class="self">self</span>)), <span class="ident">store</span>)
     }
 
     <span class="doccomment">/// Same as [`HostFunc::to_func`], different ownership.</span>
@@ -4311,6 +4395,7 @@
         <span class="kw">match</span> <span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">kind</span> {
             <span class="ident">FuncKind::StoreOwned</span> { <span class="ident">trampoline</span>, .. } =&gt; <span class="kw-2">*</span><span class="ident">trampoline</span>,
             <span class="ident">FuncKind::SharedHost</span>(<span class="ident">host</span>) =&gt; <span class="ident">host</span>.<span class="ident">trampoline</span>,
+            <span class="ident">FuncKind::RootedHost</span>(<span class="ident">host</span>) =&gt; <span class="ident">host</span>.<span class="ident">trampoline</span>,
             <span class="ident">FuncKind::Host</span>(<span class="ident">host</span>) =&gt; <span class="ident">host</span>.<span class="ident">trampoline</span>,
         }
     }
@@ -4331,7 +4416,50 @@
         <span class="kw">match</span> <span class="self">self</span> {
             <span class="ident">FuncKind::StoreOwned</span> { <span class="ident">export</span>, .. } =&gt; <span class="ident">export</span>,
             <span class="ident">FuncKind::SharedHost</span>(<span class="ident">host</span>) =&gt; <span class="kw-2">&amp;</span><span class="ident">host</span>.<span class="ident">export</span>,
+            <span class="ident">FuncKind::RootedHost</span>(<span class="ident">host</span>) =&gt; <span class="kw-2">&amp;</span><span class="ident">host</span>.<span class="ident">export</span>,
             <span class="ident">FuncKind::Host</span>(<span class="ident">host</span>) =&gt; <span class="kw-2">&amp;</span><span class="ident">host</span>.<span class="ident">export</span>,
+        }
+    }
+}
+
+<span class="kw">use</span> <span class="ident"><span class="self">self</span>::rooted</span>::<span class="kw-2">*</span>;
+
+<span class="doccomment">/// An inner module is used here to force unsafe construction of</span>
+<span class="doccomment">/// `RootedHostFunc` instead of accidentally safely allowing access to its</span>
+<span class="doccomment">/// constructor.</span>
+<span class="kw">mod</span> <span class="ident">rooted</span> {
+    <span class="kw">use</span> <span class="ident"><span class="kw">super</span>::HostFunc</span>;
+    <span class="kw">use</span> <span class="ident">std::ops::Deref</span>;
+    <span class="kw">use</span> <span class="ident">std::ptr::NonNull</span>;
+    <span class="kw">use</span> <span class="ident">std::sync::Arc</span>;
+
+    <span class="doccomment">/// A variant of a pointer-to-a-host-function used in `FuncKind::RootedHost`</span>
+    <span class="doccomment">/// above.</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// For more documentation see `FuncKind::RootedHost`, `InstancePre`, and</span>
+    <span class="doccomment">/// `HostFunc::to_func_store_rooted`.</span>
+    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">struct</span> <span class="ident">RootedHostFunc</span>(<span class="ident">NonNull</span><span class="op">&lt;</span><span class="ident">HostFunc</span><span class="op">&gt;</span>);
+
+    <span class="comment">// These are required due to the usage of `NonNull` but should be safe</span>
+    <span class="comment">// because `HostFunc` is itself send/sync.</span>
+    <span class="kw">unsafe</span> <span class="kw">impl</span> <span class="ident">Send</span> <span class="kw">for</span> <span class="ident">RootedHostFunc</span> <span class="kw">where</span> <span class="ident">HostFunc</span>: <span class="ident">Send</span> {}
+    <span class="kw">unsafe</span> <span class="kw">impl</span> <span class="ident">Sync</span> <span class="kw">for</span> <span class="ident">RootedHostFunc</span> <span class="kw">where</span> <span class="ident">HostFunc</span>: <span class="ident">Sync</span> {}
+
+    <span class="kw">impl</span> <span class="ident">RootedHostFunc</span> {
+        <span class="doccomment">/// Note that this is `unsafe` because this wrapper type allows safe</span>
+        <span class="doccomment">/// access to the pointer given at any time, including outside the</span>
+        <span class="doccomment">/// window of validity of `func`, so callers must not use the return</span>
+        <span class="doccomment">/// value past the lifetime of the provided `func`.</span>
+        <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">unsafe</span> <span class="kw">fn</span> <span class="ident">new</span>(<span class="ident">func</span>: <span class="kw-2">&amp;</span><span class="ident">Arc</span><span class="op">&lt;</span><span class="ident">HostFunc</span><span class="op">&gt;</span>) -&gt; <span class="ident">RootedHostFunc</span> {
+            <span class="ident">RootedHostFunc</span>(<span class="ident">NonNull::from</span>(<span class="kw-2">&amp;</span><span class="kw-2">*</span><span class="kw-2">*</span><span class="ident">func</span>))
+        }
+    }
+
+    <span class="kw">impl</span> <span class="ident">Deref</span> <span class="kw">for</span> <span class="ident">RootedHostFunc</span> {
+        <span class="kw">type</span> <span class="ident">Target</span> <span class="op">=</span> <span class="ident">HostFunc</span>;
+
+        <span class="kw">fn</span> <span class="ident">deref</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;</span><span class="ident">HostFunc</span> {
+            <span class="kw">unsafe</span> { <span class="self">self</span>.<span class="number">0</span>.<span class="ident">as_ref</span>() }
         }
     }
 }

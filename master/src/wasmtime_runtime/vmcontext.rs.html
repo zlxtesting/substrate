@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/cargo_home/registry/src/github.com-1ecc6299db9ec823/wasmtime-runtime-0.35.3/src/vmcontext.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>vmcontext.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" type="text/css" href="../../normalize.css"><link rel="stylesheet" type="text/css" href="../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../ayu.css" disabled><link rel="stylesheet" type="text/css" href="../../dark.css" disabled><link rel="stylesheet" type="text/css" href="../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../storage.js"></script><script src="../../crates.js"></script><script defer src="../../main.js"></script><script defer src="../../source-script.js"></script><script defer src="../../source-files.js"></script>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/cargo_home/registry/src/github.com-1ecc6299db9ec823/wasmtime-runtime-0.38.0/src/vmcontext.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>vmcontext.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" type="text/css" href="../../normalize.css"><link rel="stylesheet" type="text/css" href="../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../ayu.css" disabled><link rel="stylesheet" type="text/css" href="../../dark.css" disabled><link rel="stylesheet" type="text/css" href="../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../storage.js"></script><script src="../../crates.js"></script><script defer src="../../main.js"></script><script defer src="../../source-script.js"></script><script defer src="../../source-files.js"></script>
     <noscript><link rel="stylesheet" href="../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="sidebar-logo" href="../../wasmtime_runtime/index.html"><div class="logo-container"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></div>
         </a><h2 class="location"></h2>
     </nav>
@@ -816,6 +816,264 @@
 <span id="811">811</span>
 <span id="812">812</span>
 <span id="813">813</span>
+<span id="814">814</span>
+<span id="815">815</span>
+<span id="816">816</span>
+<span id="817">817</span>
+<span id="818">818</span>
+<span id="819">819</span>
+<span id="820">820</span>
+<span id="821">821</span>
+<span id="822">822</span>
+<span id="823">823</span>
+<span id="824">824</span>
+<span id="825">825</span>
+<span id="826">826</span>
+<span id="827">827</span>
+<span id="828">828</span>
+<span id="829">829</span>
+<span id="830">830</span>
+<span id="831">831</span>
+<span id="832">832</span>
+<span id="833">833</span>
+<span id="834">834</span>
+<span id="835">835</span>
+<span id="836">836</span>
+<span id="837">837</span>
+<span id="838">838</span>
+<span id="839">839</span>
+<span id="840">840</span>
+<span id="841">841</span>
+<span id="842">842</span>
+<span id="843">843</span>
+<span id="844">844</span>
+<span id="845">845</span>
+<span id="846">846</span>
+<span id="847">847</span>
+<span id="848">848</span>
+<span id="849">849</span>
+<span id="850">850</span>
+<span id="851">851</span>
+<span id="852">852</span>
+<span id="853">853</span>
+<span id="854">854</span>
+<span id="855">855</span>
+<span id="856">856</span>
+<span id="857">857</span>
+<span id="858">858</span>
+<span id="859">859</span>
+<span id="860">860</span>
+<span id="861">861</span>
+<span id="862">862</span>
+<span id="863">863</span>
+<span id="864">864</span>
+<span id="865">865</span>
+<span id="866">866</span>
+<span id="867">867</span>
+<span id="868">868</span>
+<span id="869">869</span>
+<span id="870">870</span>
+<span id="871">871</span>
+<span id="872">872</span>
+<span id="873">873</span>
+<span id="874">874</span>
+<span id="875">875</span>
+<span id="876">876</span>
+<span id="877">877</span>
+<span id="878">878</span>
+<span id="879">879</span>
+<span id="880">880</span>
+<span id="881">881</span>
+<span id="882">882</span>
+<span id="883">883</span>
+<span id="884">884</span>
+<span id="885">885</span>
+<span id="886">886</span>
+<span id="887">887</span>
+<span id="888">888</span>
+<span id="889">889</span>
+<span id="890">890</span>
+<span id="891">891</span>
+<span id="892">892</span>
+<span id="893">893</span>
+<span id="894">894</span>
+<span id="895">895</span>
+<span id="896">896</span>
+<span id="897">897</span>
+<span id="898">898</span>
+<span id="899">899</span>
+<span id="900">900</span>
+<span id="901">901</span>
+<span id="902">902</span>
+<span id="903">903</span>
+<span id="904">904</span>
+<span id="905">905</span>
+<span id="906">906</span>
+<span id="907">907</span>
+<span id="908">908</span>
+<span id="909">909</span>
+<span id="910">910</span>
+<span id="911">911</span>
+<span id="912">912</span>
+<span id="913">913</span>
+<span id="914">914</span>
+<span id="915">915</span>
+<span id="916">916</span>
+<span id="917">917</span>
+<span id="918">918</span>
+<span id="919">919</span>
+<span id="920">920</span>
+<span id="921">921</span>
+<span id="922">922</span>
+<span id="923">923</span>
+<span id="924">924</span>
+<span id="925">925</span>
+<span id="926">926</span>
+<span id="927">927</span>
+<span id="928">928</span>
+<span id="929">929</span>
+<span id="930">930</span>
+<span id="931">931</span>
+<span id="932">932</span>
+<span id="933">933</span>
+<span id="934">934</span>
+<span id="935">935</span>
+<span id="936">936</span>
+<span id="937">937</span>
+<span id="938">938</span>
+<span id="939">939</span>
+<span id="940">940</span>
+<span id="941">941</span>
+<span id="942">942</span>
+<span id="943">943</span>
+<span id="944">944</span>
+<span id="945">945</span>
+<span id="946">946</span>
+<span id="947">947</span>
+<span id="948">948</span>
+<span id="949">949</span>
+<span id="950">950</span>
+<span id="951">951</span>
+<span id="952">952</span>
+<span id="953">953</span>
+<span id="954">954</span>
+<span id="955">955</span>
+<span id="956">956</span>
+<span id="957">957</span>
+<span id="958">958</span>
+<span id="959">959</span>
+<span id="960">960</span>
+<span id="961">961</span>
+<span id="962">962</span>
+<span id="963">963</span>
+<span id="964">964</span>
+<span id="965">965</span>
+<span id="966">966</span>
+<span id="967">967</span>
+<span id="968">968</span>
+<span id="969">969</span>
+<span id="970">970</span>
+<span id="971">971</span>
+<span id="972">972</span>
+<span id="973">973</span>
+<span id="974">974</span>
+<span id="975">975</span>
+<span id="976">976</span>
+<span id="977">977</span>
+<span id="978">978</span>
+<span id="979">979</span>
+<span id="980">980</span>
+<span id="981">981</span>
+<span id="982">982</span>
+<span id="983">983</span>
+<span id="984">984</span>
+<span id="985">985</span>
+<span id="986">986</span>
+<span id="987">987</span>
+<span id="988">988</span>
+<span id="989">989</span>
+<span id="990">990</span>
+<span id="991">991</span>
+<span id="992">992</span>
+<span id="993">993</span>
+<span id="994">994</span>
+<span id="995">995</span>
+<span id="996">996</span>
+<span id="997">997</span>
+<span id="998">998</span>
+<span id="999">999</span>
+<span id="1000">1000</span>
+<span id="1001">1001</span>
+<span id="1002">1002</span>
+<span id="1003">1003</span>
+<span id="1004">1004</span>
+<span id="1005">1005</span>
+<span id="1006">1006</span>
+<span id="1007">1007</span>
+<span id="1008">1008</span>
+<span id="1009">1009</span>
+<span id="1010">1010</span>
+<span id="1011">1011</span>
+<span id="1012">1012</span>
+<span id="1013">1013</span>
+<span id="1014">1014</span>
+<span id="1015">1015</span>
+<span id="1016">1016</span>
+<span id="1017">1017</span>
+<span id="1018">1018</span>
+<span id="1019">1019</span>
+<span id="1020">1020</span>
+<span id="1021">1021</span>
+<span id="1022">1022</span>
+<span id="1023">1023</span>
+<span id="1024">1024</span>
+<span id="1025">1025</span>
+<span id="1026">1026</span>
+<span id="1027">1027</span>
+<span id="1028">1028</span>
+<span id="1029">1029</span>
+<span id="1030">1030</span>
+<span id="1031">1031</span>
+<span id="1032">1032</span>
+<span id="1033">1033</span>
+<span id="1034">1034</span>
+<span id="1035">1035</span>
+<span id="1036">1036</span>
+<span id="1037">1037</span>
+<span id="1038">1038</span>
+<span id="1039">1039</span>
+<span id="1040">1040</span>
+<span id="1041">1041</span>
+<span id="1042">1042</span>
+<span id="1043">1043</span>
+<span id="1044">1044</span>
+<span id="1045">1045</span>
+<span id="1046">1046</span>
+<span id="1047">1047</span>
+<span id="1048">1048</span>
+<span id="1049">1049</span>
+<span id="1050">1050</span>
+<span id="1051">1051</span>
+<span id="1052">1052</span>
+<span id="1053">1053</span>
+<span id="1054">1054</span>
+<span id="1055">1055</span>
+<span id="1056">1056</span>
+<span id="1057">1057</span>
+<span id="1058">1058</span>
+<span id="1059">1059</span>
+<span id="1060">1060</span>
+<span id="1061">1061</span>
+<span id="1062">1062</span>
+<span id="1063">1063</span>
+<span id="1064">1064</span>
+<span id="1065">1065</span>
+<span id="1066">1066</span>
+<span id="1067">1067</span>
+<span id="1068">1068</span>
+<span id="1069">1069</span>
+<span id="1070">1070</span>
+<span id="1071">1071</span>
 </pre><pre class="rust"><code><span class="doccomment">//! This file declares `VMContext` and several related structs which contain</span>
 <span class="doccomment">//! fields that compiled wasm code accesses directly.</span>
 
@@ -825,8 +1083,9 @@
 <span class="kw">use</span> <span class="ident">std::cell::UnsafeCell</span>;
 <span class="kw">use</span> <span class="ident">std::marker</span>;
 <span class="kw">use</span> <span class="ident">std::ptr::NonNull</span>;
-<span class="kw">use</span> <span class="ident">std::sync::atomic</span>::{<span class="ident">AtomicUsize</span>, <span class="ident">Ordering::SeqCst</span>};
 <span class="kw">use</span> <span class="ident">std::u32</span>;
+
+<span class="kw">pub</span> <span class="kw">const</span> <span class="ident">VMCONTEXT_MAGIC</span>: <span class="ident">u32</span> <span class="op">=</span> <span class="ident">u32::from_le_bytes</span>(<span class="kw-2">*</span><span class="string">b&quot;core&quot;</span>);
 
 <span class="doccomment">/// An imported function.</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>, <span class="ident">Copy</span>, <span class="ident">Clone</span>)]</span>
@@ -835,8 +1094,13 @@
     <span class="doccomment">/// A pointer to the imported function body.</span>
     <span class="kw">pub</span> <span class="ident">body</span>: <span class="ident">NonNull</span><span class="op">&lt;</span><span class="ident">VMFunctionBody</span><span class="op">&gt;</span>,
 
-    <span class="doccomment">/// A pointer to the `VMContext` that owns the function.</span>
-    <span class="kw">pub</span> <span class="ident">vmctx</span>: <span class="kw-2">*mut</span> <span class="ident">VMContext</span>,
+    <span class="doccomment">/// The VM state associated with this function.</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// For core wasm instances this will be `*mut VMContext` but for the</span>
+    <span class="doccomment">/// upcoming implementation of the component model this will be something</span>
+    <span class="doccomment">/// else. The actual definition of what this pointer points to depends on</span>
+    <span class="doccomment">/// the definition of `func_ptr` and what compiled it.</span>
+    <span class="kw">pub</span> <span class="ident">vmctx</span>: <span class="kw-2">*mut</span> <span class="ident">VMOpaqueContext</span>,
 }
 
 <span class="comment">// Declare that this type is send/sync, it&#39;s the responsibility of users of</span>
@@ -1321,7 +1585,7 @@
 <span class="kw">mod</span> <span class="ident">test_vmshared_signature_index</span> {
     <span class="kw">use</span> <span class="ident"><span class="kw">super</span>::VMSharedSignatureIndex</span>;
     <span class="kw">use</span> <span class="ident">std::mem::size_of</span>;
-    <span class="kw">use</span> <span class="ident">wasmtime_environ</span>::{<span class="ident">Module</span>, <span class="ident">TargetSharedSignatureIndex</span>, <span class="ident">VMOffsets</span>};
+    <span class="kw">use</span> <span class="ident">wasmtime_environ</span>::{<span class="ident">Module</span>, <span class="ident">VMOffsets</span>};
 
     <span class="attribute">#[<span class="ident">test</span>]</span>
     <span class="kw">fn</span> <span class="ident">check_vmshared_signature_index</span>() {
@@ -1330,14 +1594,6 @@
         <span class="macro">assert_eq!</span>(
             <span class="ident">size_of</span>::<span class="op">&lt;</span><span class="ident">VMSharedSignatureIndex</span><span class="op">&gt;</span>(),
             <span class="ident">usize::from</span>(<span class="ident">offsets</span>.<span class="ident">size_of_vmshared_signature_index</span>())
-        );
-    }
-
-    <span class="attribute">#[<span class="ident">test</span>]</span>
-    <span class="kw">fn</span> <span class="ident">check_target_shared_signature_index</span>() {
-        <span class="macro">assert_eq!</span>(
-            <span class="ident">size_of</span>::<span class="op">&lt;</span><span class="ident">VMSharedSignatureIndex</span><span class="op">&gt;</span>(),
-            <span class="ident">size_of</span>::<span class="op">&lt;</span><span class="ident">TargetSharedSignatureIndex</span><span class="op">&gt;</span>()
         );
     }
 }
@@ -1373,8 +1629,13 @@
     <span class="kw">pub</span> <span class="ident">func_ptr</span>: <span class="ident">NonNull</span><span class="op">&lt;</span><span class="ident">VMFunctionBody</span><span class="op">&gt;</span>,
     <span class="doccomment">/// Function signature id.</span>
     <span class="kw">pub</span> <span class="ident">type_index</span>: <span class="ident">VMSharedSignatureIndex</span>,
-    <span class="doccomment">/// Function `VMContext`.</span>
-    <span class="kw">pub</span> <span class="ident">vmctx</span>: <span class="kw-2">*mut</span> <span class="ident">VMContext</span>,
+    <span class="doccomment">/// The VM state associated with this function.</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// For core wasm instances this will be `*mut VMContext` but for the</span>
+    <span class="doccomment">/// upcoming implementation of the component model this will be something</span>
+    <span class="doccomment">/// else. The actual definition of what this pointer points to depends on</span>
+    <span class="doccomment">/// the definition of `func_ptr` and what compiled it.</span>
+    <span class="kw">pub</span> <span class="ident">vmctx</span>: <span class="kw-2">*mut</span> <span class="ident">VMOpaqueContext</span>,
     <span class="comment">// If more elements are added here, remember to add offset_of tests below!</span>
 }
 
@@ -1386,7 +1647,7 @@
     <span class="kw">use</span> <span class="ident"><span class="kw">super</span>::VMCallerCheckedAnyfunc</span>;
     <span class="kw">use</span> <span class="ident">memoffset::offset_of</span>;
     <span class="kw">use</span> <span class="ident">std::mem::size_of</span>;
-    <span class="kw">use</span> <span class="ident">wasmtime_environ</span>::{<span class="ident">Module</span>, <span class="ident">VMOffsets</span>};
+    <span class="kw">use</span> <span class="ident">wasmtime_environ</span>::{<span class="ident">Module</span>, <span class="ident">PtrSize</span>, <span class="ident">VMOffsets</span>};
 
     <span class="attribute">#[<span class="ident">test</span>]</span>
     <span class="kw">fn</span> <span class="ident">check_vmcaller_checked_anyfunc_offsets</span>() {
@@ -1394,19 +1655,19 @@
         <span class="kw">let</span> <span class="ident">offsets</span> <span class="op">=</span> <span class="ident">VMOffsets::new</span>(<span class="ident">size_of</span>::<span class="op">&lt;</span><span class="kw-2">*mut</span> <span class="ident">u8</span><span class="op">&gt;</span>() <span class="kw">as</span> <span class="ident">u8</span>, <span class="kw-2">&amp;</span><span class="ident">module</span>);
         <span class="macro">assert_eq!</span>(
             <span class="ident">size_of</span>::<span class="op">&lt;</span><span class="ident">VMCallerCheckedAnyfunc</span><span class="op">&gt;</span>(),
-            <span class="ident">usize::from</span>(<span class="ident">offsets</span>.<span class="ident">size_of_vmcaller_checked_anyfunc</span>())
+            <span class="ident">usize::from</span>(<span class="ident">offsets</span>.<span class="ident">ptr</span>.<span class="ident">size_of_vmcaller_checked_anyfunc</span>())
         );
         <span class="macro">assert_eq!</span>(
             <span class="macro">offset_of!</span>(<span class="ident">VMCallerCheckedAnyfunc</span>, <span class="ident">func_ptr</span>),
-            <span class="ident">usize::from</span>(<span class="ident">offsets</span>.<span class="ident">vmcaller_checked_anyfunc_func_ptr</span>())
+            <span class="ident">usize::from</span>(<span class="ident">offsets</span>.<span class="ident">ptr</span>.<span class="ident">vmcaller_checked_anyfunc_func_ptr</span>())
         );
         <span class="macro">assert_eq!</span>(
             <span class="macro">offset_of!</span>(<span class="ident">VMCallerCheckedAnyfunc</span>, <span class="ident">type_index</span>),
-            <span class="ident">usize::from</span>(<span class="ident">offsets</span>.<span class="ident">vmcaller_checked_anyfunc_type_index</span>())
+            <span class="ident">usize::from</span>(<span class="ident">offsets</span>.<span class="ident">ptr</span>.<span class="ident">vmcaller_checked_anyfunc_type_index</span>())
         );
         <span class="macro">assert_eq!</span>(
             <span class="macro">offset_of!</span>(<span class="ident">VMCallerCheckedAnyfunc</span>, <span class="ident">vmctx</span>),
-            <span class="ident">usize::from</span>(<span class="ident">offsets</span>.<span class="ident">vmcaller_checked_anyfunc_vmctx</span>())
+            <span class="ident">usize::from</span>(<span class="ident">offsets</span>.<span class="ident">ptr</span>.<span class="ident">vmcaller_checked_anyfunc_vmctx</span>())
         );
     }
 }
@@ -1487,12 +1748,11 @@
 <span class="doccomment">/// Structure used to control interrupting wasm code.</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>)]</span>
 <span class="attribute">#[<span class="ident">repr</span>(<span class="ident">C</span>)]</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">VMInterrupts</span> {
+<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">VMRuntimeLimits</span> {
     <span class="doccomment">/// Current stack limit of the wasm module.</span>
     <span class="doccomment">///</span>
-    <span class="doccomment">/// This is used to control both stack overflow as well as interrupting wasm</span>
-    <span class="doccomment">/// modules. For more information see `crates/environ/src/cranelift.rs`.</span>
-    <span class="kw">pub</span> <span class="ident">stack_limit</span>: <span class="ident">AtomicUsize</span>,
+    <span class="doccomment">/// For more information see `crates/cranelift/src/lib.rs`.</span>
+    <span class="kw">pub</span> <span class="ident">stack_limit</span>: <span class="ident">UnsafeCell</span><span class="op">&lt;</span><span class="ident">usize</span><span class="op">&gt;</span>,
 
     <span class="doccomment">/// Indicator of how much fuel has been consumed and is remaining to</span>
     <span class="doccomment">/// WebAssembly.</span>
@@ -1509,28 +1769,17 @@
     <span class="kw">pub</span> <span class="ident">epoch_deadline</span>: <span class="ident">UnsafeCell</span><span class="op">&lt;</span><span class="ident">u64</span><span class="op">&gt;</span>,
 }
 
-<span class="comment">// The `VMInterrupts` type is a pod-type with no destructor, and we</span>
-<span class="comment">// only access `stack_limit` from other threads, so add in these trait</span>
-<span class="comment">// impls which are otherwise not available due to the `fuel_consumed`</span>
-<span class="comment">// and `epoch_deadline` variables in `VMInterrupts`.</span>
-<span class="comment">//</span>
-<span class="comment">// Note that users of `fuel_consumed` understand that the unsafety encompasses</span>
-<span class="comment">// ensuring that it&#39;s only mutated/accessed from one thread dynamically.</span>
-<span class="kw">unsafe</span> <span class="kw">impl</span> <span class="ident">Send</span> <span class="kw">for</span> <span class="ident">VMInterrupts</span> {}
-<span class="kw">unsafe</span> <span class="kw">impl</span> <span class="ident">Sync</span> <span class="kw">for</span> <span class="ident">VMInterrupts</span> {}
+<span class="comment">// The `VMRuntimeLimits` type is a pod-type with no destructor, and we don&#39;t</span>
+<span class="comment">// access any fields from other threads, so add in these trait impls which are</span>
+<span class="comment">// otherwise not available due to the `fuel_consumed` and `epoch_deadline`</span>
+<span class="comment">// variables in `VMRuntimeLimits`.</span>
+<span class="kw">unsafe</span> <span class="kw">impl</span> <span class="ident">Send</span> <span class="kw">for</span> <span class="ident">VMRuntimeLimits</span> {}
+<span class="kw">unsafe</span> <span class="kw">impl</span> <span class="ident">Sync</span> <span class="kw">for</span> <span class="ident">VMRuntimeLimits</span> {}
 
-<span class="kw">impl</span> <span class="ident">VMInterrupts</span> {
-    <span class="doccomment">/// Flag that an interrupt should occur</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">interrupt</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) {
-        <span class="self">self</span>.<span class="ident">stack_limit</span>
-            .<span class="ident">store</span>(<span class="ident">wasmtime_environ::INTERRUPTED</span>, <span class="ident">SeqCst</span>);
-    }
-}
-
-<span class="kw">impl</span> <span class="ident">Default</span> <span class="kw">for</span> <span class="ident">VMInterrupts</span> {
-    <span class="kw">fn</span> <span class="ident">default</span>() -&gt; <span class="ident">VMInterrupts</span> {
-        <span class="ident">VMInterrupts</span> {
-            <span class="ident">stack_limit</span>: <span class="ident">AtomicUsize::new</span>(<span class="ident">usize::max_value</span>()),
+<span class="kw">impl</span> <span class="ident">Default</span> <span class="kw">for</span> <span class="ident">VMRuntimeLimits</span> {
+    <span class="kw">fn</span> <span class="ident">default</span>() -&gt; <span class="ident">VMRuntimeLimits</span> {
+        <span class="ident">VMRuntimeLimits</span> {
+            <span class="ident">stack_limit</span>: <span class="ident">UnsafeCell::new</span>(<span class="ident">usize::max_value</span>()),
             <span class="ident">fuel_consumed</span>: <span class="ident">UnsafeCell::new</span>(<span class="number">0</span>),
             <span class="ident">epoch_deadline</span>: <span class="ident">UnsafeCell::new</span>(<span class="number">0</span>),
         }
@@ -1538,19 +1787,27 @@
 }
 
 <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">test</span>)]</span>
-<span class="kw">mod</span> <span class="ident">test_vminterrupts</span> {
-    <span class="kw">use</span> <span class="ident"><span class="kw">super</span>::VMInterrupts</span>;
+<span class="kw">mod</span> <span class="ident">test_vmruntime_limits</span> {
+    <span class="kw">use</span> <span class="ident"><span class="kw">super</span>::VMRuntimeLimits</span>;
     <span class="kw">use</span> <span class="ident">memoffset::offset_of</span>;
     <span class="kw">use</span> <span class="ident">std::mem::size_of</span>;
     <span class="kw">use</span> <span class="ident">wasmtime_environ</span>::{<span class="ident">Module</span>, <span class="ident">VMOffsets</span>};
 
     <span class="attribute">#[<span class="ident">test</span>]</span>
-    <span class="kw">fn</span> <span class="ident">check_vminterrupts_interrupted_offset</span>() {
+    <span class="kw">fn</span> <span class="ident">field_offsets</span>() {
         <span class="kw">let</span> <span class="ident">module</span> <span class="op">=</span> <span class="ident">Module::new</span>();
         <span class="kw">let</span> <span class="ident">offsets</span> <span class="op">=</span> <span class="ident">VMOffsets::new</span>(<span class="ident">size_of</span>::<span class="op">&lt;</span><span class="kw-2">*mut</span> <span class="ident">u8</span><span class="op">&gt;</span>() <span class="kw">as</span> <span class="ident">u8</span>, <span class="kw-2">&amp;</span><span class="ident">module</span>);
         <span class="macro">assert_eq!</span>(
-            <span class="macro">offset_of!</span>(<span class="ident">VMInterrupts</span>, <span class="ident">stack_limit</span>),
-            <span class="ident">usize::from</span>(<span class="ident">offsets</span>.<span class="ident">vminterrupts_stack_limit</span>())
+            <span class="macro">offset_of!</span>(<span class="ident">VMRuntimeLimits</span>, <span class="ident">stack_limit</span>),
+            <span class="ident">usize::from</span>(<span class="ident">offsets</span>.<span class="ident">vmruntime_limits_stack_limit</span>())
+        );
+        <span class="macro">assert_eq!</span>(
+            <span class="macro">offset_of!</span>(<span class="ident">VMRuntimeLimits</span>, <span class="ident">fuel_consumed</span>),
+            <span class="ident">usize::from</span>(<span class="ident">offsets</span>.<span class="ident">vmruntime_limits_fuel_consumed</span>())
+        );
+        <span class="macro">assert_eq!</span>(
+            <span class="macro">offset_of!</span>(<span class="ident">VMRuntimeLimits</span>, <span class="ident">epoch_deadline</span>),
+            <span class="ident">usize::from</span>(<span class="ident">offsets</span>.<span class="ident">vmruntime_limits_epoch_deadline</span>())
         );
     }
 }
@@ -1577,6 +1834,29 @@
 }
 
 <span class="kw">impl</span> <span class="ident">VMContext</span> {
+    <span class="doccomment">/// Helper function to cast between context types using a debug assertion to</span>
+    <span class="doccomment">/// protect against some mistakes.</span>
+    <span class="attribute">#[<span class="ident">inline</span>]</span>
+    <span class="kw">pub</span> <span class="kw">unsafe</span> <span class="kw">fn</span> <span class="ident">from_opaque</span>(<span class="ident">opaque</span>: <span class="kw-2">*mut</span> <span class="ident">VMOpaqueContext</span>) -&gt; <span class="kw-2">*mut</span> <span class="ident">VMContext</span> {
+        <span class="comment">// Note that in general the offset of the &quot;magic&quot; field is stored in</span>
+        <span class="comment">// `VMOffsets::vmctx_magic`. Given though that this is a sanity check</span>
+        <span class="comment">// about converting this pointer to another type we ideally don&#39;t want</span>
+        <span class="comment">// to read the offset from potentially corrupt memory. Instead it would</span>
+        <span class="comment">// be better to catch errors here as soon as possible.</span>
+        <span class="comment">//</span>
+        <span class="comment">// To accomplish this the `VMContext` structure is laid out with the</span>
+        <span class="comment">// magic field at a statically known offset (here it&#39;s 0 for now). This</span>
+        <span class="comment">// static offset is asserted in `VMOffsets::from` and needs to be kept</span>
+        <span class="comment">// in sync with this line for this debug assertion to work.</span>
+        <span class="comment">//</span>
+        <span class="comment">// Also note that this magic is only ever invalid in the presence of</span>
+        <span class="comment">// bugs, meaning we don&#39;t actually read the magic and act differently</span>
+        <span class="comment">// at runtime depending what it is, so this is a debug assertion as</span>
+        <span class="comment">// opposed to a regular assertion.</span>
+        <span class="macro">debug_assert_eq!</span>((<span class="kw-2">*</span><span class="ident">opaque</span>).<span class="ident">magic</span>, <span class="ident">VMCONTEXT_MAGIC</span>);
+        <span class="ident">opaque</span>.<span class="ident">cast</span>()
+    }
+
     <span class="doccomment">/// Return a mutable reference to the associated `Instance`.</span>
     <span class="doccomment">///</span>
     <span class="doccomment">/// # Safety</span>
@@ -1609,26 +1889,262 @@
 <span class="doccomment">/// This is provided for use with the `Func::new_unchecked` and</span>
 <span class="doccomment">/// `Func::call_unchecked` APIs. In general it&#39;s unlikely you should be using</span>
 <span class="doccomment">/// this from Rust, rather using APIs like `Func::wrap` and `TypedFunc::call`.</span>
+<span class="doccomment">///</span>
+<span class="doccomment">/// This is notably an &quot;unsafe&quot; way to work with `Val` and it&#39;s recommended to</span>
+<span class="doccomment">/// instead use `Val` where possible. An important note about this union is that</span>
+<span class="doccomment">/// fields are all stored in little-endian format, regardless of the endianness</span>
+<span class="doccomment">/// of the host system.</span>
 <span class="attribute">#[<span class="ident">allow</span>(<span class="ident">missing_docs</span>)]</span>
 <span class="attribute">#[<span class="ident">repr</span>(<span class="ident">C</span>)]</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Copy</span>, <span class="ident">Clone</span>)]</span>
 <span class="kw">pub</span> <span class="kw">union</span> <span class="ident">ValRaw</span> {
-    <span class="kw">pub</span> <span class="ident">i32</span>: <span class="ident">i32</span>,
-    <span class="kw">pub</span> <span class="ident">i64</span>: <span class="ident">i64</span>,
-    <span class="kw">pub</span> <span class="ident">f32</span>: <span class="ident">u32</span>,
-    <span class="kw">pub</span> <span class="ident">f64</span>: <span class="ident">u64</span>,
-    <span class="kw">pub</span> <span class="ident">v128</span>: <span class="ident">u128</span>,
-    <span class="kw">pub</span> <span class="ident">funcref</span>: <span class="ident">usize</span>,
-    <span class="kw">pub</span> <span class="ident">externref</span>: <span class="ident">usize</span>,
+    <span class="doccomment">/// A WebAssembly `i32` value.</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// Note that the payload here is a Rust `i32` but the WebAssembly `i32`</span>
+    <span class="doccomment">/// type does not assign an interpretation of the upper bit as either signed</span>
+    <span class="doccomment">/// or unsigned. The Rust type `i32` is simply chosen for convenience.</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// This value is always stored in a little-endian format.</span>
+    <span class="ident">i32</span>: <span class="ident">i32</span>,
+
+    <span class="doccomment">/// A WebAssembly `i64` value.</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// Note that the payload here is a Rust `i64` but the WebAssembly `i64`</span>
+    <span class="doccomment">/// type does not assign an interpretation of the upper bit as either signed</span>
+    <span class="doccomment">/// or unsigned. The Rust type `i64` is simply chosen for convenience.</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// This value is always stored in a little-endian format.</span>
+    <span class="ident">i64</span>: <span class="ident">i64</span>,
+
+    <span class="doccomment">/// A WebAssembly `f32` value.</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// Note that the payload here is a Rust `u32`. This is to allow passing any</span>
+    <span class="doccomment">/// representation of NaN into WebAssembly without risk of changing NaN</span>
+    <span class="doccomment">/// payload bits as its gets passed around the system. Otherwise though this</span>
+    <span class="doccomment">/// `u32` value is the return value of `f32::to_bits` in Rust.</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// This value is always stored in a little-endian format.</span>
+    <span class="ident">f32</span>: <span class="ident">u32</span>,
+
+    <span class="doccomment">/// A WebAssembly `f64` value.</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// Note that the payload here is a Rust `u64`. This is to allow passing any</span>
+    <span class="doccomment">/// representation of NaN into WebAssembly without risk of changing NaN</span>
+    <span class="doccomment">/// payload bits as its gets passed around the system. Otherwise though this</span>
+    <span class="doccomment">/// `u64` value is the return value of `f64::to_bits` in Rust.</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// This value is always stored in a little-endian format.</span>
+    <span class="ident">f64</span>: <span class="ident">u64</span>,
+
+    <span class="doccomment">/// A WebAssembly `v128` value.</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// The payload here is a Rust `u128` which has the same number of bits but</span>
+    <span class="doccomment">/// note that `v128` in WebAssembly is often considered a vector type such</span>
+    <span class="doccomment">/// as `i32x4` or `f64x2`. This means that the actual interpretation of the</span>
+    <span class="doccomment">/// underlying bits is left up to the instructions which consume this value.</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// This value is always stored in a little-endian format.</span>
+    <span class="ident">v128</span>: <span class="ident">u128</span>,
+
+    <span class="doccomment">/// A WebAssembly `funcref` value.</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// The payload here is a pointer which is runtime-defined. This is one of</span>
+    <span class="doccomment">/// the main points of unsafety about the `ValRaw` type as the validity of</span>
+    <span class="doccomment">/// the pointer here is not easily verified and must be preserved by</span>
+    <span class="doccomment">/// carefully calling the correct functions throughout the runtime.</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// This value is always stored in a little-endian format.</span>
+    <span class="ident">funcref</span>: <span class="ident">usize</span>,
+
+    <span class="doccomment">/// A WebAssembly `externref` value.</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// The payload here is a pointer which is runtime-defined. This is one of</span>
+    <span class="doccomment">/// the main points of unsafety about the `ValRaw` type as the validity of</span>
+    <span class="doccomment">/// the pointer here is not easily verified and must be preserved by</span>
+    <span class="doccomment">/// carefully calling the correct functions throughout the runtime.</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// This value is always stored in a little-endian format.</span>
+    <span class="ident">externref</span>: <span class="ident">usize</span>,
 }
 
-<span class="doccomment">/// Trampoline function pointer type.</span>
-<span class="kw">pub</span> <span class="kw">type</span> <span class="ident">VMTrampoline</span> <span class="op">=</span> <span class="kw">unsafe</span> <span class="kw">extern</span> <span class="string">&quot;C&quot;</span> <span class="kw">fn</span>(
-    <span class="kw-2">*mut</span> <span class="ident">VMContext</span>,        <span class="comment">// callee vmctx</span>
-    <span class="kw-2">*mut</span> <span class="ident">VMContext</span>,        <span class="comment">// caller vmctx</span>
-    <span class="kw-2">*const</span> <span class="ident">VMFunctionBody</span>, <span class="comment">// function we&#39;re actually calling</span>
-    <span class="kw-2">*mut</span> <span class="ident">ValRaw</span>,           <span class="comment">// space for arguments and return values</span>
-);
+<span class="kw">impl</span> <span class="ident">ValRaw</span> {
+    <span class="doccomment">/// Creates a WebAssembly `i32` value</span>
+    <span class="attribute">#[<span class="ident">inline</span>]</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">i32</span>(<span class="ident">i</span>: <span class="ident">i32</span>) -&gt; <span class="ident">ValRaw</span> {
+        <span class="ident">ValRaw</span> { <span class="ident">i32</span>: <span class="ident">i</span>.<span class="ident">to_le</span>() }
+    }
+
+    <span class="doccomment">/// Creates a WebAssembly `i64` value</span>
+    <span class="attribute">#[<span class="ident">inline</span>]</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">i64</span>(<span class="ident">i</span>: <span class="ident">i64</span>) -&gt; <span class="ident">ValRaw</span> {
+        <span class="ident">ValRaw</span> { <span class="ident">i64</span>: <span class="ident">i</span>.<span class="ident">to_le</span>() }
+    }
+
+    <span class="doccomment">/// Creates a WebAssembly `i32` value</span>
+    <span class="attribute">#[<span class="ident">inline</span>]</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">u32</span>(<span class="ident">i</span>: <span class="ident">u32</span>) -&gt; <span class="ident">ValRaw</span> {
+        <span class="ident">ValRaw::i32</span>(<span class="ident">i</span> <span class="kw">as</span> <span class="ident">i32</span>)
+    }
+
+    <span class="doccomment">/// Creates a WebAssembly `i64` value</span>
+    <span class="attribute">#[<span class="ident">inline</span>]</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">u64</span>(<span class="ident">i</span>: <span class="ident">u64</span>) -&gt; <span class="ident">ValRaw</span> {
+        <span class="ident">ValRaw::i64</span>(<span class="ident">i</span> <span class="kw">as</span> <span class="ident">i64</span>)
+    }
+
+    <span class="doccomment">/// Creates a WebAssembly `f32` value</span>
+    <span class="attribute">#[<span class="ident">inline</span>]</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">f32</span>(<span class="ident">i</span>: <span class="ident">u32</span>) -&gt; <span class="ident">ValRaw</span> {
+        <span class="ident">ValRaw</span> { <span class="ident">f32</span>: <span class="ident">i</span>.<span class="ident">to_le</span>() }
+    }
+
+    <span class="doccomment">/// Creates a WebAssembly `f64` value</span>
+    <span class="attribute">#[<span class="ident">inline</span>]</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">f64</span>(<span class="ident">i</span>: <span class="ident">u64</span>) -&gt; <span class="ident">ValRaw</span> {
+        <span class="ident">ValRaw</span> { <span class="ident">f64</span>: <span class="ident">i</span>.<span class="ident">to_le</span>() }
+    }
+
+    <span class="doccomment">/// Creates a WebAssembly `v128` value</span>
+    <span class="attribute">#[<span class="ident">inline</span>]</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">v128</span>(<span class="ident">i</span>: <span class="ident">u128</span>) -&gt; <span class="ident">ValRaw</span> {
+        <span class="ident">ValRaw</span> { <span class="ident">v128</span>: <span class="ident">i</span>.<span class="ident">to_le</span>() }
+    }
+
+    <span class="doccomment">/// Creates a WebAssembly `funcref` value</span>
+    <span class="attribute">#[<span class="ident">inline</span>]</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">funcref</span>(<span class="ident">i</span>: <span class="ident">usize</span>) -&gt; <span class="ident">ValRaw</span> {
+        <span class="ident">ValRaw</span> { <span class="ident">funcref</span>: <span class="ident">i</span>.<span class="ident">to_le</span>() }
+    }
+
+    <span class="doccomment">/// Creates a WebAssembly `externref` value</span>
+    <span class="attribute">#[<span class="ident">inline</span>]</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">externref</span>(<span class="ident">i</span>: <span class="ident">usize</span>) -&gt; <span class="ident">ValRaw</span> {
+        <span class="ident">ValRaw</span> {
+            <span class="ident">externref</span>: <span class="ident">i</span>.<span class="ident">to_le</span>(),
+        }
+    }
+
+    <span class="doccomment">/// Gets the WebAssembly `i32` value</span>
+    <span class="attribute">#[<span class="ident">inline</span>]</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">get_i32</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">i32</span> {
+        <span class="kw">unsafe</span> { <span class="ident">i32::from_le</span>(<span class="self">self</span>.<span class="ident">i32</span>) }
+    }
+
+    <span class="doccomment">/// Gets the WebAssembly `i64` value</span>
+    <span class="attribute">#[<span class="ident">inline</span>]</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">get_i64</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">i64</span> {
+        <span class="kw">unsafe</span> { <span class="ident">i64::from_le</span>(<span class="self">self</span>.<span class="ident">i64</span>) }
+    }
+
+    <span class="doccomment">/// Gets the WebAssembly `i32` value</span>
+    <span class="attribute">#[<span class="ident">inline</span>]</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">get_u32</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">u32</span> {
+        <span class="self">self</span>.<span class="ident">get_i32</span>() <span class="kw">as</span> <span class="ident">u32</span>
+    }
+
+    <span class="doccomment">/// Gets the WebAssembly `i64` value</span>
+    <span class="attribute">#[<span class="ident">inline</span>]</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">get_u64</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">u64</span> {
+        <span class="self">self</span>.<span class="ident">get_i64</span>() <span class="kw">as</span> <span class="ident">u64</span>
+    }
+
+    <span class="doccomment">/// Gets the WebAssembly `f32` value</span>
+    <span class="attribute">#[<span class="ident">inline</span>]</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">get_f32</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">u32</span> {
+        <span class="kw">unsafe</span> { <span class="ident">u32::from_le</span>(<span class="self">self</span>.<span class="ident">f32</span>) }
+    }
+
+    <span class="doccomment">/// Gets the WebAssembly `f64` value</span>
+    <span class="attribute">#[<span class="ident">inline</span>]</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">get_f64</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">u64</span> {
+        <span class="kw">unsafe</span> { <span class="ident">u64::from_le</span>(<span class="self">self</span>.<span class="ident">f64</span>) }
+    }
+
+    <span class="doccomment">/// Gets the WebAssembly `v128` value</span>
+    <span class="attribute">#[<span class="ident">inline</span>]</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">get_v128</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">u128</span> {
+        <span class="kw">unsafe</span> { <span class="ident">u128::from_le</span>(<span class="self">self</span>.<span class="ident">v128</span>) }
+    }
+
+    <span class="doccomment">/// Gets the WebAssembly `funcref` value</span>
+    <span class="attribute">#[<span class="ident">inline</span>]</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">get_funcref</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">usize</span> {
+        <span class="kw">unsafe</span> { <span class="ident">usize::from_le</span>(<span class="self">self</span>.<span class="ident">funcref</span>) }
+    }
+
+    <span class="doccomment">/// Gets the WebAssembly `externref` value</span>
+    <span class="attribute">#[<span class="ident">inline</span>]</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">get_externref</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">usize</span> {
+        <span class="kw">unsafe</span> { <span class="ident">usize::from_le</span>(<span class="self">self</span>.<span class="ident">externref</span>) }
+    }
+}
+
+<span class="doccomment">/// Type definition of the trampoline used to enter WebAssembly from the host.</span>
+<span class="doccomment">///</span>
+<span class="doccomment">/// This function type is what&#39;s generated for the entry trampolines that are</span>
+<span class="doccomment">/// compiled into a WebAssembly module&#39;s image. Note that trampolines are not</span>
+<span class="doccomment">/// always used by Wasmtime since the `TypedFunc` API allows bypassing the</span>
+<span class="doccomment">/// trampoline and directly calling the underlying wasm function (at the time of</span>
+<span class="doccomment">/// this writing).</span>
+<span class="doccomment">///</span>
+<span class="doccomment">/// The trampoline&#39;s arguments here are:</span>
+<span class="doccomment">///</span>
+<span class="doccomment">/// * `*mut VMOpaqueContext` - this a contextual pointer defined within the</span>
+<span class="doccomment">///   context of the receiving function pointer. For now this is always `*mut</span>
+<span class="doccomment">///   VMContext` but with the component model it may be the case that this is a</span>
+<span class="doccomment">///   different type of pointer.</span>
+<span class="doccomment">///</span>
+<span class="doccomment">/// * `*mut VMContext` - this is the &quot;caller&quot; context, which at this time is</span>
+<span class="doccomment">///   always unconditionally core wasm (even in the component model). This</span>
+<span class="doccomment">///   contextual pointer cannot be `NULL` and provides information necessary to</span>
+<span class="doccomment">///   resolve the caller&#39;s context for the `Caller` API in Wasmtime.</span>
+<span class="doccomment">///</span>
+<span class="doccomment">/// * `*const VMFunctionBody` - this is the indirect function pointer which is</span>
+<span class="doccomment">///   the actual target function to invoke. This function uses the System-V ABI</span>
+<span class="doccomment">///   for its argumenst and a semi-custom ABI for the return values (one return</span>
+<span class="doccomment">///   value is returned directly, multiple return values have the first one</span>
+<span class="doccomment">///   returned directly and remaining ones returned indirectly through a</span>
+<span class="doccomment">///   stack pointer). This function pointer may be Cranelift-compiled code or it</span>
+<span class="doccomment">///   may also be a host-compiled trampoline (e.g. when a host function calls a</span>
+<span class="doccomment">///   host function through the `wasmtime::Func` wrapper). The definition of the</span>
+<span class="doccomment">///   first argument of this function depends on what this receiving function</span>
+<span class="doccomment">///   pointer desires.</span>
+<span class="doccomment">///</span>
+<span class="doccomment">/// * `*mut ValRaw` - this is storage space for both arguments and results of</span>
+<span class="doccomment">///   the function. The trampoline will read the arguments from this array to</span>
+<span class="doccomment">///   pass to the function pointer provided. The results are then written to the</span>
+<span class="doccomment">///   array afterwards (both reads and writes start at index 0). It&#39;s the</span>
+<span class="doccomment">///   caller&#39;s responsibility to make sure this array is appropriately sized.</span>
+<span class="kw">pub</span> <span class="kw">type</span> <span class="ident">VMTrampoline</span> <span class="op">=</span>
+    <span class="kw">unsafe</span> <span class="kw">extern</span> <span class="string">&quot;C&quot;</span> <span class="kw">fn</span>(<span class="kw-2">*mut</span> <span class="ident">VMOpaqueContext</span>, <span class="kw-2">*mut</span> <span class="ident">VMContext</span>, <span class="kw-2">*const</span> <span class="ident">VMFunctionBody</span>, <span class="kw-2">*mut</span> <span class="ident">ValRaw</span>);
+
+<span class="doccomment">/// An &quot;opaque&quot; version of `VMContext` which must be explicitly casted to a</span>
+<span class="doccomment">/// target context.</span>
+<span class="doccomment">///</span>
+<span class="doccomment">/// This context is used to represent that contexts specified in</span>
+<span class="doccomment">/// `VMCallerCheckedAnyfunc` can have any type and don&#39;t have an implicit</span>
+<span class="doccomment">/// structure. Neither wasmtime nor cranelift-generated code can rely on the</span>
+<span class="doccomment">/// structure of an opaque context in general and only the code which configured</span>
+<span class="doccomment">/// the context is able to rely on a particular structure. This is because the</span>
+<span class="doccomment">/// context pointer configured for `VMCallerCheckedAnyfunc` is guaranteed to be</span>
+<span class="doccomment">/// the first parameter passed.</span>
+<span class="doccomment">///</span>
+<span class="doccomment">/// Note that Wasmtime currently has a layout where all contexts that are casted</span>
+<span class="doccomment">/// to an opaque context start with a 32-bit &quot;magic&quot; which can be used in debug</span>
+<span class="doccomment">/// mode to debug-assert that the casts here are correct and have at least a</span>
+<span class="doccomment">/// little protection against incorrect casts.</span>
+<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">VMOpaqueContext</span> {
+    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="ident">magic</span>: <span class="ident">u32</span>,
+    <span class="ident">_marker</span>: <span class="ident">marker::PhantomPinned</span>,
+}
+
+<span class="kw">impl</span> <span class="ident">VMOpaqueContext</span> {
+    <span class="doccomment">/// Helper function to clearly indicate that cast desired</span>
+    <span class="attribute">#[<span class="ident">inline</span>]</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">from_vmcontext</span>(<span class="ident">ptr</span>: <span class="kw-2">*mut</span> <span class="ident">VMContext</span>) -&gt; <span class="kw-2">*mut</span> <span class="ident">VMOpaqueContext</span> {
+        <span class="ident">ptr</span>.<span class="ident">cast</span>()
+    }
+}
 </code></pre></div>
 </section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="wasmtime_runtime" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.62.0-nightly (6dd68402c 2022-05-11)" ></div>
 </body></html>

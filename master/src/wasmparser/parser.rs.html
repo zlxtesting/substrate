@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/cargo_home/registry/src/github.com-1ecc6299db9ec823/wasmparser-0.83.0/src/parser.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>parser.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" type="text/css" href="../../normalize.css"><link rel="stylesheet" type="text/css" href="../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../ayu.css" disabled><link rel="stylesheet" type="text/css" href="../../dark.css" disabled><link rel="stylesheet" type="text/css" href="../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../storage.js"></script><script src="../../crates.js"></script><script defer src="../../main.js"></script><script defer src="../../source-script.js"></script><script defer src="../../source-files.js"></script>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/cargo_home/registry/src/github.com-1ecc6299db9ec823/wasmparser-0.85.0/src/parser.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>parser.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" type="text/css" href="../../normalize.css"><link rel="stylesheet" type="text/css" href="../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../ayu.css" disabled><link rel="stylesheet" type="text/css" href="../../dark.css" disabled><link rel="stylesheet" type="text/css" href="../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../storage.js"></script><script src="../../crates.js"></script><script defer src="../../main.js"></script><script defer src="../../source-script.js"></script><script defer src="../../source-files.js"></script>
     <noscript><link rel="stylesheet" href="../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="sidebar-logo" href="../../wasmparser/index.html"><div class="logo-container"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></div>
         </a><h2 class="location"></h2>
     </nav>
@@ -1363,38 +1363,91 @@
 <span id="1358">1358</span>
 <span id="1359">1359</span>
 <span id="1360">1360</span>
-</pre><pre class="rust"><code><span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::TagSectionReader</span>;
-<span class="kw">use</span> <span class="kw">crate</span>::{<span class="ident">AliasSectionReader</span>, <span class="ident">InstanceSectionReader</span>};
-<span class="kw">use</span> <span class="kw">crate</span>::{<span class="ident">BinaryReader</span>, <span class="ident">BinaryReaderError</span>, <span class="ident">FunctionBody</span>, <span class="ident">Range</span>, <span class="prelude-ty">Result</span>};
-<span class="kw">use</span> <span class="kw">crate</span>::{<span class="ident">DataSectionReader</span>, <span class="ident">ElementSectionReader</span>, <span class="ident">ExportSectionReader</span>};
-<span class="kw">use</span> <span class="kw">crate</span>::{<span class="ident">FunctionSectionReader</span>, <span class="ident">ImportSectionReader</span>, <span class="ident">TypeSectionReader</span>};
-<span class="kw">use</span> <span class="kw">crate</span>::{<span class="ident">GlobalSectionReader</span>, <span class="ident">MemorySectionReader</span>, <span class="ident">TableSectionReader</span>};
+<span id="1361">1361</span>
+<span id="1362">1362</span>
+<span id="1363">1363</span>
+<span id="1364">1364</span>
+<span id="1365">1365</span>
+<span id="1366">1366</span>
+<span id="1367">1367</span>
+<span id="1368">1368</span>
+<span id="1369">1369</span>
+<span id="1370">1370</span>
+<span id="1371">1371</span>
+<span id="1372">1372</span>
+<span id="1373">1373</span>
+<span id="1374">1374</span>
+<span id="1375">1375</span>
+<span id="1376">1376</span>
+<span id="1377">1377</span>
+<span id="1378">1378</span>
+<span id="1379">1379</span>
+<span id="1380">1380</span>
+<span id="1381">1381</span>
+<span id="1382">1382</span>
+<span id="1383">1383</span>
+<span id="1384">1384</span>
+<span id="1385">1385</span>
+<span id="1386">1386</span>
+<span id="1387">1387</span>
+<span id="1388">1388</span>
+<span id="1389">1389</span>
+<span id="1390">1390</span>
+<span id="1391">1391</span>
+<span id="1392">1392</span>
+<span id="1393">1393</span>
+</pre><pre class="rust"><code><span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::limits::MAX_WASM_MODULE_SIZE</span>;
+<span class="kw">use</span> <span class="kw">crate</span>::{
+    <span class="ident">AliasSectionReader</span>, <span class="ident">ComponentExportSectionReader</span>, <span class="ident">ComponentFunctionSectionReader</span>,
+    <span class="ident">ComponentImportSectionReader</span>, <span class="ident">ComponentStartSectionReader</span>, <span class="ident">ComponentTypeSectionReader</span>,
+    <span class="ident">InstanceSectionReader</span>,
+};
+<span class="kw">use</span> <span class="kw">crate</span>::{
+    <span class="ident">BinaryReader</span>, <span class="ident">BinaryReaderError</span>, <span class="ident">CustomSectionReader</span>, <span class="ident">DataSectionReader</span>, <span class="ident">ElementSectionReader</span>,
+    <span class="ident">ExportSectionReader</span>, <span class="ident">FunctionBody</span>, <span class="ident">FunctionSectionReader</span>, <span class="ident">GlobalSectionReader</span>,
+    <span class="ident">ImportSectionReader</span>, <span class="ident">MemorySectionReader</span>, <span class="prelude-ty">Result</span>, <span class="ident">TableSectionReader</span>, <span class="ident">TagSectionReader</span>,
+    <span class="ident">TypeSectionReader</span>,
+};
 <span class="kw">use</span> <span class="ident">std::convert::TryInto</span>;
 <span class="kw">use</span> <span class="ident">std::fmt</span>;
 <span class="kw">use</span> <span class="ident">std::iter</span>;
+<span class="kw">use</span> <span class="ident">std::ops::Range</span>;
 
-<span class="doccomment">/// An incremental parser of a binary WebAssembly module.</span>
+<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">const</span> <span class="ident">WASM_EXPERIMENTAL_VERSION</span>: <span class="ident">u32</span> <span class="op">=</span> <span class="number">0xd</span>;
+<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">const</span> <span class="ident">WASM_MODULE_VERSION</span>: <span class="ident">u32</span> <span class="op">=</span> <span class="number">0x1</span>;
+<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">const</span> <span class="ident">WASM_COMPONENT_VERSION</span>: <span class="ident">u32</span> <span class="op">=</span> <span class="number">0x0001000a</span>;
+
+<span class="doccomment">/// The supported encoding formats for the parser.</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>, <span class="ident">Clone</span>, <span class="ident">Copy</span>, <span class="ident">Eq</span>, <span class="ident">PartialEq</span>)]</span>
+<span class="kw">pub</span> <span class="kw">enum</span> <span class="ident">Encoding</span> {
+    <span class="doccomment">/// The encoding format is a WebAssembly module.</span>
+    <span class="ident">Module</span>,
+    <span class="doccomment">/// The encoding format is a WebAssembly component.</span>
+    <span class="ident">Component</span>,
+}
+
+<span class="doccomment">/// An incremental parser of a binary WebAssembly module or component.</span>
 <span class="doccomment">///</span>
 <span class="doccomment">/// This type is intended to be used to incrementally parse a WebAssembly module</span>
-<span class="doccomment">/// as bytes become available for the module. This can also be used to parse</span>
-<span class="doccomment">/// modules that are already entirely resident within memory.</span>
+<span class="doccomment">/// or component as bytes become available for the module. This can also be used</span>
+<span class="doccomment">/// to parse modules or components that are already entirely resident within memory.</span>
 <span class="doccomment">///</span>
 <span class="doccomment">/// This primary function for a parser is the [`Parser::parse`] function which</span>
 <span class="doccomment">/// will incrementally consume input. You can also use the [`Parser::parse_all`]</span>
-<span class="doccomment">/// function to parse a module that is entirely resident in memory.</span>
+<span class="doccomment">/// function to parse a module or component that is entirely resident in memory.</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>, <span class="ident">Clone</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">Parser</span> {
     <span class="ident">state</span>: <span class="ident">State</span>,
     <span class="ident">offset</span>: <span class="ident">u64</span>,
     <span class="ident">max_size</span>: <span class="ident">u64</span>,
+    <span class="ident">encoding</span>: <span class="ident">Encoding</span>,
 }
 
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>, <span class="ident">Clone</span>)]</span>
 <span class="kw">enum</span> <span class="ident">State</span> {
-    <span class="ident">ModuleHeader</span>,
+    <span class="ident">Header</span>,
     <span class="ident">SectionStart</span>,
     <span class="ident">FunctionBody</span> { <span class="ident">remaining</span>: <span class="ident">u32</span>, <span class="ident">len</span>: <span class="ident">u32</span> },
-    <span class="ident">Module</span> { <span class="ident">remaining</span>: <span class="ident">u32</span>, <span class="ident">len</span>: <span class="ident">u32</span> },
 }
 
 <span class="doccomment">/// A successful return payload from [`Parser::parse`].</span>
@@ -1420,109 +1473,146 @@
     },
 }
 
-<span class="doccomment">/// Values that can be parsed from a wasm module.</span>
+<span class="doccomment">/// Values that can be parsed from a WebAssembly module or component.</span>
 <span class="doccomment">///</span>
 <span class="doccomment">/// This enumeration is all possible chunks of pieces that can be parsed by a</span>
-<span class="doccomment">/// [`Parser`] from a binary WebAssembly module. Note that for many sections the</span>
-<span class="doccomment">/// entire section is parsed all at once, whereas other functions, like the code</span>
-<span class="doccomment">/// section, are parsed incrementally. This is a distinction where some</span>
+<span class="doccomment">/// [`Parser`] from a binary WebAssembly module or component. Note that for many</span>
+<span class="doccomment">/// sections the entire section is parsed all at once, whereas other functions,</span>
+<span class="doccomment">/// like the code section, are parsed incrementally. This is a distinction where some</span>
 <span class="doccomment">/// sections, like the type section, are required to be fully resident in memory</span>
 <span class="doccomment">/// (fully downloaded) before proceeding. Other sections, like the code section,</span>
 <span class="doccomment">/// can be processed in a streaming fashion where each function is extracted</span>
 <span class="doccomment">/// individually so it can possibly be shipped to another thread while you wait</span>
 <span class="doccomment">/// for more functions to get downloaded.</span>
 <span class="doccomment">///</span>
-<span class="doccomment">/// Note that payloads, when returned, do not indicate that the wasm module is</span>
-<span class="doccomment">/// valid. For example when you receive a `Payload::TypeSection` the type</span>
+<span class="doccomment">/// Note that payloads, when returned, do not indicate that the module or component</span>
+<span class="doccomment">/// is valid. For example when you receive a `Payload::TypeSection` the type</span>
 <span class="doccomment">/// section itself has not yet actually been parsed. The reader returned will be</span>
 <span class="doccomment">/// able to parse it, but you&#39;ll have to actually iterate the reader to do the</span>
 <span class="doccomment">/// full parse. Each payload returned is intended to be a *window* into the</span>
 <span class="doccomment">/// original `data` passed to [`Parser::parse`] which can be further processed</span>
 <span class="doccomment">/// if necessary.</span>
 <span class="kw">pub</span> <span class="kw">enum</span> <span class="ident">Payload</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span> {
-    <span class="doccomment">/// Indicates the header of a WebAssembly binary.</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// This header also indicates the version number that was parsed, which is</span>
-    <span class="doccomment">/// currently always 1.</span>
+    <span class="doccomment">/// Indicates the header of a WebAssembly module or component.</span>
     <span class="ident">Version</span> {
-        <span class="doccomment">/// The version number found</span>
+        <span class="doccomment">/// The version number found in the header.</span>
         <span class="ident">num</span>: <span class="ident">u32</span>,
+        <span class="doccomment">/// The encoding format being parsed.</span>
+        <span class="ident">encoding</span>: <span class="ident">Encoding</span>,
         <span class="doccomment">/// The range of bytes that were parsed to consume the header of the</span>
-        <span class="doccomment">/// module. Note that this range is relative to the start of the byte</span>
-        <span class="doccomment">/// stream.</span>
-        <span class="ident">range</span>: <span class="ident">Range</span>,
+        <span class="doccomment">/// module or component. Note that this range is relative to the start</span>
+        <span class="doccomment">/// of the byte stream.</span>
+        <span class="ident">range</span>: <span class="ident">Range</span><span class="op">&lt;</span><span class="ident">usize</span><span class="op">&gt;</span>,
     },
 
-    <span class="doccomment">/// A type section was received, and the provided reader can be used to</span>
-    <span class="doccomment">/// parse the contents of the type section.</span>
+    <span class="doccomment">/// A module type section was received and the provided reader can be</span>
+    <span class="doccomment">/// used to parse the contents of the type section.</span>
     <span class="ident">TypeSection</span>(<span class="ident"><span class="kw">crate</span>::TypeSectionReader</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span>),
-    <span class="doccomment">/// A import section was received, and the provided reader can be used to</span>
-    <span class="doccomment">/// parse the contents of the import section.</span>
+    <span class="doccomment">/// A module import section was received and the provided reader can be</span>
+    <span class="doccomment">/// used to parse the contents of the import section.</span>
     <span class="ident">ImportSection</span>(<span class="ident"><span class="kw">crate</span>::ImportSectionReader</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span>),
-    <span class="doccomment">/// An alias section was received, and the provided reader can be used to</span>
-    <span class="doccomment">/// parse the contents of the alias section.</span>
-    <span class="ident">AliasSection</span>(<span class="ident"><span class="kw">crate</span>::AliasSectionReader</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span>),
-    <span class="doccomment">/// An instance section was received, and the provided reader can be used to</span>
-    <span class="doccomment">/// parse the contents of the instance section.</span>
-    <span class="ident">InstanceSection</span>(<span class="ident"><span class="kw">crate</span>::InstanceSectionReader</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span>),
-    <span class="doccomment">/// A function section was received, and the provided reader can be used to</span>
-    <span class="doccomment">/// parse the contents of the function section.</span>
+    <span class="doccomment">/// A module function section was received and the provided reader can be</span>
+    <span class="doccomment">/// used to parse the contents of the function section.</span>
     <span class="ident">FunctionSection</span>(<span class="ident"><span class="kw">crate</span>::FunctionSectionReader</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span>),
-    <span class="doccomment">/// A table section was received, and the provided reader can be used to</span>
-    <span class="doccomment">/// parse the contents of the table section.</span>
+    <span class="doccomment">/// A module table section was received and the provided reader can be</span>
+    <span class="doccomment">/// used to parse the contents of the table section.</span>
     <span class="ident">TableSection</span>(<span class="ident"><span class="kw">crate</span>::TableSectionReader</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span>),
-    <span class="doccomment">/// A memory section was received, and the provided reader can be used to</span>
-    <span class="doccomment">/// parse the contents of the memory section.</span>
+    <span class="doccomment">/// A module memory section was received and the provided reader can be</span>
+    <span class="doccomment">/// used to parse the contents of the memory section.</span>
     <span class="ident">MemorySection</span>(<span class="ident"><span class="kw">crate</span>::MemorySectionReader</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span>),
-    <span class="doccomment">/// An tag section was received, and the provided reader can be used to</span>
-    <span class="doccomment">/// parse the contents of the tag section.</span>
+    <span class="doccomment">/// A module tag section was received, and the provided reader can be</span>
+    <span class="doccomment">/// used to parse the contents of the tag section.</span>
     <span class="ident">TagSection</span>(<span class="ident"><span class="kw">crate</span>::TagSectionReader</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span>),
-    <span class="doccomment">/// A global section was received, and the provided reader can be used to</span>
-    <span class="doccomment">/// parse the contents of the global section.</span>
+    <span class="doccomment">/// A module global section was received and the provided reader can be</span>
+    <span class="doccomment">/// used to parse the contents of the global section.</span>
     <span class="ident">GlobalSection</span>(<span class="ident"><span class="kw">crate</span>::GlobalSectionReader</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span>),
-    <span class="doccomment">/// An export section was received, and the provided reader can be used to</span>
-    <span class="doccomment">/// parse the contents of the export section.</span>
+    <span class="doccomment">/// A module export section was received, and the provided reader can be</span>
+    <span class="doccomment">/// used to parse the contents of the export section.</span>
     <span class="ident">ExportSection</span>(<span class="ident"><span class="kw">crate</span>::ExportSectionReader</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span>),
-    <span class="doccomment">/// A start section was received, and the `u32` here is the index of the</span>
-    <span class="doccomment">/// start function.</span>
+    <span class="doccomment">/// A module start section was received.</span>
     <span class="ident">StartSection</span> {
         <span class="doccomment">/// The start function index</span>
         <span class="ident">func</span>: <span class="ident">u32</span>,
         <span class="doccomment">/// The range of bytes that specify the `func` field, specified in</span>
         <span class="doccomment">/// offsets relative to the start of the byte stream.</span>
-        <span class="ident">range</span>: <span class="ident">Range</span>,
+        <span class="ident">range</span>: <span class="ident">Range</span><span class="op">&lt;</span><span class="ident">usize</span><span class="op">&gt;</span>,
     },
-    <span class="doccomment">/// An element section was received, and the provided reader can be used to</span>
-    <span class="doccomment">/// parse the contents of the element section.</span>
+    <span class="doccomment">/// A module element section was received and the provided reader can be</span>
+    <span class="doccomment">/// used to parse the contents of the element section.</span>
     <span class="ident">ElementSection</span>(<span class="ident"><span class="kw">crate</span>::ElementSectionReader</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span>),
-    <span class="doccomment">/// A data count section was received, and the `u32` here is the contents of</span>
-    <span class="doccomment">/// the data count section.</span>
+    <span class="doccomment">/// A module data count section was received.</span>
     <span class="ident">DataCountSection</span> {
         <span class="doccomment">/// The number of data segments.</span>
         <span class="ident">count</span>: <span class="ident">u32</span>,
         <span class="doccomment">/// The range of bytes that specify the `count` field, specified in</span>
         <span class="doccomment">/// offsets relative to the start of the byte stream.</span>
-        <span class="ident">range</span>: <span class="ident">Range</span>,
+        <span class="ident">range</span>: <span class="ident">Range</span><span class="op">&lt;</span><span class="ident">usize</span><span class="op">&gt;</span>,
     },
-    <span class="doccomment">/// A data section was received, and the provided reader can be used to</span>
-    <span class="doccomment">/// parse the contents of the data section.</span>
+    <span class="doccomment">/// A module data section was received and the provided reader can be</span>
+    <span class="doccomment">/// used to parse the contents of the data section.</span>
     <span class="ident">DataSection</span>(<span class="ident"><span class="kw">crate</span>::DataSectionReader</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span>),
-    <span class="doccomment">/// A custom section was found.</span>
-    <span class="ident">CustomSection</span> {
-        <span class="doccomment">/// The name of the custom section.</span>
-        <span class="ident">name</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="ident">str</span>,
-        <span class="doccomment">/// The offset, relative to the start of the original module, that the</span>
-        <span class="doccomment">/// `data` payload for this custom section starts at.</span>
-        <span class="ident">data_offset</span>: <span class="ident">usize</span>,
-        <span class="doccomment">/// The actual contents of the custom section.</span>
-        <span class="ident">data</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> [<span class="ident">u8</span>],
-        <span class="doccomment">/// The range of bytes that specify this whole custom section (including</span>
-        <span class="doccomment">/// both the name of this custom section and its data) specified in</span>
-        <span class="doccomment">/// offsets relative to the start of the byte stream.</span>
-        <span class="ident">range</span>: <span class="ident">Range</span>,
-    },
 
-    <span class="doccomment">/// Indicator of the start of the code section.</span>
+    <span class="doccomment">/// A component type section was received and the provided reader can be</span>
+    <span class="doccomment">/// used to parse the contents of the type section.</span>
+    <span class="ident">ComponentTypeSection</span>(<span class="ident"><span class="kw">crate</span>::ComponentTypeSectionReader</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span>),
+    <span class="doccomment">/// A component import section was received and the provided reader can be</span>
+    <span class="doccomment">/// used to parse the contents of the import section.</span>
+    <span class="ident">ComponentImportSection</span>(<span class="ident"><span class="kw">crate</span>::ComponentImportSectionReader</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span>),
+    <span class="doccomment">/// A component function section was received and the provided reader can be</span>
+    <span class="doccomment">/// used to parse the contents of the function section.</span>
+    <span class="ident">ComponentFunctionSection</span>(<span class="ident"><span class="kw">crate</span>::ComponentFunctionSectionReader</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span>),
+    <span class="doccomment">/// A component module section was received and the provided parser can be</span>
+    <span class="doccomment">/// used to parse the nested module.</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// This variant is special in that it returns a sub-`Parser`. Upon</span>
+    <span class="doccomment">/// receiving a `ModuleSection` it is expected that the returned</span>
+    <span class="doccomment">/// `Parser` will be used instead of the parent `Parser` until the parse has</span>
+    <span class="doccomment">/// finished. You&#39;ll need to feed data into the `Parser` returned until it</span>
+    <span class="doccomment">/// returns `Payload::End`. After that you&#39;ll switch back to the parent</span>
+    <span class="doccomment">/// parser to resume parsing the rest of the current component.</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// Note that binaries will not be parsed correctly if you feed the data for</span>
+    <span class="doccomment">/// a nested module into the parent [`Parser`].</span>
+    <span class="ident">ModuleSection</span> {
+        <span class="doccomment">/// The parser for the nested module.</span>
+        <span class="ident">parser</span>: <span class="ident">Parser</span>,
+        <span class="doccomment">/// The range of bytes that represent the nested module in the</span>
+        <span class="doccomment">/// original byte stream.</span>
+        <span class="ident">range</span>: <span class="ident">Range</span><span class="op">&lt;</span><span class="ident">usize</span><span class="op">&gt;</span>,
+    },
+    <span class="doccomment">/// A component section from a WebAssembly component was received and the</span>
+    <span class="doccomment">/// provided parser can be used to parse the nested component.</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// This variant is special in that it returns a sub-`Parser`. Upon</span>
+    <span class="doccomment">/// receiving a `ComponentSection` it is expected that the returned</span>
+    <span class="doccomment">/// `Parser` will be used instead of the parent `Parser` until the parse has</span>
+    <span class="doccomment">/// finished. You&#39;ll need to feed data into the `Parser` returned until it</span>
+    <span class="doccomment">/// returns `Payload::End`. After that you&#39;ll switch back to the parent</span>
+    <span class="doccomment">/// parser to resume parsing the rest of the current component.</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// Note that binaries will not be parsed correctly if you feed the data for</span>
+    <span class="doccomment">/// a nested component into the parent [`Parser`].</span>
+    <span class="ident">ComponentSection</span> {
+        <span class="doccomment">/// The parser for the nested component.</span>
+        <span class="ident">parser</span>: <span class="ident">Parser</span>,
+        <span class="doccomment">/// The range of bytes that represent the nested component in the</span>
+        <span class="doccomment">/// original byte stream.</span>
+        <span class="ident">range</span>: <span class="ident">Range</span><span class="op">&lt;</span><span class="ident">usize</span><span class="op">&gt;</span>,
+    },
+    <span class="doccomment">/// A component instance section was received and the provided reader can be</span>
+    <span class="doccomment">/// used to parse the contents of the instance section.</span>
+    <span class="ident">InstanceSection</span>(<span class="ident"><span class="kw">crate</span>::InstanceSectionReader</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span>),
+    <span class="doccomment">/// A component export section was received, and the provided reader can be</span>
+    <span class="doccomment">/// used to parse the contents of the export section.</span>
+    <span class="ident">ComponentExportSection</span>(<span class="ident"><span class="kw">crate</span>::ComponentExportSectionReader</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span>),
+    <span class="doccomment">/// A component start section was received, and the provided reader can be</span>
+    <span class="doccomment">/// used to parse the contents of the start section.</span>
+    <span class="ident">ComponentStartSection</span>(<span class="ident"><span class="kw">crate</span>::ComponentStartSectionReader</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span>),
+    <span class="doccomment">/// A component alias section was received and the provided reader can be</span>
+    <span class="doccomment">/// used to parse the contents of the alias section.</span>
+    <span class="ident">AliasSection</span>(<span class="ident"><span class="kw">crate</span>::AliasSectionReader</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span>),
+
+    <span class="doccomment">/// Indicator of the start of the code section of a WebAssembly module.</span>
     <span class="doccomment">///</span>
     <span class="doccomment">/// This entry is returned whenever the code section starts. The `count`</span>
     <span class="doccomment">/// field indicates how many entries are in this code section. After</span>
@@ -1538,7 +1628,7 @@
         <span class="ident">count</span>: <span class="ident">u32</span>,
         <span class="doccomment">/// The range of bytes that represent this section, specified in</span>
         <span class="doccomment">/// offsets relative to the start of the byte stream.</span>
-        <span class="ident">range</span>: <span class="ident">Range</span>,
+        <span class="ident">range</span>: <span class="ident">Range</span><span class="op">&lt;</span><span class="ident">usize</span><span class="op">&gt;</span>,
         <span class="doccomment">/// The size, in bytes, of the remaining contents of this section.</span>
         <span class="doccomment">///</span>
         <span class="doccomment">/// This can be used in combination with [`Parser::skip_section`]</span>
@@ -1546,8 +1636,8 @@
         <span class="doccomment">/// bytes into `Parser` again.</span>
         <span class="ident">size</span>: <span class="ident">u32</span>,
     },
-
-    <span class="doccomment">/// An entry of the code section, a function, was parsed.</span>
+    <span class="doccomment">/// An entry of the code section, a function, was parsed from a WebAssembly</span>
+    <span class="doccomment">/// module.</span>
     <span class="doccomment">///</span>
     <span class="doccomment">/// This entry indicates that a function was successfully received from the</span>
     <span class="doccomment">/// code section, and the payload here is the window into the original input</span>
@@ -1556,47 +1646,15 @@
     <span class="doccomment">/// `FunctionBody` provided to test whether it parses and/or is valid.</span>
     <span class="ident">CodeSectionEntry</span>(<span class="ident"><span class="kw">crate</span>::FunctionBody</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span>),
 
-    <span class="doccomment">/// Indicator of the start of the module code section.</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// This behaves the same as the `CodeSectionStart` payload being returned.</span>
-    <span class="doccomment">/// You&#39;re guaranteed the next `count` items will be of type</span>
-    <span class="doccomment">/// `ModuleSectionEntry`.</span>
-    <span class="ident">ModuleSectionStart</span> {
-        <span class="doccomment">/// The number of inline modules in this section.</span>
-        <span class="ident">count</span>: <span class="ident">u32</span>,
-        <span class="doccomment">/// The range of bytes that represent this section, specified in</span>
-        <span class="doccomment">/// offsets relative to the start of the byte stream.</span>
-        <span class="ident">range</span>: <span class="ident">Range</span>,
-        <span class="doccomment">/// The size, in bytes, of the remaining contents of this section.</span>
-        <span class="ident">size</span>: <span class="ident">u32</span>,
-    },
-
-    <span class="doccomment">/// An entry of the module code section, a module, was parsed.</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// This variant is special in that it returns a sub-`Parser`. Upon</span>
-    <span class="doccomment">/// receiving a `ModuleSectionEntry` it is expected that the returned</span>
-    <span class="doccomment">/// `Parser` will be used instead of the parent `Parser` until the parse has</span>
-    <span class="doccomment">/// finished. You&#39;ll need to feed data into the `Parser` returned until it</span>
-    <span class="doccomment">/// returns `Payload::End`. After that you&#39;ll switch back to the parent</span>
-    <span class="doccomment">/// parser to resume parsing the rest of the module code section.</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// Note that binaries will not be parsed correctly if you feed the data for</span>
-    <span class="doccomment">/// a nested module into the parent [`Parser`].</span>
-    <span class="ident">ModuleSectionEntry</span> {
-        <span class="doccomment">/// The parser to use to parse the contents of the nested submodule.</span>
-        <span class="doccomment">/// This parser should be used until it reports `End`.</span>
-        <span class="ident">parser</span>: <span class="ident">Parser</span>,
-        <span class="doccomment">/// The range of bytes, relative to the start of the input stream, of</span>
-        <span class="doccomment">/// the bytes containing this submodule.</span>
-        <span class="ident">range</span>: <span class="ident">Range</span>,
-    },
+    <span class="doccomment">/// A module or component custom section was received.</span>
+    <span class="ident">CustomSection</span>(<span class="ident"><span class="kw">crate</span>::CustomSectionReader</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span>),
 
     <span class="doccomment">/// An unknown section was found.</span>
     <span class="doccomment">///</span>
-    <span class="doccomment">/// This variant is returned for all unknown sections in a wasm file. This</span>
+    <span class="doccomment">/// This variant is returned for all unknown sections encountered. This</span>
     <span class="doccomment">/// likely wants to be interpreted as an error by consumers of the parser,</span>
-    <span class="doccomment">/// but this can also be used to parse sections unknown to wasmparser at</span>
-    <span class="doccomment">/// this time.</span>
+    <span class="doccomment">/// but this can also be used to parse sections currently unsupported by</span>
+    <span class="doccomment">/// the parser.</span>
     <span class="ident">UnknownSection</span> {
         <span class="doccomment">/// The 8-bit identifier for this section.</span>
         <span class="ident">id</span>: <span class="ident">u8</span>,
@@ -1604,41 +1662,44 @@
         <span class="ident">contents</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> [<span class="ident">u8</span>],
         <span class="doccomment">/// The range of bytes, relative to the start of the original data</span>
         <span class="doccomment">/// stream, that the contents of this section reside in.</span>
-        <span class="ident">range</span>: <span class="ident">Range</span>,
+        <span class="ident">range</span>: <span class="ident">Range</span><span class="op">&lt;</span><span class="ident">usize</span><span class="op">&gt;</span>,
     },
 
-    <span class="doccomment">/// The end of the WebAssembly module was reached.</span>
-    <span class="ident">End</span>,
+    <span class="doccomment">/// The end of the WebAssembly module or component was reached.</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// The value is the offset in the input byte stream where the end</span>
+    <span class="doccomment">/// was reached.</span>
+    <span class="ident">End</span>(<span class="ident">usize</span>),
 }
 
 <span class="kw">impl</span> <span class="ident">Parser</span> {
-    <span class="doccomment">/// Creates a new module parser.</span>
+    <span class="doccomment">/// Creates a new parser.</span>
     <span class="doccomment">///</span>
     <span class="doccomment">/// Reports errors and ranges relative to `offset` provided, where `offset`</span>
     <span class="doccomment">/// is some logical offset within the input stream that we&#39;re parsing.</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new</span>(<span class="ident">offset</span>: <span class="ident">u64</span>) -&gt; <span class="ident">Parser</span> {
         <span class="ident">Parser</span> {
-            <span class="ident">state</span>: <span class="ident">State::ModuleHeader</span>,
+            <span class="ident">state</span>: <span class="ident">State::Header</span>,
             <span class="ident">offset</span>,
             <span class="ident">max_size</span>: <span class="ident">u64::max_value</span>(),
+            <span class="comment">// Assume the encoding is a module until we know otherwise</span>
+            <span class="ident">encoding</span>: <span class="ident">Encoding::Module</span>,
         }
     }
 
     <span class="doccomment">/// Attempts to parse a chunk of data.</span>
     <span class="doccomment">///</span>
     <span class="doccomment">/// This method will attempt to parse the next incremental portion of a</span>
-    <span class="doccomment">/// WebAssembly binary. Data available for the module is provided as `data`,</span>
-    <span class="doccomment">/// and the data can be incomplete if more data has yet to arrive for the</span>
-    <span class="doccomment">/// module. The `eof` flag indicates whether `data` represents all possible</span>
-    <span class="doccomment">/// data for the module and no more data will ever be received.</span>
+    <span class="doccomment">/// WebAssembly binary. Data available for the module or component is</span>
+    <span class="doccomment">/// provided as `data`, and the data can be incomplete if more data has yet</span>
+    <span class="doccomment">/// to arrive. The `eof` flag indicates whether more data will ever be received.</span>
     <span class="doccomment">///</span>
     <span class="doccomment">/// There are two ways parsing can succeed with this method:</span>
     <span class="doccomment">///</span>
     <span class="doccomment">/// * `Chunk::NeedMoreData` - this indicates that there is not enough bytes</span>
-    <span class="doccomment">///   in `data` to parse a chunk of this module. The caller needs to wait</span>
-    <span class="doccomment">///   for more data to be available in this situation before calling this</span>
-    <span class="doccomment">///   method again. It is guaranteed that this is only returned if `eof` is</span>
-    <span class="doccomment">///   `false`.</span>
+    <span class="doccomment">///   in `data` to parse a payload. The caller needs to wait for more data to</span>
+    <span class="doccomment">///   be available in this situation before calling this method again. It is</span>
+    <span class="doccomment">///   guaranteed that this is only returned if `eof` is `false`.</span>
     <span class="doccomment">///</span>
     <span class="doccomment">/// * `Chunk::Parsed` - this indicates that a chunk of the input was</span>
     <span class="doccomment">///   successfully parsed. The payload is available in this variant of what</span>
@@ -1651,14 +1712,14 @@
     <span class="doccomment">/// view into it for successfully parsed chunks.</span>
     <span class="doccomment">///</span>
     <span class="doccomment">/// It is expected that you&#39;ll call this method until `Payload::End` is</span>
-    <span class="doccomment">/// reached, at which point you&#39;re guaranteed that the module has completely</span>
-    <span class="doccomment">/// parsed. Note that complete parsing, for the top-level wasm module,</span>
+    <span class="doccomment">/// reached, at which point you&#39;re guaranteed that the parse has completed.</span>
+    <span class="doccomment">/// Note that complete parsing, for the top-level module or component,</span>
     <span class="doccomment">/// implies that `data` is empty and `eof` is `true`.</span>
     <span class="doccomment">///</span>
     <span class="doccomment">/// # Errors</span>
     <span class="doccomment">///</span>
     <span class="doccomment">/// Parse errors are returned as an `Err`. Errors can happen when the</span>
-    <span class="doccomment">/// structure of the module is unexpected, or if sections are too large for</span>
+    <span class="doccomment">/// structure of the data is unexpected or if sections are too large for</span>
     <span class="doccomment">/// example. Note that errors are not returned for malformed *contents* of</span>
     <span class="doccomment">/// sections here. Sections are generally not individually parsed and each</span>
     <span class="doccomment">/// returned [`Payload`] needs to be iterated over further to detect all</span>
@@ -1702,12 +1763,10 @@
     <span class="doccomment">///         };</span>
     <span class="doccomment">///</span>
     <span class="doccomment">///         match payload {</span>
-    <span class="doccomment">///             // Each of these would be handled individually as necessary</span>
+    <span class="doccomment">///             // Sections for WebAssembly modules</span>
     <span class="doccomment">///             Version { .. } =&gt; { /* ... */ }</span>
     <span class="doccomment">///             TypeSection(_) =&gt; { /* ... */ }</span>
     <span class="doccomment">///             ImportSection(_) =&gt; { /* ... */ }</span>
-    <span class="doccomment">///             AliasSection(_) =&gt; { /* ... */ }</span>
-    <span class="doccomment">///             InstanceSection(_) =&gt; { /* ... */ }</span>
     <span class="doccomment">///             FunctionSection(_) =&gt; { /* ... */ }</span>
     <span class="doccomment">///             TableSection(_) =&gt; { /* ... */ }</span>
     <span class="doccomment">///             MemorySection(_) =&gt; { /* ... */ }</span>
@@ -1729,23 +1788,26 @@
     <span class="doccomment">///                 // and its locals</span>
     <span class="doccomment">///             }</span>
     <span class="doccomment">///</span>
-    <span class="doccomment">///             // When parsing nested modules we need to switch which</span>
-    <span class="doccomment">///             // `Parser` we&#39;re using.</span>
-    <span class="doccomment">///             ModuleSectionStart { .. } =&gt; { /* ... */ }</span>
-    <span class="doccomment">///             ModuleSectionEntry { parser: subparser, .. } =&gt; {</span>
-    <span class="doccomment">///                 stack.push(parser);</span>
-    <span class="doccomment">///                 parser = subparser;</span>
-    <span class="doccomment">///             }</span>
+    <span class="doccomment">///             // Sections for WebAssembly components</span>
+    <span class="doccomment">///             ComponentTypeSection(_) =&gt; { /* ... */ }</span>
+    <span class="doccomment">///             ComponentImportSection(_) =&gt; { /* ... */ }</span>
+    <span class="doccomment">///             ComponentFunctionSection(_) =&gt; { /* ... */ }</span>
+    <span class="doccomment">///             ModuleSection { .. } =&gt; { /* ... */ }</span>
+    <span class="doccomment">///             ComponentSection { .. } =&gt; { /* ... */ }</span>
+    <span class="doccomment">///             InstanceSection(_) =&gt; { /* ... */ }</span>
+    <span class="doccomment">///             ComponentExportSection(_) =&gt; { /* ... */ }</span>
+    <span class="doccomment">///             ComponentStartSection { .. } =&gt; { /* ... */ }</span>
+    <span class="doccomment">///             AliasSection(_) =&gt; { /* ... */ }</span>
     <span class="doccomment">///</span>
-    <span class="doccomment">///             CustomSection { name, .. } =&gt; { /* ... */ }</span>
+    <span class="doccomment">///             CustomSection(_) =&gt; { /* ... */ }</span>
     <span class="doccomment">///</span>
     <span class="doccomment">///             // most likely you&#39;d return an error here</span>
     <span class="doccomment">///             UnknownSection { id, .. } =&gt; { /* ... */ }</span>
     <span class="doccomment">///</span>
-    <span class="doccomment">///             // Once we&#39;ve reached the end of a module we either resume</span>
-    <span class="doccomment">///             // at the parent module or we break out of the loop because</span>
+    <span class="doccomment">///             // Once we&#39;ve reached the end of a parser we either resume</span>
+    <span class="doccomment">///             // at the parent parser or we break out of the loop because</span>
     <span class="doccomment">///             // we&#39;re done.</span>
-    <span class="doccomment">///             End =&gt; {</span>
+    <span class="doccomment">///             End(_) =&gt; {</span>
     <span class="doccomment">///                 if let Some(parent_parser) = stack.pop() {</span>
     <span class="doccomment">///                     parser = parent_parser;</span>
     <span class="doccomment">///                 } else {</span>
@@ -1810,34 +1872,45 @@
         <span class="kw">use</span> <span class="ident">Payload</span>::<span class="kw-2">*</span>;
 
         <span class="kw">match</span> <span class="self">self</span>.<span class="ident">state</span> {
-            <span class="ident">State::ModuleHeader</span> =&gt; {
+            <span class="ident">State::Header</span> =&gt; {
                 <span class="kw">let</span> <span class="ident">start</span> <span class="op">=</span> <span class="ident">reader</span>.<span class="ident">original_position</span>();
-                <span class="kw">let</span> <span class="ident">num</span> <span class="op">=</span> <span class="ident">reader</span>.<span class="ident">read_file_header</span>()<span class="question-mark">?</span>;
+                <span class="kw">let</span> <span class="ident">num</span> <span class="op">=</span> <span class="ident">reader</span>.<span class="ident">read_header_version</span>()<span class="question-mark">?</span>;
+                <span class="self">self</span>.<span class="ident">encoding</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">num</span> {
+                    <span class="ident">WASM_EXPERIMENTAL_VERSION</span> <span class="op">|</span> <span class="ident">WASM_MODULE_VERSION</span> =&gt; <span class="ident">Encoding::Module</span>,
+                    <span class="ident">WASM_COMPONENT_VERSION</span> =&gt; <span class="ident">Encoding::Component</span>,
+                    <span class="kw">_</span> =&gt; {
+                        <span class="kw">return</span> <span class="prelude-val">Err</span>(<span class="ident">BinaryReaderError::new</span>(
+                            <span class="string">&quot;unknown binary version&quot;</span>,
+                            <span class="ident">reader</span>.<span class="ident">original_position</span>() <span class="op">-</span> <span class="number">4</span>,
+                        ))
+                    }
+                };
                 <span class="self">self</span>.<span class="ident">state</span> <span class="op">=</span> <span class="ident">State::SectionStart</span>;
                 <span class="prelude-val">Ok</span>(<span class="ident">Version</span> {
                     <span class="ident">num</span>,
-                    <span class="ident">range</span>: <span class="ident">Range</span> {
-                        <span class="ident">start</span>,
-                        <span class="ident">end</span>: <span class="ident">reader</span>.<span class="ident">original_position</span>(),
-                    },
+                    <span class="ident">encoding</span>: <span class="self">self</span>.<span class="ident">encoding</span>,
+                    <span class="ident">range</span>: <span class="ident">start</span>..<span class="ident">reader</span>.<span class="ident">original_position</span>(),
                 })
             }
             <span class="ident">State::SectionStart</span> =&gt; {
                 <span class="comment">// If we&#39;re at eof and there are no bytes in our buffer, then</span>
-                <span class="comment">// that means we reached the end of the wasm file since it&#39;s</span>
-                <span class="comment">// just a bunch of sections concatenated after the module</span>
-                <span class="comment">// header.</span>
+                <span class="comment">// that means we reached the end of the data since it&#39;s</span>
+                <span class="comment">// just a bunch of sections concatenated after the header.</span>
                 <span class="kw">if</span> <span class="ident">eof</span> <span class="op">&amp;&amp;</span> <span class="ident">reader</span>.<span class="ident">bytes_remaining</span>() <span class="op">==</span> <span class="number">0</span> {
-                    <span class="kw">return</span> <span class="prelude-val">Ok</span>(<span class="ident">Payload::End</span>);
+                    <span class="kw">return</span> <span class="prelude-val">Ok</span>(<span class="ident">Payload::End</span>(<span class="ident">reader</span>.<span class="ident">original_position</span>()));
                 }
 
-                <span class="kw">let</span> <span class="ident">id</span> <span class="op">=</span> <span class="ident">reader</span>.<span class="ident">read_var_u7</span>()<span class="question-mark">?</span> <span class="kw">as</span> <span class="ident">u8</span>;
+                <span class="kw">let</span> <span class="ident">id_pos</span> <span class="op">=</span> <span class="ident">reader</span>.<span class="ident">position</span>;
+                <span class="kw">let</span> <span class="ident">id</span> <span class="op">=</span> <span class="ident">reader</span>.<span class="ident">read_u8</span>()<span class="question-mark">?</span>;
+                <span class="kw">if</span> <span class="ident">id</span> <span class="op">&amp;</span> <span class="number">0x80</span> <span class="op">!</span><span class="op">=</span> <span class="number">0</span> {
+                    <span class="kw">return</span> <span class="prelude-val">Err</span>(<span class="ident">BinaryReaderError::new</span>(<span class="string">&quot;malformed section id&quot;</span>, <span class="ident">id_pos</span>));
+                }
                 <span class="kw">let</span> <span class="ident">len_pos</span> <span class="op">=</span> <span class="ident">reader</span>.<span class="ident">position</span>;
                 <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">len</span> <span class="op">=</span> <span class="ident">reader</span>.<span class="ident">read_var_u32</span>()<span class="question-mark">?</span>;
 
                 <span class="comment">// Test to make sure that this section actually fits within</span>
                 <span class="comment">// `Parser::max_size`. This doesn&#39;t matter for top-level modules</span>
-                <span class="comment">// but it is required for nested modules to correctly ensure</span>
+                <span class="comment">// but it is required for nested modules/components to correctly ensure</span>
                 <span class="comment">// that all sections live entirely within their section of the</span>
                 <span class="comment">// file.</span>
                 <span class="kw">let</span> <span class="ident">section_overflow</span> <span class="op">=</span> <span class="self">self</span>
@@ -1849,44 +1922,46 @@
                     <span class="kw">return</span> <span class="prelude-val">Err</span>(<span class="ident">BinaryReaderError::new</span>(<span class="string">&quot;section too large&quot;</span>, <span class="ident">len_pos</span>));
                 }
 
-                <span class="kw">match</span> <span class="ident">id</span> {
-                    <span class="number">0</span> =&gt; {
-                        <span class="kw">let</span> <span class="ident">start</span> <span class="op">=</span> <span class="ident">reader</span>.<span class="ident">original_position</span>();
-                        <span class="kw">let</span> <span class="ident">range</span> <span class="op">=</span> <span class="ident">Range</span> {
-                            <span class="ident">start</span>,
-                            <span class="ident">end</span>: <span class="ident">reader</span>.<span class="ident">original_position</span>() <span class="op">+</span> <span class="ident">len</span> <span class="kw">as</span> <span class="ident">usize</span>,
-                        };
-                        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">content</span> <span class="op">=</span> <span class="ident">subreader</span>(<span class="ident">reader</span>, <span class="ident">len</span>)<span class="question-mark">?</span>;
-                        <span class="comment">// Note that if this fails we can&#39;t read any more bytes,</span>
-                        <span class="comment">// so clear the &quot;we&#39;d succeed if we got this many more</span>
-                        <span class="comment">// bytes&quot; because we can&#39;t recover from &quot;eof&quot; at this point.</span>
-                        <span class="kw">let</span> <span class="ident">name</span> <span class="op">=</span> <span class="ident">content</span>.<span class="ident">read_string</span>().<span class="ident">map_err</span>(<span class="ident">clear_hint</span>)<span class="question-mark">?</span>;
-                        <span class="prelude-val">Ok</span>(<span class="ident">Payload::CustomSection</span> {
-                            <span class="ident">name</span>,
-                            <span class="ident">data_offset</span>: <span class="ident">content</span>.<span class="ident">original_position</span>(),
-                            <span class="ident">data</span>: <span class="ident">content</span>.<span class="ident">remaining_buffer</span>(),
-                            <span class="ident">range</span>,
-                        })
+                <span class="comment">// Check for custom sections (supported by all encodings)</span>
+                <span class="kw">if</span> <span class="ident">id</span> <span class="op">==</span> <span class="number">0</span> {}
+
+                <span class="kw">match</span> (<span class="self">self</span>.<span class="ident">encoding</span>, <span class="ident">id</span>) {
+                    <span class="comment">// Sections for both modules and components.</span>
+                    (<span class="kw">_</span>, <span class="number">0</span>) =&gt; <span class="ident">section</span>(<span class="ident">reader</span>, <span class="ident">len</span>, <span class="ident">CustomSectionReader::new</span>, <span class="ident">CustomSection</span>),
+
+                    <span class="comment">// Module sections</span>
+                    (<span class="ident">Encoding::Module</span>, <span class="number">1</span>) =&gt; {
+                        <span class="ident">section</span>(<span class="ident">reader</span>, <span class="ident">len</span>, <span class="ident">TypeSectionReader::new</span>, <span class="ident">TypeSection</span>)
                     }
-                    <span class="number">1</span> =&gt; <span class="ident">section</span>(<span class="ident">reader</span>, <span class="ident">len</span>, <span class="ident">TypeSectionReader::new</span>, <span class="ident">TypeSection</span>),
-                    <span class="number">2</span> =&gt; <span class="ident">section</span>(<span class="ident">reader</span>, <span class="ident">len</span>, <span class="ident">ImportSectionReader::new</span>, <span class="ident">ImportSection</span>),
-                    <span class="number">3</span> =&gt; <span class="ident">section</span>(<span class="ident">reader</span>, <span class="ident">len</span>, <span class="ident">FunctionSectionReader::new</span>, <span class="ident">FunctionSection</span>),
-                    <span class="number">4</span> =&gt; <span class="ident">section</span>(<span class="ident">reader</span>, <span class="ident">len</span>, <span class="ident">TableSectionReader::new</span>, <span class="ident">TableSection</span>),
-                    <span class="number">5</span> =&gt; <span class="ident">section</span>(<span class="ident">reader</span>, <span class="ident">len</span>, <span class="ident">MemorySectionReader::new</span>, <span class="ident">MemorySection</span>),
-                    <span class="number">6</span> =&gt; <span class="ident">section</span>(<span class="ident">reader</span>, <span class="ident">len</span>, <span class="ident">GlobalSectionReader::new</span>, <span class="ident">GlobalSection</span>),
-                    <span class="number">7</span> =&gt; <span class="ident">section</span>(<span class="ident">reader</span>, <span class="ident">len</span>, <span class="ident">ExportSectionReader::new</span>, <span class="ident">ExportSection</span>),
-                    <span class="number">8</span> =&gt; {
+                    (<span class="ident">Encoding::Module</span>, <span class="number">2</span>) =&gt; {
+                        <span class="ident">section</span>(<span class="ident">reader</span>, <span class="ident">len</span>, <span class="ident">ImportSectionReader::new</span>, <span class="ident">ImportSection</span>)
+                    }
+                    (<span class="ident">Encoding::Module</span>, <span class="number">3</span>) =&gt; {
+                        <span class="ident">section</span>(<span class="ident">reader</span>, <span class="ident">len</span>, <span class="ident">FunctionSectionReader::new</span>, <span class="ident">FunctionSection</span>)
+                    }
+                    (<span class="ident">Encoding::Module</span>, <span class="number">4</span>) =&gt; {
+                        <span class="ident">section</span>(<span class="ident">reader</span>, <span class="ident">len</span>, <span class="ident">TableSectionReader::new</span>, <span class="ident">TableSection</span>)
+                    }
+                    (<span class="ident">Encoding::Module</span>, <span class="number">5</span>) =&gt; {
+                        <span class="ident">section</span>(<span class="ident">reader</span>, <span class="ident">len</span>, <span class="ident">MemorySectionReader::new</span>, <span class="ident">MemorySection</span>)
+                    }
+                    (<span class="ident">Encoding::Module</span>, <span class="number">6</span>) =&gt; {
+                        <span class="ident">section</span>(<span class="ident">reader</span>, <span class="ident">len</span>, <span class="ident">GlobalSectionReader::new</span>, <span class="ident">GlobalSection</span>)
+                    }
+                    (<span class="ident">Encoding::Module</span>, <span class="number">7</span>) =&gt; {
+                        <span class="ident">section</span>(<span class="ident">reader</span>, <span class="ident">len</span>, <span class="ident">ExportSectionReader::new</span>, <span class="ident">ExportSection</span>)
+                    }
+                    (<span class="ident">Encoding::Module</span>, <span class="number">8</span>) =&gt; {
                         <span class="kw">let</span> (<span class="ident">func</span>, <span class="ident">range</span>) <span class="op">=</span> <span class="ident">single_u32</span>(<span class="ident">reader</span>, <span class="ident">len</span>, <span class="string">&quot;start&quot;</span>)<span class="question-mark">?</span>;
                         <span class="prelude-val">Ok</span>(<span class="ident">StartSection</span> { <span class="ident">func</span>, <span class="ident">range</span> })
                     }
-                    <span class="number">9</span> =&gt; <span class="ident">section</span>(<span class="ident">reader</span>, <span class="ident">len</span>, <span class="ident">ElementSectionReader::new</span>, <span class="ident">ElementSection</span>),
-                    <span class="number">10</span> =&gt; {
+                    (<span class="ident">Encoding::Module</span>, <span class="number">9</span>) =&gt; {
+                        <span class="ident">section</span>(<span class="ident">reader</span>, <span class="ident">len</span>, <span class="ident">ElementSectionReader::new</span>, <span class="ident">ElementSection</span>)
+                    }
+                    (<span class="ident">Encoding::Module</span>, <span class="number">10</span>) =&gt; {
                         <span class="kw">let</span> <span class="ident">start</span> <span class="op">=</span> <span class="ident">reader</span>.<span class="ident">original_position</span>();
                         <span class="kw">let</span> <span class="ident">count</span> <span class="op">=</span> <span class="ident">delimited</span>(<span class="ident">reader</span>, <span class="kw-2">&amp;mut</span> <span class="ident">len</span>, <span class="op">|</span><span class="ident">r</span><span class="op">|</span> <span class="ident">r</span>.<span class="ident">read_var_u32</span>())<span class="question-mark">?</span>;
-                        <span class="kw">let</span> <span class="ident">range</span> <span class="op">=</span> <span class="ident">Range</span> {
-                            <span class="ident">start</span>,
-                            <span class="ident">end</span>: <span class="ident">reader</span>.<span class="ident">original_position</span>() <span class="op">+</span> <span class="ident">len</span> <span class="kw">as</span> <span class="ident">usize</span>,
-                        };
+                        <span class="kw">let</span> <span class="ident">range</span> <span class="op">=</span> <span class="ident">start</span>..<span class="ident">reader</span>.<span class="ident">original_position</span>() <span class="op">+</span> <span class="ident">len</span> <span class="kw">as</span> <span class="ident">usize</span>;
                         <span class="self">self</span>.<span class="ident">state</span> <span class="op">=</span> <span class="ident">State::FunctionBody</span> {
                             <span class="ident">remaining</span>: <span class="ident">count</span>,
                             <span class="ident">len</span>,
@@ -1897,38 +1972,82 @@
                             <span class="ident">size</span>: <span class="ident">len</span>,
                         })
                     }
-                    <span class="number">11</span> =&gt; <span class="ident">section</span>(<span class="ident">reader</span>, <span class="ident">len</span>, <span class="ident">DataSectionReader::new</span>, <span class="ident">DataSection</span>),
-                    <span class="number">12</span> =&gt; {
+                    (<span class="ident">Encoding::Module</span>, <span class="number">11</span>) =&gt; {
+                        <span class="ident">section</span>(<span class="ident">reader</span>, <span class="ident">len</span>, <span class="ident">DataSectionReader::new</span>, <span class="ident">DataSection</span>)
+                    }
+                    (<span class="ident">Encoding::Module</span>, <span class="number">12</span>) =&gt; {
                         <span class="kw">let</span> (<span class="ident">count</span>, <span class="ident">range</span>) <span class="op">=</span> <span class="ident">single_u32</span>(<span class="ident">reader</span>, <span class="ident">len</span>, <span class="string">&quot;data count&quot;</span>)<span class="question-mark">?</span>;
                         <span class="prelude-val">Ok</span>(<span class="ident">DataCountSection</span> { <span class="ident">count</span>, <span class="ident">range</span> })
                     }
-                    <span class="number">13</span> =&gt; <span class="ident">section</span>(<span class="ident">reader</span>, <span class="ident">len</span>, <span class="ident">TagSectionReader::new</span>, <span class="ident">TagSection</span>),
-                    <span class="number">14</span> =&gt; {
-                        <span class="kw">let</span> <span class="ident">start</span> <span class="op">=</span> <span class="ident">reader</span>.<span class="ident">original_position</span>();
-                        <span class="kw">let</span> <span class="ident">count</span> <span class="op">=</span> <span class="ident">delimited</span>(<span class="ident">reader</span>, <span class="kw-2">&amp;mut</span> <span class="ident">len</span>, <span class="op">|</span><span class="ident">r</span><span class="op">|</span> <span class="ident">r</span>.<span class="ident">read_var_u32</span>())<span class="question-mark">?</span>;
-                        <span class="kw">let</span> <span class="ident">range</span> <span class="op">=</span> <span class="ident">Range</span> {
-                            <span class="ident">start</span>,
-                            <span class="ident">end</span>: <span class="ident">reader</span>.<span class="ident">original_position</span>() <span class="op">+</span> <span class="ident">len</span> <span class="kw">as</span> <span class="ident">usize</span>,
-                        };
-                        <span class="self">self</span>.<span class="ident">state</span> <span class="op">=</span> <span class="ident">State::Module</span> {
-                            <span class="ident">remaining</span>: <span class="ident">count</span>,
-                            <span class="ident">len</span>,
-                        };
-                        <span class="prelude-val">Ok</span>(<span class="ident">ModuleSectionStart</span> {
-                            <span class="ident">count</span>,
-                            <span class="ident">range</span>,
-                            <span class="ident">size</span>: <span class="ident">len</span>,
+                    (<span class="ident">Encoding::Module</span>, <span class="number">13</span>) =&gt; {
+                        <span class="ident">section</span>(<span class="ident">reader</span>, <span class="ident">len</span>, <span class="ident">TagSectionReader::new</span>, <span class="ident">TagSection</span>)
+                    }
+
+                    <span class="comment">// Component sections</span>
+                    (<span class="ident">Encoding::Component</span>, <span class="number">1</span>) =&gt; <span class="ident">section</span>(
+                        <span class="ident">reader</span>,
+                        <span class="ident">len</span>,
+                        <span class="ident">ComponentTypeSectionReader::new</span>,
+                        <span class="ident">ComponentTypeSection</span>,
+                    ),
+                    (<span class="ident">Encoding::Component</span>, <span class="number">2</span>) =&gt; <span class="ident">section</span>(
+                        <span class="ident">reader</span>,
+                        <span class="ident">len</span>,
+                        <span class="ident">ComponentImportSectionReader::new</span>,
+                        <span class="ident">ComponentImportSection</span>,
+                    ),
+                    (<span class="ident">Encoding::Component</span>, <span class="number">3</span>) =&gt; <span class="ident">section</span>(
+                        <span class="ident">reader</span>,
+                        <span class="ident">len</span>,
+                        <span class="ident">ComponentFunctionSectionReader::new</span>,
+                        <span class="ident">ComponentFunctionSection</span>,
+                    ),
+                    (<span class="ident">Encoding::Component</span>, <span class="number">4</span>) <span class="op">|</span> (<span class="ident">Encoding::Component</span>, <span class="number">5</span>) =&gt; {
+                        <span class="kw">if</span> <span class="ident">len</span> <span class="kw">as</span> <span class="ident">usize</span> <span class="op">&gt;</span> <span class="ident">MAX_WASM_MODULE_SIZE</span> {
+                            <span class="kw">return</span> <span class="prelude-val">Err</span>(<span class="ident">BinaryReaderError::new</span>(
+                                <span class="macro">format!</span>(
+                                    <span class="string">&quot;{} section is too large&quot;</span>,
+                                    <span class="kw">if</span> <span class="ident">id</span> <span class="op">==</span> <span class="number">4</span> { <span class="string">&quot;module&quot;</span> } <span class="kw">else</span> { <span class="string">&quot;component &quot;</span> }
+                                ),
+                                <span class="ident">len_pos</span>,
+                            ));
+                        }
+
+                        <span class="kw">let</span> <span class="ident">range</span> <span class="op">=</span>
+                            <span class="ident">reader</span>.<span class="ident">original_position</span>()..<span class="ident">reader</span>.<span class="ident">original_position</span>() <span class="op">+</span> <span class="ident">len</span> <span class="kw">as</span> <span class="ident">usize</span>;
+                        <span class="self">self</span>.<span class="ident">max_size</span> <span class="op">-</span><span class="op">=</span> <span class="ident">u64::from</span>(<span class="ident">len</span>);
+                        <span class="self">self</span>.<span class="ident">offset</span> <span class="op">+</span><span class="op">=</span> <span class="ident">u64::from</span>(<span class="ident">len</span>);
+                        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">parser</span> <span class="op">=</span> <span class="ident">Parser::new</span>(<span class="ident">usize_to_u64</span>(<span class="ident">reader</span>.<span class="ident">original_position</span>()));
+                        <span class="ident">parser</span>.<span class="ident">max_size</span> <span class="op">=</span> <span class="ident">len</span>.<span class="ident">into</span>();
+
+                        <span class="prelude-val">Ok</span>(<span class="kw">match</span> <span class="ident">id</span> {
+                            <span class="number">4</span> =&gt; <span class="ident">ModuleSection</span> { <span class="ident">parser</span>, <span class="ident">range</span> },
+                            <span class="number">5</span> =&gt; <span class="ident">ComponentSection</span> { <span class="ident">parser</span>, <span class="ident">range</span> },
+                            <span class="kw">_</span> =&gt; <span class="macro">unreachable!</span>(),
                         })
                     }
-                    <span class="number">15</span> =&gt; <span class="ident">section</span>(<span class="ident">reader</span>, <span class="ident">len</span>, <span class="ident">InstanceSectionReader::new</span>, <span class="ident">InstanceSection</span>),
-                    <span class="number">16</span> =&gt; <span class="ident">section</span>(<span class="ident">reader</span>, <span class="ident">len</span>, <span class="ident">AliasSectionReader::new</span>, <span class="ident">AliasSection</span>),
-                    <span class="ident">id</span> =&gt; {
+                    (<span class="ident">Encoding::Component</span>, <span class="number">6</span>) =&gt; {
+                        <span class="ident">section</span>(<span class="ident">reader</span>, <span class="ident">len</span>, <span class="ident">InstanceSectionReader::new</span>, <span class="ident">InstanceSection</span>)
+                    }
+                    (<span class="ident">Encoding::Component</span>, <span class="number">7</span>) =&gt; <span class="ident">section</span>(
+                        <span class="ident">reader</span>,
+                        <span class="ident">len</span>,
+                        <span class="ident">ComponentExportSectionReader::new</span>,
+                        <span class="ident">ComponentExportSection</span>,
+                    ),
+                    (<span class="ident">Encoding::Component</span>, <span class="number">8</span>) =&gt; <span class="ident">section</span>(
+                        <span class="ident">reader</span>,
+                        <span class="ident">len</span>,
+                        <span class="ident">ComponentStartSectionReader::new</span>,
+                        <span class="ident">ComponentStartSection</span>,
+                    ),
+                    (<span class="ident">Encoding::Component</span>, <span class="number">9</span>) =&gt; {
+                        <span class="ident">section</span>(<span class="ident">reader</span>, <span class="ident">len</span>, <span class="ident">AliasSectionReader::new</span>, <span class="ident">AliasSection</span>)
+                    }
+                    (<span class="kw">_</span>, <span class="ident">id</span>) =&gt; {
                         <span class="kw">let</span> <span class="ident">offset</span> <span class="op">=</span> <span class="ident">reader</span>.<span class="ident">original_position</span>();
                         <span class="kw">let</span> <span class="ident">contents</span> <span class="op">=</span> <span class="ident">reader</span>.<span class="ident">read_bytes</span>(<span class="ident">len</span> <span class="kw">as</span> <span class="ident">usize</span>)<span class="question-mark">?</span>;
-                        <span class="kw">let</span> <span class="ident">range</span> <span class="op">=</span> <span class="ident">Range</span> {
-                            <span class="ident">start</span>: <span class="ident">offset</span>,
-                            <span class="ident">end</span>: <span class="ident">offset</span> <span class="op">+</span> <span class="ident">len</span> <span class="kw">as</span> <span class="ident">usize</span>,
-                        };
+                        <span class="kw">let</span> <span class="ident">range</span> <span class="op">=</span> <span class="ident">offset</span>..<span class="ident">offset</span> <span class="op">+</span> <span class="ident">len</span> <span class="kw">as</span> <span class="ident">usize</span>;
                         <span class="prelude-val">Ok</span>(<span class="ident">UnknownSection</span> {
                             <span class="ident">id</span>,
                             <span class="ident">contents</span>,
@@ -1944,10 +2063,6 @@
             <span class="ident">State::FunctionBody</span> {
                 <span class="ident">remaining</span>: <span class="number">0</span>,
                 <span class="ident">len</span>: <span class="number">0</span>,
-            }
-            <span class="op">|</span> <span class="ident">State::Module</span> {
-                <span class="ident">remaining</span>: <span class="number">0</span>,
-                <span class="ident">len</span>: <span class="number">0</span>,
             } =&gt; {
                 <span class="self">self</span>.<span class="ident">state</span> <span class="op">=</span> <span class="ident">State::SectionStart</span>;
                 <span class="self">self</span>.<span class="ident">parse_reader</span>(<span class="ident">reader</span>, <span class="ident">eof</span>)
@@ -1955,7 +2070,7 @@
 
             <span class="comment">// ... otherwise trailing bytes with no remaining entries in these</span>
             <span class="comment">// sections indicates an error.</span>
-            <span class="ident">State::FunctionBody</span> { <span class="ident">remaining</span>: <span class="number">0</span>, <span class="ident">len</span> } <span class="op">|</span> <span class="ident">State::Module</span> { <span class="ident">remaining</span>: <span class="number">0</span>, <span class="ident">len</span> } =&gt; {
+            <span class="ident">State::FunctionBody</span> { <span class="ident">remaining</span>: <span class="number">0</span>, <span class="ident">len</span> } =&gt; {
                 <span class="macro">debug_assert!</span>(<span class="ident">len</span> <span class="op">&gt;</span> <span class="number">0</span>);
                 <span class="kw">let</span> <span class="ident">offset</span> <span class="op">=</span> <span class="ident">reader</span>.<span class="ident">original_position</span>();
                 <span class="prelude-val">Err</span>(<span class="ident">BinaryReaderError::new</span>(
@@ -1973,7 +2088,7 @@
             <span class="comment">// resident in memory. This means that we&#39;re reading whole chunks of</span>
             <span class="comment">// functions at a time.</span>
             <span class="comment">//</span>
-            <span class="comment">// Limiting via `Parser::max_size` (nested modules) happens above in</span>
+            <span class="comment">// Limiting via `Parser::max_size` (nested parsing) happens above in</span>
             <span class="comment">// `fn parse`, and limiting by our section size happens via</span>
             <span class="comment">// `delimited`. Actual parsing of the function body is delegated to</span>
             <span class="comment">// the caller to iterate over the `FunctionBody` structure.</span>
@@ -1989,72 +2104,18 @@
                 };
                 <span class="prelude-val">Ok</span>(<span class="ident">CodeSectionEntry</span>(<span class="ident">body</span>))
             }
-
-            <span class="comment">// Modules are trickier than functions. What&#39;s going to happen here</span>
-            <span class="comment">// is that we&#39;ll be offloading parsing to a sub-`Parser`. This</span>
-            <span class="comment">// sub-`Parser` will be delimited to not read past the size of the</span>
-            <span class="comment">// module that&#39;s specified.</span>
-            <span class="comment">//</span>
-            <span class="comment">// So the first thing that happens here is we read the size of the</span>
-            <span class="comment">// module. We use `delimited` to make sure the bytes specifying the</span>
-            <span class="comment">// size of the module are themselves within the module code section.</span>
-            <span class="comment">//</span>
-            <span class="comment">// Once we&#39;ve read the size of a module, however, there&#39;s a few</span>
-            <span class="comment">// pieces of state that we need to update. We as a parser will not</span>
-            <span class="comment">// receive the next `size` bytes, so we need to update our internal</span>
-            <span class="comment">// bookkeeping to account for that:</span>
-            <span class="comment">//</span>
-            <span class="comment">// * The `len`, number of bytes remaining in this section, is</span>
-            <span class="comment">//   decremented by `size`. This can underflow, however, meaning</span>
-            <span class="comment">//   that the size of the module doesn&#39;t fit within the section.</span>
-            <span class="comment">//</span>
-            <span class="comment">// * Our `Parser::max_size` field needs to account for the bytes</span>
-            <span class="comment">//   that we&#39;re reading. Note that this is guaranteed to not</span>
-            <span class="comment">//   underflow, however, because whenever we parse a section header</span>
-            <span class="comment">//   we guarantee that its contents fit within our `max_size`.</span>
-            <span class="comment">//</span>
-            <span class="comment">// To update `len` we do that when updating `self.state`, and to</span>
-            <span class="comment">// update `max_size` we do that inline. Note that this will get</span>
-            <span class="comment">// further tweaked after we return with the bytes we read specifying</span>
-            <span class="comment">// the size of the module itself.</span>
-            <span class="ident">State::Module</span> { <span class="ident">remaining</span>, <span class="kw-2">mut</span> <span class="ident">len</span> } =&gt; {
-                <span class="kw">let</span> <span class="ident">size</span> <span class="op">=</span> <span class="ident">delimited</span>(<span class="ident">reader</span>, <span class="kw-2">&amp;mut</span> <span class="ident">len</span>, <span class="op">|</span><span class="ident">r</span><span class="op">|</span> <span class="ident">r</span>.<span class="ident">read_var_u32</span>())<span class="question-mark">?</span>;
-                <span class="kw">match</span> <span class="ident">len</span>.<span class="ident">checked_sub</span>(<span class="ident">size</span>) {
-                    <span class="prelude-val">Some</span>(<span class="ident">i</span>) =&gt; <span class="ident">len</span> <span class="op">=</span> <span class="ident">i</span>,
-                    <span class="prelude-val">None</span> =&gt; {
-                        <span class="kw">return</span> <span class="prelude-val">Err</span>(<span class="ident">BinaryReaderError::new</span>(
-                            <span class="string">&quot;Unexpected EOF&quot;</span>,
-                            <span class="ident">reader</span>.<span class="ident">original_position</span>(),
-                        ));
-                    }
-                }
-                <span class="self">self</span>.<span class="ident">state</span> <span class="op">=</span> <span class="ident">State::Module</span> {
-                    <span class="ident">remaining</span>: <span class="ident">remaining</span> <span class="op">-</span> <span class="number">1</span>,
-                    <span class="ident">len</span>,
-                };
-                <span class="kw">let</span> <span class="ident">range</span> <span class="op">=</span> <span class="ident">Range</span> {
-                    <span class="ident">start</span>: <span class="ident">reader</span>.<span class="ident">original_position</span>(),
-                    <span class="ident">end</span>: <span class="ident">reader</span>.<span class="ident">original_position</span>() <span class="op">+</span> <span class="ident">size</span> <span class="kw">as</span> <span class="ident">usize</span>,
-                };
-                <span class="self">self</span>.<span class="ident">max_size</span> <span class="op">-</span><span class="op">=</span> <span class="ident">u64::from</span>(<span class="ident">size</span>);
-                <span class="self">self</span>.<span class="ident">offset</span> <span class="op">+</span><span class="op">=</span> <span class="ident">u64::from</span>(<span class="ident">size</span>);
-                <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">parser</span> <span class="op">=</span> <span class="ident">Parser::new</span>(<span class="ident">usize_to_u64</span>(<span class="ident">reader</span>.<span class="ident">original_position</span>()));
-                <span class="ident">parser</span>.<span class="ident">max_size</span> <span class="op">=</span> <span class="ident">size</span>.<span class="ident">into</span>();
-                <span class="prelude-val">Ok</span>(<span class="ident">ModuleSectionEntry</span> { <span class="ident">parser</span>, <span class="ident">range</span> })
-            }
         }
     }
 
-    <span class="doccomment">/// Convenience function that can be used to parse a module entirely</span>
-    <span class="doccomment">/// resident in memory.</span>
+    <span class="doccomment">/// Convenience function that can be used to parse a module or component</span>
+    <span class="doccomment">/// that is entirely resident in memory.</span>
     <span class="doccomment">///</span>
-    <span class="doccomment">/// This function will parse the `data` provided as a WebAssembly module,</span>
-    <span class="doccomment">/// assuming that `data` represents the entire WebAssembly module.</span>
+    <span class="doccomment">/// This function will parse the `data` provided as a WebAssembly module</span>
+    <span class="doccomment">/// or component.</span>
     <span class="doccomment">///</span>
-    <span class="doccomment">/// Note that when this function yields `ModuleSectionEntry`</span>
-    <span class="doccomment">/// no action needs to be taken with the returned parser. The parser will be</span>
-    <span class="doccomment">/// automatically switched to internally and more payloads will continue to</span>
-    <span class="doccomment">/// get returned.</span>
+    <span class="doccomment">/// Note that when this function yields sections that provide parsers,</span>
+    <span class="doccomment">/// no further action is required for those sections as payloads from</span>
+    <span class="doccomment">/// those parsers will be automatically returned.</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">parse_all</span>(<span class="self">self</span>, <span class="kw-2">mut</span> <span class="ident">data</span>: <span class="kw-2">&amp;</span>[<span class="ident">u8</span>]) -&gt; <span class="kw">impl</span> <span class="ident">Iterator</span><span class="op">&lt;</span><span class="ident">Item</span> <span class="op">=</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">Payload</span><span class="op">&gt;</span><span class="op">&gt;</span> {
         <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">stack</span> <span class="op">=</span> <span class="ident">Vec::new</span>();
         <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">cur</span> <span class="op">=</span> <span class="self">self</span>;
@@ -2080,23 +2141,15 @@
             };
 
             <span class="kw">match</span> <span class="kw-2">&amp;</span><span class="ident">payload</span> {
-                <span class="comment">// If a module ends then we either finished the current</span>
-                <span class="comment">// module or, if there&#39;s a parent, we switch back to</span>
-                <span class="comment">// resuming parsing the parent.</span>
-                <span class="ident">Payload::End</span> =&gt; <span class="kw">match</span> <span class="ident">stack</span>.<span class="ident">pop</span>() {
-                    <span class="prelude-val">Some</span>(<span class="ident">p</span>) =&gt; <span class="ident">cur</span> <span class="op">=</span> <span class="ident">p</span>,
-                    <span class="prelude-val">None</span> =&gt; <span class="ident">done</span> <span class="op">=</span> <span class="bool-val">true</span>,
-                },
-
-                <span class="comment">// When we enter a nested module then we need to update our</span>
-                <span class="comment">// current parser, saving off the previous state.</span>
-                <span class="comment">//</span>
-                <span class="comment">// Afterwards we turn the loop again to recurse in parsing the</span>
-                <span class="comment">// nested module.</span>
-                <span class="ident">Payload::ModuleSectionEntry</span> { <span class="ident">parser</span>, <span class="ident">range</span>: <span class="kw">_</span> } =&gt; {
+                <span class="ident">Payload::ModuleSection</span> { <span class="ident">parser</span>, .. }
+                <span class="op">|</span> <span class="ident">Payload::ComponentSection</span> { <span class="ident">parser</span>, .. } =&gt; {
                     <span class="ident">stack</span>.<span class="ident">push</span>(<span class="ident">cur</span>.<span class="ident">clone</span>());
                     <span class="ident">cur</span> <span class="op">=</span> <span class="ident">parser</span>.<span class="ident">clone</span>();
                 }
+                <span class="ident">Payload::End</span>(<span class="kw">_</span>) =&gt; <span class="kw">match</span> <span class="ident">stack</span>.<span class="ident">pop</span>() {
+                    <span class="prelude-val">Some</span>(<span class="ident">p</span>) =&gt; <span class="ident">cur</span> <span class="op">=</span> <span class="ident">p</span>,
+                    <span class="prelude-val">None</span> =&gt; <span class="ident">done</span> <span class="op">=</span> <span class="bool-val">true</span>,
+                },
 
                 <span class="kw">_</span> =&gt; {}
             }
@@ -2105,25 +2158,25 @@
         })
     }
 
-    <span class="doccomment">/// Skip parsing the code or module code section entirely.</span>
+    <span class="doccomment">/// Skip parsing the code section entirely.</span>
     <span class="doccomment">///</span>
     <span class="doccomment">/// This function can be used to indicate, after receiving</span>
-    <span class="doccomment">/// `CodeSectionStart` or `ModuleSectionStart`, that the section</span>
-    <span class="doccomment">/// will not be parsed.</span>
+    <span class="doccomment">/// `CodeSectionStart`, that the section will not be parsed.</span>
     <span class="doccomment">///</span>
     <span class="doccomment">/// The caller will be responsible for skipping `size` bytes (found in the</span>
-    <span class="doccomment">/// `CodeSectionStart` or `ModuleSectionStart` payload). Bytes should</span>
-    <span class="doccomment">/// only be fed into `parse` after the `size` bytes have been skipped.</span>
+    <span class="doccomment">/// `CodeSectionStart` payload). Bytes should only be fed into `parse`</span>
+    <span class="doccomment">/// after the `size` bytes have been skipped.</span>
     <span class="doccomment">///</span>
     <span class="doccomment">/// # Panics</span>
     <span class="doccomment">///</span>
     <span class="doccomment">/// This function will panic if the parser is not in a state where it&#39;s</span>
-    <span class="doccomment">/// parsing the code or module code section.</span>
+    <span class="doccomment">/// parsing the code section.</span>
     <span class="doccomment">///</span>
     <span class="doccomment">/// # Examples</span>
     <span class="doccomment">///</span>
     <span class="doccomment">/// ```</span>
-    <span class="doccomment">/// use wasmparser::{Result, Parser, Chunk, Range, SectionReader, Payload::*};</span>
+    <span class="doccomment">/// use wasmparser::{Result, Parser, Chunk, SectionReader, Payload::*};</span>
+    <span class="doccomment">/// use std::ops::Range;</span>
     <span class="doccomment">///</span>
     <span class="doccomment">/// fn objdump_headers(mut wasm: &amp;[u8]) -&gt; Result&lt;()&gt; {</span>
     <span class="doccomment">///     let mut parser = Parser::new(0);</span>
@@ -2148,20 +2201,20 @@
     <span class="doccomment">///                 parser.skip_section();</span>
     <span class="doccomment">///                 wasm = &amp;wasm[size as usize..];</span>
     <span class="doccomment">///             }</span>
-    <span class="doccomment">///             End =&gt; break,</span>
+    <span class="doccomment">///             End(_) =&gt; break,</span>
     <span class="doccomment">///             _ =&gt; {}</span>
     <span class="doccomment">///         }</span>
     <span class="doccomment">///     }</span>
     <span class="doccomment">///     Ok(())</span>
     <span class="doccomment">/// }</span>
     <span class="doccomment">///</span>
-    <span class="doccomment">/// fn print_range(section: &amp;str, range: &amp;Range) {</span>
+    <span class="doccomment">/// fn print_range(section: &amp;str, range: &amp;Range&lt;usize&gt;) {</span>
     <span class="doccomment">///     println!(&quot;{:&gt;40}: {:#010x} - {:#010x}&quot;, section, range.start, range.end);</span>
     <span class="doccomment">/// }</span>
     <span class="doccomment">/// ```</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">skip_section</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>) {
         <span class="kw">let</span> <span class="ident">skip</span> <span class="op">=</span> <span class="kw">match</span> <span class="self">self</span>.<span class="ident">state</span> {
-            <span class="ident">State::FunctionBody</span> { <span class="ident">remaining</span>: <span class="kw">_</span>, <span class="ident">len</span> } <span class="op">|</span> <span class="ident">State::Module</span> { <span class="ident">remaining</span>: <span class="kw">_</span>, <span class="ident">len</span> } =&gt; <span class="ident">len</span>,
+            <span class="ident">State::FunctionBody</span> { <span class="ident">remaining</span>: <span class="kw">_</span>, <span class="ident">len</span> } =&gt; <span class="ident">len</span>,
             <span class="kw">_</span> =&gt; <span class="macro">panic!</span>(<span class="string">&quot;wrong state to call `skip_section`&quot;</span>),
         };
         <span class="self">self</span>.<span class="ident">offset</span> <span class="op">+</span><span class="op">=</span> <span class="ident">u64::from</span>(<span class="ident">skip</span>);
@@ -2205,11 +2258,12 @@
 }
 
 <span class="doccomment">/// Reads a section that is represented by a single uleb-encoded `u32`.</span>
-<span class="kw">fn</span> <span class="ident">single_u32</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span>(<span class="ident">reader</span>: <span class="kw-2">&amp;mut</span> <span class="ident">BinaryReader</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span>, <span class="ident">len</span>: <span class="ident">u32</span>, <span class="ident">desc</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span>(<span class="ident">u32</span>, <span class="ident">Range</span>)<span class="op">&gt;</span> {
-    <span class="kw">let</span> <span class="ident">range</span> <span class="op">=</span> <span class="ident">Range</span> {
-        <span class="ident">start</span>: <span class="ident">reader</span>.<span class="ident">original_position</span>(),
-        <span class="ident">end</span>: <span class="ident">reader</span>.<span class="ident">original_position</span>() <span class="op">+</span> <span class="ident">len</span> <span class="kw">as</span> <span class="ident">usize</span>,
-    };
+<span class="kw">fn</span> <span class="ident">single_u32</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span>(
+    <span class="ident">reader</span>: <span class="kw-2">&amp;mut</span> <span class="ident">BinaryReader</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span>,
+    <span class="ident">len</span>: <span class="ident">u32</span>,
+    <span class="ident">desc</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>,
+) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span>(<span class="ident">u32</span>, <span class="ident">Range</span><span class="op">&lt;</span><span class="ident">usize</span><span class="op">&gt;</span>)<span class="op">&gt;</span> {
+    <span class="kw">let</span> <span class="ident">range</span> <span class="op">=</span> <span class="ident">reader</span>.<span class="ident">original_position</span>()..<span class="ident">reader</span>.<span class="ident">original_position</span>() <span class="op">+</span> <span class="ident">len</span> <span class="kw">as</span> <span class="ident">usize</span>;
     <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">content</span> <span class="op">=</span> <span class="ident">subreader</span>(<span class="ident">reader</span>, <span class="ident">len</span>)<span class="question-mark">?</span>;
     <span class="comment">// We can&#39;t recover from &quot;unexpected eof&quot; here because our entire section is</span>
     <span class="comment">// already resident in memory, so clear the hint for how many more bytes are</span>
@@ -2217,7 +2271,7 @@
     <span class="kw">let</span> <span class="ident">index</span> <span class="op">=</span> <span class="ident">content</span>.<span class="ident">read_var_u32</span>().<span class="ident">map_err</span>(<span class="ident">clear_hint</span>)<span class="question-mark">?</span>;
     <span class="kw">if</span> <span class="op">!</span><span class="ident">content</span>.<span class="ident">eof</span>() {
         <span class="kw">return</span> <span class="prelude-val">Err</span>(<span class="ident">BinaryReaderError::new</span>(
-            <span class="macro">format!</span>(<span class="string">&quot;Unexpected content in the {} section&quot;</span>, <span class="ident">desc</span>),
+            <span class="macro">format!</span>(<span class="string">&quot;unexpected content in the {} section&quot;</span>, <span class="ident">desc</span>),
             <span class="ident">content</span>.<span class="ident">original_position</span>(),
         ));
     }
@@ -2242,7 +2296,7 @@
         .<span class="ident">and_then</span>(<span class="op">|</span><span class="ident">i</span><span class="op">|</span> <span class="ident">len</span>.<span class="ident">checked_sub</span>(<span class="ident">i</span>))
     {
         <span class="prelude-val">Some</span>(<span class="ident">i</span>) =&gt; <span class="ident">i</span>,
-        <span class="prelude-val">None</span> =&gt; <span class="kw">return</span> <span class="prelude-val">Err</span>(<span class="ident">BinaryReaderError::new</span>(<span class="string">&quot;Unexpected EOF&quot;</span>, <span class="ident">start</span>)),
+        <span class="prelude-val">None</span> =&gt; <span class="kw">return</span> <span class="prelude-val">Err</span>(<span class="ident">BinaryReaderError::new</span>(<span class="string">&quot;unexpected end-of-file&quot;</span>, <span class="ident">start</span>)),
     };
     <span class="prelude-val">Ok</span>(<span class="ident">ret</span>)
 }
@@ -2257,27 +2311,20 @@
     <span class="kw">fn</span> <span class="ident">fmt</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">f</span>: <span class="kw-2">&amp;mut</span> <span class="ident">fmt::Formatter</span><span class="op">&lt;</span><span class="lifetime">&#39;_</span><span class="op">&gt;</span>) -&gt; <span class="ident">fmt::Result</span> {
         <span class="kw">use</span> <span class="ident">Payload</span>::<span class="kw-2">*</span>;
         <span class="kw">match</span> <span class="self">self</span> {
-            <span class="ident">CustomSection</span> {
-                <span class="ident">name</span>,
-                <span class="ident">data_offset</span>,
-                <span class="ident">data</span>: <span class="kw">_</span>,
+            <span class="ident">Version</span> {
+                <span class="ident">num</span>,
+                <span class="ident">encoding</span>,
                 <span class="ident">range</span>,
             } =&gt; <span class="ident">f</span>
-                .<span class="ident">debug_struct</span>(<span class="string">&quot;CustomSection&quot;</span>)
-                .<span class="ident">field</span>(<span class="string">&quot;name&quot;</span>, <span class="ident">name</span>)
-                .<span class="ident">field</span>(<span class="string">&quot;data_offset&quot;</span>, <span class="ident">data_offset</span>)
-                .<span class="ident">field</span>(<span class="string">&quot;range&quot;</span>, <span class="ident">range</span>)
-                .<span class="ident">field</span>(<span class="string">&quot;data&quot;</span>, <span class="kw-2">&amp;</span><span class="string">&quot;...&quot;</span>)
-                .<span class="ident">finish</span>(),
-            <span class="ident">Version</span> { <span class="ident">num</span>, <span class="ident">range</span> } =&gt; <span class="ident">f</span>
                 .<span class="ident">debug_struct</span>(<span class="string">&quot;Version&quot;</span>)
                 .<span class="ident">field</span>(<span class="string">&quot;num&quot;</span>, <span class="ident">num</span>)
+                .<span class="ident">field</span>(<span class="string">&quot;encoding&quot;</span>, <span class="ident">encoding</span>)
                 .<span class="ident">field</span>(<span class="string">&quot;range&quot;</span>, <span class="ident">range</span>)
                 .<span class="ident">finish</span>(),
+
+            <span class="comment">// Module sections</span>
             <span class="ident">TypeSection</span>(<span class="kw">_</span>) =&gt; <span class="ident">f</span>.<span class="ident">debug_tuple</span>(<span class="string">&quot;TypeSection&quot;</span>).<span class="ident">field</span>(<span class="kw-2">&amp;</span><span class="string">&quot;...&quot;</span>).<span class="ident">finish</span>(),
             <span class="ident">ImportSection</span>(<span class="kw">_</span>) =&gt; <span class="ident">f</span>.<span class="ident">debug_tuple</span>(<span class="string">&quot;ImportSection&quot;</span>).<span class="ident">field</span>(<span class="kw-2">&amp;</span><span class="string">&quot;...&quot;</span>).<span class="ident">finish</span>(),
-            <span class="ident">AliasSection</span>(<span class="kw">_</span>) =&gt; <span class="ident">f</span>.<span class="ident">debug_tuple</span>(<span class="string">&quot;AliasSection&quot;</span>).<span class="ident">field</span>(<span class="kw-2">&amp;</span><span class="string">&quot;...&quot;</span>).<span class="ident">finish</span>(),
-            <span class="ident">InstanceSection</span>(<span class="kw">_</span>) =&gt; <span class="ident">f</span>.<span class="ident">debug_tuple</span>(<span class="string">&quot;InstanceSection&quot;</span>).<span class="ident">field</span>(<span class="kw-2">&amp;</span><span class="string">&quot;...&quot;</span>).<span class="ident">finish</span>(),
             <span class="ident">FunctionSection</span>(<span class="kw">_</span>) =&gt; <span class="ident">f</span>.<span class="ident">debug_tuple</span>(<span class="string">&quot;FunctionSection&quot;</span>).<span class="ident">field</span>(<span class="kw-2">&amp;</span><span class="string">&quot;...&quot;</span>).<span class="ident">finish</span>(),
             <span class="ident">TableSection</span>(<span class="kw">_</span>) =&gt; <span class="ident">f</span>.<span class="ident">debug_tuple</span>(<span class="string">&quot;TableSection&quot;</span>).<span class="ident">field</span>(<span class="kw-2">&amp;</span><span class="string">&quot;...&quot;</span>).<span class="ident">finish</span>(),
             <span class="ident">MemorySection</span>(<span class="kw">_</span>) =&gt; <span class="ident">f</span>.<span class="ident">debug_tuple</span>(<span class="string">&quot;MemorySection&quot;</span>).<span class="ident">field</span>(<span class="kw-2">&amp;</span><span class="string">&quot;...&quot;</span>).<span class="ident">finish</span>(),
@@ -2303,22 +2350,45 @@
                 .<span class="ident">field</span>(<span class="string">&quot;size&quot;</span>, <span class="ident">size</span>)
                 .<span class="ident">finish</span>(),
             <span class="ident">CodeSectionEntry</span>(<span class="kw">_</span>) =&gt; <span class="ident">f</span>.<span class="ident">debug_tuple</span>(<span class="string">&quot;CodeSectionEntry&quot;</span>).<span class="ident">field</span>(<span class="kw-2">&amp;</span><span class="string">&quot;...&quot;</span>).<span class="ident">finish</span>(),
-            <span class="ident">ModuleSectionStart</span> { <span class="ident">count</span>, <span class="ident">range</span>, <span class="ident">size</span> } =&gt; <span class="ident">f</span>
-                .<span class="ident">debug_struct</span>(<span class="string">&quot;ModuleSectionStart&quot;</span>)
-                .<span class="ident">field</span>(<span class="string">&quot;count&quot;</span>, <span class="ident">count</span>)
-                .<span class="ident">field</span>(<span class="string">&quot;range&quot;</span>, <span class="ident">range</span>)
-                .<span class="ident">field</span>(<span class="string">&quot;size&quot;</span>, <span class="ident">size</span>)
+
+            <span class="comment">// Component sections</span>
+            <span class="ident">ComponentTypeSection</span>(<span class="kw">_</span>) =&gt; <span class="ident">f</span>.<span class="ident">debug_tuple</span>(<span class="string">&quot;ComponentTypeSection&quot;</span>).<span class="ident">field</span>(<span class="kw-2">&amp;</span><span class="string">&quot;...&quot;</span>).<span class="ident">finish</span>(),
+            <span class="ident">ComponentImportSection</span>(<span class="kw">_</span>) =&gt; <span class="ident">f</span>
+                .<span class="ident">debug_tuple</span>(<span class="string">&quot;ComponentImportSection&quot;</span>)
+                .<span class="ident">field</span>(<span class="kw-2">&amp;</span><span class="string">&quot;...&quot;</span>)
                 .<span class="ident">finish</span>(),
-            <span class="ident">ModuleSectionEntry</span> { <span class="ident">parser</span>: <span class="kw">_</span>, <span class="ident">range</span> } =&gt; <span class="ident">f</span>
-                .<span class="ident">debug_struct</span>(<span class="string">&quot;ModuleSectionEntry&quot;</span>)
+            <span class="ident">ComponentFunctionSection</span>(<span class="kw">_</span>) =&gt; <span class="ident">f</span>
+                .<span class="ident">debug_tuple</span>(<span class="string">&quot;ComponentFunctionSection&quot;</span>)
+                .<span class="ident">field</span>(<span class="kw-2">&amp;</span><span class="string">&quot;...&quot;</span>)
+                .<span class="ident">finish</span>(),
+            <span class="ident">ModuleSection</span> { <span class="ident">parser</span>: <span class="kw">_</span>, <span class="ident">range</span> } =&gt; <span class="ident">f</span>
+                .<span class="ident">debug_struct</span>(<span class="string">&quot;ModuleSection&quot;</span>)
                 .<span class="ident">field</span>(<span class="string">&quot;range&quot;</span>, <span class="ident">range</span>)
                 .<span class="ident">finish</span>(),
+            <span class="ident">ComponentSection</span> { <span class="ident">parser</span>: <span class="kw">_</span>, <span class="ident">range</span> } =&gt; <span class="ident">f</span>
+                .<span class="ident">debug_struct</span>(<span class="string">&quot;ComponentSection&quot;</span>)
+                .<span class="ident">field</span>(<span class="string">&quot;range&quot;</span>, <span class="ident">range</span>)
+                .<span class="ident">finish</span>(),
+            <span class="ident">InstanceSection</span>(<span class="kw">_</span>) =&gt; <span class="ident">f</span>.<span class="ident">debug_tuple</span>(<span class="string">&quot;InstanceSection&quot;</span>).<span class="ident">field</span>(<span class="kw-2">&amp;</span><span class="string">&quot;...&quot;</span>).<span class="ident">finish</span>(),
+            <span class="ident">ComponentExportSection</span>(<span class="kw">_</span>) =&gt; <span class="ident">f</span>
+                .<span class="ident">debug_tuple</span>(<span class="string">&quot;ComponentExportSection&quot;</span>)
+                .<span class="ident">field</span>(<span class="kw-2">&amp;</span><span class="string">&quot;...&quot;</span>)
+                .<span class="ident">finish</span>(),
+            <span class="ident">ComponentStartSection</span>(<span class="kw">_</span>) =&gt; <span class="ident">f</span>
+                .<span class="ident">debug_tuple</span>(<span class="string">&quot;ComponentStartSection&quot;</span>)
+                .<span class="ident">field</span>(<span class="kw-2">&amp;</span><span class="string">&quot;...&quot;</span>)
+                .<span class="ident">finish</span>(),
+            <span class="ident">AliasSection</span>(<span class="kw">_</span>) =&gt; <span class="ident">f</span>.<span class="ident">debug_tuple</span>(<span class="string">&quot;AliasSection&quot;</span>).<span class="ident">field</span>(<span class="kw-2">&amp;</span><span class="string">&quot;...&quot;</span>).<span class="ident">finish</span>(),
+
+            <span class="ident">CustomSection</span>(<span class="ident">c</span>) =&gt; <span class="ident">f</span>.<span class="ident">debug_tuple</span>(<span class="string">&quot;CustomSection&quot;</span>).<span class="ident">field</span>(<span class="ident">c</span>).<span class="ident">finish</span>(),
+
             <span class="ident">UnknownSection</span> { <span class="ident">id</span>, <span class="ident">range</span>, .. } =&gt; <span class="ident">f</span>
                 .<span class="ident">debug_struct</span>(<span class="string">&quot;UnknownSection&quot;</span>)
                 .<span class="ident">field</span>(<span class="string">&quot;id&quot;</span>, <span class="ident">id</span>)
                 .<span class="ident">field</span>(<span class="string">&quot;range&quot;</span>, <span class="ident">range</span>)
                 .<span class="ident">finish</span>(),
-            <span class="ident">End</span> =&gt; <span class="ident">f</span>.<span class="ident">write_str</span>(<span class="string">&quot;End&quot;</span>),
+
+            <span class="ident">End</span>(<span class="ident">offset</span>) =&gt; <span class="ident">f</span>.<span class="ident">debug_tuple</span>(<span class="string">&quot;End&quot;</span>).<span class="ident">field</span>(<span class="ident">offset</span>).<span class="ident">finish</span>(),
         }
     }
 }
@@ -2379,10 +2449,30 @@
             <span class="ident">p</span>.<span class="ident">parse</span>(<span class="string">b&quot;\0asm\x01\0\0\0&quot;</span>, <span class="bool-val">false</span>),
             <span class="prelude-val">Ok</span>(<span class="ident">Chunk::Parsed</span> {
                 <span class="ident">consumed</span>: <span class="number">8</span>,
-                <span class="ident">payload</span>: <span class="ident">Payload::Version</span> { <span class="ident">num</span>: <span class="number">1</span>, .. },
+                <span class="ident">payload</span>: <span class="ident">Payload::Version</span> {
+                    <span class="ident">num</span>: <span class="ident">WASM_MODULE_VERSION</span>,
+                    <span class="ident">encoding</span>: <span class="ident">Encoding::Module</span>,
+                    ..
+                },
             }),
         );
-        <span class="kw">return</span> <span class="ident">p</span>;
+        <span class="ident">p</span>
+    }
+
+    <span class="kw">fn</span> <span class="ident">parser_after_component_header</span>() -&gt; <span class="ident">Parser</span> {
+        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">p</span> <span class="op">=</span> <span class="ident">Parser::default</span>();
+        <span class="macro">assert_matches!</span>(
+            <span class="ident">p</span>.<span class="ident">parse</span>(<span class="string">b&quot;\0asm\x0a\0\x01\0&quot;</span>, <span class="bool-val">false</span>),
+            <span class="prelude-val">Ok</span>(<span class="ident">Chunk::Parsed</span> {
+                <span class="ident">consumed</span>: <span class="number">8</span>,
+                <span class="ident">payload</span>: <span class="ident">Payload::Version</span> {
+                    <span class="ident">num</span>: <span class="ident">WASM_COMPONENT_VERSION</span>,
+                    <span class="ident">encoding</span>: <span class="ident">Encoding::Component</span>,
+                    ..
+                },
+            }),
+        );
+        <span class="ident">p</span>
     }
 
     <span class="attribute">#[<span class="ident">test</span>]</span>
@@ -2423,7 +2513,7 @@
             <span class="ident">parser_after_header</span>().<span class="ident">parse</span>(<span class="kw-2">&amp;</span>[], <span class="bool-val">true</span>),
             <span class="prelude-val">Ok</span>(<span class="ident">Chunk::Parsed</span> {
                 <span class="ident">consumed</span>: <span class="number">0</span>,
-                <span class="ident">payload</span>: <span class="ident">Payload::End</span>,
+                <span class="ident">payload</span>: <span class="ident">Payload::End</span>(<span class="number">8</span>),
             }),
         );
     }
@@ -2432,7 +2522,7 @@
     <span class="kw">fn</span> <span class="ident">type_section</span>() {
         <span class="macro">assert!</span>(<span class="ident">parser_after_header</span>().<span class="ident">parse</span>(<span class="kw-2">&amp;</span>[<span class="number">1</span>], <span class="bool-val">true</span>).<span class="ident">is_err</span>());
         <span class="macro">assert!</span>(<span class="ident">parser_after_header</span>().<span class="ident">parse</span>(<span class="kw-2">&amp;</span>[<span class="number">1</span>, <span class="number">0</span>], <span class="bool-val">false</span>).<span class="ident">is_err</span>());
-        <span class="comment">// assert!(parser_after_header().parse(&amp;[8, 2], true).is_err());</span>
+        <span class="macro">assert!</span>(<span class="ident">parser_after_header</span>().<span class="ident">parse</span>(<span class="kw-2">&amp;</span>[<span class="number">8</span>, <span class="number">2</span>], <span class="bool-val">true</span>).<span class="ident">is_err</span>());
         <span class="macro">assert_matches!</span>(
             <span class="ident">parser_after_header</span>().<span class="ident">parse</span>(<span class="kw-2">&amp;</span>[<span class="number">1</span>], <span class="bool-val">false</span>),
             <span class="prelude-val">Ok</span>(<span class="ident">Chunk::NeedMoreData</span>(<span class="number">1</span>)),
@@ -2470,36 +2560,36 @@
             <span class="ident">parser_after_header</span>().<span class="ident">parse</span>(<span class="kw-2">&amp;</span>[<span class="number">0</span>, <span class="number">1</span>, <span class="number">0</span>], <span class="bool-val">false</span>),
             <span class="prelude-val">Ok</span>(<span class="ident">Chunk::Parsed</span> {
                 <span class="ident">consumed</span>: <span class="number">3</span>,
-                <span class="ident">payload</span>: <span class="ident">Payload::CustomSection</span> {
+                <span class="ident">payload</span>: <span class="ident">Payload::CustomSection</span>(<span class="ident">CustomSectionReader</span> {
                     <span class="ident">name</span>: <span class="string">&quot;&quot;</span>,
                     <span class="ident">data_offset</span>: <span class="number">11</span>,
                     <span class="ident">data</span>: <span class="string">b&quot;&quot;</span>,
                     <span class="ident">range</span>: <span class="ident">Range</span> { <span class="ident">start</span>: <span class="number">10</span>, <span class="ident">end</span>: <span class="number">11</span> },
-                },
+                }),
             }),
         );
         <span class="macro">assert_matches!</span>(
             <span class="ident">parser_after_header</span>().<span class="ident">parse</span>(<span class="kw-2">&amp;</span>[<span class="number">0</span>, <span class="number">2</span>, <span class="number">1</span>, <span class="string">b&#39;a&#39;</span>], <span class="bool-val">false</span>),
             <span class="prelude-val">Ok</span>(<span class="ident">Chunk::Parsed</span> {
                 <span class="ident">consumed</span>: <span class="number">4</span>,
-                <span class="ident">payload</span>: <span class="ident">Payload::CustomSection</span> {
+                <span class="ident">payload</span>: <span class="ident">Payload::CustomSection</span>(<span class="ident">CustomSectionReader</span> {
                     <span class="ident">name</span>: <span class="string">&quot;a&quot;</span>,
                     <span class="ident">data_offset</span>: <span class="number">12</span>,
                     <span class="ident">data</span>: <span class="string">b&quot;&quot;</span>,
                     <span class="ident">range</span>: <span class="ident">Range</span> { <span class="ident">start</span>: <span class="number">10</span>, <span class="ident">end</span>: <span class="number">12</span> },
-                },
+                }),
             }),
         );
         <span class="macro">assert_matches!</span>(
             <span class="ident">parser_after_header</span>().<span class="ident">parse</span>(<span class="kw-2">&amp;</span>[<span class="number">0</span>, <span class="number">2</span>, <span class="number">0</span>, <span class="string">b&#39;a&#39;</span>], <span class="bool-val">false</span>),
             <span class="prelude-val">Ok</span>(<span class="ident">Chunk::Parsed</span> {
                 <span class="ident">consumed</span>: <span class="number">4</span>,
-                <span class="ident">payload</span>: <span class="ident">Payload::CustomSection</span> {
+                <span class="ident">payload</span>: <span class="ident">Payload::CustomSection</span>(<span class="ident">CustomSectionReader</span> {
                     <span class="ident">name</span>: <span class="string">&quot;&quot;</span>,
                     <span class="ident">data_offset</span>: <span class="number">11</span>,
                     <span class="ident">data</span>: <span class="string">b&quot;a&quot;</span>,
                     <span class="ident">range</span>: <span class="ident">Range</span> { <span class="ident">start</span>: <span class="number">10</span>, <span class="ident">end</span>: <span class="number">12</span> },
-                },
+                }),
             }),
         );
     }
@@ -2529,7 +2619,7 @@
             <span class="ident">p</span>.<span class="ident">parse</span>(<span class="kw-2">&amp;</span>[], <span class="bool-val">true</span>),
             <span class="prelude-val">Ok</span>(<span class="ident">Chunk::Parsed</span> {
                 <span class="ident">consumed</span>: <span class="number">0</span>,
-                <span class="ident">payload</span>: <span class="ident">Payload::End</span>,
+                <span class="ident">payload</span>: <span class="ident">Payload::End</span>(<span class="number">11</span>),
             }),
         );
         <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">p</span> <span class="op">=</span> <span class="ident">parser_after_header</span>();
@@ -2551,7 +2641,7 @@
             <span class="ident">p</span>.<span class="ident">parse</span>(<span class="kw-2">&amp;</span>[], <span class="bool-val">true</span>),
             <span class="prelude-val">Ok</span>(<span class="ident">Chunk::Parsed</span> {
                 <span class="ident">consumed</span>: <span class="number">0</span>,
-                <span class="ident">payload</span>: <span class="ident">Payload::End</span>,
+                <span class="ident">payload</span>: <span class="ident">Payload::End</span>(<span class="number">12</span>),
             }),
         );
 
@@ -2567,7 +2657,7 @@
         );
         <span class="macro">assert_eq!</span>(
             <span class="ident">p</span>.<span class="ident">parse</span>(<span class="kw-2">&amp;</span>[<span class="number">0</span>], <span class="bool-val">false</span>).<span class="ident">unwrap_err</span>().<span class="ident">message</span>(),
-            <span class="string">&quot;Unexpected EOF&quot;</span>
+            <span class="string">&quot;unexpected end-of-file&quot;</span>
         );
 
         <span class="comment">// section with 2 functions but section is cut off</span>
@@ -2589,7 +2679,7 @@
         <span class="macro">assert_matches!</span>(<span class="ident">p</span>.<span class="ident">parse</span>(<span class="kw-2">&amp;</span>[], <span class="bool-val">false</span>), <span class="prelude-val">Ok</span>(<span class="ident">Chunk::NeedMoreData</span>(<span class="number">1</span>)));
         <span class="macro">assert_eq!</span>(
             <span class="ident">p</span>.<span class="ident">parse</span>(<span class="kw-2">&amp;</span>[<span class="number">0</span>], <span class="bool-val">false</span>).<span class="ident">unwrap_err</span>().<span class="ident">message</span>(),
-            <span class="string">&quot;Unexpected EOF&quot;</span>,
+            <span class="string">&quot;unexpected end-of-file&quot;</span>,
         );
 
         <span class="comment">// trailing data is bad</span>
@@ -2615,34 +2705,15 @@
     }
 
     <span class="attribute">#[<span class="ident">test</span>]</span>
-    <span class="kw">fn</span> <span class="ident">module_code_errors</span>() {
-        <span class="comment">// no bytes to say size of section</span>
-        <span class="macro">assert!</span>(<span class="ident">parser_after_header</span>().<span class="ident">parse</span>(<span class="kw-2">&amp;</span>[<span class="number">14</span>], <span class="bool-val">true</span>).<span class="ident">is_err</span>());
-        <span class="comment">// section must start with a u32</span>
-        <span class="macro">assert!</span>(<span class="ident">parser_after_header</span>().<span class="ident">parse</span>(<span class="kw-2">&amp;</span>[<span class="number">14</span>, <span class="number">0</span>], <span class="bool-val">true</span>).<span class="ident">is_err</span>());
-        <span class="comment">// EOF before we finish reading the section</span>
-        <span class="macro">assert!</span>(<span class="ident">parser_after_header</span>().<span class="ident">parse</span>(<span class="kw-2">&amp;</span>[<span class="number">14</span>, <span class="number">1</span>], <span class="bool-val">true</span>).<span class="ident">is_err</span>());
-    }
+    <span class="kw">fn</span> <span class="ident">single_module</span>() {
+        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">p</span> <span class="op">=</span> <span class="ident">parser_after_component_header</span>();
+        <span class="macro">assert_matches!</span>(<span class="ident">p</span>.<span class="ident">parse</span>(<span class="kw-2">&amp;</span>[<span class="number">4</span>], <span class="bool-val">false</span>), <span class="prelude-val">Ok</span>(<span class="ident">Chunk::NeedMoreData</span>(<span class="number">1</span>)));
 
-    <span class="attribute">#[<span class="ident">test</span>]</span>
-    <span class="kw">fn</span> <span class="ident">module_code_one</span>() {
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">p</span> <span class="op">=</span> <span class="ident">parser_after_header</span>();
-        <span class="macro">assert_matches!</span>(<span class="ident">p</span>.<span class="ident">parse</span>(<span class="kw-2">&amp;</span>[<span class="number">14</span>], <span class="bool-val">false</span>), <span class="prelude-val">Ok</span>(<span class="ident">Chunk::NeedMoreData</span>(<span class="number">1</span>)));
-        <span class="macro">assert_matches!</span>(<span class="ident">p</span>.<span class="ident">parse</span>(<span class="kw-2">&amp;</span>[<span class="number">14</span>, <span class="number">9</span>], <span class="bool-val">false</span>), <span class="prelude-val">Ok</span>(<span class="ident">Chunk::NeedMoreData</span>(<span class="number">1</span>)));
-        <span class="comment">// Module code section, 10 bytes large, one module.</span>
-        <span class="macro">assert_matches!</span>(
-            <span class="ident">p</span>.<span class="ident">parse</span>(<span class="kw-2">&amp;</span>[<span class="number">14</span>, <span class="number">10</span>, <span class="number">1</span>], <span class="bool-val">false</span>),
+        <span class="comment">// A module that&#39;s 8 bytes in length</span>
+        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">sub</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">p</span>.<span class="ident">parse</span>(<span class="kw-2">&amp;</span>[<span class="number">4</span>, <span class="number">8</span>], <span class="bool-val">false</span>) {
             <span class="prelude-val">Ok</span>(<span class="ident">Chunk::Parsed</span> {
-                <span class="ident">consumed</span>: <span class="number">3</span>,
-                <span class="ident">payload</span>: <span class="ident">Payload::ModuleSectionStart</span> { <span class="ident">count</span>: <span class="number">1</span>, .. },
-            })
-        );
-        <span class="comment">// Declare an empty module, which will be 8 bytes large for the header.</span>
-        <span class="comment">// Switch to the sub-parser on success.</span>
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">sub</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">p</span>.<span class="ident">parse</span>(<span class="kw-2">&amp;</span>[<span class="number">8</span>], <span class="bool-val">false</span>) {
-            <span class="prelude-val">Ok</span>(<span class="ident">Chunk::Parsed</span> {
-                <span class="ident">consumed</span>: <span class="number">1</span>,
-                <span class="ident">payload</span>: <span class="ident">Payload::ModuleSectionEntry</span> { <span class="ident">parser</span>, .. },
+                <span class="ident">consumed</span>: <span class="number">2</span>,
+                <span class="ident">payload</span>: <span class="ident">Payload::ModuleSection</span> { <span class="ident">parser</span>, .. },
             }) =&gt; <span class="ident">parser</span>,
             <span class="ident">other</span> =&gt; <span class="macro">panic!</span>(<span class="string">&quot;bad parse {:?}&quot;</span>, <span class="ident">other</span>),
         };
@@ -2654,7 +2725,11 @@
             <span class="ident">sub</span>.<span class="ident">parse</span>(<span class="string">b&quot;\0asm\x01\0\0\0&quot;</span>, <span class="bool-val">false</span>),
             <span class="prelude-val">Ok</span>(<span class="ident">Chunk::Parsed</span> {
                 <span class="ident">consumed</span>: <span class="number">8</span>,
-                <span class="ident">payload</span>: <span class="ident">Payload::Version</span> { <span class="ident">num</span>: <span class="number">1</span>, .. },
+                <span class="ident">payload</span>: <span class="ident">Payload::Version</span> {
+                    <span class="ident">num</span>: <span class="number">1</span>,
+                    <span class="ident">encoding</span>: <span class="ident">Encoding::Module</span>,
+                    ..
+                },
             }),
         );
 
@@ -2664,7 +2739,7 @@
             <span class="ident">sub</span>.<span class="ident">parse</span>(<span class="kw-2">&amp;</span>[<span class="number">10</span>], <span class="bool-val">false</span>),
             <span class="prelude-val">Ok</span>(<span class="ident">Chunk::Parsed</span> {
                 <span class="ident">consumed</span>: <span class="number">0</span>,
-                <span class="ident">payload</span>: <span class="ident">Payload::End</span>,
+                <span class="ident">payload</span>: <span class="ident">Payload::End</span>(<span class="number">18</span>),
             }),
         );
 
@@ -2676,29 +2751,20 @@
             <span class="ident">p</span>.<span class="ident">parse</span>(<span class="kw-2">&amp;</span>[], <span class="bool-val">true</span>),
             <span class="prelude-val">Ok</span>(<span class="ident">Chunk::Parsed</span> {
                 <span class="ident">consumed</span>: <span class="number">0</span>,
-                <span class="ident">payload</span>: <span class="ident">Payload::End</span>,
+                <span class="ident">payload</span>: <span class="ident">Payload::End</span>(<span class="number">18</span>),
             }),
         );
     }
 
     <span class="attribute">#[<span class="ident">test</span>]</span>
     <span class="kw">fn</span> <span class="ident">nested_section_too_big</span>() {
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">p</span> <span class="op">=</span> <span class="ident">parser_after_header</span>();
-        <span class="comment">// Module code section, 12 bytes large, one module. This leaves 11 bytes</span>
-        <span class="comment">// of payload for the module definition itself.</span>
-        <span class="macro">assert_matches!</span>(
-            <span class="ident">p</span>.<span class="ident">parse</span>(<span class="kw-2">&amp;</span>[<span class="number">14</span>, <span class="number">12</span>, <span class="number">1</span>], <span class="bool-val">false</span>),
+        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">p</span> <span class="op">=</span> <span class="ident">parser_after_component_header</span>();
+
+        <span class="comment">// A module that&#39;s 10 bytes in length</span>
+        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">sub</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">p</span>.<span class="ident">parse</span>(<span class="kw-2">&amp;</span>[<span class="number">4</span>, <span class="number">10</span>], <span class="bool-val">false</span>) {
             <span class="prelude-val">Ok</span>(<span class="ident">Chunk::Parsed</span> {
-                <span class="ident">consumed</span>: <span class="number">3</span>,
-                <span class="ident">payload</span>: <span class="ident">Payload::ModuleSectionStart</span> { <span class="ident">count</span>: <span class="number">1</span>, .. },
-            })
-        );
-        <span class="comment">// Use one byte to say we&#39;re a 10 byte module, which fits exactly within</span>
-        <span class="comment">// our module code section.</span>
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">sub</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">p</span>.<span class="ident">parse</span>(<span class="kw-2">&amp;</span>[<span class="number">10</span>], <span class="bool-val">false</span>) {
-            <span class="prelude-val">Ok</span>(<span class="ident">Chunk::Parsed</span> {
-                <span class="ident">consumed</span>: <span class="number">1</span>,
-                <span class="ident">payload</span>: <span class="ident">Payload::ModuleSectionEntry</span> { <span class="ident">parser</span>, .. },
+                <span class="ident">consumed</span>: <span class="number">2</span>,
+                <span class="ident">payload</span>: <span class="ident">Payload::ModuleSection</span> { <span class="ident">parser</span>, .. },
             }) =&gt; <span class="ident">parser</span>,
             <span class="ident">other</span> =&gt; <span class="macro">panic!</span>(<span class="string">&quot;bad parse {:?}&quot;</span>, <span class="ident">other</span>),
         };
@@ -2714,11 +2780,11 @@
         );
 
         <span class="comment">// We can&#39;t parse a section which declares its bigger than the outer</span>
-        <span class="comment">// module. This is section 1, one byte big, with one content byte. The</span>
+        <span class="comment">// module. This is a custom section, one byte big, with one content byte. The</span>
         <span class="comment">// content byte, however, lives outside of the parent&#39;s module code</span>
         <span class="comment">// section.</span>
         <span class="macro">assert_eq!</span>(
-            <span class="ident">sub</span>.<span class="ident">parse</span>(<span class="kw-2">&amp;</span>[<span class="number">1</span>, <span class="number">1</span>, <span class="number">0</span>], <span class="bool-val">false</span>).<span class="ident">unwrap_err</span>().<span class="ident">message</span>(),
+            <span class="ident">sub</span>.<span class="ident">parse</span>(<span class="kw-2">&amp;</span>[<span class="number">0</span>, <span class="number">1</span>, <span class="number">0</span>], <span class="bool-val">false</span>).<span class="ident">unwrap_err</span>().<span class="ident">message</span>(),
             <span class="string">&quot;section too large&quot;</span>,
         );
     }
