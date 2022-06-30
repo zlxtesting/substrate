@@ -1,1 +1,1 @@
-initSidebarItems({"type":[["FromBytesWithNulError","See [core::ffi::FromBytesWithNulError]."],["NulError","See [alloc::ffi::NulError]."],["ZStr","See [core::ffi::CStr]."],["ZString","See [alloc::ffi::CString]."]]});
+initSidebarItems({"type":[["CStr","See [core::ffi::CStr]."],["CString","See [alloc::ffi::CString]."],["FromBytesWithNulError","See [core::ffi::FromBytesWithNulError]."],["NulError","See [alloc::ffi::NulError]."],["c_char","Equivalent to C’s `char` type."]]});

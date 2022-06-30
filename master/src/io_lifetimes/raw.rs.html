@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/cargo_home/registry/src/github.com-1ecc6299db9ec823/io-lifetimes-0.5.3/src/raw.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>raw.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" type="text/css" href="../../normalize.css"><link rel="stylesheet" type="text/css" href="../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../ayu.css" disabled><link rel="stylesheet" type="text/css" href="../../dark.css" disabled><link rel="stylesheet" type="text/css" href="../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../storage.js"></script><script src="../../crates.js"></script><script defer src="../../main.js"></script><script defer src="../../source-script.js"></script><script defer src="../../source-files.js"></script>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/cargo_home/registry/src/github.com-1ecc6299db9ec823/io-lifetimes-0.7.2/src/raw.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>raw.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" type="text/css" href="../../normalize.css"><link rel="stylesheet" type="text/css" href="../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../ayu.css" disabled><link rel="stylesheet" type="text/css" href="../../dark.css" disabled><link rel="stylesheet" type="text/css" href="../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../storage.js"></script><script src="../../crates.js"></script><script defer src="../../main.js"></script><script defer src="../../source-script.js"></script><script defer src="../../source-files.js"></script>
     <noscript><link rel="stylesheet" href="../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="sidebar-logo" href="../../io_lifetimes/index.html"><div class="logo-container"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></div>
         </a><h2 class="location"></h2>
     </nav>
@@ -250,13 +250,17 @@
 <span id="245">245</span>
 <span id="246">246</span>
 <span id="247">247</span>
+<span id="248">248</span>
+<span id="249">249</span>
+<span id="250">250</span>
+<span id="251">251</span>
+<span id="252">252</span>
+<span id="253">253</span>
 </pre><pre class="rust"><code><span class="doccomment">//! Portability abstractions over `Raw*`.</span>
 <span class="doccomment">//!</span>
 <span class="doccomment">//! On Unix, &quot;everything is a file descriptor&quot;. On Windows, file/pipe/process</span>
 <span class="doccomment">//! handles are distinct from socket descriptors. This file provides a minimal</span>
 <span class="doccomment">//! layer of portability over this difference.</span>
-<span class="doccomment">//!</span>
-<span class="doccomment">//! TODO: Should this layer be folded into types.rs/traits.rs?</span>
 
 <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">unix</span>)]</span>
 <span class="kw">use</span> <span class="ident">std::os::unix::io</span>::{<span class="ident">AsRawFd</span>, <span class="ident">FromRawFd</span>, <span class="ident">IntoRawFd</span>, <span class="ident">RawFd</span>};
@@ -277,8 +281,8 @@
 
 <span class="doccomment">/// A raw filelike object.</span>
 <span class="doccomment">///</span>
-<span class="doccomment">/// This is a portability abstraction over Unix-like [`RawFd`] and</span>
-<span class="doccomment">/// Windows&#39; `RawHandle`.</span>
+<span class="doccomment">/// This is a portability abstraction over Unix-like `RawFd` and</span>
+<span class="doccomment">/// Windows&#39; [`RawHandle`].</span>
 <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">windows</span>)]</span>
 <span class="kw">pub</span> <span class="kw">type</span> <span class="ident">RawFilelike</span> <span class="op">=</span> <span class="ident">RawHandle</span>;
 
@@ -291,8 +295,8 @@
 
 <span class="doccomment">/// A raw socketlike object.</span>
 <span class="doccomment">///</span>
-<span class="doccomment">/// This is a portability abstraction over Unix-like [`RawFd`] and</span>
-<span class="doccomment">/// Windows&#39; `RawSocket`.</span>
+<span class="doccomment">/// This is a portability abstraction over Unix-like `RawFd` and</span>
+<span class="doccomment">/// Windows&#39; [`RawSocket`].</span>
 <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">windows</span>)]</span>
 <span class="kw">pub</span> <span class="kw">type</span> <span class="ident">RawSocketlike</span> <span class="op">=</span> <span class="ident">RawSocket</span>;
 
@@ -314,8 +318,8 @@
     }
 }
 
-<span class="doccomment">/// This is a portability abstraction over Unix-like [`AsRawFd`] and Windows&#39;</span>
-<span class="doccomment">/// `AsRawHandle`.</span>
+<span class="doccomment">/// This is a portability abstraction over Unix-like `AsRawFd` and Windows&#39;</span>
+<span class="doccomment">/// [`AsRawHandle`].</span>
 <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">windows</span>)]</span>
 <span class="kw">pub</span> <span class="kw">trait</span> <span class="ident">AsRawFilelike</span>: <span class="ident">AsRawHandle</span> {
     <span class="doccomment">/// Returns the raw value.</span>
@@ -346,8 +350,8 @@
     }
 }
 
-<span class="doccomment">/// This is a portability abstraction over Unix-like [`AsRawFd`] and Windows&#39;</span>
-<span class="doccomment">/// `AsRawSocket`.</span>
+<span class="doccomment">/// This is a portability abstraction over Unix-like `AsRawFd` and Windows&#39;</span>
+<span class="doccomment">/// [`AsRawSocket`].</span>
 <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">windows</span>)]</span>
 <span class="kw">pub</span> <span class="kw">trait</span> <span class="ident">AsRawSocketlike</span>: <span class="ident">AsRawSocket</span> {
     <span class="doccomment">/// Returns the raw value.</span>
@@ -378,8 +382,8 @@
     }
 }
 
-<span class="doccomment">/// This is a portability abstraction over Unix-like [`IntoRawFd`] and Windows&#39;</span>
-<span class="doccomment">/// `IntoRawHandle`.</span>
+<span class="doccomment">/// This is a portability abstraction over Unix-like `IntoRawFd` and Windows&#39;</span>
+<span class="doccomment">/// [`IntoRawHandle`].</span>
 <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">windows</span>)]</span>
 <span class="kw">pub</span> <span class="kw">trait</span> <span class="ident">IntoRawFilelike</span>: <span class="ident">IntoRawHandle</span> {
     <span class="doccomment">/// Returns the raw value.</span>
@@ -402,8 +406,16 @@
     <span class="kw">fn</span> <span class="ident">into_raw_socketlike</span>(<span class="self">self</span>) -&gt; <span class="ident">RawSocketlike</span>;
 }
 
-<span class="doccomment">/// This is a portability abstraction over Unix-like [`IntoRawFd`] and Windows&#39;</span>
-<span class="doccomment">/// `IntoRawSocket`.</span>
+<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">any</span>(<span class="ident">unix</span>, <span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;wasi&quot;</span>))]</span>
+<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">T</span>: <span class="ident">IntoRawFd</span><span class="op">&gt;</span> <span class="ident">IntoRawSocketlike</span> <span class="kw">for</span> <span class="ident">T</span> {
+    <span class="attribute">#[<span class="ident">inline</span>]</span>
+    <span class="kw">fn</span> <span class="ident">into_raw_socketlike</span>(<span class="self">self</span>) -&gt; <span class="ident">RawSocketlike</span> {
+        <span class="self">self</span>.<span class="ident">into_raw_fd</span>()
+    }
+}
+
+<span class="doccomment">/// This is a portability abstraction over Unix-like `IntoRawFd` and Windows&#39;</span>
+<span class="doccomment">/// [`IntoRawSocket`].</span>
 <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">windows</span>)]</span>
 <span class="kw">pub</span> <span class="kw">trait</span> <span class="ident">IntoRawSocketlike</span>: <span class="ident">IntoRawSocket</span> {
     <span class="doccomment">/// Returns the raw value.</span>
@@ -442,8 +454,8 @@
     }
 }
 
-<span class="doccomment">/// This is a portability abstraction over Unix-like [`FromRawFd`] and Windows&#39;</span>
-<span class="doccomment">/// `FromRawHandle`.</span>
+<span class="doccomment">/// This is a portability abstraction over Unix-like `FromRawFd` and Windows&#39;</span>
+<span class="doccomment">/// [`FromRawHandle`].</span>
 <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">windows</span>)]</span>
 <span class="kw">pub</span> <span class="kw">trait</span> <span class="ident">FromRawFilelike</span>: <span class="ident">FromRawHandle</span> {
     <span class="doccomment">/// Constructs `Self` from the raw value.</span>
@@ -482,8 +494,8 @@
     }
 }
 
-<span class="doccomment">/// This is a portability abstraction over Unix-like [`FromRawFd`] and Windows&#39;</span>
-<span class="doccomment">/// `FromRawSocket`.</span>
+<span class="doccomment">/// This is a portability abstraction over Unix-like `FromRawFd` and Windows&#39;</span>
+<span class="doccomment">/// [`FromRawSocket`].</span>
 <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">windows</span>)]</span>
 <span class="kw">pub</span> <span class="kw">trait</span> <span class="ident">FromRawSocketlike</span>: <span class="ident">FromRawSocket</span> {
     <span class="doccomment">/// Constructs `Self` from the raw value.</span>

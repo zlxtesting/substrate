@@ -27,7 +27,7 @@ members are identified via their account.</li>
 <li>kick: The act of a pool administrator forcibly ejecting a member.</li>
 </ul>
 <h3 id="usage"><a href="#usage">Usage</a></h3><h4 id="join"><a href="#join">Join</a></h4>
-<p>A account can stake funds with a nomination pool by calling <a href="pallet/enum.Call.html#variant.join" title="Call::join"><code>Call::join</code></a>.</p>
+<p>An account can stake funds with a nomination pool by calling <a href="pallet/enum.Call.html#variant.join" title="Call::join"><code>Call::join</code></a>.</p>
 <h4 id="claim-rewards"><a href="#claim-rewards">Claim rewards</a></h4>
 <p>After joining a pool, a member can claim rewards by calling <a href="pallet/enum.Call.html#variant.claim_payout" title="Call::claim_payout"><code>Call::claim_payout</code></a>.</p>
 <p>For design docs see the <a href="#reward-pool">reward pool</a> section.</p>
@@ -57,7 +57,7 @@ anytime to update validator selection.</p>
 <a href="pallet/enum.Call.html#variant.unbond" title="Call::unbond"><code>Call::unbond</code></a> and <a href="pallet/enum.Call.html#variant.withdraw_unbonded" title="Call::withdraw_unbonded"><code>Call::withdraw_unbonded</code></a>. Once a pool is in destroying state, it
 cannot be reverted to another state.</li>
 </ul>
-<p>A pool has 3 administrative roles (see <a href="struct.PoolRoles.html" title="PoolRoles"><code>PoolRoles</code></a>):</p>
+<p>A pool has 4 administrative roles (see <a href="struct.PoolRoles.html" title="PoolRoles"><code>PoolRoles</code></a>):</p>
 <ul>
 <li>Depositor: creates the pool and is the initial member. They can only leave the pool once all
 other members have left. Once they fully leave the pool is destroyed.</li>
@@ -205,8 +205,8 @@ Related: <a href="https://github.com/paritytech/substrate/issues/10860">https://
 <li>PoolMembers cannot vote with their staked funds because they are transferred into the pools
 account. In the future this can be overcome by allowing the members to vote with their bonded
 funds via vote splitting.</li>
-<li>PoolMembers cannot quickly transfer to another pool if they do no like nominations, instead
-they must wait for the unbonding duration.</li>
+<li>PoolMembers cannot quickly transfer to another pool if they do not like the nominations,
+instead they must wait for the unbonding duration.</li>
 </ul>
 <h2 id="runtime-builder-warnings"><a href="#runtime-builder-warnings">Runtime builder warnings</a></h2>
 <ul>

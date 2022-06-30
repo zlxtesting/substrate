@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/cargo_home/registry/src/github.com-1ecc6299db9ec823/rustix-0.33.7/src/imp/linux_raw/fs/types.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>types.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" type="text/css" href="../../../../../normalize.css"><link rel="stylesheet" type="text/css" href="../../../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../../../../ayu.css" disabled><link rel="stylesheet" type="text/css" href="../../../../../dark.css" disabled><link rel="stylesheet" type="text/css" href="../../../../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../../../../storage.js"></script><script src="../../../../../crates.js"></script><script defer src="../../../../../main.js"></script><script defer src="../../../../../source-script.js"></script><script defer src="../../../../../source-files.js"></script>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/cargo_home/registry/src/github.com-1ecc6299db9ec823/rustix-0.35.6/src/imp/linux_raw/fs/types.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>types.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" type="text/css" href="../../../../../normalize.css"><link rel="stylesheet" type="text/css" href="../../../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../../../../ayu.css" disabled><link rel="stylesheet" type="text/css" href="../../../../../dark.css" disabled><link rel="stylesheet" type="text/css" href="../../../../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../../../../storage.js"></script><script src="../../../../../crates.js"></script><script defer src="../../../../../main.js"></script><script defer src="../../../../../source-script.js"></script><script defer src="../../../../../source-files.js"></script>
     <noscript><link rel="stylesheet" href="../../../../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../../../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../../../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../../../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="sidebar-logo" href="../../../../../rustix/index.html"><div class="logo-container"><img class="rust-logo" src="../../../../../rust-logo.svg" alt="logo"></div>
         </a><h2 class="location"></h2>
     </nav>
@@ -582,6 +582,40 @@
 <span id="577">577</span>
 <span id="578">578</span>
 <span id="579">579</span>
+<span id="580">580</span>
+<span id="581">581</span>
+<span id="582">582</span>
+<span id="583">583</span>
+<span id="584">584</span>
+<span id="585">585</span>
+<span id="586">586</span>
+<span id="587">587</span>
+<span id="588">588</span>
+<span id="589">589</span>
+<span id="590">590</span>
+<span id="591">591</span>
+<span id="592">592</span>
+<span id="593">593</span>
+<span id="594">594</span>
+<span id="595">595</span>
+<span id="596">596</span>
+<span id="597">597</span>
+<span id="598">598</span>
+<span id="599">599</span>
+<span id="600">600</span>
+<span id="601">601</span>
+<span id="602">602</span>
+<span id="603">603</span>
+<span id="604">604</span>
+<span id="605">605</span>
+<span id="606">606</span>
+<span id="607">607</span>
+<span id="608">608</span>
+<span id="609">609</span>
+<span id="610">610</span>
+<span id="611">611</span>
+<span id="612">612</span>
+<span id="613">613</span>
 </pre><pre class="rust"><code><span class="kw">use</span> <span class="ident"><span class="kw">super</span>::<span class="kw">super</span>::c</span>;
 <span class="kw">use</span> <span class="ident">bitflags::bitflags</span>;
 
@@ -703,8 +737,8 @@
 }
 
 <span class="kw">impl</span> <span class="ident">Mode</span> {
-    <span class="doccomment">/// Construct a `Mode` from the mode bits of the `st_mode` field of</span>
-    <span class="doccomment">/// a `Stat`.</span>
+    <span class="doccomment">/// Construct a `Mode` from the mode bits of the `st_mode` field of a</span>
+    <span class="doccomment">/// `Stat`.</span>
     <span class="attribute">#[<span class="ident">inline</span>]</span>
     <span class="kw">pub</span> <span class="kw">const</span> <span class="kw">fn</span> <span class="ident">from_raw_mode</span>(<span class="ident">st_mode</span>: <span class="ident">RawMode</span>) -&gt; <span class="self">Self</span> {
         <span class="ident"><span class="self">Self</span>::from_bits_truncate</span>(<span class="ident">st_mode</span>)
@@ -800,6 +834,7 @@
     <span class="doccomment">/// `RESOLVE_*` constants for use with [`openat2`].</span>
     <span class="doccomment">///</span>
     <span class="doccomment">/// [`openat2`]: crate::fs::openat2</span>
+    <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Default</span>)]</span>
     <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">ResolveFlags</span>: <span class="ident">u64</span> {
         <span class="doccomment">/// `RESOLVE_NO_XDEV`</span>
         <span class="kw">const</span> <span class="ident">NO_XDEV</span> <span class="op">=</span> <span class="ident">linux_raw_sys::general::RESOLVE_NO_XDEV</span> <span class="kw">as</span> <span class="ident">u64</span>;
@@ -815,6 +850,9 @@
 
         <span class="doccomment">/// `RESOLVE_IN_ROOT`</span>
         <span class="kw">const</span> <span class="ident">IN_ROOT</span> <span class="op">=</span> <span class="ident">linux_raw_sys::general::RESOLVE_IN_ROOT</span> <span class="kw">as</span> <span class="ident">u64</span>;
+
+        <span class="doccomment">/// `RESOLVE_CACHED` (since Linux 5.12)</span>
+        <span class="kw">const</span> <span class="ident">CACHED</span> <span class="op">=</span> <span class="ident">linux_raw_sys::general::RESOLVE_CACHED</span> <span class="kw">as</span> <span class="ident">u64</span>;
     }
 }
 
@@ -984,8 +1022,8 @@
     <span class="doccomment">/// `F_SEAL_*` constants for use with [`fcntl_add_seals`] and</span>
     <span class="doccomment">/// [`fcntl_get_seals`].</span>
     <span class="doccomment">///</span>
-    <span class="doccomment">/// [`fcntl_add_seals`]: rustix::fs::fcntl_add_seals</span>
-    <span class="doccomment">/// [`fcntl_get_seals`]: rustix::fs::fcntl_get_seals</span>
+    <span class="doccomment">/// [`fcntl_add_seals`]: crate::fs::fcntl_add_seals</span>
+    <span class="doccomment">/// [`fcntl_get_seals`]: crate::fs::fcntl_get_seals</span>
     <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">SealFlags</span>: <span class="ident">u32</span> {
        <span class="doccomment">/// `F_SEAL_SEAL`.</span>
        <span class="kw">const</span> <span class="ident">SEAL</span> <span class="op">=</span> <span class="ident">linux_raw_sys::general::F_SEAL_SEAL</span>;
@@ -1044,6 +1082,9 @@
         <span class="doccomment">/// `STATX_BTIME`</span>
         <span class="kw">const</span> <span class="ident">BTIME</span> <span class="op">=</span> <span class="ident">linux_raw_sys::general::STATX_BTIME</span>;
 
+        <span class="doccomment">/// `STATX_MNT_ID` (since Linux 5.8)</span>
+        <span class="kw">const</span> <span class="ident">MNT_ID</span> <span class="op">=</span> <span class="ident">linux_raw_sys::general::STATX_MNT_ID</span>;
+
         <span class="doccomment">/// `STATX_ALL`</span>
         <span class="kw">const</span> <span class="ident">ALL</span> <span class="op">=</span> <span class="ident">linux_raw_sys::general::STATX_ALL</span>;
     }
@@ -1093,15 +1134,39 @@
 
 <span class="doccomment">/// `struct stat` for use with [`statat`] and [`fstat`].</span>
 <span class="doccomment">///</span>
+<span class="doccomment">/// [`statat`]: crate::fs::statat</span>
 <span class="doccomment">/// [`fstat`]: crate::fs::fstat</span>
-<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">target_pointer_width</span> <span class="op">=</span> <span class="string">&quot;32&quot;</span>)]</span>
-<span class="kw">pub</span> <span class="kw">type</span> <span class="ident">Stat</span> <span class="op">=</span> <span class="ident">linux_raw_sys::general::stat64</span>;
+<span class="comment">// On 32-bit, and mips64, Linux&#39;s `struct stat64` has a 32-bit `st_mtime` and</span>
+<span class="comment">// friends, so we use our own struct, populated from `statx` where possible, to</span>
+<span class="comment">// avoid the y2038 bug.</span>
+<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">any</span>(<span class="ident">target_pointer_width</span> <span class="op">=</span> <span class="string">&quot;32&quot;</span>, <span class="ident">target_arch</span> <span class="op">=</span> <span class="string">&quot;mips64&quot;</span>))]</span>
+<span class="attribute">#[<span class="ident">repr</span>(<span class="ident">C</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>, <span class="ident">Copy</span>, <span class="ident">Clone</span>)]</span>
+<span class="attribute">#[<span class="ident">allow</span>(<span class="ident">missing_docs</span>)]</span>
+<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">Stat</span> {
+    <span class="kw">pub</span> <span class="ident">st_dev</span>: <span class="ident">u64</span>,
+    <span class="kw">pub</span> <span class="ident">st_mode</span>: <span class="ident">u32</span>,
+    <span class="kw">pub</span> <span class="ident">st_nlink</span>: <span class="ident">u32</span>,
+    <span class="kw">pub</span> <span class="ident">st_uid</span>: <span class="ident">u32</span>,
+    <span class="kw">pub</span> <span class="ident">st_gid</span>: <span class="ident">u32</span>,
+    <span class="kw">pub</span> <span class="ident">st_rdev</span>: <span class="ident">u64</span>,
+    <span class="kw">pub</span> <span class="ident">st_size</span>: <span class="ident">i64</span>,
+    <span class="kw">pub</span> <span class="ident">st_blksize</span>: <span class="ident">u32</span>,
+    <span class="kw">pub</span> <span class="ident">st_blocks</span>: <span class="ident">u64</span>,
+    <span class="kw">pub</span> <span class="ident">st_atime</span>: <span class="ident">u64</span>,
+    <span class="kw">pub</span> <span class="ident">st_atime_nsec</span>: <span class="ident">u32</span>,
+    <span class="kw">pub</span> <span class="ident">st_mtime</span>: <span class="ident">u64</span>,
+    <span class="kw">pub</span> <span class="ident">st_mtime_nsec</span>: <span class="ident">u32</span>,
+    <span class="kw">pub</span> <span class="ident">st_ctime</span>: <span class="ident">u64</span>,
+    <span class="kw">pub</span> <span class="ident">st_ctime_nsec</span>: <span class="ident">u32</span>,
+    <span class="kw">pub</span> <span class="ident">st_ino</span>: <span class="ident">u64</span>,
+}
 
 <span class="doccomment">/// `struct stat` for use with [`statat`] and [`fstat`].</span>
 <span class="doccomment">///</span>
 <span class="doccomment">/// [`statat`]: crate::fs::statat</span>
 <span class="doccomment">/// [`fstat`]: crate::fs::fstat</span>
-<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">target_pointer_width</span> <span class="op">=</span> <span class="string">&quot;64&quot;</span>)]</span>
+<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">all</span>(<span class="ident">target_pointer_width</span> <span class="op">=</span> <span class="string">&quot;64&quot;</span>, <span class="ident">not</span>(<span class="ident">target_arch</span> <span class="op">=</span> <span class="string">&quot;mips64&quot;</span>)))]</span>
 <span class="kw">pub</span> <span class="kw">type</span> <span class="ident">Stat</span> <span class="op">=</span> <span class="ident">linux_raw_sys::general::stat</span>;
 
 <span class="doccomment">/// `struct statfs` for use with [`fstatfs`].</span>
@@ -1123,12 +1188,15 @@
 <span class="doccomment">/// [`statx`]: crate::fs::statx</span>
 <span class="kw">pub</span> <span class="kw">type</span> <span class="ident">Statx</span> <span class="op">=</span> <span class="ident">linux_raw_sys::general::statx</span>;
 
+<span class="doccomment">/// `struct statx_timestamp` for use with [`Statx`].</span>
+<span class="kw">pub</span> <span class="kw">type</span> <span class="ident">StatxTimestamp</span> <span class="op">=</span> <span class="ident">linux_raw_sys::general::statx_timestamp</span>;
+
 <span class="doccomment">/// `mode_t`</span>
 <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">not</span>(<span class="ident">any</span>(
     <span class="ident">target_arch</span> <span class="op">=</span> <span class="string">&quot;x86&quot;</span>,
     <span class="ident">target_arch</span> <span class="op">=</span> <span class="string">&quot;sparc&quot;</span>,
     <span class="ident">target_arch</span> <span class="op">=</span> <span class="string">&quot;avr&quot;</span>,
-    <span class="ident">target_arch</span> <span class="op">=</span> <span class="string">&quot;arm&quot;</span>
+    <span class="ident">target_arch</span> <span class="op">=</span> <span class="string">&quot;arm&quot;</span>,
 )))]</span>
 <span class="kw">pub</span> <span class="kw">type</span> <span class="ident">RawMode</span> <span class="op">=</span> <span class="ident">linux_raw_sys::general::__kernel_mode_t</span>;
 
@@ -1137,7 +1205,7 @@
     <span class="ident">target_arch</span> <span class="op">=</span> <span class="string">&quot;x86&quot;</span>,
     <span class="ident">target_arch</span> <span class="op">=</span> <span class="string">&quot;sparc&quot;</span>,
     <span class="ident">target_arch</span> <span class="op">=</span> <span class="string">&quot;avr&quot;</span>,
-    <span class="ident">target_arch</span> <span class="op">=</span> <span class="string">&quot;arm&quot;</span>
+    <span class="ident">target_arch</span> <span class="op">=</span> <span class="string">&quot;arm&quot;</span>,
 ))]</span>
 <span class="comment">// Don&#39;t use `__kernel_mode_t` since it&#39;s `u16` which differs from `st_size`.</span>
 <span class="kw">pub</span> <span class="kw">type</span> <span class="ident">RawMode</span> <span class="op">=</span> <span class="ident">c::c_uint</span>;

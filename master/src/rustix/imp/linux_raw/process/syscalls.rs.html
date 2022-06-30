@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/cargo_home/registry/src/github.com-1ecc6299db9ec823/rustix-0.33.7/src/imp/linux_raw/process/syscalls.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>syscalls.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" type="text/css" href="../../../../../normalize.css"><link rel="stylesheet" type="text/css" href="../../../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../../../../ayu.css" disabled><link rel="stylesheet" type="text/css" href="../../../../../dark.css" disabled><link rel="stylesheet" type="text/css" href="../../../../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../../../../storage.js"></script><script src="../../../../../crates.js"></script><script defer src="../../../../../main.js"></script><script defer src="../../../../../source-script.js"></script><script defer src="../../../../../source-files.js"></script>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/cargo_home/registry/src/github.com-1ecc6299db9ec823/rustix-0.35.6/src/imp/linux_raw/process/syscalls.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>syscalls.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" type="text/css" href="../../../../../normalize.css"><link rel="stylesheet" type="text/css" href="../../../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../../../../ayu.css" disabled><link rel="stylesheet" type="text/css" href="../../../../../dark.css" disabled><link rel="stylesheet" type="text/css" href="../../../../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../../../../storage.js"></script><script src="../../../../../crates.js"></script><script defer src="../../../../../main.js"></script><script defer src="../../../../../source-script.js"></script><script defer src="../../../../../source-files.js"></script>
     <noscript><link rel="stylesheet" href="../../../../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../../../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../../../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../../../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="sidebar-logo" href="../../../../../rustix/index.html"><div class="logo-container"><img class="rust-logo" src="../../../../../rust-logo.svg" alt="logo"></div>
         </a><h2 class="location"></h2>
     </nav>
@@ -520,47 +520,22 @@
 <span id="515">515</span>
 <span id="516">516</span>
 <span id="517">517</span>
-<span id="518">518</span>
-<span id="519">519</span>
-<span id="520">520</span>
-<span id="521">521</span>
-<span id="522">522</span>
-<span id="523">523</span>
-<span id="524">524</span>
-<span id="525">525</span>
-<span id="526">526</span>
-<span id="527">527</span>
-<span id="528">528</span>
-<span id="529">529</span>
-<span id="530">530</span>
-<span id="531">531</span>
-<span id="532">532</span>
-<span id="533">533</span>
-<span id="534">534</span>
-<span id="535">535</span>
-<span id="536">536</span>
 </pre><pre class="rust"><code><span class="doccomment">//! linux_raw syscalls supporting `rustix::process`.</span>
 <span class="doccomment">//!</span>
 <span class="doccomment">//! # Safety</span>
 <span class="doccomment">//!</span>
-<span class="doccomment">//! See the `rustix::imp::syscalls` module documentation for details.</span>
-
+<span class="doccomment">//! See the `rustix::imp` module documentation for details.</span>
 <span class="attribute">#![<span class="ident">allow</span>(<span class="ident">unsafe_code</span>)]</span>
+<span class="attribute">#![<span class="ident">allow</span>(<span class="ident">clippy::undocumented_unsafe_blocks</span>)]</span>
 
-<span class="kw">use</span> <span class="ident"><span class="kw">super</span>::<span class="kw">super</span>::arch::choose</span>::{
-    <span class="ident">syscall0_readonly</span>, <span class="ident">syscall1</span>, <span class="ident">syscall1_noreturn</span>, <span class="ident">syscall1_readonly</span>, <span class="ident">syscall2</span>, <span class="ident">syscall2_readonly</span>,
-    <span class="ident">syscall3</span>, <span class="ident">syscall3_readonly</span>, <span class="ident">syscall4</span>,
-};
 <span class="kw">use</span> <span class="ident"><span class="kw">super</span>::<span class="kw">super</span>::c</span>;
 <span class="kw">use</span> <span class="ident"><span class="kw">super</span>::<span class="kw">super</span>::conv</span>::{
-    <span class="ident">borrowed_fd</span>, <span class="ident">by_mut</span>, <span class="ident">by_ref</span>, <span class="ident">c_int</span>, <span class="ident">c_str</span>, <span class="ident">c_uint</span>, <span class="ident">const_void_star</span>, <span class="ident">negative_pid</span>, <span class="ident">out</span>,
-    <span class="ident">pass_usize</span>, <span class="ident">regular_pid</span>, <span class="ident">resource</span>, <span class="ident">ret</span>, <span class="ident">ret_c_int</span>, <span class="ident">ret_c_uint</span>, <span class="ident">ret_infallible</span>, <span class="ident">ret_usize</span>,
-    <span class="ident">ret_usize_infallible</span>, <span class="ident">signal</span>, <span class="ident">size_of</span>, <span class="ident">slice_just_addr</span>, <span class="ident">slice_mut</span>, <span class="ident">void_star</span>, <span class="ident">zero</span>,
+    <span class="ident">by_mut</span>, <span class="ident">by_ref</span>, <span class="ident">c_int</span>, <span class="ident">c_uint</span>, <span class="ident">negative_pid</span>, <span class="ident">pass_usize</span>, <span class="ident">ret</span>, <span class="ident">ret_c_int</span>, <span class="ident">ret_c_uint</span>,
+    <span class="ident">ret_infallible</span>, <span class="ident">ret_usize</span>, <span class="ident">ret_usize_infallible</span>, <span class="ident">size_of</span>, <span class="ident">slice_just_addr</span>, <span class="ident">slice_mut</span>, <span class="ident">zero</span>,
 };
-<span class="kw">use</span> <span class="ident"><span class="kw">super</span>::<span class="kw">super</span>::reg::nr</span>;
-<span class="kw">use</span> <span class="kw">super</span>::{<span class="ident">RawCpuSet</span>, <span class="ident">RawUname</span>};
+<span class="kw">use</span> <span class="ident"><span class="kw">super</span>::types</span>::{<span class="ident">RawCpuSet</span>, <span class="ident">RawUname</span>};
 <span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::fd::BorrowedFd</span>;
-<span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::ffi::ZStr</span>;
+<span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::ffi::CStr</span>;
 <span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::io</span>;
 <span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::process</span>::{
     <span class="ident">Cpuid</span>, <span class="ident">Gid</span>, <span class="ident">MembarrierCommand</span>, <span class="ident">MembarrierQuery</span>, <span class="ident">Pid</span>, <span class="ident">RawNonZeroPid</span>, <span class="ident">RawPid</span>, <span class="ident">Resource</span>, <span class="ident">Rlimit</span>,
@@ -568,54 +543,35 @@
 };
 <span class="kw">use</span> <span class="ident">core::convert::TryInto</span>;
 <span class="kw">use</span> <span class="ident">core::mem::MaybeUninit</span>;
-<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">not</span>(<span class="ident">any</span>(
-    <span class="ident">target_arch</span> <span class="op">=</span> <span class="string">&quot;arm&quot;</span>,
-    <span class="ident">target_arch</span> <span class="op">=</span> <span class="string">&quot;powerpc&quot;</span>,
-    <span class="ident">target_arch</span> <span class="op">=</span> <span class="string">&quot;powerpc64&quot;</span>,
-    <span class="ident">target_arch</span> <span class="op">=</span> <span class="string">&quot;x86&quot;</span>
-)))]</span>
-<span class="kw">use</span> <span class="ident">linux_raw_sys::general::__NR_getrlimit</span>;
-<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">any</span>(
-    <span class="ident">target_arch</span> <span class="op">=</span> <span class="string">&quot;arm&quot;</span>,
-    <span class="ident">target_arch</span> <span class="op">=</span> <span class="string">&quot;powerpc&quot;</span>,
-    <span class="ident">target_arch</span> <span class="op">=</span> <span class="string">&quot;powerpc64&quot;</span>,
-    <span class="ident">target_arch</span> <span class="op">=</span> <span class="string">&quot;x86&quot;</span>
-))]</span>
-<span class="kw">use</span> <span class="ident">linux_raw_sys::general::__NR_ugetrlimit</span> <span class="kw">as</span> <span class="ident">__NR_getrlimit</span>;
+<span class="kw">use</span> <span class="ident">core::ptr</span>::{<span class="ident">null</span>, <span class="ident">null_mut</span>};
 <span class="kw">use</span> <span class="ident">linux_raw_sys::general</span>::{
-    <span class="ident">__NR_chdir</span>, <span class="ident">__NR_exit_group</span>, <span class="ident">__NR_fchdir</span>, <span class="ident">__NR_getcwd</span>, <span class="ident">__NR_getpid</span>, <span class="ident">__NR_getppid</span>,
-    <span class="ident">__NR_getpriority</span>, <span class="ident">__NR_kill</span>, <span class="ident">__NR_membarrier</span>, <span class="ident">__NR_prlimit64</span>, <span class="ident">__NR_sched_getaffinity</span>,
-    <span class="ident">__NR_sched_setaffinity</span>, <span class="ident">__NR_sched_yield</span>, <span class="ident">__NR_setpriority</span>, <span class="ident">__NR_setrlimit</span>, <span class="ident">__NR_setsid</span>,
-    <span class="ident">__NR_uname</span>, <span class="ident">__NR_wait4</span>, <span class="ident">__kernel_gid_t</span>, <span class="ident">__kernel_pid_t</span>, <span class="ident">__kernel_uid_t</span>,
+    <span class="ident">__kernel_gid_t</span>, <span class="ident">__kernel_pid_t</span>, <span class="ident">__kernel_uid_t</span>, <span class="ident">membarrier_cmd</span>, <span class="ident">membarrier_cmd_flag</span>, <span class="ident">rlimit</span>,
+    <span class="ident">rlimit64</span>, <span class="ident">PRIO_PGRP</span>, <span class="ident">PRIO_PROCESS</span>, <span class="ident">PRIO_USER</span>, <span class="ident">RLIM64_INFINITY</span>, <span class="ident">RLIM_INFINITY</span>,
 };
-<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">not</span>(<span class="ident">any</span>(<span class="ident">target_arch</span> <span class="op">=</span> <span class="string">&quot;x86&quot;</span>, <span class="ident">target_arch</span> <span class="op">=</span> <span class="string">&quot;sparc&quot;</span>, <span class="ident">target_arch</span> <span class="op">=</span> <span class="string">&quot;arm&quot;</span>)))]</span>
-<span class="kw">use</span> <span class="ident">linux_raw_sys::general</span>::{<span class="ident">__NR_getegid</span>, <span class="ident">__NR_geteuid</span>, <span class="ident">__NR_getgid</span>, <span class="ident">__NR_getuid</span>};
-<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">any</span>(<span class="ident">target_arch</span> <span class="op">=</span> <span class="string">&quot;x86&quot;</span>, <span class="ident">target_arch</span> <span class="op">=</span> <span class="string">&quot;sparc&quot;</span>, <span class="ident">target_arch</span> <span class="op">=</span> <span class="string">&quot;arm&quot;</span>))]</span>
-<span class="kw">use</span> <span class="ident">linux_raw_sys::general</span>::{<span class="ident">__NR_getegid32</span>, <span class="ident">__NR_geteuid32</span>, <span class="ident">__NR_getgid32</span>, <span class="ident">__NR_getuid32</span>};
 
 <span class="attribute">#[<span class="ident">inline</span>]</span>
-<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">chdir</span>(<span class="ident">filename</span>: <span class="kw-2">&amp;</span><span class="ident">ZStr</span>) -&gt; <span class="ident">io::Result</span><span class="op">&lt;</span>()<span class="op">&gt;</span> {
-    <span class="kw">unsafe</span> { <span class="ident">ret</span>(<span class="ident">syscall1_readonly</span>(<span class="ident">nr</span>(<span class="ident">__NR_chdir</span>), <span class="ident">c_str</span>(<span class="ident">filename</span>))) }
+<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">chdir</span>(<span class="ident">filename</span>: <span class="kw-2">&amp;</span><span class="ident">CStr</span>) -&gt; <span class="ident">io::Result</span><span class="op">&lt;</span>()<span class="op">&gt;</span> {
+    <span class="kw">unsafe</span> { <span class="ident">ret</span>(<span class="macro">syscall_readonly!</span>(<span class="ident">__NR_chdir</span>, <span class="ident">filename</span>)) }
 }
 
 <span class="attribute">#[<span class="ident">inline</span>]</span>
 <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">fchdir</span>(<span class="ident">fd</span>: <span class="ident">BorrowedFd</span><span class="op">&lt;</span><span class="lifetime">&#39;_</span><span class="op">&gt;</span>) -&gt; <span class="ident">io::Result</span><span class="op">&lt;</span>()<span class="op">&gt;</span> {
-    <span class="kw">unsafe</span> { <span class="ident">ret</span>(<span class="ident">syscall1_readonly</span>(<span class="ident">nr</span>(<span class="ident">__NR_fchdir</span>), <span class="ident">borrowed_fd</span>(<span class="ident">fd</span>))) }
+    <span class="kw">unsafe</span> { <span class="ident">ret</span>(<span class="macro">syscall_readonly!</span>(<span class="ident">__NR_fchdir</span>, <span class="ident">fd</span>)) }
 }
 
 <span class="attribute">#[<span class="ident">inline</span>]</span>
 <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">getcwd</span>(<span class="ident">buf</span>: <span class="kw-2">&amp;mut</span> [<span class="ident">u8</span>]) -&gt; <span class="ident">io::Result</span><span class="op">&lt;</span><span class="ident">usize</span><span class="op">&gt;</span> {
     <span class="kw">let</span> (<span class="ident">buf_addr_mut</span>, <span class="ident">buf_len</span>) <span class="op">=</span> <span class="ident">slice_mut</span>(<span class="ident">buf</span>);
-    <span class="kw">unsafe</span> { <span class="ident">ret_usize</span>(<span class="ident">syscall2</span>(<span class="ident">nr</span>(<span class="ident">__NR_getcwd</span>), <span class="ident">buf_addr_mut</span>, <span class="ident">buf_len</span>)) }
+    <span class="kw">unsafe</span> { <span class="ident">ret_usize</span>(<span class="macro">syscall!</span>(<span class="ident">__NR_getcwd</span>, <span class="ident">buf_addr_mut</span>, <span class="ident">buf_len</span>)) }
 }
 
 <span class="attribute">#[<span class="ident">inline</span>]</span>
 <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">membarrier_query</span>() -&gt; <span class="ident">MembarrierQuery</span> {
     <span class="kw">unsafe</span> {
-        <span class="kw">match</span> <span class="ident">ret_c_uint</span>(<span class="ident">syscall2</span>(
-            <span class="ident">nr</span>(<span class="ident">__NR_membarrier</span>),
-            <span class="ident">c_int</span>(<span class="ident">linux_raw_sys::general::membarrier_cmd::MEMBARRIER_CMD_QUERY</span> <span class="kw">as</span> <span class="kw">_</span>),
-            <span class="ident">c_uint</span>(<span class="number">0</span>),
+        <span class="kw">match</span> <span class="ident">ret_c_uint</span>(<span class="macro">syscall!</span>(
+            <span class="ident">__NR_membarrier</span>,
+            <span class="ident">c_int</span>(<span class="ident">membarrier_cmd::MEMBARRIER_CMD_QUERY</span> <span class="kw">as</span> <span class="kw">_</span>),
+            <span class="ident">c_uint</span>(<span class="number">0</span>)
         )) {
             <span class="prelude-val">Ok</span>(<span class="ident">query</span>) =&gt; {
                 <span class="comment">// Safety: The safety of `from_bits_unchecked` is discussed</span>
@@ -633,23 +589,17 @@
 
 <span class="attribute">#[<span class="ident">inline</span>]</span>
 <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">membarrier</span>(<span class="ident">cmd</span>: <span class="ident">MembarrierCommand</span>) -&gt; <span class="ident">io::Result</span><span class="op">&lt;</span>()<span class="op">&gt;</span> {
-    <span class="kw">unsafe</span> {
-        <span class="ident">ret</span>(<span class="ident">syscall2</span>(
-            <span class="ident">nr</span>(<span class="ident">__NR_membarrier</span>),
-            <span class="ident">c_int</span>(<span class="ident">cmd</span> <span class="kw">as</span> <span class="ident">c::c_int</span>),
-            <span class="ident">c_uint</span>(<span class="number">0</span>),
-        ))
-    }
+    <span class="kw">unsafe</span> { <span class="ident">ret</span>(<span class="macro">syscall!</span>(<span class="ident">__NR_membarrier</span>, <span class="ident">cmd</span>, <span class="ident">c_uint</span>(<span class="number">0</span>))) }
 }
 
 <span class="attribute">#[<span class="ident">inline</span>]</span>
 <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">membarrier_cpu</span>(<span class="ident">cmd</span>: <span class="ident">MembarrierCommand</span>, <span class="ident">cpu</span>: <span class="ident">Cpuid</span>) -&gt; <span class="ident">io::Result</span><span class="op">&lt;</span>()<span class="op">&gt;</span> {
     <span class="kw">unsafe</span> {
-        <span class="ident">ret</span>(<span class="ident">syscall3</span>(
-            <span class="ident">nr</span>(<span class="ident">__NR_membarrier</span>),
-            <span class="ident">c_int</span>(<span class="ident">cmd</span> <span class="kw">as</span> <span class="ident">c::c_int</span>),
-            <span class="ident">c_uint</span>(<span class="ident">linux_raw_sys::general::membarrier_cmd_flag::MEMBARRIER_CMD_FLAG_CPU</span> <span class="kw">as</span> <span class="kw">_</span>),
-            <span class="ident">c_uint</span>(<span class="ident">cpu</span>.<span class="ident">as_raw</span>()),
+        <span class="ident">ret</span>(<span class="macro">syscall!</span>(
+            <span class="ident">__NR_membarrier</span>,
+            <span class="ident">cmd</span>,
+            <span class="ident">c_uint</span>(<span class="ident">membarrier_cmd_flag::MEMBARRIER_CMD_FLAG_CPU</span> <span class="kw">as</span> <span class="kw">_</span>),
+            <span class="ident">cpu</span>
         ))
     }
 }
@@ -657,8 +607,8 @@
 <span class="attribute">#[<span class="ident">inline</span>]</span>
 <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">getpid</span>() -&gt; <span class="ident">Pid</span> {
     <span class="kw">unsafe</span> {
-        <span class="kw">let</span> <span class="ident">pid</span>: <span class="ident">i32</span> <span class="op">=</span> <span class="ident">ret_usize_infallible</span>(<span class="ident">syscall0_readonly</span>(<span class="ident">nr</span>(<span class="ident">__NR_getpid</span>))) <span class="kw">as</span> <span class="ident">__kernel_pid_t</span>;
-        <span class="macro">debug_assert_ne!</span>(<span class="ident">pid</span>, <span class="number">0</span>);
+        <span class="kw">let</span> <span class="ident">pid</span>: <span class="ident">i32</span> <span class="op">=</span> <span class="ident">ret_usize_infallible</span>(<span class="macro">syscall_readonly!</span>(<span class="ident">__NR_getpid</span>)) <span class="kw">as</span> <span class="ident">__kernel_pid_t</span>;
+        <span class="macro">debug_assert!</span>(<span class="ident">pid</span> <span class="op">&gt;</span> <span class="number">0</span>);
         <span class="ident">Pid::from_raw_nonzero</span>(<span class="ident">RawNonZeroPid::new_unchecked</span>(<span class="ident">pid</span> <span class="kw">as</span> <span class="ident">u32</span>))
     }
 }
@@ -666,7 +616,7 @@
 <span class="attribute">#[<span class="ident">inline</span>]</span>
 <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">getppid</span>() -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Pid</span><span class="op">&gt;</span> {
     <span class="kw">unsafe</span> {
-        <span class="kw">let</span> <span class="ident">ppid</span>: <span class="ident">i32</span> <span class="op">=</span> <span class="ident">ret_usize_infallible</span>(<span class="ident">syscall0_readonly</span>(<span class="ident">nr</span>(<span class="ident">__NR_getppid</span>))) <span class="kw">as</span> <span class="ident">__kernel_pid_t</span>;
+        <span class="kw">let</span> <span class="ident">ppid</span>: <span class="ident">i32</span> <span class="op">=</span> <span class="ident">ret_usize_infallible</span>(<span class="macro">syscall_readonly!</span>(<span class="ident">__NR_getppid</span>)) <span class="kw">as</span> <span class="ident">__kernel_pid_t</span>;
         <span class="ident">Pid::from_raw</span>(<span class="ident">ppid</span> <span class="kw">as</span> <span class="ident">u32</span>)
     }
 }
@@ -676,13 +626,13 @@
     <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">any</span>(<span class="ident">target_arch</span> <span class="op">=</span> <span class="string">&quot;x86&quot;</span>, <span class="ident">target_arch</span> <span class="op">=</span> <span class="string">&quot;sparc&quot;</span>, <span class="ident">target_arch</span> <span class="op">=</span> <span class="string">&quot;arm&quot;</span>))]</span>
     <span class="kw">unsafe</span> {
         <span class="kw">let</span> <span class="ident">gid</span>: <span class="ident">i32</span> <span class="op">=</span>
-            (<span class="ident">ret_usize_infallible</span>(<span class="ident">syscall0_readonly</span>(<span class="ident">nr</span>(<span class="ident">__NR_getgid32</span>))) <span class="kw">as</span> <span class="ident">__kernel_gid_t</span>).<span class="ident">into</span>();
+            (<span class="ident">ret_usize_infallible</span>(<span class="macro">syscall_readonly!</span>(<span class="ident">__NR_getgid32</span>)) <span class="kw">as</span> <span class="ident">__kernel_gid_t</span>).<span class="ident">into</span>();
         <span class="ident">Gid::from_raw</span>(<span class="ident">gid</span> <span class="kw">as</span> <span class="ident">u32</span>)
     }
     <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">not</span>(<span class="ident">any</span>(<span class="ident">target_arch</span> <span class="op">=</span> <span class="string">&quot;x86&quot;</span>, <span class="ident">target_arch</span> <span class="op">=</span> <span class="string">&quot;sparc&quot;</span>, <span class="ident">target_arch</span> <span class="op">=</span> <span class="string">&quot;arm&quot;</span>)))]</span>
     <span class="kw">unsafe</span> {
-        <span class="kw">let</span> <span class="ident">gid</span> <span class="op">=</span> <span class="ident">ret_usize_infallible</span>(<span class="ident">syscall0_readonly</span>(<span class="ident">nr</span>(<span class="ident">__NR_getgid</span>))) <span class="kw">as</span> <span class="ident">__kernel_gid_t</span>;
-        <span class="ident">Gid::from_raw</span>(<span class="ident">gid</span>)
+        <span class="kw">let</span> <span class="ident">gid</span> <span class="op">=</span> <span class="ident">ret_usize_infallible</span>(<span class="macro">syscall_readonly!</span>(<span class="ident">__NR_getgid</span>)) <span class="kw">as</span> <span class="ident">__kernel_gid_t</span>;
+        <span class="ident">Gid::from_raw</span>(<span class="ident">gid</span> <span class="kw">as</span> <span class="ident">u32</span>)
     }
 }
 
@@ -691,13 +641,13 @@
     <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">any</span>(<span class="ident">target_arch</span> <span class="op">=</span> <span class="string">&quot;x86&quot;</span>, <span class="ident">target_arch</span> <span class="op">=</span> <span class="string">&quot;sparc&quot;</span>, <span class="ident">target_arch</span> <span class="op">=</span> <span class="string">&quot;arm&quot;</span>))]</span>
     <span class="kw">unsafe</span> {
         <span class="kw">let</span> <span class="ident">gid</span>: <span class="ident">i32</span> <span class="op">=</span>
-            (<span class="ident">ret_usize_infallible</span>(<span class="ident">syscall0_readonly</span>(<span class="ident">nr</span>(<span class="ident">__NR_getegid32</span>))) <span class="kw">as</span> <span class="ident">__kernel_gid_t</span>).<span class="ident">into</span>();
+            (<span class="ident">ret_usize_infallible</span>(<span class="macro">syscall_readonly!</span>(<span class="ident">__NR_getegid32</span>)) <span class="kw">as</span> <span class="ident">__kernel_gid_t</span>).<span class="ident">into</span>();
         <span class="ident">Gid::from_raw</span>(<span class="ident">gid</span> <span class="kw">as</span> <span class="ident">u32</span>)
     }
     <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">not</span>(<span class="ident">any</span>(<span class="ident">target_arch</span> <span class="op">=</span> <span class="string">&quot;x86&quot;</span>, <span class="ident">target_arch</span> <span class="op">=</span> <span class="string">&quot;sparc&quot;</span>, <span class="ident">target_arch</span> <span class="op">=</span> <span class="string">&quot;arm&quot;</span>)))]</span>
     <span class="kw">unsafe</span> {
-        <span class="kw">let</span> <span class="ident">gid</span> <span class="op">=</span> <span class="ident">ret_usize_infallible</span>(<span class="ident">syscall0_readonly</span>(<span class="ident">nr</span>(<span class="ident">__NR_getegid</span>))) <span class="kw">as</span> <span class="ident">__kernel_gid_t</span>;
-        <span class="ident">Gid::from_raw</span>(<span class="ident">gid</span>)
+        <span class="kw">let</span> <span class="ident">gid</span> <span class="op">=</span> <span class="ident">ret_usize_infallible</span>(<span class="macro">syscall_readonly!</span>(<span class="ident">__NR_getegid</span>)) <span class="kw">as</span> <span class="ident">__kernel_gid_t</span>;
+        <span class="ident">Gid::from_raw</span>(<span class="ident">gid</span> <span class="kw">as</span> <span class="ident">u32</span>)
     }
 }
 
@@ -705,14 +655,13 @@
 <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">getuid</span>() -&gt; <span class="ident">Uid</span> {
     <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">any</span>(<span class="ident">target_arch</span> <span class="op">=</span> <span class="string">&quot;x86&quot;</span>, <span class="ident">target_arch</span> <span class="op">=</span> <span class="string">&quot;sparc&quot;</span>, <span class="ident">target_arch</span> <span class="op">=</span> <span class="string">&quot;arm&quot;</span>))]</span>
     <span class="kw">unsafe</span> {
-        <span class="kw">let</span> <span class="ident">uid</span> <span class="op">=</span>
-            (<span class="ident">ret_usize_infallible</span>(<span class="ident">syscall0_readonly</span>(<span class="ident">nr</span>(<span class="ident">__NR_getuid32</span>))) <span class="kw">as</span> <span class="ident">__kernel_uid_t</span>).<span class="ident">into</span>();
+        <span class="kw">let</span> <span class="ident">uid</span> <span class="op">=</span> (<span class="ident">ret_usize_infallible</span>(<span class="macro">syscall_readonly!</span>(<span class="ident">__NR_getuid32</span>)) <span class="kw">as</span> <span class="ident">__kernel_uid_t</span>).<span class="ident">into</span>();
         <span class="ident">Uid::from_raw</span>(<span class="ident">uid</span>)
     }
     <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">not</span>(<span class="ident">any</span>(<span class="ident">target_arch</span> <span class="op">=</span> <span class="string">&quot;x86&quot;</span>, <span class="ident">target_arch</span> <span class="op">=</span> <span class="string">&quot;sparc&quot;</span>, <span class="ident">target_arch</span> <span class="op">=</span> <span class="string">&quot;arm&quot;</span>)))]</span>
     <span class="kw">unsafe</span> {
-        <span class="kw">let</span> <span class="ident">uid</span> <span class="op">=</span> <span class="ident">ret_usize_infallible</span>(<span class="ident">syscall0_readonly</span>(<span class="ident">nr</span>(<span class="ident">__NR_getuid</span>))) <span class="kw">as</span> <span class="ident">__kernel_uid_t</span>;
-        <span class="ident">Uid::from_raw</span>(<span class="ident">uid</span>)
+        <span class="kw">let</span> <span class="ident">uid</span> <span class="op">=</span> <span class="ident">ret_usize_infallible</span>(<span class="macro">syscall_readonly!</span>(<span class="ident">__NR_getuid</span>)) <span class="kw">as</span> <span class="ident">__kernel_uid_t</span>;
+        <span class="ident">Uid::from_raw</span>(<span class="ident">uid</span> <span class="kw">as</span> <span class="ident">u32</span>)
     }
 }
 
@@ -721,13 +670,13 @@
     <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">any</span>(<span class="ident">target_arch</span> <span class="op">=</span> <span class="string">&quot;x86&quot;</span>, <span class="ident">target_arch</span> <span class="op">=</span> <span class="string">&quot;sparc&quot;</span>, <span class="ident">target_arch</span> <span class="op">=</span> <span class="string">&quot;arm&quot;</span>))]</span>
     <span class="kw">unsafe</span> {
         <span class="kw">let</span> <span class="ident">uid</span>: <span class="ident">i32</span> <span class="op">=</span>
-            (<span class="ident">ret_usize_infallible</span>(<span class="ident">syscall0_readonly</span>(<span class="ident">nr</span>(<span class="ident">__NR_geteuid32</span>))) <span class="kw">as</span> <span class="ident">__kernel_uid_t</span>).<span class="ident">into</span>();
+            (<span class="ident">ret_usize_infallible</span>(<span class="macro">syscall_readonly!</span>(<span class="ident">__NR_geteuid32</span>)) <span class="kw">as</span> <span class="ident">__kernel_uid_t</span>).<span class="ident">into</span>();
         <span class="ident">Uid::from_raw</span>(<span class="ident">uid</span> <span class="kw">as</span> <span class="ident">u32</span>)
     }
     <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">not</span>(<span class="ident">any</span>(<span class="ident">target_arch</span> <span class="op">=</span> <span class="string">&quot;x86&quot;</span>, <span class="ident">target_arch</span> <span class="op">=</span> <span class="string">&quot;sparc&quot;</span>, <span class="ident">target_arch</span> <span class="op">=</span> <span class="string">&quot;arm&quot;</span>)))]</span>
     <span class="kw">unsafe</span> {
-        <span class="kw">let</span> <span class="ident">uid</span> <span class="op">=</span> <span class="ident">ret_usize_infallible</span>(<span class="ident">syscall0_readonly</span>(<span class="ident">nr</span>(<span class="ident">__NR_geteuid</span>))) <span class="kw">as</span> <span class="ident">__kernel_uid_t</span>;
-        <span class="ident">Uid::from_raw</span>(<span class="ident">uid</span>)
+        <span class="kw">let</span> <span class="ident">uid</span> <span class="op">=</span> <span class="ident">ret_usize_infallible</span>(<span class="macro">syscall_readonly!</span>(<span class="ident">__NR_geteuid</span>)) <span class="kw">as</span> <span class="ident">__kernel_uid_t</span>;
+        <span class="ident">Uid::from_raw</span>(<span class="ident">uid</span> <span class="kw">as</span> <span class="ident">u32</span>)
     }
 }
 
@@ -737,11 +686,11 @@
         <span class="comment">// The raw linux syscall returns the size (in bytes) of the `cpumask_t`</span>
         <span class="comment">// data type that is used internally by the kernel to represent the CPU</span>
         <span class="comment">// set bit mask.</span>
-        <span class="kw">let</span> <span class="ident">size</span> <span class="op">=</span> <span class="ident">ret_usize</span>(<span class="ident">syscall3</span>(
-            <span class="ident">nr</span>(<span class="ident">__NR_sched_getaffinity</span>),
+        <span class="kw">let</span> <span class="ident">size</span> <span class="op">=</span> <span class="ident">ret_usize</span>(<span class="macro">syscall!</span>(
+            <span class="ident">__NR_sched_getaffinity</span>,
             <span class="ident">c_uint</span>(<span class="ident">Pid::as_raw</span>(<span class="ident">pid</span>)),
             <span class="ident">size_of</span>::<span class="op">&lt;</span><span class="ident">RawCpuSet</span>, <span class="kw">_</span><span class="op">&gt;</span>(),
-            <span class="ident">by_mut</span>(<span class="kw-2">&amp;mut</span> <span class="ident">cpuset</span>.<span class="ident">bits</span>),
+            <span class="ident">by_mut</span>(<span class="kw-2">&amp;mut</span> <span class="ident">cpuset</span>.<span class="ident">bits</span>)
         ))<span class="question-mark">?</span>;
         <span class="kw">let</span> <span class="ident">bytes</span> <span class="op">=</span> (<span class="ident">cpuset</span> <span class="kw">as</span> <span class="kw-2">*mut</span> <span class="ident">RawCpuSet</span>).<span class="ident">cast</span>::<span class="op">&lt;</span><span class="ident">u8</span><span class="op">&gt;</span>();
         <span class="kw">let</span> <span class="ident">rest</span> <span class="op">=</span> <span class="ident">bytes</span>.<span class="ident">wrapping_add</span>(<span class="ident">size</span>);
@@ -754,11 +703,11 @@
 <span class="attribute">#[<span class="ident">inline</span>]</span>
 <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">sched_setaffinity</span>(<span class="ident">pid</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Pid</span><span class="op">&gt;</span>, <span class="ident">cpuset</span>: <span class="kw-2">&amp;</span><span class="ident">RawCpuSet</span>) -&gt; <span class="ident">io::Result</span><span class="op">&lt;</span>()<span class="op">&gt;</span> {
     <span class="kw">unsafe</span> {
-        <span class="ident">ret</span>(<span class="ident">syscall3_readonly</span>(
-            <span class="ident">nr</span>(<span class="ident">__NR_sched_setaffinity</span>),
+        <span class="ident">ret</span>(<span class="macro">syscall_readonly!</span>(
+            <span class="ident">__NR_sched_setaffinity</span>,
             <span class="ident">c_uint</span>(<span class="ident">Pid::as_raw</span>(<span class="ident">pid</span>)),
             <span class="ident">size_of</span>::<span class="op">&lt;</span><span class="ident">RawCpuSet</span>, <span class="kw">_</span><span class="op">&gt;</span>(),
-            <span class="ident">slice_just_addr</span>(<span class="kw-2">&amp;</span><span class="ident">cpuset</span>.<span class="ident">bits</span>),
+            <span class="ident">slice_just_addr</span>(<span class="kw-2">&amp;</span><span class="ident">cpuset</span>.<span class="ident">bits</span>)
         ))
     }
 }
@@ -766,9 +715,9 @@
 <span class="attribute">#[<span class="ident">inline</span>]</span>
 <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">sched_yield</span>() {
     <span class="kw">unsafe</span> {
-        <span class="comment">// See the docunentation for [`crate::process::sched_yield`] for why</span>
+        <span class="comment">// See the documentation for [`crate::process::sched_yield`] for why</span>
         <span class="comment">// errors are ignored.</span>
-        <span class="ident">syscall0_readonly</span>(<span class="ident">nr</span>(<span class="ident">__NR_sched_yield</span>)).<span class="ident">decode_void</span>();
+        <span class="macro">syscall_readonly!</span>(<span class="ident">__NR_sched_yield</span>).<span class="ident">decode_void</span>();
     }
 }
 
@@ -776,7 +725,7 @@
 <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">uname</span>() -&gt; <span class="ident">RawUname</span> {
     <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">uname</span> <span class="op">=</span> <span class="ident">MaybeUninit</span>::<span class="op">&lt;</span><span class="ident">RawUname</span><span class="op">&gt;</span><span class="ident">::uninit</span>();
     <span class="kw">unsafe</span> {
-        <span class="ident">ret</span>(<span class="ident">syscall1</span>(<span class="ident">nr</span>(<span class="ident">__NR_uname</span>), <span class="ident">out</span>(<span class="kw-2">&amp;mut</span> <span class="ident">uname</span>))).<span class="ident">unwrap</span>();
+        <span class="ident">ret</span>(<span class="macro">syscall!</span>(<span class="ident">__NR_uname</span>, <span class="kw-2">&amp;mut</span> <span class="ident">uname</span>)).<span class="ident">unwrap</span>();
         <span class="ident">uname</span>.<span class="ident">assume_init</span>()
     }
 }
@@ -800,10 +749,10 @@
 <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">getpriority_user</span>(<span class="ident">uid</span>: <span class="ident">Uid</span>) -&gt; <span class="ident">io::Result</span><span class="op">&lt;</span><span class="ident">i32</span><span class="op">&gt;</span> {
     <span class="kw">unsafe</span> {
         <span class="prelude-val">Ok</span>(<span class="number">20</span>
-            <span class="op">-</span> <span class="ident">ret_c_int</span>(<span class="ident">syscall2_readonly</span>(
-                <span class="ident">nr</span>(<span class="ident">__NR_getpriority</span>),
-                <span class="ident">c_uint</span>(<span class="ident">linux_raw_sys::general::PRIO_USER</span>),
-                <span class="ident">c_uint</span>(<span class="ident">uid</span>.<span class="ident">as_raw</span>()),
+            <span class="op">-</span> <span class="ident">ret_c_int</span>(<span class="macro">syscall_readonly!</span>(
+                <span class="ident">__NR_getpriority</span>,
+                <span class="ident">c_uint</span>(<span class="ident">PRIO_USER</span>),
+                <span class="ident">c_uint</span>(<span class="ident">uid</span>.<span class="ident">as_raw</span>())
             ))<span class="question-mark">?</span>)
     }
 }
@@ -812,10 +761,10 @@
 <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">getpriority_pgrp</span>(<span class="ident">pgid</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Pid</span><span class="op">&gt;</span>) -&gt; <span class="ident">io::Result</span><span class="op">&lt;</span><span class="ident">i32</span><span class="op">&gt;</span> {
     <span class="kw">unsafe</span> {
         <span class="prelude-val">Ok</span>(<span class="number">20</span>
-            <span class="op">-</span> <span class="ident">ret_c_int</span>(<span class="ident">syscall2_readonly</span>(
-                <span class="ident">nr</span>(<span class="ident">__NR_getpriority</span>),
-                <span class="ident">c_uint</span>(<span class="ident">linux_raw_sys::general::PRIO_PGRP</span>),
-                <span class="ident">c_uint</span>(<span class="ident">Pid::as_raw</span>(<span class="ident">pgid</span>)),
+            <span class="op">-</span> <span class="ident">ret_c_int</span>(<span class="macro">syscall_readonly!</span>(
+                <span class="ident">__NR_getpriority</span>,
+                <span class="ident">c_uint</span>(<span class="ident">PRIO_PGRP</span>),
+                <span class="ident">c_uint</span>(<span class="ident">Pid::as_raw</span>(<span class="ident">pgid</span>))
             ))<span class="question-mark">?</span>)
     }
 }
@@ -824,10 +773,10 @@
 <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">getpriority_process</span>(<span class="ident">pid</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Pid</span><span class="op">&gt;</span>) -&gt; <span class="ident">io::Result</span><span class="op">&lt;</span><span class="ident">i32</span><span class="op">&gt;</span> {
     <span class="kw">unsafe</span> {
         <span class="prelude-val">Ok</span>(<span class="number">20</span>
-            <span class="op">-</span> <span class="ident">ret_c_int</span>(<span class="ident">syscall2_readonly</span>(
-                <span class="ident">nr</span>(<span class="ident">__NR_getpriority</span>),
-                <span class="ident">c_uint</span>(<span class="ident">linux_raw_sys::general::PRIO_PROCESS</span>),
-                <span class="ident">c_uint</span>(<span class="ident">Pid::as_raw</span>(<span class="ident">pid</span>)),
+            <span class="op">-</span> <span class="ident">ret_c_int</span>(<span class="macro">syscall_readonly!</span>(
+                <span class="ident">__NR_getpriority</span>,
+                <span class="ident">c_uint</span>(<span class="ident">PRIO_PROCESS</span>),
+                <span class="ident">c_uint</span>(<span class="ident">Pid::as_raw</span>(<span class="ident">pid</span>))
             ))<span class="question-mark">?</span>)
     }
 }
@@ -835,11 +784,11 @@
 <span class="attribute">#[<span class="ident">inline</span>]</span>
 <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">setpriority_user</span>(<span class="ident">uid</span>: <span class="ident">Uid</span>, <span class="ident">priority</span>: <span class="ident">i32</span>) -&gt; <span class="ident">io::Result</span><span class="op">&lt;</span>()<span class="op">&gt;</span> {
     <span class="kw">unsafe</span> {
-        <span class="ident">ret</span>(<span class="ident">syscall3_readonly</span>(
-            <span class="ident">nr</span>(<span class="ident">__NR_setpriority</span>),
-            <span class="ident">c_uint</span>(<span class="ident">linux_raw_sys::general::PRIO_USER</span>),
+        <span class="ident">ret</span>(<span class="macro">syscall_readonly!</span>(
+            <span class="ident">__NR_setpriority</span>,
+            <span class="ident">c_uint</span>(<span class="ident">PRIO_USER</span>),
             <span class="ident">c_uint</span>(<span class="ident">uid</span>.<span class="ident">as_raw</span>()),
-            <span class="ident">c_int</span>(<span class="ident">priority</span>),
+            <span class="ident">c_int</span>(<span class="ident">priority</span>)
         ))
     }
 }
@@ -847,11 +796,11 @@
 <span class="attribute">#[<span class="ident">inline</span>]</span>
 <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">setpriority_pgrp</span>(<span class="ident">pgid</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Pid</span><span class="op">&gt;</span>, <span class="ident">priority</span>: <span class="ident">i32</span>) -&gt; <span class="ident">io::Result</span><span class="op">&lt;</span>()<span class="op">&gt;</span> {
     <span class="kw">unsafe</span> {
-        <span class="ident">ret</span>(<span class="ident">syscall3_readonly</span>(
-            <span class="ident">nr</span>(<span class="ident">__NR_setpriority</span>),
-            <span class="ident">c_uint</span>(<span class="ident">linux_raw_sys::general::PRIO_PGRP</span>),
+        <span class="ident">ret</span>(<span class="macro">syscall_readonly!</span>(
+            <span class="ident">__NR_setpriority</span>,
+            <span class="ident">c_uint</span>(<span class="ident">PRIO_PGRP</span>),
             <span class="ident">c_uint</span>(<span class="ident">Pid::as_raw</span>(<span class="ident">pgid</span>)),
-            <span class="ident">c_int</span>(<span class="ident">priority</span>),
+            <span class="ident">c_int</span>(<span class="ident">priority</span>)
         ))
     }
 }
@@ -859,29 +808,29 @@
 <span class="attribute">#[<span class="ident">inline</span>]</span>
 <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">setpriority_process</span>(<span class="ident">pid</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Pid</span><span class="op">&gt;</span>, <span class="ident">priority</span>: <span class="ident">i32</span>) -&gt; <span class="ident">io::Result</span><span class="op">&lt;</span>()<span class="op">&gt;</span> {
     <span class="kw">unsafe</span> {
-        <span class="ident">ret</span>(<span class="ident">syscall3_readonly</span>(
-            <span class="ident">nr</span>(<span class="ident">__NR_setpriority</span>),
-            <span class="ident">c_uint</span>(<span class="ident">linux_raw_sys::general::PRIO_PROCESS</span>),
+        <span class="ident">ret</span>(<span class="macro">syscall_readonly!</span>(
+            <span class="ident">__NR_setpriority</span>,
+            <span class="ident">c_uint</span>(<span class="ident">PRIO_PROCESS</span>),
             <span class="ident">c_uint</span>(<span class="ident">Pid::as_raw</span>(<span class="ident">pid</span>)),
-            <span class="ident">c_int</span>(<span class="ident">priority</span>),
+            <span class="ident">c_int</span>(<span class="ident">priority</span>)
         ))
     }
 }
 
 <span class="attribute">#[<span class="ident">inline</span>]</span>
 <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">getrlimit</span>(<span class="ident">limit</span>: <span class="ident">Resource</span>) -&gt; <span class="ident">Rlimit</span> {
-    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">result</span> <span class="op">=</span> <span class="ident">MaybeUninit</span>::<span class="op">&lt;</span><span class="ident">linux_raw_sys::general::rlimit64</span><span class="op">&gt;</span><span class="ident">::uninit</span>();
+    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">result</span> <span class="op">=</span> <span class="ident">MaybeUninit</span>::<span class="op">&lt;</span><span class="ident">rlimit64</span><span class="op">&gt;</span><span class="ident">::uninit</span>();
     <span class="kw">unsafe</span> {
-        <span class="kw">match</span> <span class="ident">ret</span>(<span class="ident">syscall4</span>(
-            <span class="ident">nr</span>(<span class="ident">__NR_prlimit64</span>),
+        <span class="kw">match</span> <span class="ident">ret</span>(<span class="macro">syscall!</span>(
+            <span class="ident">__NR_prlimit64</span>,
             <span class="ident">c_uint</span>(<span class="number">0</span>),
-            <span class="ident">resource</span>(<span class="ident">limit</span>),
-            <span class="ident">const_void_star</span>(<span class="ident">core::ptr::null</span>()),
-            <span class="ident">out</span>(<span class="kw-2">&amp;mut</span> <span class="ident">result</span>),
+            <span class="ident">limit</span>,
+            <span class="ident">null</span>::<span class="op">&lt;</span><span class="ident">c::c_void</span><span class="op">&gt;</span>(),
+            <span class="kw-2">&amp;mut</span> <span class="ident">result</span>
         )) {
             <span class="prelude-val">Ok</span>(()) =&gt; <span class="ident">rlimit_from_linux</span>(<span class="ident">result</span>.<span class="ident">assume_init</span>()),
             <span class="prelude-val">Err</span>(<span class="ident">e</span>) =&gt; {
-                <span class="macro">debug_assert_eq!</span>(<span class="ident">e</span>, <span class="ident">io::Error::NOSYS</span>);
+                <span class="macro">debug_assert_eq!</span>(<span class="ident">e</span>, <span class="ident">io::Errno::NOSYS</span>);
                 <span class="ident">getrlimit_old</span>(<span class="ident">limit</span>)
             }
         }
@@ -891,12 +840,30 @@
 <span class="doccomment">/// The old 32-bit-only `getrlimit` syscall, for when we lack the new</span>
 <span class="doccomment">/// `prlimit64`.</span>
 <span class="kw">unsafe</span> <span class="kw">fn</span> <span class="ident">getrlimit_old</span>(<span class="ident">limit</span>: <span class="ident">Resource</span>) -&gt; <span class="ident">Rlimit</span> {
-    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">result</span> <span class="op">=</span> <span class="ident">MaybeUninit</span>::<span class="op">&lt;</span><span class="ident">linux_raw_sys::general::rlimit</span><span class="op">&gt;</span><span class="ident">::uninit</span>();
-    <span class="ident">ret_infallible</span>(<span class="ident">syscall2</span>(
-        <span class="ident">nr</span>(<span class="ident">__NR_getrlimit</span>),
-        <span class="ident">resource</span>(<span class="ident">limit</span>),
-        <span class="ident">out</span>(<span class="kw-2">&amp;mut</span> <span class="ident">result</span>),
-    ));
+    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">result</span> <span class="op">=</span> <span class="ident">MaybeUninit</span>::<span class="op">&lt;</span><span class="ident">rlimit</span><span class="op">&gt;</span><span class="ident">::uninit</span>();
+
+    <span class="comment">// On these platforms, `__NR_getrlimit` is called `__NR_ugetrlimit`.</span>
+    <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">any</span>(
+        <span class="ident">target_arch</span> <span class="op">=</span> <span class="string">&quot;arm&quot;</span>,
+        <span class="ident">target_arch</span> <span class="op">=</span> <span class="string">&quot;powerpc&quot;</span>,
+        <span class="ident">target_arch</span> <span class="op">=</span> <span class="string">&quot;powerpc64&quot;</span>,
+        <span class="ident">target_arch</span> <span class="op">=</span> <span class="string">&quot;x86&quot;</span>,
+    ))]</span>
+    {
+        <span class="ident">ret_infallible</span>(<span class="macro">syscall!</span>(<span class="ident">__NR_ugetrlimit</span>, <span class="ident">limit</span>, <span class="kw-2">&amp;mut</span> <span class="ident">result</span>));
+    }
+
+    <span class="comment">// On these platforms, it&#39;s just `__NR_getrlimit`.</span>
+    <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">not</span>(<span class="ident">any</span>(
+        <span class="ident">target_arch</span> <span class="op">=</span> <span class="string">&quot;arm&quot;</span>,
+        <span class="ident">target_arch</span> <span class="op">=</span> <span class="string">&quot;powerpc&quot;</span>,
+        <span class="ident">target_arch</span> <span class="op">=</span> <span class="string">&quot;powerpc64&quot;</span>,
+        <span class="ident">target_arch</span> <span class="op">=</span> <span class="string">&quot;x86&quot;</span>,
+    )))]</span>
+    {
+        <span class="ident">ret_infallible</span>(<span class="macro">syscall!</span>(<span class="ident">__NR_getrlimit</span>, <span class="ident">limit</span>, <span class="kw-2">&amp;mut</span> <span class="ident">result</span>));
+    }
+
     <span class="ident">rlimit_from_linux_old</span>(<span class="ident">result</span>.<span class="ident">assume_init</span>())
 }
 
@@ -904,15 +871,15 @@
 <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">setrlimit</span>(<span class="ident">limit</span>: <span class="ident">Resource</span>, <span class="ident">new</span>: <span class="ident">Rlimit</span>) -&gt; <span class="ident">io::Result</span><span class="op">&lt;</span>()<span class="op">&gt;</span> {
     <span class="kw">unsafe</span> {
         <span class="kw">let</span> <span class="ident">lim</span> <span class="op">=</span> <span class="ident">rlimit_to_linux</span>(<span class="ident">new</span>.<span class="ident">clone</span>())<span class="question-mark">?</span>;
-        <span class="kw">match</span> <span class="ident">ret</span>(<span class="ident">syscall4</span>(
-            <span class="ident">nr</span>(<span class="ident">__NR_prlimit64</span>),
+        <span class="kw">match</span> <span class="ident">ret</span>(<span class="macro">syscall_readonly!</span>(
+            <span class="ident">__NR_prlimit64</span>,
             <span class="ident">c_uint</span>(<span class="number">0</span>),
-            <span class="ident">resource</span>(<span class="ident">limit</span>),
+            <span class="ident">limit</span>,
             <span class="ident">by_ref</span>(<span class="kw-2">&amp;</span><span class="ident">lim</span>),
-            <span class="ident">void_star</span>(<span class="ident">core::ptr::null_mut</span>()),
+            <span class="ident">null_mut</span>::<span class="op">&lt;</span><span class="ident">c::c_void</span><span class="op">&gt;</span>()
         )) {
             <span class="prelude-val">Ok</span>(()) =&gt; <span class="prelude-val">Ok</span>(()),
-            <span class="prelude-val">Err</span>(<span class="ident">io::Error::NOSYS</span>) =&gt; <span class="ident">setrlimit_old</span>(<span class="ident">limit</span>, <span class="ident">new</span>),
+            <span class="prelude-val">Err</span>(<span class="ident">io::Errno::NOSYS</span>) =&gt; <span class="ident">setrlimit_old</span>(<span class="ident">limit</span>, <span class="ident">new</span>),
             <span class="prelude-val">Err</span>(<span class="ident">e</span>) =&gt; <span class="prelude-val">Err</span>(<span class="ident">e</span>),
         }
     }
@@ -922,20 +889,20 @@
 <span class="doccomment">/// `prlimit64`.</span>
 <span class="kw">unsafe</span> <span class="kw">fn</span> <span class="ident">setrlimit_old</span>(<span class="ident">limit</span>: <span class="ident">Resource</span>, <span class="ident">new</span>: <span class="ident">Rlimit</span>) -&gt; <span class="ident">io::Result</span><span class="op">&lt;</span>()<span class="op">&gt;</span> {
     <span class="kw">let</span> <span class="ident">lim</span> <span class="op">=</span> <span class="ident">rlimit_to_linux_old</span>(<span class="ident">new</span>)<span class="question-mark">?</span>;
-    <span class="ident">ret</span>(<span class="ident">syscall2</span>(<span class="ident">nr</span>(<span class="ident">__NR_setrlimit</span>), <span class="ident">resource</span>(<span class="ident">limit</span>), <span class="ident">by_ref</span>(<span class="kw-2">&amp;</span><span class="ident">lim</span>)))
+    <span class="ident">ret</span>(<span class="macro">syscall_readonly!</span>(<span class="ident">__NR_setrlimit</span>, <span class="ident">limit</span>, <span class="ident">by_ref</span>(<span class="kw-2">&amp;</span><span class="ident">lim</span>)))
 }
 
 <span class="attribute">#[<span class="ident">inline</span>]</span>
 <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">prlimit</span>(<span class="ident">pid</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Pid</span><span class="op">&gt;</span>, <span class="ident">limit</span>: <span class="ident">Resource</span>, <span class="ident">new</span>: <span class="ident">Rlimit</span>) -&gt; <span class="ident">io::Result</span><span class="op">&lt;</span><span class="ident">Rlimit</span><span class="op">&gt;</span> {
     <span class="kw">let</span> <span class="ident">lim</span> <span class="op">=</span> <span class="ident">rlimit_to_linux</span>(<span class="ident">new</span>)<span class="question-mark">?</span>;
-    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">result</span> <span class="op">=</span> <span class="ident">MaybeUninit</span>::<span class="op">&lt;</span><span class="ident">linux_raw_sys::general::rlimit64</span><span class="op">&gt;</span><span class="ident">::uninit</span>();
+    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">result</span> <span class="op">=</span> <span class="ident">MaybeUninit</span>::<span class="op">&lt;</span><span class="ident">rlimit64</span><span class="op">&gt;</span><span class="ident">::uninit</span>();
     <span class="kw">unsafe</span> {
-        <span class="kw">match</span> <span class="ident">ret</span>(<span class="ident">syscall4</span>(
-            <span class="ident">nr</span>(<span class="ident">__NR_prlimit64</span>),
+        <span class="kw">match</span> <span class="ident">ret</span>(<span class="macro">syscall!</span>(
+            <span class="ident">__NR_prlimit64</span>,
             <span class="ident">c_uint</span>(<span class="ident">Pid::as_raw</span>(<span class="ident">pid</span>)),
-            <span class="ident">resource</span>(<span class="ident">limit</span>),
+            <span class="ident">limit</span>,
             <span class="ident">by_ref</span>(<span class="kw-2">&amp;</span><span class="ident">lim</span>),
-            <span class="ident">out</span>(<span class="kw-2">&amp;mut</span> <span class="ident">result</span>),
+            <span class="kw-2">&amp;mut</span> <span class="ident">result</span>
         )) {
             <span class="prelude-val">Ok</span>(()) =&gt; <span class="prelude-val">Ok</span>(<span class="ident">rlimit_from_linux</span>(<span class="ident">result</span>.<span class="ident">assume_init</span>())),
             <span class="prelude-val">Err</span>(<span class="ident">e</span>) =&gt; <span class="prelude-val">Err</span>(<span class="ident">e</span>),
@@ -945,13 +912,13 @@
 
 <span class="doccomment">/// Convert a Rust [`Rlimit`] to a C `rlimit64`.</span>
 <span class="attribute">#[<span class="ident">inline</span>]</span>
-<span class="kw">fn</span> <span class="ident">rlimit_from_linux</span>(<span class="ident">lim</span>: <span class="ident">linux_raw_sys::general::rlimit64</span>) -&gt; <span class="ident">Rlimit</span> {
-    <span class="kw">let</span> <span class="ident">current</span> <span class="op">=</span> <span class="kw">if</span> <span class="ident">lim</span>.<span class="ident">rlim_cur</span> <span class="op">==</span> <span class="ident">linux_raw_sys::general::RLIM64_INFINITY</span> <span class="kw">as</span> <span class="kw">_</span> {
+<span class="kw">fn</span> <span class="ident">rlimit_from_linux</span>(<span class="ident">lim</span>: <span class="ident">rlimit64</span>) -&gt; <span class="ident">Rlimit</span> {
+    <span class="kw">let</span> <span class="ident">current</span> <span class="op">=</span> <span class="kw">if</span> <span class="ident">lim</span>.<span class="ident">rlim_cur</span> <span class="op">==</span> <span class="ident">RLIM64_INFINITY</span> <span class="kw">as</span> <span class="kw">_</span> {
         <span class="prelude-val">None</span>
     } <span class="kw">else</span> {
         <span class="prelude-val">Some</span>(<span class="ident">lim</span>.<span class="ident">rlim_cur</span>)
     };
-    <span class="kw">let</span> <span class="ident">maximum</span> <span class="op">=</span> <span class="kw">if</span> <span class="ident">lim</span>.<span class="ident">rlim_max</span> <span class="op">==</span> <span class="ident">linux_raw_sys::general::RLIM64_INFINITY</span> <span class="kw">as</span> <span class="kw">_</span> {
+    <span class="kw">let</span> <span class="ident">maximum</span> <span class="op">=</span> <span class="kw">if</span> <span class="ident">lim</span>.<span class="ident">rlim_max</span> <span class="op">==</span> <span class="ident">RLIM64_INFINITY</span> <span class="kw">as</span> <span class="kw">_</span> {
         <span class="prelude-val">None</span>
     } <span class="kw">else</span> {
         <span class="prelude-val">Some</span>(<span class="ident">lim</span>.<span class="ident">rlim_max</span>)
@@ -961,26 +928,27 @@
 
 <span class="doccomment">/// Convert a C `rlimit64` to a Rust `Rlimit`.</span>
 <span class="attribute">#[<span class="ident">inline</span>]</span>
-<span class="kw">fn</span> <span class="ident">rlimit_to_linux</span>(<span class="ident">lim</span>: <span class="ident">Rlimit</span>) -&gt; <span class="ident">io::Result</span><span class="op">&lt;</span><span class="ident">linux_raw_sys::general::rlimit64</span><span class="op">&gt;</span> {
+<span class="kw">fn</span> <span class="ident">rlimit_to_linux</span>(<span class="ident">lim</span>: <span class="ident">Rlimit</span>) -&gt; <span class="ident">io::Result</span><span class="op">&lt;</span><span class="ident">rlimit64</span><span class="op">&gt;</span> {
     <span class="kw">let</span> <span class="ident">rlim_cur</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">lim</span>.<span class="ident">current</span> {
         <span class="prelude-val">Some</span>(<span class="ident">r</span>) =&gt; <span class="ident">r</span>,
-        <span class="prelude-val">None</span> =&gt; <span class="ident">linux_raw_sys::general::RLIM64_INFINITY</span> <span class="kw">as</span> <span class="kw">_</span>,
+        <span class="prelude-val">None</span> =&gt; <span class="ident">RLIM64_INFINITY</span> <span class="kw">as</span> <span class="kw">_</span>,
     };
     <span class="kw">let</span> <span class="ident">rlim_max</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">lim</span>.<span class="ident">maximum</span> {
         <span class="prelude-val">Some</span>(<span class="ident">r</span>) =&gt; <span class="ident">r</span>,
-        <span class="prelude-val">None</span> =&gt; <span class="ident">linux_raw_sys::general::RLIM64_INFINITY</span> <span class="kw">as</span> <span class="kw">_</span>,
+        <span class="prelude-val">None</span> =&gt; <span class="ident">RLIM64_INFINITY</span> <span class="kw">as</span> <span class="kw">_</span>,
     };
-    <span class="prelude-val">Ok</span>(<span class="ident">linux_raw_sys::general::rlimit64</span> { <span class="ident">rlim_cur</span>, <span class="ident">rlim_max</span> })
+    <span class="prelude-val">Ok</span>(<span class="ident">rlimit64</span> { <span class="ident">rlim_cur</span>, <span class="ident">rlim_max</span> })
 }
 
 <span class="doccomment">/// Like `rlimit_from_linux` but uses Linux&#39;s old 32-bit `rlimit`.</span>
-<span class="kw">fn</span> <span class="ident">rlimit_from_linux_old</span>(<span class="ident">lim</span>: <span class="ident">linux_raw_sys::general::rlimit</span>) -&gt; <span class="ident">Rlimit</span> {
-    <span class="kw">let</span> <span class="ident">current</span> <span class="op">=</span> <span class="kw">if</span> <span class="ident">lim</span>.<span class="ident">rlim_cur</span> <span class="op">==</span> <span class="ident">linux_raw_sys::general::RLIM_INFINITY</span> <span class="kw">as</span> <span class="kw">_</span> {
+<span class="attribute">#[<span class="ident">allow</span>(<span class="ident">clippy::useless_conversion</span>)]</span>
+<span class="kw">fn</span> <span class="ident">rlimit_from_linux_old</span>(<span class="ident">lim</span>: <span class="ident">rlimit</span>) -&gt; <span class="ident">Rlimit</span> {
+    <span class="kw">let</span> <span class="ident">current</span> <span class="op">=</span> <span class="kw">if</span> <span class="ident">lim</span>.<span class="ident">rlim_cur</span> <span class="op">==</span> <span class="ident">RLIM_INFINITY</span> <span class="kw">as</span> <span class="kw">_</span> {
         <span class="prelude-val">None</span>
     } <span class="kw">else</span> {
         <span class="prelude-val">Some</span>(<span class="ident">lim</span>.<span class="ident">rlim_cur</span>.<span class="ident">into</span>())
     };
-    <span class="kw">let</span> <span class="ident">maximum</span> <span class="op">=</span> <span class="kw">if</span> <span class="ident">lim</span>.<span class="ident">rlim_max</span> <span class="op">==</span> <span class="ident">linux_raw_sys::general::RLIM_INFINITY</span> <span class="kw">as</span> <span class="kw">_</span> {
+    <span class="kw">let</span> <span class="ident">maximum</span> <span class="op">=</span> <span class="kw">if</span> <span class="ident">lim</span>.<span class="ident">rlim_max</span> <span class="op">==</span> <span class="ident">RLIM_INFINITY</span> <span class="kw">as</span> <span class="kw">_</span> {
         <span class="prelude-val">None</span>
     } <span class="kw">else</span> {
         <span class="prelude-val">Some</span>(<span class="ident">lim</span>.<span class="ident">rlim_max</span>.<span class="ident">into</span>())
@@ -989,16 +957,17 @@
 }
 
 <span class="doccomment">/// Like `rlimit_to_linux` but uses Linux&#39;s old 32-bit `rlimit`.</span>
-<span class="kw">fn</span> <span class="ident">rlimit_to_linux_old</span>(<span class="ident">lim</span>: <span class="ident">Rlimit</span>) -&gt; <span class="ident">io::Result</span><span class="op">&lt;</span><span class="ident">linux_raw_sys::general::rlimit</span><span class="op">&gt;</span> {
+<span class="attribute">#[<span class="ident">allow</span>(<span class="ident">clippy::useless_conversion</span>)]</span>
+<span class="kw">fn</span> <span class="ident">rlimit_to_linux_old</span>(<span class="ident">lim</span>: <span class="ident">Rlimit</span>) -&gt; <span class="ident">io::Result</span><span class="op">&lt;</span><span class="ident">rlimit</span><span class="op">&gt;</span> {
     <span class="kw">let</span> <span class="ident">rlim_cur</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">lim</span>.<span class="ident">current</span> {
-        <span class="prelude-val">Some</span>(<span class="ident">r</span>) =&gt; <span class="ident">r</span>.<span class="ident">try_into</span>().<span class="ident">map_err</span>(<span class="op">|</span><span class="kw">_</span><span class="op">|</span> <span class="ident">io::Error::INVAL</span>)<span class="question-mark">?</span>,
-        <span class="prelude-val">None</span> =&gt; <span class="ident">linux_raw_sys::general::RLIM_INFINITY</span> <span class="kw">as</span> <span class="kw">_</span>,
+        <span class="prelude-val">Some</span>(<span class="ident">r</span>) =&gt; <span class="ident">r</span>.<span class="ident">try_into</span>().<span class="ident">map_err</span>(<span class="op">|</span><span class="ident">_e</span><span class="op">|</span> <span class="ident">io::Errno::INVAL</span>)<span class="question-mark">?</span>,
+        <span class="prelude-val">None</span> =&gt; <span class="ident">RLIM_INFINITY</span> <span class="kw">as</span> <span class="kw">_</span>,
     };
     <span class="kw">let</span> <span class="ident">rlim_max</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">lim</span>.<span class="ident">maximum</span> {
-        <span class="prelude-val">Some</span>(<span class="ident">r</span>) =&gt; <span class="ident">r</span>.<span class="ident">try_into</span>().<span class="ident">map_err</span>(<span class="op">|</span><span class="kw">_</span><span class="op">|</span> <span class="ident">io::Error::INVAL</span>)<span class="question-mark">?</span>,
-        <span class="prelude-val">None</span> =&gt; <span class="ident">linux_raw_sys::general::RLIM_INFINITY</span> <span class="kw">as</span> <span class="kw">_</span>,
+        <span class="prelude-val">Some</span>(<span class="ident">r</span>) =&gt; <span class="ident">r</span>.<span class="ident">try_into</span>().<span class="ident">map_err</span>(<span class="op">|</span><span class="ident">_e</span><span class="op">|</span> <span class="ident">io::Errno::INVAL</span>)<span class="question-mark">?</span>,
+        <span class="prelude-val">None</span> =&gt; <span class="ident">RLIM_INFINITY</span> <span class="kw">as</span> <span class="kw">_</span>,
     };
-    <span class="prelude-val">Ok</span>(<span class="ident">linux_raw_sys::general::rlimit</span> { <span class="ident">rlim_cur</span>, <span class="ident">rlim_max</span> })
+    <span class="prelude-val">Ok</span>(<span class="ident">rlimit</span> { <span class="ident">rlim_cur</span>, <span class="ident">rlim_max</span> })
 }
 
 <span class="attribute">#[<span class="ident">inline</span>]</span>
@@ -1020,29 +989,34 @@
     <span class="ident">waitopts</span>: <span class="ident">WaitOptions</span>,
 ) -&gt; <span class="ident">io::Result</span><span class="op">&lt;</span><span class="prelude-ty">Option</span><span class="op">&lt;</span>(<span class="ident">Pid</span>, <span class="ident">WaitStatus</span>)<span class="op">&gt;</span><span class="op">&gt;</span> {
     <span class="kw">unsafe</span> {
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">status</span>: <span class="ident">u32</span> <span class="op">=</span> <span class="number">0</span>;
-        <span class="kw">let</span> <span class="ident">pid</span> <span class="op">=</span> <span class="ident">ret_c_uint</span>(<span class="ident">syscall4</span>(
-            <span class="ident">nr</span>(<span class="ident">__NR_wait4</span>),
+        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">status</span> <span class="op">=</span> <span class="ident">MaybeUninit</span>::<span class="op">&lt;</span><span class="ident">u32</span><span class="op">&gt;</span><span class="ident">::uninit</span>();
+        <span class="kw">let</span> <span class="ident">pid</span> <span class="op">=</span> <span class="ident">ret_c_uint</span>(<span class="macro">syscall!</span>(
+            <span class="ident">__NR_wait4</span>,
             <span class="ident">c_int</span>(<span class="ident">pid</span> <span class="kw">as</span> <span class="kw">_</span>),
-            <span class="ident">by_mut</span>(<span class="kw-2">&amp;mut</span> <span class="ident">status</span>),
+            <span class="kw-2">&amp;mut</span> <span class="ident">status</span>,
             <span class="ident">c_int</span>(<span class="ident">waitopts</span>.<span class="ident">bits</span>() <span class="kw">as</span> <span class="kw">_</span>),
-            <span class="ident">zero</span>(),
+            <span class="ident">zero</span>()
         ))<span class="question-mark">?</span>;
-        <span class="prelude-val">Ok</span>(<span class="ident">RawNonZeroPid::new</span>(<span class="ident">pid</span>)
-            .<span class="ident">map</span>(<span class="op">|</span><span class="ident">non_zero</span><span class="op">|</span> (<span class="ident">Pid::from_raw_nonzero</span>(<span class="ident">non_zero</span>), <span class="ident">WaitStatus::new</span>(<span class="ident">status</span>))))
+        <span class="prelude-val">Ok</span>(<span class="ident">RawNonZeroPid::new</span>(<span class="ident">pid</span>).<span class="ident">map</span>(<span class="op">|</span><span class="ident">non_zero</span><span class="op">|</span> {
+            (
+                <span class="ident">Pid::from_raw_nonzero</span>(<span class="ident">non_zero</span>),
+                <span class="ident">WaitStatus::new</span>(<span class="ident">status</span>.<span class="ident">assume_init</span>()),
+            )
+        }))
     }
 }
 
+<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;runtime&quot;</span>)]</span>
 <span class="attribute">#[<span class="ident">inline</span>]</span>
 <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">exit_group</span>(<span class="ident">code</span>: <span class="ident">c::c_int</span>) -&gt; <span class="op">!</span> {
-    <span class="kw">unsafe</span> { <span class="ident">syscall1_noreturn</span>(<span class="ident">nr</span>(<span class="ident">__NR_exit_group</span>), <span class="ident">c_int</span>(<span class="ident">code</span>)) }
+    <span class="kw">unsafe</span> { <span class="macro">syscall_noreturn!</span>(<span class="ident">__NR_exit_group</span>, <span class="ident">c_int</span>(<span class="ident">code</span>)) }
 }
 
 <span class="attribute">#[<span class="ident">inline</span>]</span>
 <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">setsid</span>() -&gt; <span class="ident">io::Result</span><span class="op">&lt;</span><span class="ident">Pid</span><span class="op">&gt;</span> {
     <span class="kw">unsafe</span> {
-        <span class="kw">let</span> <span class="ident">pid</span> <span class="op">=</span> <span class="ident">ret_usize</span>(<span class="ident">syscall0_readonly</span>(<span class="ident">nr</span>(<span class="ident">__NR_setsid</span>)))<span class="question-mark">?</span>;
-        <span class="macro">debug_assert_ne!</span>(<span class="ident">pid</span>, <span class="number">0</span>);
+        <span class="kw">let</span> <span class="ident">pid</span> <span class="op">=</span> <span class="ident">ret_usize</span>(<span class="macro">syscall_readonly!</span>(<span class="ident">__NR_setsid</span>))<span class="question-mark">?</span>;
+        <span class="macro">debug_assert!</span>(<span class="ident">pid</span> <span class="op">&gt;</span> <span class="number">0</span>);
         <span class="prelude-val">Ok</span>(<span class="ident">Pid::from_raw_nonzero</span>(<span class="ident">RawNonZeroPid::new_unchecked</span>(
             <span class="ident">pid</span> <span class="kw">as</span> <span class="ident">u32</span>,
         )))
@@ -1051,29 +1025,17 @@
 
 <span class="attribute">#[<span class="ident">inline</span>]</span>
 <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">kill_process</span>(<span class="ident">pid</span>: <span class="ident">Pid</span>, <span class="ident">sig</span>: <span class="ident">Signal</span>) -&gt; <span class="ident">io::Result</span><span class="op">&lt;</span>()<span class="op">&gt;</span> {
-    <span class="kw">unsafe</span> {
-        <span class="ident">ret</span>(<span class="ident">syscall2_readonly</span>(
-            <span class="ident">nr</span>(<span class="ident">__NR_kill</span>),
-            <span class="ident">regular_pid</span>(<span class="ident">pid</span>),
-            <span class="ident">signal</span>(<span class="ident">sig</span>),
-        ))
-    }
+    <span class="kw">unsafe</span> { <span class="ident">ret</span>(<span class="macro">syscall_readonly!</span>(<span class="ident">__NR_kill</span>, <span class="ident">pid</span>, <span class="ident">sig</span>)) }
 }
 
 <span class="attribute">#[<span class="ident">inline</span>]</span>
 <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">kill_process_group</span>(<span class="ident">pid</span>: <span class="ident">Pid</span>, <span class="ident">sig</span>: <span class="ident">Signal</span>) -&gt; <span class="ident">io::Result</span><span class="op">&lt;</span>()<span class="op">&gt;</span> {
-    <span class="kw">unsafe</span> {
-        <span class="ident">ret</span>(<span class="ident">syscall2_readonly</span>(
-            <span class="ident">nr</span>(<span class="ident">__NR_kill</span>),
-            <span class="ident">negative_pid</span>(<span class="ident">pid</span>),
-            <span class="ident">signal</span>(<span class="ident">sig</span>),
-        ))
-    }
+    <span class="kw">unsafe</span> { <span class="ident">ret</span>(<span class="macro">syscall_readonly!</span>(<span class="ident">__NR_kill</span>, <span class="ident">negative_pid</span>(<span class="ident">pid</span>), <span class="ident">sig</span>)) }
 }
 
 <span class="attribute">#[<span class="ident">inline</span>]</span>
 <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">kill_current_process_group</span>(<span class="ident">sig</span>: <span class="ident">Signal</span>) -&gt; <span class="ident">io::Result</span><span class="op">&lt;</span>()<span class="op">&gt;</span> {
-    <span class="kw">unsafe</span> { <span class="ident">ret</span>(<span class="ident">syscall2_readonly</span>(<span class="ident">nr</span>(<span class="ident">__NR_kill</span>), <span class="ident">pass_usize</span>(<span class="number">0</span>), <span class="ident">signal</span>(<span class="ident">sig</span>))) }
+    <span class="kw">unsafe</span> { <span class="ident">ret</span>(<span class="macro">syscall_readonly!</span>(<span class="ident">__NR_kill</span>, <span class="ident">pass_usize</span>(<span class="number">0</span>), <span class="ident">sig</span>)) }
 }
 </code></pre></div>
 </section></div></main><div id="rustdoc-vars" data-root-path="../../../../../" data-current-crate="rustix" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.62.0-nightly (6dd68402c 2022-05-11)" ></div>

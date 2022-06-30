@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/cargo_home/registry/src/github.com-1ecc6299db9ec823/io-lifetimes-0.5.3/src/portability.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>portability.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" type="text/css" href="../../normalize.css"><link rel="stylesheet" type="text/css" href="../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../ayu.css" disabled><link rel="stylesheet" type="text/css" href="../../dark.css" disabled><link rel="stylesheet" type="text/css" href="../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../storage.js"></script><script src="../../crates.js"></script><script defer src="../../main.js"></script><script defer src="../../source-script.js"></script><script defer src="../../source-files.js"></script>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/cargo_home/registry/src/github.com-1ecc6299db9ec823/io-lifetimes-0.7.2/src/portability.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>portability.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" type="text/css" href="../../normalize.css"><link rel="stylesheet" type="text/css" href="../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../ayu.css" disabled><link rel="stylesheet" type="text/css" href="../../dark.css" disabled><link rel="stylesheet" type="text/css" href="../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../storage.js"></script><script src="../../crates.js"></script><script defer src="../../main.js"></script><script defer src="../../source-script.js"></script><script defer src="../../source-files.js"></script>
     <noscript><link rel="stylesheet" href="../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="sidebar-logo" href="../../io_lifetimes/index.html"><div class="logo-container"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></div>
         </a><h2 class="location"></h2>
     </nav>
@@ -495,15 +495,39 @@
 <span id="490">490</span>
 <span id="491">491</span>
 <span id="492">492</span>
+<span id="493">493</span>
+<span id="494">494</span>
+<span id="495">495</span>
+<span id="496">496</span>
+<span id="497">497</span>
+<span id="498">498</span>
+<span id="499">499</span>
+<span id="500">500</span>
+<span id="501">501</span>
+<span id="502">502</span>
+<span id="503">503</span>
+<span id="504">504</span>
+<span id="505">505</span>
+<span id="506">506</span>
+<span id="507">507</span>
+<span id="508">508</span>
+<span id="509">509</span>
+<span id="510">510</span>
+<span id="511">511</span>
+<span id="512">512</span>
+<span id="513">513</span>
+<span id="514">514</span>
+<span id="515">515</span>
+<span id="516">516</span>
+<span id="517">517</span>
+<span id="518">518</span>
 </pre><pre class="rust"><code><span class="doccomment">//! Portability abstractions over `Owned*` and `Borrowed*`.</span>
 <span class="doccomment">//!</span>
 <span class="doccomment">//! On Unix, &quot;everything is a file descriptor&quot;. On Windows, file/pipe/process</span>
 <span class="doccomment">//! handles are distinct from socket descriptors. This file provides a minimal</span>
 <span class="doccomment">//! layer of portability over this difference.</span>
-<span class="doccomment">//!</span>
-<span class="doccomment">//! TODO: Should this layer be folded into types.rs/traits.rs?</span>
 
-<span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::views</span>::{<span class="ident">FilelikeView</span>, <span class="ident">SocketlikeView</span>};
+<span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::views</span>::{<span class="ident">FilelikeView</span>, <span class="ident">FilelikeViewType</span>, <span class="ident">SocketlikeView</span>, <span class="ident">SocketlikeViewType</span>};
 <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">any</span>(<span class="ident">unix</span>, <span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;wasi&quot;</span>))]</span>
 <span class="kw">use</span> <span class="kw">crate</span>::{<span class="ident">AsFd</span>, <span class="ident">BorrowedFd</span>, <span class="ident">FromFd</span>, <span class="ident">IntoFd</span>, <span class="ident">OwnedFd</span>};
 <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">windows</span>)]</span>
@@ -590,11 +614,20 @@
     <span class="doccomment">/// ```</span>
     <span class="kw">fn</span> <span class="ident">as_filelike</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">BorrowedFilelike</span><span class="op">&lt;</span><span class="lifetime">&#39;_</span><span class="op">&gt;</span>;
 
-    <span class="doccomment">/// Return a borrowing view of a resource which dereferences to a `&amp;Target`</span>
-    <span class="doccomment">/// or `&amp;mut Target`.</span>
+    <span class="doccomment">/// Return a borrowing view of a resource which dereferences to a `&amp;Target`.</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// Note that [`Read`] or [`Write`] require `&amp;mut Target`, but in some cases,</span>
+    <span class="doccomment">/// such as [`File`], `Read` and `Write` are implemented for `&amp;Target` in</span>
+    <span class="doccomment">/// addition to `Target`, and you can get a `&amp;mut &amp;Target` by doing `&amp;*` on</span>
+    <span class="doccomment">/// the resuting view, like this:</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// ```rust,ignore</span>
+    <span class="doccomment">/// let v = f.as_filelike_view::&lt;std::fs::File&gt;();</span>
+    <span class="doccomment">/// (&amp;*v).read(&amp;mut buf).unwrap();</span>
+    <span class="doccomment">/// ```</span>
     <span class="doccomment">///</span>
     <span class="doccomment">/// [`File`]: std::fs::File</span>
-    <span class="kw">fn</span> <span class="ident">as_filelike_view</span><span class="op">&lt;</span><span class="ident">Target</span>: <span class="ident">FromFilelike</span> <span class="op">+</span> <span class="ident">IntoFilelike</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">FilelikeView</span><span class="op">&lt;</span><span class="lifetime">&#39;_</span>, <span class="ident">Target</span><span class="op">&gt;</span>;
+    <span class="kw">fn</span> <span class="ident">as_filelike_view</span><span class="op">&lt;</span><span class="ident">Target</span>: <span class="ident">FilelikeViewType</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">FilelikeView</span><span class="op">&lt;</span><span class="lifetime">&#39;_</span>, <span class="ident">Target</span><span class="op">&gt;</span>;
 }
 
 <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">any</span>(<span class="ident">unix</span>, <span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;wasi&quot;</span>))]</span>
@@ -605,7 +638,7 @@
     }
 
     <span class="attribute">#[<span class="ident">inline</span>]</span>
-    <span class="kw">fn</span> <span class="ident">as_filelike_view</span><span class="op">&lt;</span><span class="ident">Target</span>: <span class="ident">FromFilelike</span> <span class="op">+</span> <span class="ident">IntoFilelike</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">FilelikeView</span><span class="op">&lt;</span><span class="lifetime">&#39;_</span>, <span class="ident">Target</span><span class="op">&gt;</span> {
+    <span class="kw">fn</span> <span class="ident">as_filelike_view</span><span class="op">&lt;</span><span class="ident">Target</span>: <span class="ident">FilelikeViewType</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">FilelikeView</span><span class="op">&lt;</span><span class="lifetime">&#39;_</span>, <span class="ident">Target</span><span class="op">&gt;</span> {
         <span class="ident">FilelikeView::new</span>(<span class="self">self</span>)
     }
 }
@@ -632,11 +665,20 @@
     <span class="doccomment">/// ```</span>
     <span class="kw">fn</span> <span class="ident">as_filelike</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">BorrowedFilelike</span><span class="op">&lt;</span><span class="lifetime">&#39;_</span><span class="op">&gt;</span>;
 
-    <span class="doccomment">/// Return a borrowing view of a resource which dereferences to a `&amp;Target`</span>
-    <span class="doccomment">/// or `&amp;mut Target`.</span>
+    <span class="doccomment">/// Return a borrowing view of a resource which dereferences to a `&amp;Target`.</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// Note that [`Read`] or [`Write`] require `&amp;mut Target`, but in some cases,</span>
+    <span class="doccomment">/// such as [`File`], `Read` and `Write` are implemented for `&amp;Target` in</span>
+    <span class="doccomment">/// addition to `Target`, and you can get a `&amp;mut &amp;Target` by doing `&amp;*` on</span>
+    <span class="doccomment">/// the resuting view, like this:</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// ```rust,ignore</span>
+    <span class="doccomment">/// let v = f.as_filelike_view::&lt;std::fs::File&gt;();</span>
+    <span class="doccomment">/// (&amp;*v).read(&amp;mut buf).unwrap();</span>
+    <span class="doccomment">/// ```</span>
     <span class="doccomment">///</span>
     <span class="doccomment">/// [`File`]: std::fs::File</span>
-    <span class="kw">fn</span> <span class="ident">as_filelike_view</span><span class="op">&lt;</span><span class="ident">Target</span>: <span class="ident">FromFilelike</span> <span class="op">+</span> <span class="ident">IntoFilelike</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">FilelikeView</span><span class="op">&lt;</span><span class="lifetime">&#39;_</span>, <span class="ident">Target</span><span class="op">&gt;</span>;
+    <span class="kw">fn</span> <span class="ident">as_filelike_view</span><span class="op">&lt;</span><span class="ident">Target</span>: <span class="ident">FilelikeViewType</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">FilelikeView</span><span class="op">&lt;</span><span class="lifetime">&#39;_</span>, <span class="ident">Target</span><span class="op">&gt;</span>;
 }
 
 <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">windows</span>)]</span>
@@ -647,7 +689,7 @@
     }
 
     <span class="attribute">#[<span class="ident">inline</span>]</span>
-    <span class="kw">fn</span> <span class="ident">as_filelike_view</span><span class="op">&lt;</span><span class="ident">Target</span>: <span class="ident">FromFilelike</span> <span class="op">+</span> <span class="ident">IntoFilelike</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">FilelikeView</span><span class="op">&lt;</span><span class="lifetime">&#39;_</span>, <span class="ident">Target</span><span class="op">&gt;</span> {
+    <span class="kw">fn</span> <span class="ident">as_filelike_view</span><span class="op">&lt;</span><span class="ident">Target</span>: <span class="ident">FilelikeViewType</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">FilelikeView</span><span class="op">&lt;</span><span class="lifetime">&#39;_</span>, <span class="ident">Target</span><span class="op">&gt;</span> {
         <span class="ident">FilelikeView::new</span>(<span class="self">self</span>)
     }
 }
@@ -663,13 +705,20 @@
     <span class="doccomment">/// Borrows the reference.</span>
     <span class="kw">fn</span> <span class="ident">as_socketlike</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">BorrowedSocketlike</span><span class="op">&lt;</span><span class="lifetime">&#39;_</span><span class="op">&gt;</span>;
 
-    <span class="doccomment">/// Return a borrowing view of a resource which dereferences to a `&amp;Target`</span>
-    <span class="doccomment">/// or `&amp;mut Target`.</span>
+    <span class="doccomment">/// Return a borrowing view of a resource which dereferences to a `&amp;Target`.</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// Note that [`Read`] or [`Write`] require `&amp;mut Target`, but in some cases,</span>
+    <span class="doccomment">/// such as [`TcpStream`], `Read` and `Write` are implemented for `&amp;Target` in</span>
+    <span class="doccomment">/// addition to `Target`, and you can get a `&amp;mut &amp;Target` by doing `&amp;*` on</span>
+    <span class="doccomment">/// the resuting view, like this:</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// ```rust,ignore</span>
+    <span class="doccomment">/// let v = s.as_socketlike_view::&lt;std::net::TcpStream&gt;();</span>
+    <span class="doccomment">/// (&amp;*v).read(&amp;mut buf).unwrap();</span>
+    <span class="doccomment">/// ```</span>
     <span class="doccomment">///</span>
     <span class="doccomment">/// [`TcpStream`]: std::net::TcpStream</span>
-    <span class="kw">fn</span> <span class="ident">as_socketlike_view</span><span class="op">&lt;</span><span class="ident">Target</span>: <span class="ident">FromSocketlike</span> <span class="op">+</span> <span class="ident">IntoSocketlike</span><span class="op">&gt;</span>(
-        <span class="kw-2">&amp;</span><span class="self">self</span>,
-    ) -&gt; <span class="ident">SocketlikeView</span><span class="op">&lt;</span><span class="lifetime">&#39;_</span>, <span class="ident">Target</span><span class="op">&gt;</span>;
+    <span class="kw">fn</span> <span class="ident">as_socketlike_view</span><span class="op">&lt;</span><span class="ident">Target</span>: <span class="ident">SocketlikeViewType</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">SocketlikeView</span><span class="op">&lt;</span><span class="lifetime">&#39;_</span>, <span class="ident">Target</span><span class="op">&gt;</span>;
 }
 
 <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">any</span>(<span class="ident">unix</span>, <span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;wasi&quot;</span>))]</span>
@@ -680,9 +729,7 @@
     }
 
     <span class="attribute">#[<span class="ident">inline</span>]</span>
-    <span class="kw">fn</span> <span class="ident">as_socketlike_view</span><span class="op">&lt;</span><span class="ident">Target</span>: <span class="ident">FromSocketlike</span> <span class="op">+</span> <span class="ident">IntoSocketlike</span><span class="op">&gt;</span>(
-        <span class="kw-2">&amp;</span><span class="self">self</span>,
-    ) -&gt; <span class="ident">SocketlikeView</span><span class="op">&lt;</span><span class="lifetime">&#39;_</span>, <span class="ident">Target</span><span class="op">&gt;</span> {
+    <span class="kw">fn</span> <span class="ident">as_socketlike_view</span><span class="op">&lt;</span><span class="ident">Target</span>: <span class="ident">SocketlikeViewType</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">SocketlikeView</span><span class="op">&lt;</span><span class="lifetime">&#39;_</span>, <span class="ident">Target</span><span class="op">&gt;</span> {
         <span class="ident">SocketlikeView::new</span>(<span class="self">self</span>)
     }
 }
@@ -698,13 +745,20 @@
     <span class="doccomment">/// Borrows the reference.</span>
     <span class="kw">fn</span> <span class="ident">as_socketlike</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">BorrowedSocketlike</span>;
 
-    <span class="doccomment">/// Return a borrowing view of a resource which dereferences to a `&amp;Target`</span>
-    <span class="doccomment">/// or `&amp;mut Target`.</span>
+    <span class="doccomment">/// Return a borrowing view of a resource which dereferences to a `&amp;Target`.</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// Note that [`Read`] or [`Write`] require `&amp;mut Target`, but in some cases,</span>
+    <span class="doccomment">/// such as [`TcpStream`], `Read` and `Write` are implemented for `&amp;Target` in</span>
+    <span class="doccomment">/// addition to `Target`, and you can get a `&amp;mut &amp;Target` by doing `&amp;*` on</span>
+    <span class="doccomment">/// the resuting view, like this:</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// ```rust,ignore</span>
+    <span class="doccomment">/// let v = s.as_socketlike_view::&lt;std::net::TcpStream&gt;();</span>
+    <span class="doccomment">/// (&amp;*v).read(&amp;mut buf).unwrap();</span>
+    <span class="doccomment">/// ```</span>
     <span class="doccomment">///</span>
     <span class="doccomment">/// [`TcpStream`]: std::net::TcpStream</span>
-    <span class="kw">fn</span> <span class="ident">as_socketlike_view</span><span class="op">&lt;</span><span class="ident">Target</span>: <span class="ident">FromSocketlike</span> <span class="op">+</span> <span class="ident">IntoSocketlike</span><span class="op">&gt;</span>(
-        <span class="kw-2">&amp;</span><span class="self">self</span>,
-    ) -&gt; <span class="ident">SocketlikeView</span><span class="op">&lt;</span><span class="lifetime">&#39;_</span>, <span class="ident">Target</span><span class="op">&gt;</span>;
+    <span class="kw">fn</span> <span class="ident">as_socketlike_view</span><span class="op">&lt;</span><span class="ident">Target</span>: <span class="ident">SocketlikeViewType</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">SocketlikeView</span><span class="op">&lt;</span><span class="lifetime">&#39;_</span>, <span class="ident">Target</span><span class="op">&gt;</span>;
 }
 
 <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">windows</span>)]</span>
@@ -715,9 +769,7 @@
     }
 
     <span class="attribute">#[<span class="ident">inline</span>]</span>
-    <span class="kw">fn</span> <span class="ident">as_socketlike_view</span><span class="op">&lt;</span><span class="ident">Target</span>: <span class="ident">FromSocketlike</span> <span class="op">+</span> <span class="ident">IntoSocketlike</span><span class="op">&gt;</span>(
-        <span class="kw-2">&amp;</span><span class="self">self</span>,
-    ) -&gt; <span class="ident">SocketlikeView</span><span class="op">&lt;</span><span class="lifetime">&#39;_</span>, <span class="ident">Target</span><span class="op">&gt;</span> {
+    <span class="kw">fn</span> <span class="ident">as_socketlike_view</span><span class="op">&lt;</span><span class="ident">Target</span>: <span class="ident">SocketlikeViewType</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">SocketlikeView</span><span class="op">&lt;</span><span class="lifetime">&#39;_</span>, <span class="ident">Target</span><span class="op">&gt;</span> {
         <span class="ident">SocketlikeView::new</span>(<span class="self">self</span>)
     }
 }

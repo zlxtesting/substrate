@@ -2515,7 +2515,7 @@
 <span class="doccomment">//!</span>
 <span class="doccomment">//! ### Join</span>
 <span class="doccomment">//!</span>
-<span class="doccomment">//! A account can stake funds with a nomination pool by calling [`Call::join`].</span>
+<span class="doccomment">//! An account can stake funds with a nomination pool by calling [`Call::join`].</span>
 <span class="doccomment">//!</span>
 <span class="doccomment">//! ### Claim rewards</span>
 <span class="doccomment">//!</span>
@@ -2559,7 +2559,7 @@
 <span class="doccomment">//!   [`Call::unbond`] and [`Call::withdraw_unbonded`]. Once a pool is in destroying state, it</span>
 <span class="doccomment">//!   cannot be reverted to another state.</span>
 <span class="doccomment">//!</span>
-<span class="doccomment">//! A pool has 3 administrative roles (see [`PoolRoles`]):</span>
+<span class="doccomment">//! A pool has 4 administrative roles (see [`PoolRoles`]):</span>
 <span class="doccomment">//!</span>
 <span class="doccomment">//! * Depositor: creates the pool and is the initial member. They can only leave the pool once all</span>
 <span class="doccomment">//!   other members have left. Once they fully leave the pool is destroyed.</span>
@@ -2769,8 +2769,8 @@
 <span class="doccomment">//! * PoolMembers cannot vote with their staked funds because they are transferred into the pools</span>
 <span class="doccomment">//!   account. In the future this can be overcome by allowing the members to vote with their bonded</span>
 <span class="doccomment">//!   funds via vote splitting.</span>
-<span class="doccomment">//! * PoolMembers cannot quickly transfer to another pool if they do no like nominations, instead</span>
-<span class="doccomment">//!   they must wait for the unbonding duration.</span>
+<span class="doccomment">//! * PoolMembers cannot quickly transfer to another pool if they do not like the nominations,</span>
+<span class="doccomment">//!   instead they must wait for the unbonding duration.</span>
 <span class="doccomment">//!</span>
 <span class="doccomment">//! # Runtime builder warnings</span>
 <span class="doccomment">//!</span>
