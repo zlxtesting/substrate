@@ -744,7 +744,7 @@
 
 <span class="doccomment">/// A full leaf content stored in the offchain-db.</span>
 <span class="kw">pub</span> <span class="kw">trait</span> <span class="ident">FullLeaf</span>: <span class="ident">Clone</span> <span class="op">+</span> <span class="ident">PartialEq</span> <span class="op">+</span> <span class="ident">fmt::Debug</span> {
-	<span class="doccomment">/// Encode the leaf either in it&#39;s full or compact form.</span>
+	<span class="doccomment">/// Encode the leaf either in its full or compact form.</span>
 	<span class="doccomment">///</span>
 	<span class="doccomment">/// NOTE the encoding returned here MUST be `Decode`able into `FullLeaf`.</span>
 	<span class="kw">fn</span> <span class="ident">using_encoded</span><span class="op">&lt;</span><span class="ident">R</span>, <span class="ident">F</span>: <span class="ident">FnOnce</span>(<span class="kw-2">&amp;</span>[<span class="ident">u8</span>]) -&gt; <span class="ident">R</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">f</span>: <span class="ident">F</span>, <span class="ident">compact</span>: <span class="ident">bool</span>) -&gt; <span class="ident">R</span>;
@@ -830,18 +830,18 @@
 	}
 }
 
-<span class="doccomment">/// An element representing either full data or it&#39;s hash.</span>
+<span class="doccomment">/// An element representing either full data or its hash.</span>
 <span class="doccomment">///</span>
 <span class="doccomment">/// See [Compact] to see how it may be used in practice to reduce the size</span>
 <span class="doccomment">/// of proofs in case multiple [LeafDataProvider]s are composed together.</span>
 <span class="doccomment">/// This is also used internally by the MMR to differentiate leaf nodes (data)</span>
 <span class="doccomment">/// and inner nodes (hashes).</span>
 <span class="doccomment">///</span>
-<span class="doccomment">/// [DataOrHash::hash] method calculates the hash of this element in it&#39;s compact form,</span>
+<span class="doccomment">/// [DataOrHash::hash] method calculates the hash of this element in its compact form,</span>
 <span class="doccomment">/// so should be used instead of hashing the encoded form (which will always be non-compact).</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">RuntimeDebug</span>, <span class="ident">Clone</span>, <span class="ident">PartialEq</span>)]</span>
 <span class="kw">pub</span> <span class="kw">enum</span> <span class="ident">DataOrHash</span><span class="op">&lt;</span><span class="ident">H</span>: <span class="ident">traits::Hash</span>, <span class="ident">L</span><span class="op">&gt;</span> {
-	<span class="doccomment">/// Arbitrary data in it&#39;s full form.</span>
+	<span class="doccomment">/// Arbitrary data in its full form.</span>
 	<span class="ident">Data</span>(<span class="ident">L</span>),
 	<span class="doccomment">/// A hash of some data.</span>
 	<span class="ident">Hash</span>(<span class="ident">H::Output</span>),
@@ -1002,7 +1002,7 @@
 	<span class="ident">A</span>: <span class="ident">FullLeaf</span>,
 	<span class="ident">B</span>: <span class="ident">FullLeaf</span>,
 {
-	<span class="doccomment">/// Retrieve a hash of this item in it&#39;s compact form.</span>
+	<span class="doccomment">/// Retrieve a hash of this item in its compact form.</span>
 	<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">hash</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">H::Output</span> {
 		<span class="self">self</span>.<span class="ident">using_encoded</span>(<span class="op">&lt;</span><span class="ident">H</span> <span class="kw">as</span> <span class="ident">traits::Hash</span><span class="op">&gt;</span><span class="ident">::hash</span>, <span class="bool-val">true</span>)
 	}
@@ -1110,7 +1110,7 @@
 		<span class="doccomment">/// Note this function does not require any on-chain storage - the</span>
 		<span class="doccomment">/// proof is verified against given MMR root hash.</span>
 		<span class="doccomment">///</span>
-		<span class="doccomment">/// The leaf data is expected to be encoded in it&#39;s compact form.</span>
+		<span class="doccomment">/// The leaf data is expected to be encoded in its compact form.</span>
 		<span class="kw">fn</span> <span class="ident">verify_proof_stateless</span>(<span class="ident">root</span>: <span class="ident">Hash</span>, <span class="ident">leaf</span>: <span class="ident">EncodableOpaqueLeaf</span>, <span class="ident">proof</span>: <span class="ident">Proof</span><span class="op">&lt;</span><span class="ident">Hash</span><span class="op">&gt;</span>)
 			-&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span>(), <span class="ident">Error</span><span class="op">&gt;</span>;
 

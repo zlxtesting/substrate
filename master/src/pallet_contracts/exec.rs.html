@@ -3124,6 +3124,88 @@
 <span id="3119">3119</span>
 <span id="3120">3120</span>
 <span id="3121">3121</span>
+<span id="3122">3122</span>
+<span id="3123">3123</span>
+<span id="3124">3124</span>
+<span id="3125">3125</span>
+<span id="3126">3126</span>
+<span id="3127">3127</span>
+<span id="3128">3128</span>
+<span id="3129">3129</span>
+<span id="3130">3130</span>
+<span id="3131">3131</span>
+<span id="3132">3132</span>
+<span id="3133">3133</span>
+<span id="3134">3134</span>
+<span id="3135">3135</span>
+<span id="3136">3136</span>
+<span id="3137">3137</span>
+<span id="3138">3138</span>
+<span id="3139">3139</span>
+<span id="3140">3140</span>
+<span id="3141">3141</span>
+<span id="3142">3142</span>
+<span id="3143">3143</span>
+<span id="3144">3144</span>
+<span id="3145">3145</span>
+<span id="3146">3146</span>
+<span id="3147">3147</span>
+<span id="3148">3148</span>
+<span id="3149">3149</span>
+<span id="3150">3150</span>
+<span id="3151">3151</span>
+<span id="3152">3152</span>
+<span id="3153">3153</span>
+<span id="3154">3154</span>
+<span id="3155">3155</span>
+<span id="3156">3156</span>
+<span id="3157">3157</span>
+<span id="3158">3158</span>
+<span id="3159">3159</span>
+<span id="3160">3160</span>
+<span id="3161">3161</span>
+<span id="3162">3162</span>
+<span id="3163">3163</span>
+<span id="3164">3164</span>
+<span id="3165">3165</span>
+<span id="3166">3166</span>
+<span id="3167">3167</span>
+<span id="3168">3168</span>
+<span id="3169">3169</span>
+<span id="3170">3170</span>
+<span id="3171">3171</span>
+<span id="3172">3172</span>
+<span id="3173">3173</span>
+<span id="3174">3174</span>
+<span id="3175">3175</span>
+<span id="3176">3176</span>
+<span id="3177">3177</span>
+<span id="3178">3178</span>
+<span id="3179">3179</span>
+<span id="3180">3180</span>
+<span id="3181">3181</span>
+<span id="3182">3182</span>
+<span id="3183">3183</span>
+<span id="3184">3184</span>
+<span id="3185">3185</span>
+<span id="3186">3186</span>
+<span id="3187">3187</span>
+<span id="3188">3188</span>
+<span id="3189">3189</span>
+<span id="3190">3190</span>
+<span id="3191">3191</span>
+<span id="3192">3192</span>
+<span id="3193">3193</span>
+<span id="3194">3194</span>
+<span id="3195">3195</span>
+<span id="3196">3196</span>
+<span id="3197">3197</span>
+<span id="3198">3198</span>
+<span id="3199">3199</span>
+<span id="3200">3200</span>
+<span id="3201">3201</span>
+<span id="3202">3202</span>
+<span id="3203">3203</span>
 </pre><pre class="rust"><code><span class="comment">// This file is part of Substrate.</span>
 
 <span class="comment">// Copyright (C) 2018-2022 Parity Technologies (UK) Ltd.</span>
@@ -3923,7 +4005,7 @@
 				)<span class="question-mark">?</span>;
 			}
 
-			<span class="comment">// Every call or instantiate also optionally transferres balance.</span>
+			<span class="comment">// Every non delegate call or instantiate also optionally transfers the balance.</span>
 			<span class="self">self</span>.<span class="ident">initial_transfer</span>()<span class="question-mark">?</span>;
 
 			<span class="comment">// Call into the wasm blob.</span>
@@ -4085,8 +4167,14 @@
 	<span class="comment">// The transfer as performed by a call or instantiate.</span>
 	<span class="kw">fn</span> <span class="ident">initial_transfer</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">DispatchResult</span> {
 		<span class="kw">let</span> <span class="ident">frame</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">top_frame</span>();
-		<span class="kw">let</span> <span class="ident">value</span> <span class="op">=</span> <span class="ident">frame</span>.<span class="ident">value_transferred</span>;
 
+		<span class="comment">// If it is a delegate call, then we&#39;ve already transferred tokens in the</span>
+		<span class="comment">// last non-delegate frame.</span>
+		<span class="kw">if</span> <span class="ident">frame</span>.<span class="ident">delegate_caller</span>.<span class="ident">is_some</span>() {
+			<span class="kw">return</span> <span class="prelude-val">Ok</span>(())
+		}
+
+		<span class="kw">let</span> <span class="ident">value</span> <span class="op">=</span> <span class="ident">frame</span>.<span class="ident">value_transferred</span>;
 		<span class="ident"><span class="self">Self</span>::transfer</span>(<span class="ident">ExistenceRequirement::KeepAlive</span>, <span class="self">self</span>.<span class="ident">caller</span>(), <span class="kw-2">&amp;</span><span class="ident">frame</span>.<span class="ident">account_id</span>, <span class="ident">value</span>)
 	}
 
@@ -4683,6 +4771,82 @@
 
 			<span class="macro">assert_eq!</span>(<span class="ident">get_balance</span>(<span class="kw-2">&amp;</span><span class="ident">origin</span>), <span class="number">45</span>);
 			<span class="macro">assert_eq!</span>(<span class="ident">get_balance</span>(<span class="kw-2">&amp;</span><span class="ident">dest</span>), <span class="number">55</span>);
+		});
+	}
+
+	<span class="attribute">#[<span class="ident">test</span>]</span>
+	<span class="kw">fn</span> <span class="ident">correct_transfer_on_call</span>() {
+		<span class="kw">let</span> <span class="ident">origin</span> <span class="op">=</span> <span class="ident">ALICE</span>;
+		<span class="kw">let</span> <span class="ident">dest</span> <span class="op">=</span> <span class="ident">BOB</span>;
+		<span class="kw">let</span> <span class="ident">value</span> <span class="op">=</span> <span class="number">55</span>;
+
+		<span class="kw">let</span> <span class="ident">success_ch</span> <span class="op">=</span> <span class="ident">MockLoader::insert</span>(<span class="ident">Call</span>, <span class="kw">move</span> <span class="op">|</span><span class="ident">ctx</span>, <span class="kw">_</span><span class="op">|</span> {
+			<span class="macro">assert_eq!</span>(<span class="ident">ctx</span>.<span class="ident">ext</span>.<span class="ident">value_transferred</span>(), <span class="ident">value</span>);
+			<span class="prelude-val">Ok</span>(<span class="ident">ExecReturnValue</span> { <span class="ident">flags</span>: <span class="ident">ReturnFlags::empty</span>(), <span class="ident">data</span>: <span class="ident">Bytes</span>(<span class="ident">Vec::new</span>()) })
+		});
+
+		<span class="ident">ExtBuilder::default</span>().<span class="ident">build</span>().<span class="ident">execute_with</span>(<span class="op">|</span><span class="op">|</span> {
+			<span class="kw">let</span> <span class="ident">schedule</span> <span class="op">=</span> <span class="op">&lt;</span><span class="ident">Test</span> <span class="kw">as</span> <span class="ident">Config</span><span class="op">&gt;</span><span class="ident">::Schedule::get</span>();
+			<span class="ident">place_contract</span>(<span class="kw-2">&amp;</span><span class="ident">dest</span>, <span class="ident">success_ch</span>);
+			<span class="ident">set_balance</span>(<span class="kw-2">&amp;</span><span class="ident">origin</span>, <span class="number">100</span>);
+			<span class="kw">let</span> <span class="ident">balance</span> <span class="op">=</span> <span class="ident">get_balance</span>(<span class="kw-2">&amp;</span><span class="ident">dest</span>);
+			<span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">storage_meter</span> <span class="op">=</span> <span class="ident">storage::meter::Meter::new</span>(<span class="kw-2">&amp;</span><span class="ident">origin</span>, <span class="prelude-val">Some</span>(<span class="number">0</span>), <span class="number">55</span>).<span class="ident">unwrap</span>();
+
+			<span class="kw">let</span> <span class="kw">_</span> <span class="op">=</span> <span class="ident">MockStack::run_call</span>(
+				<span class="ident">origin</span>.<span class="ident">clone</span>(),
+				<span class="ident">dest</span>.<span class="ident">clone</span>(),
+				<span class="kw-2">&amp;mut</span> <span class="ident">GasMeter</span>::<span class="op">&lt;</span><span class="ident">Test</span><span class="op">&gt;</span><span class="ident">::new</span>(<span class="ident">GAS_LIMIT</span>),
+				<span class="kw-2">&amp;mut</span> <span class="ident">storage_meter</span>,
+				<span class="kw-2">&amp;</span><span class="ident">schedule</span>,
+				<span class="ident">value</span>,
+				<span class="macro">vec!</span>[],
+				<span class="prelude-val">None</span>,
+			)
+			.<span class="ident">unwrap</span>();
+
+			<span class="macro">assert_eq!</span>(<span class="ident">get_balance</span>(<span class="kw-2">&amp;</span><span class="ident">origin</span>), <span class="number">100</span> <span class="op">-</span> <span class="ident">value</span>);
+			<span class="macro">assert_eq!</span>(<span class="ident">get_balance</span>(<span class="kw-2">&amp;</span><span class="ident">dest</span>), <span class="ident">balance</span> <span class="op">+</span> <span class="ident">value</span>);
+		});
+	}
+
+	<span class="attribute">#[<span class="ident">test</span>]</span>
+	<span class="kw">fn</span> <span class="ident">correct_transfer_on_delegate_call</span>() {
+		<span class="kw">let</span> <span class="ident">origin</span> <span class="op">=</span> <span class="ident">ALICE</span>;
+		<span class="kw">let</span> <span class="ident">dest</span> <span class="op">=</span> <span class="ident">BOB</span>;
+		<span class="kw">let</span> <span class="ident">value</span> <span class="op">=</span> <span class="number">35</span>;
+
+		<span class="kw">let</span> <span class="ident">success_ch</span> <span class="op">=</span> <span class="ident">MockLoader::insert</span>(<span class="ident">Call</span>, <span class="kw">move</span> <span class="op">|</span><span class="ident">ctx</span>, <span class="kw">_</span><span class="op">|</span> {
+			<span class="macro">assert_eq!</span>(<span class="ident">ctx</span>.<span class="ident">ext</span>.<span class="ident">value_transferred</span>(), <span class="ident">value</span>);
+			<span class="prelude-val">Ok</span>(<span class="ident">ExecReturnValue</span> { <span class="ident">flags</span>: <span class="ident">ReturnFlags::empty</span>(), <span class="ident">data</span>: <span class="ident">Bytes</span>(<span class="ident">Vec::new</span>()) })
+		});
+
+		<span class="kw">let</span> <span class="ident">delegate_ch</span> <span class="op">=</span> <span class="ident">MockLoader::insert</span>(<span class="ident">Call</span>, <span class="kw">move</span> <span class="op">|</span><span class="ident">ctx</span>, <span class="kw">_</span><span class="op">|</span> {
+			<span class="macro">assert_eq!</span>(<span class="ident">ctx</span>.<span class="ident">ext</span>.<span class="ident">value_transferred</span>(), <span class="ident">value</span>);
+			<span class="kw">let</span> <span class="kw">_</span> <span class="op">=</span> <span class="ident">ctx</span>.<span class="ident">ext</span>.<span class="ident">delegate_call</span>(<span class="ident">success_ch</span>, <span class="ident">Vec::new</span>())<span class="question-mark">?</span>;
+			<span class="prelude-val">Ok</span>(<span class="ident">ExecReturnValue</span> { <span class="ident">flags</span>: <span class="ident">ReturnFlags::empty</span>(), <span class="ident">data</span>: <span class="ident">Bytes</span>(<span class="ident">Vec::new</span>()) })
+		});
+
+		<span class="ident">ExtBuilder::default</span>().<span class="ident">build</span>().<span class="ident">execute_with</span>(<span class="op">|</span><span class="op">|</span> {
+			<span class="kw">let</span> <span class="ident">schedule</span> <span class="op">=</span> <span class="op">&lt;</span><span class="ident">Test</span> <span class="kw">as</span> <span class="ident">Config</span><span class="op">&gt;</span><span class="ident">::Schedule::get</span>();
+			<span class="ident">place_contract</span>(<span class="kw-2">&amp;</span><span class="ident">dest</span>, <span class="ident">delegate_ch</span>);
+			<span class="ident">set_balance</span>(<span class="kw-2">&amp;</span><span class="ident">origin</span>, <span class="number">100</span>);
+			<span class="kw">let</span> <span class="ident">balance</span> <span class="op">=</span> <span class="ident">get_balance</span>(<span class="kw-2">&amp;</span><span class="ident">dest</span>);
+			<span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">storage_meter</span> <span class="op">=</span> <span class="ident">storage::meter::Meter::new</span>(<span class="kw-2">&amp;</span><span class="ident">origin</span>, <span class="prelude-val">Some</span>(<span class="number">0</span>), <span class="number">55</span>).<span class="ident">unwrap</span>();
+
+			<span class="kw">let</span> <span class="kw">_</span> <span class="op">=</span> <span class="ident">MockStack::run_call</span>(
+				<span class="ident">origin</span>.<span class="ident">clone</span>(),
+				<span class="ident">dest</span>.<span class="ident">clone</span>(),
+				<span class="kw-2">&amp;mut</span> <span class="ident">GasMeter</span>::<span class="op">&lt;</span><span class="ident">Test</span><span class="op">&gt;</span><span class="ident">::new</span>(<span class="ident">GAS_LIMIT</span>),
+				<span class="kw-2">&amp;mut</span> <span class="ident">storage_meter</span>,
+				<span class="kw-2">&amp;</span><span class="ident">schedule</span>,
+				<span class="ident">value</span>,
+				<span class="macro">vec!</span>[],
+				<span class="prelude-val">None</span>,
+			)
+			.<span class="ident">unwrap</span>();
+
+			<span class="macro">assert_eq!</span>(<span class="ident">get_balance</span>(<span class="kw-2">&amp;</span><span class="ident">origin</span>), <span class="number">100</span> <span class="op">-</span> <span class="ident">value</span>);
+			<span class="macro">assert_eq!</span>(<span class="ident">get_balance</span>(<span class="kw-2">&amp;</span><span class="ident">dest</span>), <span class="ident">balance</span> <span class="op">+</span> <span class="ident">value</span>);
 		});
 	}
 
