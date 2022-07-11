@@ -34,7 +34,7 @@ sp-wasm-interface = { version = "6.0.0", features = ["wasmtime"], path = "../../
 
 [target.'cfg(target_os = "linux")'.dependencies]
 rustix = { version = "0.35.6", default-features = false, features = ["std", "mm", "fs", "param"] }
-once_cell = "1.12.0"
+once_cell = "1.13.0"
 
 [dev-dependencies]
 wat = "1.0"
